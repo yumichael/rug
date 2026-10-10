@@ -132,15 +132,17 @@ Suggest perceptual palettes using [OKLab and its polar form, OKLCH](https://bott
 
 These are proposed art directions, not fixed color values. Provide named presets and, if useful, expose lightness range, target chroma, hue offset, and palette level count. Reuse a palette across regions while allowing guards to use a darker or lighter lightness range.
 
-Represent procedural hue in turns, so its conversion to OKLab is unambiguous:
+Prefer native CSS [`oklab()` and `oklch()` colors](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/color_value/oklch). Canvas [`fillStyle`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle) accepts CSS colors, so the browser can handle conversion to the canvas color space. Represent procedural hue in turns:
 
-```python
-# Hue-cycle palette: L and C are preset parameters; h0 is a turn offset.
-h = (h0 + t) % 1
-oklab = (L, C * cos(tau*h), C * sin(tau*h))
+```javascript
+// Hue-cycle palette: L and C are preset parameters; h0 is a turn offset.
+const h = ((h0 + t) % 1 + 1) % 1;
+ctx.fillStyle = `oklch(${L} ${C} ${h}turn)`;
 ```
 
-Convert OKLab to linear sRGB, then apply the sRGB transfer function before writing image bytes. For out-of-gamut colors, reduce OKLCH chroma at fixed lightness and hue until the linear RGB components lie in `[0, 1]`; this is a simple prototype form of [hue-preserving gamut mapping](https://bottosson.github.io/posts/gamutclipping/). Keep lightness in `[0, 1]` and use the same conversion and gamut policy for preview and export.
+For a renderer that writes [`ImageData`](https://developer.mozilla.org/en-US/docs/Web/API/ImageData), build a palette lookup table by drawing palette samples into a small sRGB canvas with CSS color values and reading back their RGBA bytes. Rebuild the table when palette settings change, then reuse it across cells. Choose its resolution explicitly, or use exactly the selected number of colors for a quantized palette. Use the same table for preview and export.
+
+Explicit OKLab-to-sRGB conversion is an implementation option for a renderer that needs numeric conversion outside the browser's color pipeline. Keep lightness in `[0, 1]` and use a consistent color-space and gamut policy throughout rendering and export.
 
 ## App behavior and implementation
 
