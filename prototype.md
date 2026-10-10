@@ -93,11 +93,11 @@ Proposed ring source size: choose a power-of-two `N` at least twice the longer e
 
 Migrate the active coloring behavior of `generate_carpet_specs`, with HSV as the initial mode. The existing generator supports RGB, HSV, and HSL, plus a single scalar channel sampled through a named colormap. Within each region, all channels share the pattern family, diagonal variant, post-power, and modulus. Each channel independently draws an odd multiplier `a_c` in `[1, M)` and an offset `b_c` in `[0, M)`.
 
-Normalize the modular channel residue as follows:
+Use `tau = 6.283185307179586`, one full turn in radians, throughout the formulas and implementation. Normalize the modular channel residue as follows:
 
 ```python
 t = r_c / M
-channel = t if channel_name == "H" else 0.5 + 0.5 * sin(2*pi*t)
+channel = t if channel_name == "H" else 0.5 + 0.5 * sin(tau*t)
 ```
 
 Hue uses the linear mapping; RGB components, saturation, value, and HSL lightness use the sine mapping. Convert HSV or HSL triples to RGB after mapping. The original sine mapping nudges its result toward zero by one floating-point step, keeping the maximum below `1`; preserve that endpoint treatment where pixel parity matters. For PNG output, clamp channels and use a documented conversion to eight-bit values that cannot wrap `1.0` to zero.
@@ -109,12 +109,38 @@ The scalar-colormap path optionally quantizes the mapped value to `d ≥ 2` equa
 An optional alternative is [Inigo Quilez's procedural cosine palette](https://iquilezles.org/articles/palettes/), also implemented in [glsl-cos-palette](https://github.com/Erkaman/glsl-cos-palette). It colors one normalized scalar with four RGB vectors:
 
 ```glsl
+const float tau = 6.283185307179586;
+
 vec3 palette(float t, vec3 a, vec3 b, vec3 c, vec3 d) {
-    return a + b * cos(6.283185307179586 * (c * t + d));
+    return a + b * cos(tau * (c * t + d));
 }
 ```
 
-Here `a` sets the midpoint, `b` the amplitude, `c` the frequency, and `d` the phase of each color channel. Use a few named presets and clamp the result to `[0, 1]`. A shared palette across field and border can help the rug read as one composition, while independent region palettes allow stronger guard contrast. These palette additions are optional; the migrated coloring is the baseline.
+Here `a` sets the midpoint, `b` the amplitude, `c` the frequency, and `d` the phase of each color channel. Use a few named presets and clamp the result to `[0, 1]`. A shared palette across field and border can help the rug read as one composition, while independent region palettes allow stronger guard contrast. The migrated coloring is the baseline; the following palette additions are optional.
+
+
+### OKLab and OKLCH palettes
+
+Suggest perceptual palettes using [OKLab and its polar form, OKLCH](https://bottosson.github.io/posts/oklab/). OKLab supports smooth interpolation between chosen colors; OKLCH separates lightness `L`, chroma `C`, and hue `h`, making palette contrast and hue range easy to control. Feed these palettes one normalized modular scalar `t = r_c / M`, with optional quantization for a limited set of yarn-like colors.
+
+| Scheme | Construction | Suggested colors |
+| --- | --- | --- |
+| OKLab gradient | Interpolate named palette stops in OKLab; repeat the first stop at the end for a cyclic palette. | Indigo → burgundy → ochre → ivory → indigo |
+| OKLCH hue cycle | Sweep hue through one turn at fixed lightness and target chroma. | A spectrum with more even perceived lightness |
+| OKLCH tonal palette | Keep hue fixed and vary lightness and chroma smoothly. | Indigo and cream, or terracotta and sand |
+| OKLCH two-hue palette | Interpolate between two hues along an explicitly chosen hue arc, with independently controlled lightness and chroma. | Teal and rust, or plum and gold |
+
+These are proposed art directions, not fixed color values. Provide named presets and, if useful, expose lightness range, target chroma, hue offset, and palette level count. Reuse a palette across regions while allowing guards to use a darker or lighter lightness range.
+
+Represent procedural hue in turns, so its conversion to OKLab is unambiguous:
+
+```python
+# Hue-cycle palette: L and C are preset parameters; h0 is a turn offset.
+h = (h0 + t) % 1
+oklab = (L, C * cos(tau*h), C * sin(tau*h))
+```
+
+Convert OKLab to linear sRGB, then apply the sRGB transfer function before writing image bytes. For out-of-gamut colors, reduce OKLCH chroma at fixed lightness and hue until the linear RGB components lie in `[0, 1]`; this is a simple prototype form of [hue-preserving gamut mapping](https://bottosson.github.io/posts/gamutclipping/). Keep lightness in `[0, 1]` and use the same conversion and gamut policy for preview and export.
 
 ## App behavior and implementation
 
