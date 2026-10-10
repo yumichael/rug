@@ -1,0 +1,853 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rug studio</title>
+<style>
+  :root { color-scheme: light; --paper:#f8f5ed; --ink:#292b25; --muted:#6e7165; --line:#dcded2; --accent:#385544; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:14px/1.5 system-ui,sans-serif; }
+  button,input,select { font:inherit; }
+  button,select,input { border:1px solid var(--line); border-radius:6px; background:#fffdf8; color:var(--ink); }
+  button { padding:8px 13px; cursor:pointer; }
+  button:hover { border-color:var(--accent); background:#eeeee2; }
+  button:disabled { opacity:.45; cursor:wait; }
+  button.primary { background:var(--accent); color:white; border-color:var(--accent); }
+  input,select { padding:6px 8px; width:100%; min-width:0; }
+  input[type=checkbox] { width:16px; height:16px; accent-color:var(--accent); }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+  header { padding:22px 28px; display:flex; justify-content:space-between; align-items:center; gap:20px; border-bottom:1px solid var(--line); }
+  h1 { font:32px/1.1 Georgia,serif; margin:0 0 5px; letter-spacing:-.7px; }
+  h2 { font-size:15px; margin:0 0 13px; }
+  p { margin:0; }
+  .subtitle,.hint { color:var(--muted); }
+  .hint { font-size:12px; margin-top:7px; }
+  .actions { display:flex; gap:8px; flex-wrap:wrap; }
+  main { display:grid; grid-template-columns:340px minmax(0,1fr); min-height:calc(100vh - 100px); }
+  aside { padding:20px; border-right:1px solid var(--line); }
+  .section { padding-bottom:19px; margin-bottom:19px; border-bottom:1px solid var(--line); }
+  label { display:block; font-size:12px; color:var(--muted); }
+  label input,label select { display:block; margin-top:4px; color:var(--ink); }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0; }
+  .check { display:flex; align-items:center; gap:8px; color:var(--ink); margin:12px 0; }
+  .check input { margin:0; }
+  .region { border:1px solid var(--line); border-radius:8px; margin:10px 0; background:#fffdf8; }
+  summary { cursor:pointer; padding:12px; font-weight:600; }
+  summary small { float:right; font-weight:400; color:var(--muted); }
+  .region-body { padding:0 12px 12px; }
+  .region button { padding:5px 9px; font-size:12px; }
+  .region .row { margin:9px 0; }
+  .region .math summary { padding:7px 0; font-size:12px; font-weight:400; }
+  pre { white-space:pre-wrap; overflow-wrap:anywhere; font-size:11px; line-height:1.6; margin:0; }
+  .locked { display:none; padding:0 12px 12px; color:var(--muted); font-size:12px; }
+  .preview { position:sticky; top:0; height:calc(100vh - 106px); min-height:420px; display:flex; flex-direction:column; padding:22px 28px; gap:16px; min-width:0; }
+  .preview-bar { display:flex; justify-content:space-between; gap:15px; flex-wrap:wrap; align-items:center; }
+  .dimensions { font-size:13px; font-variant-numeric:tabular-nums; }
+  .dimensions strong { font-size:16px; }
+  .viewport { min-height:260px; flex:1; overflow:auto; display:flex; align-items:center; justify-content:center; padding:30px; border:1px solid var(--line); border-radius:12px; background:#e9e9dc; }
+  canvas#rug { display:block; image-rendering:pixelated; box-shadow:0 12px 30px #292b2522; max-width:100%; max-height:100%; width:auto; height:auto; }
+  .viewport.actual { display:block; }
+  .viewport.actual canvas { max-width:none!important; max-height:none!important; width:auto; height:auto; }
+  .status { min-height:22px; color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums; }
+  .status.error { color:#a13326; }
+  .about { font-size:12px; color:var(--muted); }
+  .about summary { padding:0; font-weight:400; }
+  .about p { margin-top:8px; max-width:70ch; }
+  .hidden { display:none!important; }
+  @media(max-width:850px) { header { padding:18px; } main { grid-template-columns:300px minmax(0,1fr); } aside { padding:14px; } .preview { padding:16px; } .viewport { padding:12px; } }
+  @media(max-width:650px) { header { align-items:flex-start; flex-direction:column; gap:12px; } main { display:flex; flex-direction:column; } aside { order:2; border-right:0; } .preview { position:static; height:65vh; min-height:420px; } }
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Rug studio</h1><p class="subtitle">Patterns from integer coordinates.</p></div>
+  <div class="actions">
+    <button id="randomize" class="primary">New rug</button>
+    <button id="png">Save PNG</button>
+    <button id="save">Save settings</button>
+    <button id="load">Load settings</button>
+    <input id="file" type="file" accept="application/json,.json" class="hidden" aria-label="Settings file">
+  </div>
+</header>
+<main>
+<aside>
+  <section class="section">
+    <h2>Shape &amp; scale</h2>
+    <div class="row">
+      <label>Field shape<select id="aspect"><option value="1">Square · 1:1</option><option value="2">Rectangle · 2:1</option></select></label>
+      <label>Seed<input id="seed" value="0" maxlength="100"></label>
+    </div>
+    <label>Field dimensions<select id="size"></select></label>
+    <div class="row">
+      <label>Main border<select id="border"></select></label>
+      <label>Each guard<input id="guard" readonly aria-label="Guard width"></label>
+    </div>
+    <button id="generate">Generate from seed</button>
+    <p class="hint">One cell = one output pixel. Changing a control keeps the other regions' random parameters.</p>
+  </section>
+  <section>
+    <h2>Pattern &amp; color</h2>
+    <label class="check"><input type="checkbox" id="lock" checked>Lock guard styles</label>
+    <label class="check"><input type="checkbox" id="shared">Reuse the field palette</label>
+    <p class="hint">Shared palettes keep each region's lightness range. Guards always have equal widths.</p>
+    <div id="regions"></div>
+  </section>
+</aside>
+<section class="preview" aria-label="Rug preview">
+  <div class="preview-bar">
+    <div id="dimensions" class="dimensions"></div>
+    <label class="check"><input type="checkbox" id="actual">Actual pixels</label>
+  </div>
+  <div class="viewport" id="viewport"><canvas id="rug" width="1" height="1" aria-label="Generated rug"></canvas></div>
+  <div id="status" class="status" role="status" aria-live="polite">Preparing the loom…</div>
+  <details class="about">
+    <summary>How the pattern works</summary>
+    <p>Diagonal integer coordinates are combined with XOR, or with OR after squaring or taking fourth powers. A modular post-power creates the pattern. Odd multipliers and offsets give its colors. The field is a centered crop of a square; each border is one continuous periodic pattern with square corners.</p>
+    <p>Rotations turn the pattern within its region. A border motif repeats at its width, though some powers create smaller repeats. Images up to 16,777,216 pixels render at full resolution; larger images show sampled cells until you export the full rug.</p>
+  </details>
+</section>
+</main>
+
+<!-- The worker owns the integer math and pixel loops. It has no DOM dependencies. -->
+<script id="renderer" type="text/plain">
+'use strict';
+const tau = 6.283185307179586;
+const FULL_PREVIEW_LIMIT = 2 ** 24;
+const clamp = (x, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, x));
+const lowbit = p => p & -p;
+const nextPowerOfTwo = x => 2 ** Math.ceil(Math.log2(x));
+
+// Exact modular exponentiation is used only to build a small lookup table,
+// never in the per-pixel loop. BigInt avoids both 32-bit truncation and rounding.
+function powerMod(base, exponent, modulus) {
+  let value = 1n;
+  let factor = BigInt(base) % modulus;
+  while (exponent > 0) {
+    if (exponent % 2) value = value * factor % modulus;
+    factor = factor * factor % modulus;
+    exponent = Math.floor(exponent / 2);
+  }
+  return value;
+}
+
+// XOR cells are odd: the two diagonal coordinates have opposite parity.
+// For odd z, z**p modulo (2*T*lowbit(p)) depends only on z modulo 2*T.
+// This lets a border use a small coordinate domain without changing its math.
+function geometry(settings) {
+  const S = 2 ** settings.k, B = settings.border, G = B / 2;
+  const W = S * settings.aspect, H = S;
+  const width = W + 4 * B, height = H + 4 * B;
+  return { S, B, G, W, H, width, height };
+}
+
+// Return the original diagonal sampling coordinates after inverse rotation.
+// i is row, j is column. Rotation turns the pattern clockwise on screen.
+function diagonalCoordinates(i, j, L, rotation, centered, phaseX, phaseY) {
+  let row = i, col = j;
+  if (rotation === 90) { row = L - 1 - j; col = i; }
+  else if (rotation === 180) { row = L - 1 - i; col = L - 1 - j; }
+  else if (rotation === 270) { row = j; col = L - 1 - i; }
+  const shift = centered ? L / 2 : 0;
+  row += shift + phaseY;
+  col += shift + phaseX;
+  return [L - 1 + row - col, -L + row + col];
+}
+
+const roundingBits = new DataView(new ArrayBuffer(8));
+function nextDown(x) {
+  if (x === 0) return 0;
+  roundingBits.setFloat64(0, x);
+  roundingBits.setBigUint64(0, roundingBits.getBigUint64(0) - 1n);
+  return roundingBits.getFloat64(0);
+}
+const cyclic = t => nextDown(0.5 + 0.5 * Math.sin(tau * t));
+const byte = x => Math.min(255, Math.floor(clamp(x) * 256));
+
+function hsv(h, s, v) {
+  const sector = h * 6, f = sector - Math.floor(sector);
+  const a = v * (1 - s), b = v * (1 - f * s), c = v * (1 - (1 - f) * s);
+  return [[v,c,a],[b,v,a],[a,v,c],[a,b,v],[c,a,v],[v,a,b]][Math.floor(sector) % 6];
+}
+function hsl(h, s, l) {
+  const chroma = (1 - Math.abs(2 * l - 1)) * s;
+  const base = hsv(h, 1, 1), offset = l - chroma / 2;
+  return base.map(c => c * chroma + offset);
+}
+
+// Store RGBA as a native-endian word so a single assignment writes a pixel.
+const littleEndian = new Uint8Array(new Uint32Array([1]).buffer)[0] === 1;
+function pack(r, g, b) {
+  return littleEndian ? (255 << 24 | b << 16 | g << 8 | r) >>> 0
+                      : (r << 24 | g << 16 | b << 8 | 255) >>> 0;
+}
+
+function channelParameters(style, modulus) {
+  return [0,1,2].map(c => ({
+    multiply: 2n * (BigInt(style.draws[2*c]) % (modulus / 2n)) + 1n,
+    add: BigInt(style.draws[2*c+1]) % modulus
+  }));
+}
+
+function colorTable(style, domain, colorStyle, paletteBytes) {
+  const modulus = BigInt(domain) * BigInt(lowbit(style.power));
+  const channels = channelParameters(style, modulus);
+  const colors = new Uint32Array(domain);
+  const palette = paletteBytes ? new Uint8Array(paletteBytes) : null;
+  const paletteSize = palette ? palette.length / 4 : 0;
+  const levels = colorStyle.levels;
+  // Only odd combined values occur in all three supported pattern families.
+  for (let z = 1; z < domain; z += 2) {
+    const powered = powerMod(z, style.power, modulus);
+    const t = channels.map(c => Number((powered*c.multiply + c.add) % modulus) / Number(modulus));
+    let rgb;
+    if (['hsv','hsl','rgb'].includes(colorStyle.mode)) {
+      let values = t.map((v, c) => c === 0 && colorStyle.mode !== 'rgb' ? v : cyclic(v));
+      if (levels) values = values.map(v => Math.floor(v * nextDown(levels)) / (levels - 1));
+      if (colorStyle.mode === 'rgb') rgb = values.map(v => colorStyle.contrast ? v*v : v);
+      else {
+        rgb = colorStyle.mode === 'hsv' ? hsv(...values) : hsl(...values);
+        // The notebook also nudges converted HSV/HSL RGB values below 1.
+        rgb = rgb.map(value => value * (1 - Number.EPSILON / 2));
+      }
+      colors[z] = pack(...rgb.map(byte));
+    } else {
+      let value = colorStyle.mapping === 'cyclic' ? cyclic(t[0]) : t[0];
+      const index = levels ? Math.min(levels - 1, Math.floor(value * nextDown(levels)))
+                           : Math.min(paletteSize - 1, Math.floor(value * paletteSize));
+      const offset = index * 4;
+      colors[z] = pack(palette[offset], palette[offset+1], palette[offset+2]);
+    }
+  }
+  return { colors, modulus, channels };
+}
+
+// Pre-powers need only the low log2(domain) bits. Math.imul gives these bits
+// exactly even when the square is too large for an ordinary bitwise product.
+function prePowerTable(domain, pre) {
+  const mask = domain - 1, values = new Uint32Array(domain);
+  for (let x = 0; x < domain; x++) {
+    let z = x;
+    if (pre >= 2) z = Math.imul(z, z) & mask;
+    if (pre === 4) z = Math.imul(z, z) & mask;
+    values[x] = z;
+  }
+  return values;
+}
+
+function effectiveColor(settings, name) {
+  const own = settings.styles[name];
+  return settings.shared && name !== 'field'
+    ? { ...settings.styles.field, lightMin:own.lightMin, lightMax:own.lightMax }
+    : own;
+}
+
+function compileRegion(settings, palettes, name, rect, period = null) {
+  const styleName = name === 'outer' && settings.lock ? 'inner' : name;
+  const style = settings.styles[styleName];
+  const color = effectiveColor(settings, styleName);
+  const L = nextPowerOfTwo(Math.max(rect.width, rect.height));
+  const domain = period ? 2 * period : 2 * L;
+  const { colors, modulus, channels } = colorTable(style, domain, color, palettes[styleName]);
+  const pre = name === 'field' || style.family === 'xor' ? 1 : Number(style.family);
+  const powers = prePowerTable(domain, pre), mask = domain - 1;
+  const cropY = period ? 0 : (L - rect.height) / 2;
+  const cropX = period ? 0 : (L - rect.width) / 2;
+
+  // A coordinate transform is affine. Precompute each column's contribution
+  // once; a pixel then costs two masks, one XOR/OR, and one color lookup.
+  const [u0,v0] = diagonalCoordinates(cropY, cropX, L, style.rotation, style.centered, style.phaseX, style.phaseY);
+  const [ux,vx] = diagonalCoordinates(cropY, cropX+1, L, style.rotation, style.centered, style.phaseX, style.phaseY);
+  const [uy,vy] = diagonalCoordinates(cropY+1, cropX, L, style.rotation, style.centered, style.phaseX, style.phaseY);
+  const xU = new Int32Array(rect.width), xV = new Int32Array(rect.width);
+  for (let x = 0; x < rect.width; x++) {
+    xU[x] = (u0 + x*(ux-u0)) & mask;
+    xV[x] = (v0 + x*(vx-v0)) & mask;
+  }
+  const region = { name, rect, colors, powers, mask, xU, xV, dyU:uy-u0, dyV:vy-v0, xor:pre === 1 };
+
+  // Caching the mathematically periodic motif is purely an optimization.
+  if (period) {
+    const tile = new Uint32Array(period * period);
+    for (let y = 0; y < period; y++) for (let x = 0; x < period; x++) {
+      const a = powers[(xU[x] + y*region.dyU) & mask];
+      const b = powers[(xV[x] + y*region.dyV) & mask];
+      tile[y*period+x] = colors[region.xor ? a^b : a|b];
+    }
+    region.tile = tile;
+    region.period = period;
+  }
+  region.parameters = { N:2*L, modulus:String(modulus), power:style.power,
+    channels:channels.map(c => ({ multiply:String(c.multiply), add:String(c.add) })) };
+  return region;
+}
+
+function compile(settings, palettes) {
+  const g = geometry(settings), { W,H,B,G } = g;
+  // Draw outer to inner, masking each ring with the next rectangle.
+  const regions = [
+    compileRegion(settings, palettes, 'outer', { x:0,y:0,width:g.width,height:g.height }, G),
+    compileRegion(settings, palettes, 'main', { x:G,y:G,width:W+3*B,height:H+3*B }, B),
+    compileRegion(settings, palettes, 'inner', { x:G+B,y:G+B,width:W+B,height:H+B }, G),
+    compileRegion(settings, palettes, 'field', { x:2*B,y:2*B,width:W,height:H })
+  ];
+  return { g, regions };
+}
+
+function sample(region, x, y) {
+  x -= region.rect.x; y -= region.rect.y;
+  if (region.tile) return region.tile[(y % region.period)*region.period + x % region.period];
+  const { powers, mask, colors } = region;
+  const a = powers[(region.xU[x] + y*region.dyU) & mask];
+  const b = powers[(region.xV[x] + y*region.dyV) & mask];
+  return colors[region.xor ? a^b : a|b];
+}
+
+// Render contiguous row segments: the ring's corners belong to that ring.
+// The main field's hot loop has no region tests, allocations, or BigInt work.
+function paintBand(model, startY, rows) {
+  const { g, regions } = model;
+  const pixels = new Uint32Array(g.width * rows);
+  for (let regionIndex = 0; regionIndex < regions.length; regionIndex++) {
+    const region = regions[regionIndex], rect = region.rect;
+    const inside = regions[regionIndex+1]?.rect;
+    const top = Math.max(startY, rect.y), bottom = Math.min(startY+rows, rect.y+rect.height);
+    for (let y = top; y < bottom; y++) {
+      const localY = y - rect.y;
+      const segments = inside && y >= inside.y && y < inside.y+inside.height
+        ? [[rect.x, inside.x], [inside.x+inside.width, rect.x+rect.width]]
+        : [[rect.x, rect.x+rect.width]];
+      for (const [left,right] of segments) {
+        let target = (y-startY)*g.width + left;
+        if (region.tile) {
+          const T = region.period, tileRow = (localY % T)*T;
+          let x = left - rect.x, remaining = right-left;
+          while (remaining > 0) {
+            const offset = x % T, count = Math.min(T-offset, remaining);
+            pixels.set(region.tile.subarray(tileRow+offset, tileRow+offset+count), target);
+            target += count; x += count; remaining -= count;
+          }
+        } else {
+          const { powers, mask, colors, xU, xV } = region;
+          const rowU = localY*region.dyU, rowV = localY*region.dyV;
+          for (let x = left-rect.x; x < right-rect.x; x++) {
+            pixels[target++] = colors[powers[(xU[x]+rowU)&mask] ^ powers[(xV[x]+rowV)&mask]];
+          }
+        }
+      }
+    }
+  }
+  return pixels;
+}
+
+function sampledPreview(model) {
+  const { g, regions } = model;
+  const scale = Math.min(1, 1200 / Math.max(g.width,g.height));
+  const width = Math.max(1, Math.round(g.width*scale)), height = Math.max(1, Math.round(g.height*scale));
+  const pixels = new Uint32Array(width*height);
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+    const cellX = Math.min(g.width-1, Math.floor((x+0.5)*g.width/width));
+    const cellY = Math.min(g.height-1, Math.floor((y+0.5)*g.height/height));
+    let region = regions[0];
+    for (let i = 1; i < regions.length; i++) {
+      const r = regions[i].rect;
+      if (cellX >= r.x && cellX < r.x+r.width && cellY >= r.y && cellY < r.y+r.height) region = regions[i];
+    }
+    pixels[y*width+x] = sample(region,cellX,cellY);
+  }
+  return { width,height,pixels };
+}
+
+let acknowledge;
+self.onmessage = async ({ data }) => {
+  if (data.type === 'ack') { acknowledge?.(); return; }
+  try {
+    const started = performance.now();
+    const model = compile(data.settings, data.palettes);
+    const compiled = performance.now();
+    const full = data.export || model.g.width*model.g.height <= FULL_PREVIEW_LIMIT;
+    const parameters = Object.fromEntries(model.regions.map(r => [r.name,r.parameters]));
+    if (!full) {
+      const image = sampledPreview(model);
+      self.postMessage({ type:'image', ...image, pixels:image.pixels.buffer, sampled:true, parameters,
+        compileMs:compiled-started, totalMs:performance.now()-started }, [image.pixels.buffer]);
+    } else if (!data.export || model.g.width*model.g.height <= FULL_PREVIEW_LIMIT) {
+      const pixels = paintBand(model,0,model.g.height);
+      self.postMessage({ type:'image', width:model.g.width,height:model.g.height,pixels:pixels.buffer,
+        sampled:false,parameters,compileMs:compiled-started,totalMs:performance.now()-started }, [pixels.buffer]);
+    } else {
+      self.postMessage({ type:'begin',width:model.g.width,height:model.g.height,parameters });
+      for (let y = 0; y < model.g.height; y += 128) {
+        const rows = Math.min(128,model.g.height-y), pixels = paintBand(model,y,rows);
+        // Backpressure keeps only one band in flight during very large exports.
+        const delivered = new Promise(resolve => { acknowledge = resolve; });
+        self.postMessage({ type:'band', y,rows,width:model.g.width,pixels:pixels.buffer }, [pixels.buffer]);
+        await delivered;
+      }
+      self.postMessage({ type:'done',totalMs:performance.now()-started });
+    }
+  } catch (error) { self.postMessage({ type:'error',message:error.message }); }
+};
+</script>
+
+<script>
+'use strict';
+const tau = 6.283185307179586;
+const $ = id => document.getElementById(id);
+const names = ['field','inner','main','outer'];
+const titles = { field:'Field', inner:'Inner guard', main:'Main border', outer:'Outer guard' };
+const modes = { hsv:'HSV · original', rgb:'RGB · original', hsl:'HSL · original', colormap:'Scalar colormap', cosine:'Cosine palette', oklab:'OKLab gradient', cycle:'OKLCH hue cycle', tonal:'OKLCH tonal', duo:'OKLCH two hues' };
+const presets = {
+  heritage:{ label:'Indigo, burgundy & ochre', stops:[[.35,.09,.75],[.42,.12,.04],[.73,.13,.23],[.92,.025,.24],[.35,.09,.75]] },
+  teal:{ label:'Teal & rust', stops:[[.43,.08,.53],[.63,.15,.11]] },
+  plum:{ label:'Plum & gold', stops:[[.4,.12,.91],[.8,.12,.25]] },
+  indigo:{ label:'Indigo & cream', stops:[[.3,.07,.75],[.93,.025,.24]] },
+  earth:{ label:'Terracotta & sand', stops:[[.44,.11,.1],[.87,.055,.22]] }
+};
+const mapStops = {
+  viridis:['#440154','#3b528b','#21918c','#5ec962','#fde725'],
+  magma:['#000004','#51127c','#b73779','#fc8961','#fcfdbf'],
+  ocean:['#102c44','#286a79','#71a8a0','#d7ded0','#fff3d5'],
+  earth:['#352941','#8b3d48','#c47b4a','#ddbc79','#f5efd6']
+};
+const cosinePresets = {
+  jewel:{ a:[.5,.5,.5], b:[.5,.5,.5], c:[1,1,1], d:[0,.1,.2] },
+  dusk:{ a:[.5,.5,.5], b:[.5,.5,.5], c:[1,1,1], d:[.3,.2,.2] },
+  sea:{ a:[.4,.5,.6], b:[.3,.4,.3], c:[1,1,1], d:[.5,.25,0] }
+};
+const optionHTML = options => Object.entries(options).map(([value,label]) => `<option value="${value}">${label}</option>`).join('');
+const colorKeys = ['mode','preset','mapping','levels','chroma','hue','arc','contrast'];
+
+// The PRNG is local to a region; rerolling one style leaves the others alone.
+function randomStream(seed) {
+  let hash = 2166136261;
+  for (const char of seed) hash = Math.imul(hash ^ char.charCodeAt(0),16777619);
+  return () => {
+    hash = (hash + 0x6D2B79F5) >>> 0;
+    let x = Math.imul(hash ^ hash >>> 15,1 | hash);
+    x ^= x + Math.imul(x ^ x >>> 7,61 | x);
+    return (x ^ x >>> 14) >>> 0;
+  };
+}
+function randomInteger(rng,limit) {
+  // Rejection sampling keeps non-power-of-two ranges uniform.
+  const ceiling = Math.floor(2**32 / limit) * limit;
+  let word;
+  do { word = rng(); } while (word >= ceiling);
+  return word % limit;
+}
+function newStyle(name, seed, N, reroll = 0, previous = null) {
+  const rng = randomStream(`${seed}/${name}/${reroll}`);
+  const draw64 = () => String(BigInt(rng()) << 32n | BigInt(rng()));
+  const parity = previous?.parity || 'even';
+  const q = 1 + randomInteger(rng,Math.max(1,N*N/32-1));
+  return { family:'xor',parity,power:parity === 'even' ? 2*q : 2*q-1,
+    rotation:0,centered:Boolean(rng()%2),phaseX:0,phaseY:0,mode:'hsv',preset:'heritage',
+    mapping:'linear',levels:0,lightMin:.35,lightMax:.85,chroma:.12,hue:0,arc:'short',contrast:false,
+    ...previous, power:parity === 'even' ? 2*q : 2*q-1, draws:Array.from({ length:6 },draw64), reroll };
+}
+let state = { version:1,k:8,aspect:1,border:32,seed:'0',lock:true,shared:false,styles:{} };
+for (const name of names) state.styles[name] = newStyle(name,state.seed,512);
+let worker = null, busy = false, exporting = false, currentFull = false;
+let timer, jobStart, renderCanvas, lastParameters = {}, renderedSettings = '';
+const paletteCache = new Map();
+const workerURL = URL.createObjectURL(new Blob([$('renderer').textContent], { type:'text/javascript' }));
+
+function status(message, error = false) { $('status').textContent = message; $('status').classList.toggle('error',error); }
+function dimensions() {
+  const S = 2 ** state.k, W = S*state.aspect, H = S;
+  return { W,H,width:W+4*state.border,height:H+4*state.border };
+}
+function sizeOptions() {
+  $('size').innerHTML = Array.from({ length:10 },(_,i) => {
+    const k = i+3, w = k+(state.aspect === 2 ? 1 : 0);
+    return `<option value="${k}">${2**w} × ${2**k} cells (2^${w} × 2^${k})</option>`;
+  }).join('');
+  $('size').value = state.k;
+  const widths = Array.from({ length:state.k-1 },(_,i) => 2**(i+1));
+  state.border = Math.min(state.border,2**(state.k-1));
+  $('border').innerHTML = widths.map(b => `<option value="${b}">${b} cells${b === 2 ? ' · solid guards' : ''}</option>`).join('');
+  $('border').value = state.border;
+  $('guard').value = `${state.border/2} ${state.border === 2 ? 'cell' : 'cells'}`;
+  const d = dimensions();
+  $('dimensions').innerHTML = `<strong>${d.width.toLocaleString()} × ${d.height.toLocaleString()}</strong> pixels<br>Field ${d.W.toLocaleString()} × ${d.H.toLocaleString()} · ${(d.width*d.height/1e6).toFixed(2)} MP`;
+  $('actual').disabled = d.width*d.height > 2**24;
+  if ($('actual').disabled) { $('actual').checked = false; $('viewport').classList.remove('actual'); }
+}
+
+function regionHTML(name) {
+  const field = name === 'field';
+  return `<details class="region" id="card-${name}" ${field || name === 'main' ? 'open' : ''}>
+    <summary>${titles[name]}<small id="summary-${name}"></small></summary>
+    <p class="locked">Uses the inner guard's pattern and colors.</p>
+    <div class="region-body">
+      <div class="row">
+        <label>Pattern<select data-key="family">${optionHTML(field ? { xor:'XOR' } : { xor:'XOR',2:'Squared OR',4:'Fourth-power OR' })}</select></label>
+        <label>Post-power<select data-key="parity">${optionHTML({ even:'Even',odd:'Odd' })}</select></label>
+      </div>
+      <div class="row">
+        <label>Exponent<input data-key="power" type="number" min="1" max="1073741824" step="1"></label>
+        <label>Rotate<select data-key="rotation">${optionHTML({ 0:'0°',90:'90°',180:'180°',270:'270°' })}</select></label>
+      </div>
+      <label>Diagonal<select data-key="centered">${optionHTML({ false:'Corner · diag1',true:'Centered · diag1m' })}</select></label>
+      <div class="row">
+        <label>Column phase<input data-key="phaseX" type="number" min="-65536" max="65536" step="1"></label>
+        <label>Row phase<input data-key="phaseY" type="number" min="-65536" max="65536" step="1"></label>
+      </div>
+      <label>Color scheme<select data-key="mode">${optionHTML(modes)}</select></label>
+      <div class="palette-controls">
+        <div class="row">
+          <label>Palette<select data-key="preset"></select></label>
+          <label>Scalar mapping<select data-key="mapping">${optionHTML({ linear:'Linear',cyclic:'Sine cycle' })}</select></label>
+        </div>
+      </div>
+      <div class="row">
+        <label>Color levels<select data-key="levels">${optionHTML({ 0:'Continuous',2:'2',3:'3',4:'4',5:'5',6:'6',8:'8',12:'12',16:'16',24:'24',32:'32' })}</select></label>
+        <label class="rgb-controls check"><input data-key="contrast" type="checkbox">Square RGB</label>
+      </div>
+      <div class="perceptual-controls">
+        <div class="row">
+          <label>Min lightness<input data-key="lightMin" type="number" min="0" max="1" step=".01"></label>
+          <label>Max lightness<input data-key="lightMax" type="number" min="0" max="1" step=".01"></label>
+        </div>
+        <div class="row">
+          <label>Chroma<input data-key="chroma" type="number" min="0" max=".4" step=".01"></label>
+          <label>Hue offset · turns<input data-key="hue" type="number" min="0" max="1" step=".01"></label>
+        </div>
+        <label class="duo-controls">Hue arc<select data-key="arc">${optionHTML({ short:'Shorter',long:'Longer',increasing:'Increasing',decreasing:'Decreasing' })}</select></label>
+      </div>
+      <button data-reroll="${name}">Reroll ${titles[name].toLowerCase()}</button>
+      <details class="math"><summary>Resolved math</summary><pre id="math-${name}"></pre></details>
+    </div>
+  </details>`;
+}
+$('regions').innerHTML = names.map(regionHTML).join('');
+
+function paletteChoices(mode) {
+  if (mode === 'colormap') return { viridis:'Viridis · 5 stops',magma:'Magma · 5 stops',ocean:'Ocean',earth:'Earth' };
+  if (mode === 'cosine') return { jewel:'Jewel',dusk:'Dusk',sea:'Sea' };
+  return Object.fromEntries(Object.entries(presets).map(([k,v]) => [k,v.label]));
+}
+function refreshStyle(name) {
+  const card = $(`card-${name}`), style = state.styles[name];
+  const locked = name === 'outer' && state.lock;
+  card.querySelector('.region-body').classList.toggle('hidden',locked);
+  card.querySelector('.locked').style.display = locked ? 'block' : 'none';
+  const shared = state.shared && name !== 'field';
+  const visible = shared ? { ...state.styles.field,lightMin:style.lightMin,lightMax:style.lightMax } : style;
+  const choices = paletteChoices(visible.mode);
+  const preset = card.querySelector('[data-key=preset]');
+  preset.innerHTML = optionHTML(choices);
+  if (!Object.hasOwn(choices,visible.preset)) {
+    if (!shared) style.preset = Object.keys(choices)[0];
+    visible.preset = Object.keys(choices)[0];
+  }
+  for (const input of card.querySelectorAll('[data-key]')) {
+    const key = input.dataset.key, value = colorKeys.includes(key) ? visible[key] : style[key];
+    if (input.type === 'checkbox') input.checked = value;
+    else input.value = value;
+    input.disabled = shared && colorKeys.includes(key);
+  }
+  const perceptual = ['oklab','cycle','tonal','duo'].includes(visible.mode);
+  const minLabel = card.querySelector('[data-key=lightMin]').parentElement;
+  minLabel.firstChild.textContent = visible.mode === 'cycle' ? 'Lightness' : 'Min lightness';
+  card.querySelector('[data-key=lightMax]').parentElement.classList.toggle('hidden',visible.mode === 'cycle');
+  card.querySelector('.palette-controls').classList.toggle('hidden',['hsv','hsl','rgb'].includes(visible.mode));
+  card.querySelector('.perceptual-controls').classList.toggle('hidden',!perceptual);
+  card.querySelector('.duo-controls').classList.toggle('hidden',visible.mode !== 'duo');
+  card.querySelector('.rgb-controls').classList.toggle('hidden',visible.mode !== 'rgb');
+  $(`summary-${name}`).textContent = locked ? 'Locked' : `${style.family === 'xor' ? 'XOR' : 'OR'} · ${style.parity}`;
+}
+function refresh() {
+  $('aspect').value = state.aspect; $('seed').value = state.seed;
+  $('lock').checked = state.lock; $('shared').checked = state.shared;
+  sizeOptions(); names.forEach(refreshStyle);
+}
+
+// Native CSS colors are converted once by the browser into a small RGBA palette.
+// Pixel generation then uses a lookup table, including for the PNG export.
+const paletteCanvas = document.createElement('canvas');
+const paletteContext = paletteCanvas.getContext('2d',{ colorSpace:'srgb',willReadFrequently:true });
+const turn = h => ((h % 1)+1)%1;
+const mix = (a,b,t) => a+(b-a)*t;
+function hueDelta(a,b,arc) {
+  const forward = turn(b-a), short = forward > .5 ? forward-1 : forward;
+  if (arc === 'increasing') return forward;
+  if (arc === 'decreasing') return forward-1;
+  if (arc === 'long') return short > 0 ? short-1 : short+1;
+  return short;
+}
+function cssPaletteColor(t,s) {
+  if (s.mode === 'cosine') {
+    const p = cosinePresets[s.preset] || cosinePresets.jewel;
+    const rgb = p.a.map((a,i) => Math.max(0,Math.min(1,a+p.b[i]*Math.cos(tau*(p.c[i]*t+p.d[i])))));
+    return `color(srgb ${rgb.join(' ')})`;
+  }
+  const preset = presets[s.preset] || presets.heritage;
+  if (s.mode === 'cycle') return `oklch(${s.lightMin} ${s.chroma} ${turn(t+s.hue)}turn)`;
+  if (s.mode === 'tonal') return `oklch(${mix(s.lightMin,s.lightMax,t)} ${s.chroma*Math.sin(tau/2*t)} ${turn(preset.stops[0][2]+s.hue)}turn)`;
+  if (s.mode === 'duo') {
+    const h0 = preset.stops[0][2];
+    const h1 = preset.stops[preset.stops.length === 5 ? 2 : preset.stops.length-1][2];
+    return `oklch(${mix(s.lightMin,s.lightMax,t)} ${s.chroma} ${turn(h0+hueDelta(h0,h1,s.arc)*t+s.hue)}turn)`;
+  }
+  // Interpolate OKLab coordinates; only this polar transform is done here.
+  // Conversion from OKLab to RGB stays with the browser's CSS implementation.
+  const index = Math.min(preset.stops.length-2,Math.floor(t*(preset.stops.length-1)));
+  const fraction = t*(preset.stops.length-1)-index;
+  const lab = stop => {
+    const [L,C,h] = stop;
+    const lightnesses = preset.stops.map(stop => stop[0]);
+    const low = Math.min(...lightnesses), high = Math.max(...lightnesses);
+    return [mix(s.lightMin,s.lightMax,(L-low)/(high-low)),C*s.chroma/.12*Math.cos(tau*(h+s.hue)),C*s.chroma/.12*Math.sin(tau*(h+s.hue))];
+  };
+  const a = lab(preset.stops[index]), b = lab(preset.stops[index+1]);
+  return `oklab(${a.map((v,i) => mix(v,b[i],fraction)).join(' ')})`;
+}
+function buildPalette(s) {
+  if (['hsv','hsl','rgb'].includes(s.mode)) return null;
+  const key = JSON.stringify([s.mode,s.preset,s.levels,s.lightMin,s.lightMax,s.chroma,s.hue,s.arc]);
+  if (paletteCache.has(key)) return paletteCache.get(key);
+  if (['oklab','cycle','tonal','duo'].includes(s.mode) && !CSS.supports('color','oklch(.5 .1 .2turn)')) throw Error('This browser needs native OKLab/OKLCH color support.');
+  const count = s.levels || 4096;
+  paletteCanvas.width = count; paletteCanvas.height = 1;
+  if (s.mode === 'colormap') {
+    const gradient = paletteContext.createLinearGradient(0,0,count,0);
+    const stops = mapStops[s.preset] || mapStops.viridis;
+    stops.forEach((stop,i) => gradient.addColorStop(i/(stops.length-1),stop));
+    paletteContext.fillStyle = gradient; paletteContext.fillRect(0,0,count,1);
+    // Quantized palettes include both end stops instead of pixel-center samples.
+    if (s.levels) {
+      const temp = document.createElement('canvas'); temp.width = 4096; temp.height = 1;
+      const context = temp.getContext('2d');
+      const g = context.createLinearGradient(0,0,4095,0);
+      stops.forEach((stop,j) => g.addColorStop(j/(stops.length-1),stop));
+      context.fillStyle = g; context.fillRect(0,0,4096,1);
+      const samples = context.getImageData(0,0,4096,1).data;
+      for (let i = 0; i < count; i++) {
+        const offset = Math.round(i/(count-1)*4095)*4;
+        paletteContext.fillStyle = `rgb(${samples[offset]} ${samples[offset+1]} ${samples[offset+2]})`;
+        paletteContext.fillRect(i,0,1,1);
+      }
+    }
+  } else for (let i = 0; i < count; i++) {
+    const t = s.levels ? i/(count-1) : i/count;
+    paletteContext.fillStyle = cssPaletteColor(t,s);
+    paletteContext.fillRect(i,0,1,1);
+  }
+  const bytes = paletteContext.getImageData(0,0,count,1).data;
+  // Bound the cache during long sessions with many palette edits.
+  if (paletteCache.size >= 24) paletteCache.delete(paletteCache.keys().next().value);
+  paletteCache.set(key,bytes);
+  return bytes;
+}
+function palettesFor(settings) {
+  const palettes = {};
+  for (const name of names) {
+    const own = settings.styles[name];
+    const s = settings.shared && name !== 'field' ? { ...settings.styles.field,lightMin:own.lightMin,lightMax:own.lightMax } : own;
+    palettes[name] = buildPalette(s);
+  }
+  return palettes;
+}
+function showParameters(parameters) {
+  lastParameters = parameters;
+  for (const name of names) {
+    const p = parameters[name];
+    $(`math-${name}`).textContent = `N = ${p.N}\np = ${p.power}\nM = ${p.modulus}\n` + p.channels.map((c,i) => `channel ${i+1}: ×${c.multiply} +${c.add}`).join('\n');
+  }
+}
+function setCanvasSize(canvas,width,height) {
+  canvas.width = width; canvas.height = height;
+  if (canvas.width !== width || canvas.height !== height) throw Error('The browser cannot allocate this image size. Try a smaller rug.');
+  if (!canvas.getContext('2d',{ colorSpace:'srgb' })) throw Error('Canvas allocation failed. Try a smaller rug.');
+}
+function fitPreview() {
+  const canvas = $('rug'), viewport = $('viewport');
+  if ($('actual').checked) { canvas.style.width = ''; canvas.style.height = ''; return; }
+  const padding = getComputedStyle(viewport);
+  const width = viewport.clientWidth - parseFloat(padding.paddingLeft) - parseFloat(padding.paddingRight);
+  const height = viewport.clientHeight - parseFloat(padding.paddingTop) - parseFloat(padding.paddingBottom);
+  const scale = Math.max(.01,Math.min(width/canvas.width,height/canvas.height));
+  canvas.style.width = `${canvas.width*scale}px`; canvas.style.height = `${canvas.height*scale}px`;
+}
+new ResizeObserver(fitPreview).observe($('viewport'));
+
+function drawPixels(canvas,width,rows,buffer,y = 0) {
+  canvas.getContext('2d',{ colorSpace:'srgb' }).putImageData(new ImageData(new Uint8ClampedArray(buffer),width,rows),0,y);
+}
+function exportControls(disabled) {
+  for (const control of document.querySelectorAll('aside input, aside select, aside button, header button')) control.disabled = disabled;
+  if (!disabled) names.forEach(refreshStyle);
+}
+function finishJob() {
+  const wasExporting = exporting;
+  busy = false; exporting = false; $('png').disabled = false;
+  if (wasExporting) exportControls(false);
+  renderCanvas = null;
+}
+function fail(message) {
+  worker?.terminate(); worker = null;
+  if (renderCanvas && renderCanvas !== $('rug')) { renderCanvas.width = 1; renderCanvas.height = 1; }
+  finishJob(); status(message,true);
+}
+function download(blob,name) {
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(url),30000);
+}
+async function savePNG(canvas) {
+  status('Encoding PNG…');
+  try {
+    const blob = await new Promise((resolve,reject) => {
+      try { canvas.toBlob(value => value ? resolve(value) : reject(Error('PNG export failed. Try a smaller rug.')),'image/png'); }
+      catch (error) { reject(error); }
+    });
+    const d = dimensions(), seed = state.seed.replace(/[^a-z0-9_-]/gi,'_').slice(0,40) || 'rug';
+    download(blob,`rug-${seed}-${d.width}x${d.height}.png`);
+    status(`Saved ${d.width.toLocaleString()} × ${d.height.toLocaleString()} PNG.`);
+  } catch (error) { status(error.message,true); }
+  finally {
+    if (canvas !== $('rug')) { canvas.width = 1; canvas.height = 1; }
+    finishJob();
+  }
+}
+function render(fullExport = false) {
+  clearTimeout(timer);
+  if (exporting) return;
+  if (busy) { worker?.terminate(); worker = null; }
+  const settings = structuredClone(state);
+  jobStart = performance.now();
+  let palettes;
+  try { palettes = palettesFor(settings); }
+  catch (error) { fail(error.message); return; }
+  busy = true; exporting = fullExport;
+  if (fullExport) exportControls(true);
+  $('png').disabled = true;
+  status(fullExport ? 'Rendering the full rug for export…' : 'Weaving…');
+  renderCanvas = fullExport ? document.createElement('canvas') : $('rug');
+  if (!worker) worker = new Worker(workerURL);
+  worker.onerror = event => fail(event.message || 'Rendering failed. Try a smaller rug.');
+  worker.onmessage = ({ data }) => {
+    try {
+      if (data.type === 'error') { fail(data.message); return; }
+      if (data.type === 'begin') { setCanvasSize(renderCanvas,data.width,data.height); showParameters(data.parameters); }
+      if (data.type === 'band') {
+        drawPixels(renderCanvas,data.width,data.rows,data.pixels,data.y);
+        const d = dimensions(); status(`Rendering export · ${Math.round((data.y+data.rows)/d.height*100)}%`);
+        worker.postMessage({ type:'ack' });
+      }
+      if (data.type === 'image') {
+        setCanvasSize(renderCanvas,data.width,data.height);
+        drawPixels(renderCanvas,data.width,data.height,data.pixels);
+        showParameters(data.parameters);
+        if (exporting) { savePNG(renderCanvas); return; }
+        fitPreview();
+        currentFull = !data.sampled; renderedSettings = JSON.stringify(settings);
+        const elapsed = performance.now()-jobStart;
+        status(`${data.sampled ? 'Sampled preview · full resolution on export' : 'Full resolution'} · ${Math.round(elapsed)} ms (${Math.round(data.totalMs)} ms math & pixels)`);
+        finishJob();
+      }
+      if (data.type === 'done') savePNG(renderCanvas);
+    } catch (error) { fail(error.message); }
+  };
+  worker.postMessage({ settings,palettes,export:fullExport });
+}
+function scheduleRender() { clearTimeout(timer); timer = setTimeout(() => render(),100); }
+
+$('aspect').onchange = () => { state.aspect = Number($('aspect').value); sizeOptions(); scheduleRender(); };
+$('size').onchange = () => { state.k = Number($('size').value); sizeOptions(); scheduleRender(); };
+$('border').onchange = () => { state.border = Number($('border').value); sizeOptions(); scheduleRender(); };
+$('seed').oninput = () => { state.seed = $('seed').value; };
+$('lock').onchange = () => { state.lock = $('lock').checked; refreshStyle('outer'); scheduleRender(); };
+$('shared').onchange = () => { state.shared = $('shared').checked; names.forEach(refreshStyle); scheduleRender(); };
+$('actual').onchange = () => {
+  $('viewport').classList.toggle('actual',$('actual').checked); fitPreview();
+};
+
+$('regions').onchange = event => {
+  const input = event.target, key = input.dataset.key;
+  if (!key) return;
+  const name = input.closest('.region').id.slice(5), style = state.styles[name];
+  let value = input.type === 'checkbox' ? input.checked : input.value;
+  if (['power','rotation','phaseX','phaseY','levels','lightMin','lightMax','chroma','hue'].includes(key)) value = Number(value);
+  if (key === 'centered') value = value === 'true';
+  if (input.type === 'number' && (!Number.isFinite(value) || value < Number(input.min) || value > Number(input.max))) { refreshStyle(name); return; }
+  if (['power','phaseX','phaseY'].includes(key)) value = Math.round(value);
+  style[key] = value;
+  if (key === 'power') style.parity = value % 2 ? 'odd' : 'even';
+  if (key === 'parity' && style.power % 2 !== (value === 'odd' ? 1 : 0)) style.power = style.power === 1073741824 ? style.power-1 : style.power+1;
+  if (key === 'lightMin' && style.lightMin > style.lightMax) style.lightMax = style.lightMin;
+  if (key === 'lightMax' && style.lightMax < style.lightMin) style.lightMin = style.lightMax;
+  names.forEach(refreshStyle); scheduleRender();
+};
+$('regions').onclick = event => {
+  const name = event.target.dataset.reroll;
+  if (!name) return;
+  const N = 2*Math.max(dimensions().W,dimensions().H);
+  state.styles[name] = newStyle(name,state.seed,N,state.styles[name].reroll+1,state.styles[name]);
+  refreshStyle(name); scheduleRender();
+};
+function generateFromSeed() {
+  const N = 2*Math.max(dimensions().W,dimensions().H);
+  for (const name of names) state.styles[name] = newStyle(name,state.seed,N,0,state.styles[name]);
+  refresh(); render();
+}
+$('generate').onclick = generateFromSeed;
+$('randomize').onclick = () => {
+  if (exporting) return;
+  state.seed = String(crypto.getRandomValues(new Uint32Array(1))[0]);
+  generateFromSeed();
+};
+$('png').onclick = () => {
+  if (busy || exporting) return;
+  if (currentFull && renderedSettings === JSON.stringify(state)) {
+    exporting = true; exportControls(true); savePNG($('rug'));
+  } else render(true);
+};
+$('save').onclick = () => {
+  const settings = { ...state };
+  if (renderedSettings === JSON.stringify(state)) settings.resolved = lastParameters;
+  download(new Blob([JSON.stringify(settings,null,2)+'\n'],{ type:'application/json' }),'rug-settings.json');
+};
+$('load').onclick = () => $('file').click();
+
+// Validate the complete settings contract before replacing the current rug.
+function validateSettings(s) {
+  const require = (valid,message) => { if (!valid) throw Error(`Invalid settings: ${message}`); };
+  const integer = (v,min,max) => Number.isInteger(v) && v >= min && v <= max;
+  require(s && s.version === 1,'unsupported version');
+  require(integer(s.k,3,12) && [1,2].includes(s.aspect),'field dimensions');
+  require(integer(s.border,2,2**(s.k-1)) && (s.border & (s.border-1)) === 0,'border width');
+  require(typeof s.seed === 'string' && s.seed.length <= 100,'seed');
+  require(typeof s.lock === 'boolean' && typeof s.shared === 'boolean','locks');
+  for (const name of names) {
+    const v = s.styles?.[name];
+    require(v && ['xor','2','4'].includes(v.family) && (name !== 'field' || v.family === 'xor'),`${name} family`);
+    require(integer(v.power,1,1073741824) && v.parity === (v.power%2 ? 'odd' : 'even'),`${name} power`);
+    require([0,90,180,270].includes(v.rotation) && typeof v.centered === 'boolean',`${name} orientation`);
+    require(integer(v.phaseX,-65536,65536) && integer(v.phaseY,-65536,65536),`${name} phase`);
+    require(Object.hasOwn(modes,v.mode) && Object.hasOwn(paletteChoices(v.mode),v.preset),`${name} palette`);
+    require(['linear','cyclic'].includes(v.mapping) && [0,2,3,4,5,6,8,12,16,24,32].includes(v.levels),`${name} mapping`);
+    require([v.lightMin,v.lightMax,v.chroma,v.hue].every(Number.isFinite) && v.lightMin >= 0 && v.lightMax <= 1 && v.lightMin <= v.lightMax && v.chroma >= 0 && v.chroma <= .4 && v.hue >= 0 && v.hue <= 1,`${name} color ranges`);
+    require(['short','long','increasing','decreasing'].includes(v.arc) && typeof v.contrast === 'boolean',`${name} color options`);
+    require(integer(v.reroll,0,1e9) && Array.isArray(v.draws) && v.draws.length === 6 && v.draws.every(x => typeof x === 'string' && /^\d{1,20}$/.test(x) && BigInt(x) <= 18446744073709551615n),`${name} random parameters`);
+  }
+  // Strip unrelated properties; resolved values are recomputed from these inputs.
+  return { version:1,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,
+    styles:Object.fromEntries(names.map(name => [name,Object.fromEntries(Object.keys(state.styles.field).map(key => [key,s.styles[name][key]]))])) };
+}
+$('file').onchange = async () => {
+  if (exporting) { $('file').value = ''; return; }
+  try {
+    const file = $('file').files[0]; if (!file) return;
+    if (file.size > 100000) throw Error('Settings file is too large.');
+    state = validateSettings(JSON.parse(await file.text())); refresh(); render();
+  } catch (error) { status(error.message,true); }
+  finally { $('file').value = ''; }
+};
+window.addEventListener('beforeunload',() => { worker?.terminate(); URL.revokeObjectURL(workerURL); });
+refresh(); render();
+</script>
+</body>
+</html>

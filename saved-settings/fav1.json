@@ -1,0 +1,201 @@
+{
+  "version": 1,
+  "k": 9,
+  "aspect": 2,
+  "border": 64,
+  "seed": "2",
+  "lock": true,
+  "shared": false,
+  "styles": {
+    "field": {
+      "family": "xor",
+      "parity": "even",
+      "power": 208308,
+      "rotation": 0,
+      "centered": true,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "hsv",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.35,
+      "lightMax": 0.85,
+      "chroma": 0.12,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "draws": [
+        "16693854682563238500",
+        "1541691396456483680",
+        "5999081574813602790",
+        "603336938502669596",
+        "1037018907133459181",
+        "5622282830462804148"
+      ],
+      "reroll": 0
+    },
+    "inner": {
+      "family": "xor",
+      "parity": "even",
+      "power": 30224,
+      "rotation": 90,
+      "centered": false,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "rgb",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.35,
+      "lightMax": 0.85,
+      "chroma": 0.12,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "draws": [
+        "10051184675525091908",
+        "6313491441220938783",
+        "17209638970647268131",
+        "10738928703704352499",
+        "18404411158605514579",
+        "4418770174498382031"
+      ],
+      "reroll": 0
+    },
+    "main": {
+      "family": "xor",
+      "parity": "even",
+      "power": 18610,
+      "rotation": 90,
+      "centered": false,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "rgb",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.35,
+      "lightMax": 0.85,
+      "chroma": 0.12,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "draws": [
+        "11139902961737396639",
+        "5688463147638977869",
+        "677714167253814835",
+        "3229909749730721257",
+        "3320737798216109316",
+        "11151882368646787082"
+      ],
+      "reroll": 0
+    },
+    "outer": {
+      "family": "xor",
+      "parity": "even",
+      "power": 223340,
+      "rotation": 0,
+      "centered": true,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "hsv",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.35,
+      "lightMax": 0.85,
+      "chroma": 0.12,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "draws": [
+        "13781776059250658265",
+        "1312016925618685863",
+        "9351059846802551859",
+        "16795596863067667878",
+        "14256920761104468454",
+        "15048649000508844529"
+      ],
+      "reroll": 0
+    }
+  },
+  "resolved": {
+    "outer": {
+      "N": 4096,
+      "modulus": "1024",
+      "power": 30224,
+      "channels": [
+        {
+          "multiply": "137",
+          "add": "31"
+        },
+        {
+          "multiply": "583",
+          "add": "755"
+        },
+        {
+          "multiply": "679",
+          "add": "207"
+        }
+      ]
+    },
+    "main": {
+      "N": 4096,
+      "modulus": "256",
+      "power": 18610,
+      "channels": [
+        {
+          "multiply": "63",
+          "add": "77"
+        },
+        {
+          "multiply": "103",
+          "add": "233"
+        },
+        {
+          "multiply": "9",
+          "add": "10"
+        }
+      ]
+    },
+    "inner": {
+      "N": 4096,
+      "modulus": "1024",
+      "power": 30224,
+      "channels": [
+        {
+          "multiply": "137",
+          "add": "31"
+        },
+        {
+          "multiply": "583",
+          "add": "755"
+        },
+        {
+          "multiply": "679",
+          "add": "207"
+        }
+      ]
+    },
+    "field": {
+      "N": 2048,
+      "modulus": "8192",
+      "power": 208308,
+      "channels": [
+        {
+          "multiply": "5321",
+          "add": "2912"
+        },
+        {
+          "multiply": "1997",
+          "add": "1308"
+        },
+        {
+          "multiply": "5595",
+          "add": "180"
+        }
+      ]
+    }
+  }
+}
