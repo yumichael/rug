@@ -1,0 +1,210 @@
+{
+  "version": 2,
+  "viewRotation": 0,
+  "k": 9,
+  "aspect": 2,
+  "border": 64,
+  "seed": "6",
+  "lock": true,
+  "shared": false,
+  "styles": {
+    "field": {
+      "family": "xor",
+      "parity": "even",
+      "power": 99524,
+      "basis": "diagonal",
+      "rotation": 0,
+      "centered": true,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "oklch",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.31,
+      "lightMax": 0.85,
+      "chroma": 0.13,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "draws": [
+        "11839846832269166809",
+        "9164632291832902576",
+        "5100498658385805313",
+        "1677958720385574375",
+        "6702726689513899677",
+        "8242040364590520932"
+      ],
+      "reroll": 0
+    },
+    "inner": {
+      "family": "xor",
+      "parity": "even",
+      "power": 66586,
+      "basis": "diagonal",
+      "rotation": 0,
+      "centered": false,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "hsv",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.35,
+      "lightMax": 0.85,
+      "chroma": 0.12,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "draws": [
+        "15321628070984134041",
+        "56950360061266755",
+        "5329748919052489801",
+        "3640564926513152123",
+        "2614353530963361288",
+        "12646281651152148567"
+      ],
+      "reroll": 0
+    },
+    "main": {
+      "family": "4",
+      "parity": "even",
+      "power": 90212,
+      "basis": "straight",
+      "rotation": 0,
+      "centered": false,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "hsv",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.35,
+      "lightMax": 0.85,
+      "chroma": 0.12,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "draws": [
+        "8786573006253281794",
+        "12918780892540950645",
+        "11174814210866450161",
+        "11314290882336077976",
+        "16004739262102933100",
+        "11015041893517170679"
+      ],
+      "reroll": 0
+    },
+    "outer": {
+      "family": "xor",
+      "parity": "even",
+      "power": 146338,
+      "basis": "diagonal",
+      "rotation": 0,
+      "centered": true,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "hsv",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.35,
+      "lightMax": 0.85,
+      "chroma": 0.12,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "draws": [
+        "9435965908308468413",
+        "17127693867186305492",
+        "10678566897500791539",
+        "1481310912136018313",
+        "18420711760013456605",
+        "11523712061181323203"
+      ],
+      "reroll": 0
+    }
+  },
+  "resolved": {
+    "outer": {
+      "N": 4096,
+      "basis": "diagonal",
+      "modulus": "128",
+      "power": 66586,
+      "channels": [
+        {
+          "multiply": "51",
+          "add": "67"
+        },
+        {
+          "multiply": "19",
+          "add": "123"
+        },
+        {
+          "multiply": "17",
+          "add": "87"
+        }
+      ]
+    },
+    "main": {
+      "N": 4096,
+      "basis": "straight",
+      "modulus": "512",
+      "power": 90212,
+      "channels": [
+        {
+          "multiply": "5",
+          "add": "117"
+        },
+        {
+          "multiply": "483",
+          "add": "152"
+        },
+        {
+          "multiply": "217",
+          "add": "503"
+        }
+      ]
+    },
+    "inner": {
+      "N": 4096,
+      "basis": "diagonal",
+      "modulus": "128",
+      "power": 66586,
+      "channels": [
+        {
+          "multiply": "51",
+          "add": "67"
+        },
+        {
+          "multiply": "19",
+          "add": "123"
+        },
+        {
+          "multiply": "17",
+          "add": "87"
+        }
+      ]
+    },
+    "field": {
+      "N": 2048,
+      "basis": "diagonal",
+      "modulus": "8192",
+      "power": 99524,
+      "channels": [
+        {
+          "multiply": "4531",
+          "add": "5040"
+        },
+        {
+          "multiply": "3",
+          "add": "1511"
+        },
+        {
+          "multiply": "3387",
+          "add": "6756"
+        }
+      ]
+    }
+  }
+}

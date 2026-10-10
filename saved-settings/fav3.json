@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "viewRotation": 270,
+  "viewRotation": 0,
   "k": 8,
   "aspect": 2,
   "border": 32,
@@ -123,6 +123,88 @@
         "12572198727080495248"
       ],
       "reroll": 0
+    }
+  },
+  "resolved": {
+    "outer": {
+      "N": 2048,
+      "basis": "diagonal",
+      "modulus": "128",
+      "power": 13580,
+      "channels": [
+        {
+          "multiply": "33",
+          "add": "33"
+        },
+        {
+          "multiply": "23",
+          "add": "40"
+        },
+        {
+          "multiply": "31",
+          "add": "102"
+        }
+      ]
+    },
+    "main": {
+      "N": 2048,
+      "basis": "straight",
+      "modulus": "128",
+      "power": 49978,
+      "channels": [
+        {
+          "multiply": "87",
+          "add": "83"
+        },
+        {
+          "multiply": "113",
+          "add": "118"
+        },
+        {
+          "multiply": "79",
+          "add": "71"
+        }
+      ]
+    },
+    "inner": {
+      "N": 2048,
+      "basis": "diagonal",
+      "modulus": "128",
+      "power": 13580,
+      "channels": [
+        {
+          "multiply": "33",
+          "add": "33"
+        },
+        {
+          "multiply": "23",
+          "add": "40"
+        },
+        {
+          "multiply": "31",
+          "add": "102"
+        }
+      ]
+    },
+    "field": {
+      "N": 1024,
+      "basis": "diagonal",
+      "modulus": "4096",
+      "power": 40836,
+      "channels": [
+        {
+          "multiply": "1969",
+          "add": "264"
+        },
+        {
+          "multiply": "3745",
+          "add": "2531"
+        },
+        {
+          "multiply": "1309",
+          "add": "1052"
+        }
+      ]
     }
   }
 }

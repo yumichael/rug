@@ -46,9 +46,11 @@
   .dimensions { font-size:13px; font-variant-numeric:tabular-nums; }
   .dimensions strong { font-size:16px; }
   .viewport { min-height:260px; flex:1; overflow:auto; display:flex; align-items:center; justify-content:center; padding:30px; border:1px solid var(--line); border-radius:12px; background:#e9e9dc; }
-  canvas#rug { display:block; image-rendering:pixelated; box-shadow:0 12px 30px #292b2522; max-width:100%; max-height:100%; width:auto; height:auto; }
+  #rug-frame { position:relative; flex-shrink:0; }
+  canvas#rug { position:absolute; top:50%; left:50%; display:block; image-rendering:pixelated; box-shadow:0 12px 30px #292b2522; }
   .viewport.actual { display:block; }
-  .viewport.actual canvas { max-width:none!important; max-height:none!important; width:auto; height:auto; }
+  .view-controls { display:flex; align-items:center; gap:14px; }
+  .view-controls select { width:90px; }
   .status { min-height:22px; color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums; }
   .status.error { color:#a13326; }
   .about { font-size:12px; color:var(--muted); }
@@ -97,14 +99,17 @@
 <section class="preview" aria-label="Rug preview">
   <div class="preview-bar">
     <div id="dimensions" class="dimensions"></div>
-    <label class="check"><input type="checkbox" id="actual">Actual pixels</label>
+    <div class="view-controls">
+      <label>Rotate rug<select id="view-rotation"><option value="0">0°</option><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label>
+      <label class="check"><input type="checkbox" id="actual">Actual pixels</label>
+    </div>
   </div>
-  <div class="viewport" id="viewport"><canvas id="rug" width="1" height="1" aria-label="Generated rug"></canvas></div>
+  <div class="viewport" id="viewport"><div id="rug-frame"><canvas id="rug" width="1" height="1" aria-label="Generated rug"></canvas></div></div>
   <div id="status" class="status" role="status" aria-live="polite">Preparing the loom…</div>
   <details class="about">
     <summary>How the pattern works</summary>
-    <p>Diagonal integer coordinates are combined with XOR, or with OR after squaring or taking fourth powers. A modular post-power creates the pattern. Odd multipliers and offsets give its colors. The field is a centered crop of a square; each border is one continuous periodic pattern with square corners.</p>
-    <p>Rotations turn the pattern within its region. A border motif repeats at its width, though some powers create smaller repeats. Images up to 16,777,216 pixels render at full resolution; larger images show sampled cells until you export the full rug.</p>
+    <p>Diagonal integer coordinates are combined with XOR. OR combines straight or diagonal coordinates after squaring or taking fourth powers. A modular post-power creates the pattern. Odd multipliers and offsets give its colors. The field is a centered crop of a square; each border is one continuous periodic pattern with square corners.</p>
+    <p>Pattern rotations turn a region independently; Rotate rug turns the whole preview and PNG export. A border motif repeats at its width, though some powers create smaller repeats. Images up to 16,777,216 pixels render at full resolution; larger images show sampled cells until you export the full rug.</p>
   </details>
 </section>
 </main>
@@ -131,8 +136,8 @@ function powerMod(base, exponent, modulus) {
   return value;
 }
 
-// XOR cells are odd: the two diagonal coordinates have opposite parity.
-// For odd z, z**p modulo (2*T*lowbit(p)) depends only on z modulo 2*T.
+// For a power-of-two T >= 2, z**p modulo (2*T*lowbit(p)) depends
+// only on z modulo 2*T, including even z in straight OR patterns.
 // This lets a border use a small coordinate domain without changing its math.
 function geometry(settings) {
   const S = 2 ** settings.k, B = settings.border, G = B / 2;
@@ -141,16 +146,17 @@ function geometry(settings) {
   return { S, B, G, W, H, width, height };
 }
 
-// Return the original diagonal sampling coordinates after inverse rotation.
+// Choose straight or notebook-style diagonal coordinates after inverse rotation.
 // i is row, j is column. Rotation turns the pattern clockwise on screen.
-function diagonalCoordinates(i, j, L, rotation, centered, phaseX, phaseY) {
+function patternCoordinates(i, j, L, rotation, centered, phaseX, phaseY, basis = 'diagonal') {
   let row = i, col = j;
   if (rotation === 90) { row = L - 1 - j; col = i; }
   else if (rotation === 180) { row = L - 1 - i; col = L - 1 - j; }
   else if (rotation === 270) { row = j; col = L - 1 - i; }
+  row += phaseY; col += phaseX;
+  if (basis === 'straight') return [row, col];
   const shift = centered ? L / 2 : 0;
-  row += shift + phaseY;
-  col += shift + phaseX;
+  row += shift; col += shift;
   return [L - 1 + row - col, -L + row + col];
 }
 
@@ -189,21 +195,34 @@ function channelParameters(style, modulus) {
   }));
 }
 
-function colorTable(style, domain, colorStyle, paletteBytes) {
+function colorTable(style, domain, colorStyle, paletteBytes, allValues = false) {
   const modulus = BigInt(domain) * BigInt(lowbit(style.power));
   const channels = channelParameters(style, modulus);
   const colors = new Uint32Array(domain);
   const palette = paletteBytes ? new Uint8Array(paletteBytes) : null;
   const paletteSize = palette ? palette.length / 4 : 0;
   const levels = colorStyle.levels;
-  // Only odd combined values occur in all three supported pattern families.
-  for (let z = 1; z < domain; z += 2) {
+  // Native OKLCH conversion happens once per combined value, not per pixel.
+  const nativeCanvas = colorStyle.mode === 'oklch' ? new OffscreenCanvas(domain,1) : null;
+  const nativeContext = nativeCanvas?.getContext('2d',{ colorSpace:'srgb',willReadFrequently:true });
+  // Diagonal coordinates have opposite parity, so their XOR/OR is always odd.
+  // Straight OR also produces even values; build its complete lookup table.
+  for (let z = allValues ? 0 : 1; z < domain; z += allValues ? 1 : 2) {
     const powered = powerMod(z, style.power, modulus);
     const t = channels.map(c => Number((powered*c.multiply + c.add) % modulus) / Number(modulus));
     let rgb;
-    if (['hsv','hsl','rgb'].includes(colorStyle.mode)) {
+    if (['hsv','hsl','rgb','oklch'].includes(colorStyle.mode)) {
       let values = t.map((v, c) => c === 0 && colorStyle.mode !== 'rgb' ? v : cyclic(v));
       if (levels) values = values.map(v => Math.floor(v * nextDown(levels)) / (levels - 1));
+      if (colorStyle.mode === 'oklch') {
+        // The HSV analogue: linear hue, independent sine-mapped C and L.
+        const h = (values[0] + colorStyle.hue) % 1;
+        const C = colorStyle.chroma * values[1];
+        const L = colorStyle.lightMin + (colorStyle.lightMax-colorStyle.lightMin)*values[2];
+        nativeContext.fillStyle = `oklch(${L} ${C} ${h}turn)`;
+        nativeContext.fillRect(z,0,1,1);
+        continue;
+      }
       if (colorStyle.mode === 'rgb') rgb = values.map(v => colorStyle.contrast ? v*v : v);
       else {
         rgb = colorStyle.mode === 'hsv' ? hsv(...values) : hsl(...values);
@@ -218,6 +237,10 @@ function colorTable(style, domain, colorStyle, paletteBytes) {
       const offset = index * 4;
       colors[z] = pack(palette[offset], palette[offset+1], palette[offset+2]);
     }
+  }
+  if (nativeContext) {
+    const bytes = nativeContext.getImageData(0,0,domain,1).data;
+    colors.set(new Uint32Array(bytes.buffer,bytes.byteOffset,domain));
   }
   return { colors, modulus, channels };
 }
@@ -248,17 +271,18 @@ function compileRegion(settings, palettes, name, rect, period = null) {
   const color = effectiveColor(settings, styleName);
   const L = nextPowerOfTwo(Math.max(rect.width, rect.height));
   const domain = period ? 2 * period : 2 * L;
-  const { colors, modulus, channels } = colorTable(style, domain, color, palettes[styleName]);
   const pre = name === 'field' || style.family === 'xor' ? 1 : Number(style.family);
+  const basis = pre === 1 ? 'diagonal' : (style.basis || 'diagonal');
+  const { colors, modulus, channels } = colorTable(style, domain, color, palettes[styleName],basis === 'straight');
   const powers = prePowerTable(domain, pre), mask = domain - 1;
   const cropY = period ? 0 : (L - rect.height) / 2;
   const cropX = period ? 0 : (L - rect.width) / 2;
 
   // A coordinate transform is affine. Precompute each column's contribution
   // once; a pixel then costs two masks, one XOR/OR, and one color lookup.
-  const [u0,v0] = diagonalCoordinates(cropY, cropX, L, style.rotation, style.centered, style.phaseX, style.phaseY);
-  const [ux,vx] = diagonalCoordinates(cropY, cropX+1, L, style.rotation, style.centered, style.phaseX, style.phaseY);
-  const [uy,vy] = diagonalCoordinates(cropY+1, cropX, L, style.rotation, style.centered, style.phaseX, style.phaseY);
+  const [u0,v0] = patternCoordinates(cropY, cropX, L, style.rotation, style.centered, style.phaseX, style.phaseY,basis);
+  const [ux,vx] = patternCoordinates(cropY, cropX+1, L, style.rotation, style.centered, style.phaseX, style.phaseY,basis);
+  const [uy,vy] = patternCoordinates(cropY+1, cropX, L, style.rotation, style.centered, style.phaseX, style.phaseY,basis);
   const xU = new Int32Array(rect.width), xV = new Int32Array(rect.width);
   for (let x = 0; x < rect.width; x++) {
     xU[x] = (u0 + x*(ux-u0)) & mask;
@@ -267,6 +291,7 @@ function compileRegion(settings, palettes, name, rect, period = null) {
   const region = { name, rect, colors, powers, mask, xU, xV, dyU:uy-u0, dyV:vy-v0, xor:pre === 1 };
 
   // Caching the mathematically periodic motif is purely an optimization.
+  // At one-cell guard width, intentionally use one solid sample.
   if (period) {
     const tile = new Uint32Array(period * period);
     for (let y = 0; y < period; y++) for (let x = 0; x < period; x++) {
@@ -277,7 +302,7 @@ function compileRegion(settings, palettes, name, rect, period = null) {
     region.tile = tile;
     region.period = period;
   }
-  region.parameters = { N:2*L, modulus:String(modulus), power:style.power,
+  region.parameters = { N:2*L, basis, modulus:String(modulus), power:style.power,
     channels:channels.map(c => ({ multiply:String(c.multiply), add:String(c.add) })) };
   return region;
 }
@@ -396,7 +421,7 @@ const tau = 6.283185307179586;
 const $ = id => document.getElementById(id);
 const names = ['field','inner','main','outer'];
 const titles = { field:'Field', inner:'Inner guard', main:'Main border', outer:'Outer guard' };
-const modes = { hsv:'HSV · original', rgb:'RGB · original', hsl:'HSL · original', colormap:'Scalar colormap', cosine:'Cosine palette', oklab:'OKLab gradient', cycle:'OKLCH hue cycle', tonal:'OKLCH tonal', duo:'OKLCH two hues' };
+const modes = { hsv:'HSV · original', oklch:'OKLCH · independent channels', rgb:'RGB · original', hsl:'HSL · original', colormap:'Scalar colormap', cosine:'Cosine palette', oklab:'OKLab gradient', cycle:'OKLCH hue cycle', tonal:'OKLCH tonal', duo:'OKLCH two hues' };
 const presets = {
   heritage:{ label:'Indigo, burgundy & ochre', stops:[[.35,.09,.75],[.42,.12,.04],[.73,.13,.23],[.92,.025,.24],[.35,.09,.75]] },
   teal:{ label:'Teal & rust', stops:[[.43,.08,.53],[.63,.15,.11]] },
@@ -442,11 +467,11 @@ function newStyle(name, seed, N, reroll = 0, previous = null) {
   const parity = previous?.parity || 'even';
   const q = 1 + randomInteger(rng,Math.max(1,N*N/32-1));
   return { family:'xor',parity,power:parity === 'even' ? 2*q : 2*q-1,
-    rotation:0,centered:Boolean(rng()%2),phaseX:0,phaseY:0,mode:'hsv',preset:'heritage',
+    basis:'diagonal',rotation:0,centered:Boolean(rng()%2),phaseX:0,phaseY:0,mode:'hsv',preset:'heritage',
     mapping:'linear',levels:0,lightMin:.35,lightMax:.85,chroma:.12,hue:0,arc:'short',contrast:false,
     ...previous, power:parity === 'even' ? 2*q : 2*q-1, draws:Array.from({ length:6 },draw64), reroll };
 }
-let state = { version:1,k:8,aspect:1,border:32,seed:'0',lock:true,shared:false,styles:{} };
+let state = { version:2,viewRotation:0,k:8,aspect:1,border:32,seed:'0',lock:true,shared:false,styles:{} };
 for (const name of names) state.styles[name] = newStyle(name,state.seed,512);
 let worker = null, busy = false, exporting = false, currentFull = false;
 let timer, jobStart, renderCanvas, lastParameters = {}, renderedSettings = '';
@@ -457,6 +482,14 @@ function status(message, error = false) { $('status').textContent = message; $('
 function dimensions() {
   const S = 2 ** state.k, W = S*state.aspect, H = S;
   return { W,H,width:W+4*state.border,height:H+4*state.border };
+}
+// View rotation never changes the field math or triggers pixel generation.
+function rotatedDimensions({ width,height }, rotation) {
+  return rotation % 180 ? { width:height,height:width } : { width,height };
+}
+function renderKey(settings) {
+  const { viewRotation, ...pattern } = settings;
+  return JSON.stringify(pattern);
 }
 function sizeOptions() {
   $('size').innerHTML = Array.from({ length:10 },(_,i) => {
@@ -470,7 +503,9 @@ function sizeOptions() {
   $('border').value = state.border;
   $('guard').value = `${state.border/2} ${state.border === 2 ? 'cell' : 'cells'}`;
   const d = dimensions();
-  $('dimensions').innerHTML = `<strong>${d.width.toLocaleString()} × ${d.height.toLocaleString()}</strong> pixels<br>Field ${d.W.toLocaleString()} × ${d.H.toLocaleString()} · ${(d.width*d.height/1e6).toFixed(2)} MP`;
+  const view = rotatedDimensions(d,state.viewRotation);
+  const field = rotatedDimensions({ width:d.W,height:d.H },state.viewRotation);
+  $('dimensions').innerHTML = `<strong>${view.width.toLocaleString()} × ${view.height.toLocaleString()}</strong> pixels<br>Field ${field.width.toLocaleString()} × ${field.height.toLocaleString()} · ${(d.width*d.height/1e6).toFixed(2)} MP`;
   $('actual').disabled = d.width*d.height > 2**24;
   if ($('actual').disabled) { $('actual').checked = false; $('viewport').classList.remove('actual'); }
 }
@@ -489,7 +524,8 @@ function regionHTML(name) {
         <label>Exponent<input data-key="power" type="number" min="1" max="1073741824" step="1"></label>
         <label>Rotate<select data-key="rotation">${optionHTML({ 0:'0°',90:'90°',180:'180°',270:'270°' })}</select></label>
       </div>
-      <label>Diagonal<select data-key="centered">${optionHTML({ false:'Corner · diag1',true:'Centered · diag1m' })}</select></label>
+      <label class="basis-controls">Coordinate orientation<select data-key="basis">${optionHTML({ diagonal:'Diagonal',straight:'Straight' })}</select></label>
+      <label class="diagonal-controls">Diagonal<select data-key="centered">${optionHTML({ false:'Corner · diag1',true:'Centered · diag1m' })}</select></label>
       <div class="row">
         <label>Column phase<input data-key="phaseX" type="number" min="-65536" max="65536" step="1"></label>
         <label>Row phase<input data-key="phaseY" type="number" min="-65536" max="65536" step="1"></label>
@@ -505,6 +541,7 @@ function regionHTML(name) {
         <label>Color levels<select data-key="levels">${optionHTML({ 0:'Continuous',2:'2',3:'3',4:'4',5:'5',6:'6',8:'8',12:'12',16:'16',24:'24',32:'32' })}</select></label>
         <label class="rgb-controls check"><input data-key="contrast" type="checkbox">Square RGB</label>
       </div>
+      <p class="hint channel-hint hidden">Independent hue, chroma and lightness channels. Chroma varies up to the maximum; lightness stays within your range.</p>
       <div class="perceptual-controls">
         <div class="row">
           <label>Min lightness<input data-key="lightMin" type="number" min="0" max="1" step=".01"></label>
@@ -548,11 +585,15 @@ function refreshStyle(name) {
     else input.value = value;
     input.disabled = shared && colorKeys.includes(key);
   }
-  const perceptual = ['oklab','cycle','tonal','duo'].includes(visible.mode);
+  const perceptual = ['oklab','cycle','tonal','duo','oklch'].includes(visible.mode);
+  card.querySelector('.basis-controls').classList.toggle('hidden',style.family === 'xor');
+  card.querySelector('.diagonal-controls').classList.toggle('hidden',style.family !== 'xor' && style.basis === 'straight');
+  card.querySelector('.channel-hint').classList.toggle('hidden',visible.mode !== 'oklch');
+  card.querySelector('[data-key=chroma]').parentElement.firstChild.textContent = visible.mode === 'oklch' ? 'Max chroma' : 'Chroma';
   const minLabel = card.querySelector('[data-key=lightMin]').parentElement;
   minLabel.firstChild.textContent = visible.mode === 'cycle' ? 'Lightness' : 'Min lightness';
   card.querySelector('[data-key=lightMax]').parentElement.classList.toggle('hidden',visible.mode === 'cycle');
-  card.querySelector('.palette-controls').classList.toggle('hidden',['hsv','hsl','rgb'].includes(visible.mode));
+  card.querySelector('.palette-controls').classList.toggle('hidden',['hsv','hsl','rgb','oklch'].includes(visible.mode));
   card.querySelector('.perceptual-controls').classList.toggle('hidden',!perceptual);
   card.querySelector('.duo-controls').classList.toggle('hidden',visible.mode !== 'duo');
   card.querySelector('.rgb-controls').classList.toggle('hidden',visible.mode !== 'rgb');
@@ -561,6 +602,7 @@ function refreshStyle(name) {
 function refresh() {
   $('aspect').value = state.aspect; $('seed').value = state.seed;
   $('lock').checked = state.lock; $('shared').checked = state.shared;
+  $('view-rotation').value = state.viewRotation;
   sizeOptions(); names.forEach(refreshStyle);
 }
 
@@ -605,7 +647,8 @@ function cssPaletteColor(t,s) {
   return `oklab(${a.map((v,i) => mix(v,b[i],fraction)).join(' ')})`;
 }
 function buildPalette(s) {
-  if (['hsv','hsl','rgb'].includes(s.mode)) return null;
+  if (s.mode === 'oklch' && !CSS.supports('color','oklch(.5 .1 .2turn)')) throw Error('This browser needs native OKLCH color support.');
+  if (['hsv','hsl','rgb','oklch'].includes(s.mode)) return null;
   const key = JSON.stringify([s.mode,s.preset,s.levels,s.lightMin,s.lightMax,s.chroma,s.hue,s.arc]);
   if (paletteCache.has(key)) return paletteCache.get(key);
   if (['oklab','cycle','tonal','duo'].includes(s.mode) && !CSS.supports('color','oklch(.5 .1 .2turn)')) throw Error('This browser needs native OKLab/OKLCH color support.');
@@ -644,6 +687,7 @@ function buildPalette(s) {
 function palettesFor(settings) {
   const palettes = {};
   for (const name of names) {
+    if (name === 'outer' && settings.lock) { palettes.outer = palettes.inner; continue; }
     const own = settings.styles[name];
     const s = settings.shared && name !== 'field' ? { ...settings.styles.field,lightMin:own.lightMin,lightMax:own.lightMax } : own;
     palettes[name] = buildPalette(s);
@@ -654,7 +698,7 @@ function showParameters(parameters) {
   lastParameters = parameters;
   for (const name of names) {
     const p = parameters[name];
-    $(`math-${name}`).textContent = `N = ${p.N}\np = ${p.power}\nM = ${p.modulus}\n` + p.channels.map((c,i) => `channel ${i+1}: ×${c.multiply} +${c.add}`).join('\n');
+    $(`math-${name}`).textContent = `${p.basis} coordinates\nN = ${p.N}\np = ${p.power}\nM = ${p.modulus}\n` + p.channels.map((c,i) => `channel ${i+1}: ×${c.multiply} +${c.add}`).join('\n');
   }
 }
 function setCanvasSize(canvas,width,height) {
@@ -664,12 +708,15 @@ function setCanvasSize(canvas,width,height) {
 }
 function fitPreview() {
   const canvas = $('rug'), viewport = $('viewport');
-  if ($('actual').checked) { canvas.style.width = ''; canvas.style.height = ''; return; }
+  const view = rotatedDimensions(canvas,state.viewRotation);
   const padding = getComputedStyle(viewport);
   const width = viewport.clientWidth - parseFloat(padding.paddingLeft) - parseFloat(padding.paddingRight);
   const height = viewport.clientHeight - parseFloat(padding.paddingTop) - parseFloat(padding.paddingBottom);
-  const scale = Math.max(.01,Math.min(width/canvas.width,height/canvas.height));
+  const scale = $('actual').checked ? 1 : Math.max(.01,Math.min(width/view.width,height/view.height));
+  $('rug-frame').style.width = `${view.width*scale}px`;
+  $('rug-frame').style.height = `${view.height*scale}px`;
   canvas.style.width = `${canvas.width*scale}px`; canvas.style.height = `${canvas.height*scale}px`;
+  canvas.style.transform = `translate(-50%, -50%) rotate(${state.viewRotation}deg)`;
 }
 new ResizeObserver(fitPreview).observe($('viewport'));
 
@@ -677,7 +724,7 @@ function drawPixels(canvas,width,rows,buffer,y = 0) {
   canvas.getContext('2d',{ colorSpace:'srgb' }).putImageData(new ImageData(new Uint8ClampedArray(buffer),width,rows),0,y);
 }
 function exportControls(disabled) {
-  for (const control of document.querySelectorAll('aside input, aside select, aside button, header button')) control.disabled = disabled;
+  for (const control of document.querySelectorAll('aside input, aside select, aside button, header button, #view-rotation')) control.disabled = disabled;
   if (!disabled) names.forEach(refreshStyle);
 }
 function finishJob() {
@@ -698,16 +745,29 @@ function download(blob,name) {
 }
 async function savePNG(canvas) {
   status('Encoding PNG…');
+  let output = canvas;
   try {
+    // Rotate once with the browser's raster renderer; keep the source reusable.
+    if (state.viewRotation) {
+      output = document.createElement('canvas');
+      const size = rotatedDimensions(canvas,state.viewRotation);
+      setCanvasSize(output,size.width,size.height);
+      const context = output.getContext('2d');
+      context.imageSmoothingEnabled = false;
+      context.translate(size.width/2,size.height/2);
+      context.rotate(state.viewRotation / 360 * tau);
+      context.drawImage(canvas,-canvas.width/2,-canvas.height/2);
+    }
     const blob = await new Promise((resolve,reject) => {
-      try { canvas.toBlob(value => value ? resolve(value) : reject(Error('PNG export failed. Try a smaller rug.')),'image/png'); }
+      try { output.toBlob(value => value ? resolve(value) : reject(Error('PNG export failed. Try a smaller rug.')),'image/png'); }
       catch (error) { reject(error); }
     });
-    const d = dimensions(), seed = state.seed.replace(/[^a-z0-9_-]/gi,'_').slice(0,40) || 'rug';
+    const d = rotatedDimensions(canvas,state.viewRotation), seed = state.seed.replace(/[^a-z0-9_-]/gi,'_').slice(0,40) || 'rug';
     download(blob,`rug-${seed}-${d.width}x${d.height}.png`);
     status(`Saved ${d.width.toLocaleString()} × ${d.height.toLocaleString()} PNG.`);
   } catch (error) { status(error.message,true); }
   finally {
+    if (output !== canvas) { output.width = 1; output.height = 1; }
     if (canvas !== $('rug')) { canvas.width = 1; canvas.height = 1; }
     finishJob();
   }
@@ -743,7 +803,7 @@ function render(fullExport = false) {
         showParameters(data.parameters);
         if (exporting) { savePNG(renderCanvas); return; }
         fitPreview();
-        currentFull = !data.sampled; renderedSettings = JSON.stringify(settings);
+        currentFull = !data.sampled; renderedSettings = renderKey(settings);
         const elapsed = performance.now()-jobStart;
         status(`${data.sampled ? 'Sampled preview · full resolution on export' : 'Full resolution'} · ${Math.round(elapsed)} ms (${Math.round(data.totalMs)} ms math & pixels)`);
         finishJob();
@@ -755,6 +815,9 @@ function render(fullExport = false) {
 }
 function scheduleRender() { clearTimeout(timer); timer = setTimeout(() => render(),100); }
 
+$('view-rotation').onchange = () => {
+  state.viewRotation = Number($('view-rotation').value); sizeOptions(); fitPreview();
+};
 $('aspect').onchange = () => { state.aspect = Number($('aspect').value); sizeOptions(); scheduleRender(); };
 $('size').onchange = () => { state.k = Number($('size').value); sizeOptions(); scheduleRender(); };
 $('border').onchange = () => { state.border = Number($('border').value); sizeOptions(); scheduleRender(); };
@@ -775,6 +838,7 @@ $('regions').onchange = event => {
   if (input.type === 'number' && (!Number.isFinite(value) || value < Number(input.min) || value > Number(input.max))) { refreshStyle(name); return; }
   if (['power','phaseX','phaseY'].includes(key)) value = Math.round(value);
   style[key] = value;
+  if (key === 'family' && value === 'xor') style.basis = 'diagonal';
   if (key === 'power') style.parity = value % 2 ? 'odd' : 'even';
   if (key === 'parity' && style.power % 2 !== (value === 'odd' ? 1 : 0)) style.power = style.power === 1073741824 ? style.power-1 : style.power+1;
   if (key === 'lightMin' && style.lightMin > style.lightMax) style.lightMax = style.lightMin;
@@ -801,22 +865,32 @@ $('randomize').onclick = () => {
 };
 $('png').onclick = () => {
   if (busy || exporting) return;
-  if (currentFull && renderedSettings === JSON.stringify(state)) {
+  if (currentFull && renderedSettings === renderKey(state)) {
     exporting = true; exportControls(true); savePNG($('rug'));
   } else render(true);
 };
 $('save').onclick = () => {
   const settings = { ...state };
-  if (renderedSettings === JSON.stringify(state)) settings.resolved = lastParameters;
+  if (renderedSettings === renderKey(state)) settings.resolved = lastParameters;
   download(new Blob([JSON.stringify(settings,null,2)+'\n'],{ type:'application/json' }),'rug-settings.json');
 };
 $('load').onclick = () => $('file').click();
 
+// Version 1 renders exactly as before: diagonal coordinates and an unturned view.
+// Migration adds defaults without changing the saved powers or channel draws.
+function upgradeSettings(input) {
+  if (input?.version !== 1) return input;
+  return { ...input,version:2,viewRotation:0,
+    styles:Object.fromEntries(names.map(name => [name,{ ...input.styles?.[name],basis:'diagonal' }])) };
+}
+
 // Validate the complete settings contract before replacing the current rug.
-function validateSettings(s) {
+function validateSettings(input) {
+  const s = upgradeSettings(input);
   const require = (valid,message) => { if (!valid) throw Error(`Invalid settings: ${message}`); };
   const integer = (v,min,max) => Number.isInteger(v) && v >= min && v <= max;
-  require(s && s.version === 1,'unsupported version');
+  require(s && s.version === 2,'unsupported version');
+  require([0,90,180,270].includes(s.viewRotation),'view rotation');
   require(integer(s.k,3,12) && [1,2].includes(s.aspect),'field dimensions');
   require(integer(s.border,2,2**(s.k-1)) && (s.border & (s.border-1)) === 0,'border width');
   require(typeof s.seed === 'string' && s.seed.length <= 100,'seed');
@@ -825,7 +899,7 @@ function validateSettings(s) {
     const v = s.styles?.[name];
     require(v && ['xor','2','4'].includes(v.family) && (name !== 'field' || v.family === 'xor'),`${name} family`);
     require(integer(v.power,1,1073741824) && v.parity === (v.power%2 ? 'odd' : 'even'),`${name} power`);
-    require([0,90,180,270].includes(v.rotation) && typeof v.centered === 'boolean',`${name} orientation`);
+    require([0,90,180,270].includes(v.rotation) && typeof v.centered === 'boolean' && ['diagonal','straight'].includes(v.basis) && (v.family !== 'xor' || v.basis === 'diagonal'),`${name} orientation`);
     require(integer(v.phaseX,-65536,65536) && integer(v.phaseY,-65536,65536),`${name} phase`);
     require(Object.hasOwn(modes,v.mode) && Object.hasOwn(paletteChoices(v.mode),v.preset),`${name} palette`);
     require(['linear','cyclic'].includes(v.mapping) && [0,2,3,4,5,6,8,12,16,24,32].includes(v.levels),`${name} mapping`);
@@ -834,7 +908,7 @@ function validateSettings(s) {
     require(integer(v.reroll,0,1e9) && Array.isArray(v.draws) && v.draws.length === 6 && v.draws.every(x => typeof x === 'string' && /^\d{1,20}$/.test(x) && BigInt(x) <= 18446744073709551615n),`${name} random parameters`);
   }
   // Strip unrelated properties; resolved values are recomputed from these inputs.
-  return { version:1,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,
+  return { version:2,viewRotation:s.viewRotation,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,
     styles:Object.fromEntries(names.map(name => [name,Object.fromEntries(Object.keys(state.styles.field).map(key => [key,s.styles[name][key]]))])) };
 }
 $('file').onchange = async () => {
