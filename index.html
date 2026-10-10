@@ -84,13 +84,15 @@
       <label>Field shape<select id="aspect"><option value="1">Square · 1:1</option><option value="2">Rectangle · 2:1</option></select></label>
       <label>Seed<input id="seed" value="0" maxlength="100"></label>
     </div>
+    <label>Cell size<select id="cell-scale"><option value="2">2× · boundary-symmetric axes</option><option value="1">1× · asymmetric pixel-center axes</option></select></label>
+    <p id="legacy-sampling" class="hint hidden">This saved rug keeps its original alignment. Selecting 2× applies the symmetry correction.</p>
     <label>Field dimensions<select id="size"></select></label>
     <div class="row">
       <label>Main border<select id="border"></select></label>
       <label>Each guard<input id="guard" readonly aria-label="Guard width"></label>
     </div>
     <button id="generate">Generate from seed</button>
-    <p class="hint">One cell = one output pixel. Changing a control keeps the other regions' random parameters.</p>
+    <p class="hint">2× uses 2 × 2 pixels per cell and doubles the output dimensions. Changing a control keeps the other regions' random parameters.</p>
   </section>
   <section>
     <h2>Pattern &amp; color</h2>
@@ -117,7 +119,7 @@
     </div>
     <details class="about">
     <summary>How the pattern works</summary>
-    <p>Diagonal integer coordinates are combined with XOR. OR combines straight or diagonal coordinates after squaring or taking fourth powers. A modular post-power creates the pattern. Odd multipliers and offsets give its colors. The field is a centered crop of a square; each border is one continuous periodic pattern with square corners.</p>
+    <p>Diagonal integer coordinates are combined with XOR. OR combines straight or diagonal coordinates after squaring or taking fourth powers. A modular post-power creates the pattern. Odd multipliers and offsets give its colors. The 2× cell setting aligns reflection axes with pixel boundaries before pattern rotation. The field is a centered crop of a square; each border is one continuous periodic pattern with square corners.</p>
     <p>Pattern rotations turn a region independently; Rotate rug turns the whole preview and PNG export. A border motif repeats at its width, though some powers create smaller repeats. Images up to 16,777,216 pixels render at full resolution; larger images show sampled cells until you export the full rug.</p>
     </details>
   </div>
@@ -152,20 +154,32 @@ function powerMod(base, exponent, modulus) {
 function geometry(settings) {
   const S = 2 ** settings.k, B = settings.border, G = B / 2;
   const W = S * settings.aspect, H = S;
-  const width = W + 4 * B, height = H + 4 * B;
-  return { S, B, G, W, H, width, height };
+  const scale = settings.cellScale ?? 1;
+  const width = (W + 4 * B)*scale, height = (H + 4 * B)*scale;
+  return { S, B, G, W, H, scale, width, height };
 }
 
-// Choose straight or notebook-style diagonal coordinates after inverse rotation.
-// i is row, j is column. Rotation turns the pattern clockwise on screen.
-function patternCoordinates(i, j, L, rotation, centered, phaseX, phaseY, basis = 'diagonal') {
-  let row = i, col = j;
-  if (rotation === 90) { row = L - 1 - j; col = i; }
-  else if (rotation === 180) { row = L - 1 - i; col = L - 1 - j; }
-  else if (rotation === 270) { row = j; col = L - 1 - i; }
-  row += phaseY; col += phaseX;
-  if (basis === 'straight') return [row, col];
-  const shift = centered ? L / 2 : 0;
+// Inverse rotation acts on pixels; phase and diagonal transforms act on cells.
+// At zero phase, XOR has a row axis through a cell center and a column axis
+// between cells. Doubling cells and sampling one pixel ahead in the row
+// direction moves the first axis onto a pixel boundary (the image moves up).
+// Straight even-pre-power OR has cell-center axes in both directions.
+// Diagonal OR already has boundary axes, but its row axis is one cell late.
+function patternCoordinates(pixelRow, pixelCol, L, style, scale, aligned, basis) {
+  const side = L*scale;
+  let row = pixelRow, col = pixelCol;
+  if (style.rotation === 90) { row = side - 1 - pixelCol; col = pixelRow; }
+  else if (style.rotation === 180) { row = side - 1 - pixelRow; col = side - 1 - pixelCol; }
+  else if (style.rotation === 270) { row = pixelCol; col = side - 1 - pixelRow; }
+  if (aligned && scale === 2) {
+    if (style.family === 'xor') row += 1;
+    else if (basis === 'straight') { row += 1; col += 1; }
+  }
+  row = Math.floor(row/scale) + style.phaseY;
+  col = Math.floor(col/scale) + style.phaseX;
+  if (aligned && style.family !== 'xor' && basis === 'diagonal') row += 1;
+  if (basis === 'straight') return [row,col];
+  const shift = style.centered ? L/2 : 0;
   row += shift; col += shift;
   return [L - 1 + row - col, -L + row + col];
 }
@@ -305,44 +319,52 @@ function effectiveColor(settings, name) {
     : own;
 }
 
-function compileRegion(settings, palettes, name, rect, period = null) {
+function compileRegion(settings, palettes, name, cellRect, cellPeriod = null) {
   const styleName = name === 'outer' && settings.lock ? 'inner' : name;
   const style = settings.styles[styleName];
   const color = effectiveColor(settings, styleName);
-  const L = nextPowerOfTwo(Math.max(rect.width, rect.height));
-  const domain = period ? 2 * period : 2 * L;
+  const scale = settings.cellScale ?? 1, aligned = settings.alignmentVersion === 2;
+  const rect = Object.fromEntries(Object.entries(cellRect).map(([key,value]) => [key,value*scale]));
+  const period = cellPeriod ? cellPeriod*scale : null;
+  const L = nextPowerOfTwo(Math.max(cellRect.width,cellRect.height));
+  const domain = cellPeriod ? 2*cellPeriod : 2*L;
   const pre = name === 'field' || style.family === 'xor' ? 1 : Number(style.family);
   const basis = pre === 1 ? 'diagonal' : (style.basis || 'diagonal');
   const { colors, modulus, channels } = colorTable(style, domain, color, palettes[styleName],basis === 'straight');
   const powers = prePowerTable(domain, pre), mask = domain - 1;
-  const cropY = period ? 0 : (L - rect.height) / 2;
-  const cropX = period ? 0 : (L - rect.width) / 2;
+  const cropY = cellPeriod ? 0 : (L-cellRect.height)*scale/2;
+  const cropX = cellPeriod ? 0 : (L-cellRect.width)*scale/2;
 
-  // A coordinate transform is affine. Precompute each column's contribution
-  // once; a pixel then costs two masks, one XOR/OR, and one color lookup.
-  const [u0,v0] = patternCoordinates(cropY, cropX, L, style.rotation, style.centered, style.phaseX, style.phaseY,basis);
-  const [ux,vx] = patternCoordinates(cropY, cropX+1, L, style.rotation, style.centered, style.phaseX, style.phaseY,basis);
-  const [uy,vy] = patternCoordinates(cropY+1, cropX, L, style.rotation, style.centered, style.phaseX, style.phaseY,basis);
+  // Quarter-turns keep the two coordinate contributions separable even
+  // after 2× sampling. Precompute them once; pixels still use table lookups.
+  const coordinates = (y,x) => patternCoordinates(cropY+y,cropX+x,L,style,scale,aligned,basis);
+  const [u0,v0] = coordinates(0,0);
   const xU = new Int32Array(rect.width), xV = new Int32Array(rect.width);
+  const yU = new Int32Array(rect.height), yV = new Int32Array(rect.height);
   for (let x = 0; x < rect.width; x++) {
-    xU[x] = (u0 + x*(ux-u0)) & mask;
-    xV[x] = (v0 + x*(vx-v0)) & mask;
+    const [u,v] = coordinates(0,x); xU[x] = u & mask; xV[x] = v & mask;
   }
-  const region = { name, rect, colors, powers, mask, xU, xV, dyU:uy-u0, dyV:vy-v0, xor:pre === 1 };
+  for (let y = 0; y < rect.height; y++) {
+    const [u,v] = coordinates(y,0); yU[y] = (u-u0) & mask; yV[y] = (v-v0) & mask;
+  }
+  const region = { name, rect, colors, powers, mask, xU, xV, yU, yV, xor:pre === 1 };
 
   // Caching the mathematically periodic motif is purely an optimization.
   // At one-cell guard width, intentionally use one solid sample.
   if (period) {
     const tile = new Uint32Array(period * period);
-    for (let y = 0; y < period; y++) for (let x = 0; x < period; x++) {
-      const a = powers[(xU[x] + y*region.dyU) & mask];
-      const b = powers[(xV[x] + y*region.dyV) & mask];
+    if (cellPeriod === 1) {
+      const a = powers[xU[0]], b = powers[xV[0]];
+      tile.fill(colors[region.xor ? a^b : a|b]);
+    } else for (let y = 0; y < period; y++) for (let x = 0; x < period; x++) {
+      const a = powers[(xU[x] + region.yU[y]) & mask];
+      const b = powers[(xV[x] + region.yV[y]) & mask];
       tile[y*period+x] = colors[region.xor ? a^b : a|b];
     }
     region.tile = tile;
     region.period = period;
   }
-  region.parameters = { N:2*L, basis, modulus:String(modulus), power:style.power,
+  region.parameters = { N:2*L, basis, cellScale:scale, alignmentVersion:aligned ? 2 : 1, modulus:String(modulus), power:style.power,
     channels:channels.map(c => ({ multiply:String(c.multiply), add:String(c.add) })) };
   return region;
 }
@@ -351,7 +373,7 @@ function compile(settings, palettes) {
   const g = geometry(settings), { W,H,B,G } = g;
   // Draw outer to inner, masking each ring with the next rectangle.
   const regions = [
-    compileRegion(settings, palettes, 'outer', { x:0,y:0,width:g.width,height:g.height }, G),
+    compileRegion(settings, palettes, 'outer', { x:0,y:0,width:W+4*B,height:H+4*B }, G),
     compileRegion(settings, palettes, 'main', { x:G,y:G,width:W+3*B,height:H+3*B }, B),
     compileRegion(settings, palettes, 'inner', { x:G+B,y:G+B,width:W+B,height:H+B }, G),
     compileRegion(settings, palettes, 'field', { x:2*B,y:2*B,width:W,height:H })
@@ -363,8 +385,8 @@ function sample(region, x, y) {
   x -= region.rect.x; y -= region.rect.y;
   if (region.tile) return region.tile[(y % region.period)*region.period + x % region.period];
   const { powers, mask, colors } = region;
-  const a = powers[(region.xU[x] + y*region.dyU) & mask];
-  const b = powers[(region.xV[x] + y*region.dyV) & mask];
+  const a = powers[(region.xU[x] + region.yU[y]) & mask];
+  const b = powers[(region.xV[x] + region.yV[y]) & mask];
   return colors[region.xor ? a^b : a|b];
 }
 
@@ -394,7 +416,7 @@ function paintBand(model, startY, rows) {
           }
         } else {
           const { powers, mask, colors, xU, xV } = region;
-          const rowU = localY*region.dyU, rowV = localY*region.dyV;
+          const rowU = region.yU[localY], rowV = region.yV[localY];
           for (let x = left-rect.x; x < right-rect.x; x++) {
             pixels[target++] = colors[powers[(xU[x]+rowU)&mask] ^ powers[(xV[x]+rowV)&mask]];
           }
@@ -520,7 +542,7 @@ function newStyle(name, seed, N, reroll = 0, previous = null) {
     mapping:'linear',levels:0,lightMin:.35,lightMax:.85,chromaMin:0,chroma:.12,hue:0,arc:'short',contrast:false,
     ...previous, power:parity === 'even' ? 2*q : 2*q-1, draws:Array.from({ length:6 },draw64), reroll };
 }
-let state = { version:4,viewRotation:0,k:8,aspect:1,border:32,seed:'0',lock:true,shared:false,styles:{} };
+let state = { version:5,cellScale:2,alignmentVersion:2,viewRotation:0,k:8,aspect:1,border:32,seed:'0',lock:true,shared:false,styles:{} };
 for (const name of names) state.styles[name] = newStyle(name,state.seed,512);
 let worker = null, busy = false, exporting = false, currentFull = false;
 let timer, jobStart, renderCanvas, lastParameters = {}, renderedSettings = '';
@@ -533,7 +555,7 @@ function status(message, error = false) {
 }
 function dimensions() {
   const S = 2 ** state.k, W = S*state.aspect, H = S;
-  return { W,H,width:W+4*state.border,height:H+4*state.border };
+  return { W,H,width:(W+4*state.border)*state.cellScale,height:(H+4*state.border)*state.cellScale };
 }
 // View rotation never changes the field math or triggers pixel generation.
 function rotatedDimensions({ width,height }, rotation) {
@@ -549,14 +571,15 @@ function sizeOptions() {
     return `<option value="${k}">${2**w} × ${2**k} cells (2^${w} × 2^${k})</option>`;
   }).join('');
   $('size').value = state.k;
+  $('legacy-sampling').classList.toggle('hidden',state.alignmentVersion !== 1);
   const widths = Array.from({ length:state.k-1 },(_,i) => 2**(i+1));
   state.border = Math.min(state.border,2**(state.k-1));
-  $('border').innerHTML = widths.map(b => `<option value="${b}">${b} cells${b === 2 ? ' · solid guards' : ''}</option>`).join('');
+  $('border').innerHTML = widths.map(b => `<option value="${b}">${b} cells · ${b*state.cellScale} px${b === 2 ? ' · solid guards' : ''}</option>`).join('');
   $('border').value = state.border;
-  $('guard').value = `${state.border/2} ${state.border === 2 ? 'cell' : 'cells'}`;
+  $('guard').value = `${state.border/2} ${state.border === 2 ? 'cell' : 'cells'} · ${state.border*state.cellScale/2} px`;
   const d = dimensions();
   const view = rotatedDimensions(d,state.viewRotation);
-  const field = rotatedDimensions({ width:d.W,height:d.H },state.viewRotation);
+  const field = rotatedDimensions({ width:d.W*state.cellScale,height:d.H*state.cellScale },state.viewRotation);
   $('dimensions').innerHTML = `<strong>${view.width.toLocaleString()} × ${view.height.toLocaleString()}</strong> pixels<br>Field ${field.width.toLocaleString()} × ${field.height.toLocaleString()} · ${(d.width*d.height/1e6).toFixed(2)} MP`;
   $('actual').disabled = d.width*d.height > 2**24;
   if ($('actual').disabled) { $('actual').checked = false; $('viewport').classList.remove('actual'); }
@@ -684,7 +707,7 @@ function refreshStyle(name, activeInput = null) {
 function refresh() {
   $('aspect').value = state.aspect; $('seed').value = state.seed;
   $('lock').checked = state.lock; $('shared').checked = state.shared;
-  $('view-rotation').value = state.viewRotation;
+  $('view-rotation').value = state.viewRotation; $('cell-scale').value = state.cellScale;
   sizeOptions(); names.forEach(refreshStyle);
 }
 
@@ -780,7 +803,7 @@ function showParameters(parameters) {
   lastParameters = parameters;
   for (const name of names) {
     const p = parameters[name];
-    $(`math-${name}`).textContent = `${p.basis} coordinates\nN = ${p.N}\np = ${p.power}\nM = ${p.modulus}\n` + p.channels.map((c,i) => `channel ${i+1}: ×${c.multiply} +${c.add}`).join('\n');
+    $(`math-${name}`).textContent = `${p.basis} coordinates · ${p.cellScale}× cells\nN = ${p.N}\np = ${p.power}\nM = ${p.modulus}\n` + p.channels.map((c,i) => `channel ${i+1}: ×${c.multiply} +${c.add}`).join('\n');
   }
 }
 function setCanvasSize(canvas,width,height) {
@@ -935,6 +958,10 @@ function scheduleRender() { clearTimeout(timer); timer = setTimeout(() => render
 $('view-rotation').onchange = () => {
   state.viewRotation = Number($('view-rotation').value); sizeOptions(); fitPreview();
 };
+$('cell-scale').onchange = () => {
+  state.cellScale = Number($('cell-scale').value); state.alignmentVersion = 2;
+  sizeOptions(); scheduleRender();
+};
 $('aspect').onchange = () => { state.aspect = Number($('aspect').value); sizeOptions(); scheduleRender(); };
 $('size').onchange = () => { state.k = Number($('size').value); sizeOptions(); scheduleRender(); };
 $('border').onchange = () => { state.border = Number($('border').value); sizeOptions(); scheduleRender(); };
@@ -1007,8 +1034,8 @@ $('load').onclick = () => $('file').click();
 // Older settings gain defaults that preserve their saved image.
 // Version 1 also gains the original diagonal basis and unturned view.
 function upgradeSettings(input) {
-  if (![1,2,3].includes(input?.version)) return input;
-  return { ...input,version:4,viewRotation:input.version === 1 ? 0 : input.viewRotation,
+  if (![1,2,3,4].includes(input?.version)) return input;
+  return { ...input,version:5,cellScale:1,alignmentVersion:1,viewRotation:input.version === 1 ? 0 : input.viewRotation,
     styles:Object.fromEntries(names.map(name => [name,{ ...originalColorDefaults,chromaMin:0,...input.styles?.[name],
       ...(input.version === 1 ? { basis:'diagonal' } : {}) }])) };
 }
@@ -1018,7 +1045,8 @@ function validateSettings(input) {
   const s = upgradeSettings(input);
   const require = (valid,message) => { if (!valid) throw Error(`Invalid settings: ${message}`); };
   const integer = (v,min,max) => Number.isInteger(v) && v >= min && v <= max;
-  require(s && s.version === 4,'unsupported version');
+  require(s && s.version === 5,'unsupported version');
+  require([1,2].includes(s.cellScale) && [1,2].includes(s.alignmentVersion) && (s.alignmentVersion === 2 || s.cellScale === 1),'cell sampling');
   require([0,90,180,270].includes(s.viewRotation),'view rotation');
   require(integer(s.k,3,12) && [1,2].includes(s.aspect),'field dimensions');
   require(integer(s.border,2,2**(s.k-1)) && (s.border & (s.border-1)) === 0,'border width');
@@ -1039,7 +1067,7 @@ function validateSettings(input) {
     require(integer(v.reroll,0,1e9) && Array.isArray(v.draws) && v.draws.length === 6 && v.draws.every(x => typeof x === 'string' && /^\d{1,20}$/.test(x) && BigInt(x) <= 18446744073709551615n),`${name} random parameters`);
   }
   // Strip unrelated properties; resolved values are recomputed from these inputs.
-  return { version:4,viewRotation:s.viewRotation,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,
+  return { version:5,cellScale:s.cellScale,alignmentVersion:s.alignmentVersion,viewRotation:s.viewRotation,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,
     styles:Object.fromEntries(names.map(name => [name,Object.fromEntries(Object.keys(state.styles.field).map(key => [key,s.styles[name][key]]))])) };
 }
 $('file').onchange = async () => {
