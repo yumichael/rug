@@ -92,7 +92,7 @@
     <h2>Pattern &amp; color</h2>
     <label class="check"><input type="checkbox" id="lock" checked>Lock guard styles</label>
     <label class="check"><input type="checkbox" id="shared">Reuse the field palette</label>
-    <p class="hint">Shared palettes keep each region's lightness range. Guards always have equal widths.</p>
+    <p class="hint">Shared palettes keep each region's brightness controls. Guards always have equal widths.</p>
     <div id="regions"></div>
   </section>
 </aside>
@@ -181,6 +181,34 @@ function hsl(h, s, l) {
   return base.map(c => c * chroma + offset);
 }
 
+// Original channel tuners act after mapping/quantization, before conversion.
+// Identity defaults reproduce the notebook's colors exactly.
+function tuneHueChannels([h,s,t], color) {
+  const offset = color.originalHue ?? 0;
+  const sMin = color.saturationMin ?? 0, sMax = color.saturationMax ?? 1;
+  const tMin = color.toneMin ?? 0, tMax = color.toneMax ?? 1;
+  return [offset ? (h+offset)%1 : h, sMin+(sMax-sMin)*s, tMin+(tMax-tMin)*t];
+}
+
+const toLinear = c => c <= .04045 ? c/12.92 : ((c+.055)/1.055)**2.4;
+const fromLinear = c => c <= .0031308 ? 12.92*c : 1.055*c**(1/2.4)-.055;
+function tuneRGB(values, color) {
+  const gamma = color.gamma ?? 1;
+  const names = ['red','green','blue'];
+  let rgb = values.map((value,c) => {
+    const v = color.contrast ? value*value : value;
+    const min = color[names[c]+'Min'] ?? 0, max = color[names[c]+'Max'] ?? 1;
+    return min+(max-min)*(gamma === 1 ? v : v**(1/gamma));
+  });
+  const saturation = color.rgbSaturation ?? 1;
+  if (saturation !== 1) {
+    const linear = rgb.map(toLinear);
+    const luminance = .2126*linear[0] + .7152*linear[1] + .0722*linear[2];
+    rgb = linear.map(c => fromLinear(clamp(luminance+saturation*(c-luminance))));
+  }
+  return rgb;
+}
+
 // Store RGBA as a native-endian word so a single assignment writes a pixel.
 const littleEndian = new Uint8Array(new Uint32Array([1]).buffer)[0] === 1;
 function pack(r, g, b) {
@@ -223,9 +251,10 @@ function colorTable(style, domain, colorStyle, paletteBytes, allValues = false) 
         nativeContext.fillRect(z,0,1,1);
         continue;
       }
-      if (colorStyle.mode === 'rgb') rgb = values.map(v => colorStyle.contrast ? v*v : v);
+      if (colorStyle.mode === 'rgb') rgb = tuneRGB(values,colorStyle);
       else {
-        rgb = colorStyle.mode === 'hsv' ? hsv(...values) : hsl(...values);
+        const tuned = tuneHueChannels(values,colorStyle);
+        rgb = colorStyle.mode === 'hsv' ? hsv(...tuned) : hsl(...tuned);
         // The notebook also nudges converted HSV/HSL RGB values below 1.
         rgb = rgb.map(value => value * (1 - Number.EPSILON / 2));
       }
@@ -261,7 +290,7 @@ function prePowerTable(domain, pre) {
 function effectiveColor(settings, name) {
   const own = settings.styles[name];
   return settings.shared && name !== 'field'
-    ? { ...settings.styles.field, lightMin:own.lightMin, lightMax:own.lightMax }
+    ? { ...settings.styles.field, lightMin:own.lightMin, lightMax:own.lightMax, toneMin:own.toneMin, toneMax:own.toneMax, gamma:own.gamma }
     : own;
 }
 
@@ -441,7 +470,14 @@ const cosinePresets = {
   sea:{ a:[.4,.5,.6], b:[.3,.4,.3], c:[1,1,1], d:[.5,.25,0] }
 };
 const optionHTML = options => Object.entries(options).map(([value,label]) => `<option value="${value}">${label}</option>`).join('');
-const colorKeys = ['mode','preset','mapping','levels','chroma','hue','arc','contrast'];
+// HSV/HSL tone ranges and RGB gamma stay local when sharing a palette,
+// just as the perceptual palettes keep each region's lightness range.
+const colorKeys = ['mode','preset','mapping','levels','chroma','hue','arc','contrast',
+  'originalHue','saturationMin','saturationMax','redMin','redMax','greenMin','greenMax','blueMin','blueMax','rgbSaturation'];
+const originalColorDefaults = { originalHue:0,saturationMin:0,saturationMax:1,toneMin:0,toneMax:1,
+  redMin:0,redMax:1,greenMin:0,greenMax:1,blueMin:0,blueMax:1,gamma:1,rgbSaturation:1 };
+const channelBounds = [['lightMin','lightMax'],['saturationMin','saturationMax'],['toneMin','toneMax'],
+  ['redMin','redMax'],['greenMin','greenMax'],['blueMin','blueMax']];
 
 // The PRNG is local to a region; rerolling one style leaves the others alone.
 function randomStream(seed) {
@@ -466,12 +502,12 @@ function newStyle(name, seed, N, reroll = 0, previous = null) {
   const draw64 = () => String(BigInt(rng()) << 32n | BigInt(rng()));
   const parity = previous?.parity || 'even';
   const q = 1 + randomInteger(rng,Math.max(1,N*N/32-1));
-  return { family:'xor',parity,power:parity === 'even' ? 2*q : 2*q-1,
+  return { ...originalColorDefaults, family:'xor',parity,power:parity === 'even' ? 2*q : 2*q-1,
     basis:'diagonal',rotation:0,centered:Boolean(rng()%2),phaseX:0,phaseY:0,mode:'hsv',preset:'heritage',
     mapping:'linear',levels:0,lightMin:.35,lightMax:.85,chroma:.12,hue:0,arc:'short',contrast:false,
     ...previous, power:parity === 'even' ? 2*q : 2*q-1, draws:Array.from({ length:6 },draw64), reroll };
 }
-let state = { version:2,viewRotation:0,k:8,aspect:1,border:32,seed:'0',lock:true,shared:false,styles:{} };
+let state = { version:3,viewRotation:0,k:8,aspect:1,border:32,seed:'0',lock:true,shared:false,styles:{} };
 for (const name of names) state.styles[name] = newStyle(name,state.seed,512);
 let worker = null, busy = false, exporting = false, currentFull = false;
 let timer, jobStart, renderCanvas, lastParameters = {}, renderedSettings = '';
@@ -541,6 +577,28 @@ function regionHTML(name) {
         <label>Color levels<select data-key="levels">${optionHTML({ 0:'Continuous',2:'2',3:'3',4:'4',5:'5',6:'6',8:'8',12:'12',16:'16',24:'24',32:'32' })}</select></label>
         <label class="rgb-controls check"><input data-key="contrast" type="checkbox">Square RGB</label>
       </div>
+      <div class="traditional-controls">
+        <label>Hue offset · turns<input data-key="originalHue" type="number" min="0" max="1" step=".01"></label>
+        <div class="row">
+          <label>Min saturation<input data-key="saturationMin" type="number" min="0" max="1" step=".01"></label>
+          <label>Max saturation<input data-key="saturationMax" type="number" min="0" max="1" step=".01"></label>
+        </div>
+        <div class="row">
+          <label>Min value<input data-key="toneMin" type="number" min="0" max="1" step=".01"></label>
+          <label>Max value<input data-key="toneMax" type="number" min="0" max="1" step=".01"></label>
+        </div>
+      </div>
+      <div class="rgb-tuners">
+        ${['red','green','blue'].map(channel => `<div class="row">
+          <label>Min ${channel}<input data-key="${channel}Min" type="number" min="0" max="1" step=".01"></label>
+          <label>Max ${channel}<input data-key="${channel}Max" type="number" min="0" max="1" step=".01"></label>
+        </div>`).join('')}
+        <div class="row">
+          <label>Gamma<input data-key="gamma" type="number" min=".2" max="3" step=".05"></label>
+          <label>Saturation<input data-key="rgbSaturation" type="number" min="0" max="2" step=".05"></label>
+        </div>
+        <p class="hint">Higher gamma lightens the channels. Their ranges set the color balance; saturation adjusts colors in linear RGB.</p>
+      </div>
       <p class="hint channel-hint hidden">Independent hue, chroma and lightness channels. Chroma varies up to the maximum; lightness stays within your range.</p>
       <div class="perceptual-controls">
         <div class="row">
@@ -565,13 +623,13 @@ function paletteChoices(mode) {
   if (mode === 'cosine') return { jewel:'Jewel',dusk:'Dusk',sea:'Sea' };
   return Object.fromEntries(Object.entries(presets).map(([k,v]) => [k,v.label]));
 }
-function refreshStyle(name) {
+function refreshStyle(name, activeInput = null) {
   const card = $(`card-${name}`), style = state.styles[name];
   const locked = name === 'outer' && state.lock;
   card.querySelector('.region-body').classList.toggle('hidden',locked);
   card.querySelector('.locked').style.display = locked ? 'block' : 'none';
   const shared = state.shared && name !== 'field';
-  const visible = shared ? { ...state.styles.field,lightMin:style.lightMin,lightMax:style.lightMax } : style;
+  const visible = shared ? { ...state.styles.field,lightMin:style.lightMin,lightMax:style.lightMax,toneMin:style.toneMin,toneMax:style.toneMax,gamma:style.gamma } : style;
   const choices = paletteChoices(visible.mode);
   const preset = card.querySelector('[data-key=preset]');
   preset.innerHTML = optionHTML(choices);
@@ -582,7 +640,7 @@ function refreshStyle(name) {
   for (const input of card.querySelectorAll('[data-key]')) {
     const key = input.dataset.key, value = colorKeys.includes(key) ? visible[key] : style[key];
     if (input.type === 'checkbox') input.checked = value;
-    else input.value = value;
+    else if (input !== activeInput) input.value = value;
     input.disabled = shared && colorKeys.includes(key);
   }
   const perceptual = ['oklab','cycle','tonal','duo','oklch'].includes(visible.mode);
@@ -597,6 +655,11 @@ function refreshStyle(name) {
   card.querySelector('.perceptual-controls').classList.toggle('hidden',!perceptual);
   card.querySelector('.duo-controls').classList.toggle('hidden',visible.mode !== 'duo');
   card.querySelector('.rgb-controls').classList.toggle('hidden',visible.mode !== 'rgb');
+  card.querySelector('.rgb-tuners').classList.toggle('hidden',visible.mode !== 'rgb');
+  card.querySelector('.traditional-controls').classList.toggle('hidden',!['hsv','hsl'].includes(visible.mode));
+  const toneName = visible.mode === 'hsl' ? 'lightness' : 'value';
+  card.querySelector('[data-key=toneMin]').parentElement.firstChild.textContent = `Min ${toneName}`;
+  card.querySelector('[data-key=toneMax]').parentElement.firstChild.textContent = `Max ${toneName}`;
   $(`summary-${name}`).textContent = locked ? 'Locked' : `${style.family === 'xor' ? 'XOR' : 'OR'} · ${style.parity}`;
 }
 function refresh() {
@@ -689,7 +752,7 @@ function palettesFor(settings) {
   for (const name of names) {
     if (name === 'outer' && settings.lock) { palettes.outer = palettes.inner; continue; }
     const own = settings.styles[name];
-    const s = settings.shared && name !== 'field' ? { ...settings.styles.field,lightMin:own.lightMin,lightMax:own.lightMax } : own;
+    const s = settings.shared && name !== 'field' ? { ...settings.styles.field,lightMin:own.lightMin,lightMax:own.lightMax,toneMin:own.toneMin,toneMax:own.toneMax,gamma:own.gamma } : own;
     palettes[name] = buildPalette(s);
   }
   return palettes;
@@ -828,22 +891,33 @@ $('actual').onchange = () => {
   $('viewport').classList.toggle('actual',$('actual').checked); fitPreview();
 };
 
-$('regions').onchange = event => {
+function changeStyle(event, live = false) {
   const input = event.target, key = input.dataset.key;
   if (!key) return;
   const name = input.closest('.region').id.slice(5), style = state.styles[name];
   let value = input.type === 'checkbox' ? input.checked : input.value;
-  if (['power','rotation','phaseX','phaseY','levels','lightMin','lightMax','chroma','hue'].includes(key)) value = Number(value);
+  if (input.type === 'number') value = input.valueAsNumber;
+  else if (['rotation','levels'].includes(key)) value = Number(value);
   if (key === 'centered') value = value === 'true';
-  if (input.type === 'number' && (!Number.isFinite(value) || value < Number(input.min) || value > Number(input.max))) { refreshStyle(name); return; }
+  if (input.type === 'number' && (!Number.isFinite(value) || value < Number(input.min) || value > Number(input.max))) {
+    // Keep an unfinished decimal or minus sign intact while the user types.
+    if (!live) refreshStyle(name);
+    return;
+  }
   if (['power','phaseX','phaseY'].includes(key)) value = Math.round(value);
   style[key] = value;
   if (key === 'family' && value === 'xor') style.basis = 'diagonal';
   if (key === 'power') style.parity = value % 2 ? 'odd' : 'even';
   if (key === 'parity' && style.power % 2 !== (value === 'odd' ? 1 : 0)) style.power = style.power === 1073741824 ? style.power-1 : style.power+1;
-  if (key === 'lightMin' && style.lightMin > style.lightMax) style.lightMax = style.lightMin;
-  if (key === 'lightMax' && style.lightMax < style.lightMin) style.lightMin = style.lightMax;
-  names.forEach(refreshStyle); scheduleRender();
+  for (const [min,max] of channelBounds) {
+    if (key === min && style[min] > style[max]) style[max] = style[min];
+    if (key === max && style[max] < style[min]) style[min] = style[max];
+  }
+  names.forEach(region => refreshStyle(region,live ? input : null)); scheduleRender();
+}
+$('regions').onchange = event => changeStyle(event);
+$('regions').oninput = event => {
+  if (event.target.type === 'number') changeStyle(event,true);
 };
 $('regions').onclick = event => {
   const name = event.target.dataset.reroll;
@@ -876,12 +950,13 @@ $('save').onclick = () => {
 };
 $('load').onclick = () => $('file').click();
 
-// Version 1 renders exactly as before: diagonal coordinates and an unturned view.
-// Migration adds defaults without changing the saved powers or channel draws.
+// Older settings gain identity color tuners without changing their saved image.
+// Version 1 also gains the original diagonal basis and unturned view.
 function upgradeSettings(input) {
-  if (input?.version !== 1) return input;
-  return { ...input,version:2,viewRotation:0,
-    styles:Object.fromEntries(names.map(name => [name,{ ...input.styles?.[name],basis:'diagonal' }])) };
+  if (![1,2].includes(input?.version)) return input;
+  return { ...input,version:3,viewRotation:input.version === 1 ? 0 : input.viewRotation,
+    styles:Object.fromEntries(names.map(name => [name,{ ...originalColorDefaults,...input.styles?.[name],
+      ...(input.version === 1 ? { basis:'diagonal' } : {}) }])) };
 }
 
 // Validate the complete settings contract before replacing the current rug.
@@ -889,7 +964,7 @@ function validateSettings(input) {
   const s = upgradeSettings(input);
   const require = (valid,message) => { if (!valid) throw Error(`Invalid settings: ${message}`); };
   const integer = (v,min,max) => Number.isInteger(v) && v >= min && v <= max;
-  require(s && s.version === 2,'unsupported version');
+  require(s && s.version === 3,'unsupported version');
   require([0,90,180,270].includes(s.viewRotation),'view rotation');
   require(integer(s.k,3,12) && [1,2].includes(s.aspect),'field dimensions');
   require(integer(s.border,2,2**(s.k-1)) && (s.border & (s.border-1)) === 0,'border width');
@@ -903,12 +978,14 @@ function validateSettings(input) {
     require(integer(v.phaseX,-65536,65536) && integer(v.phaseY,-65536,65536),`${name} phase`);
     require(Object.hasOwn(modes,v.mode) && Object.hasOwn(paletteChoices(v.mode),v.preset),`${name} palette`);
     require(['linear','cyclic'].includes(v.mapping) && [0,2,3,4,5,6,8,12,16,24,32].includes(v.levels),`${name} mapping`);
-    require([v.lightMin,v.lightMax,v.chroma,v.hue].every(Number.isFinite) && v.lightMin >= 0 && v.lightMax <= 1 && v.lightMin <= v.lightMax && v.chroma >= 0 && v.chroma <= .4 && v.hue >= 0 && v.hue <= 1,`${name} color ranges`);
+    require([v.chroma,v.hue].every(Number.isFinite) && v.chroma >= 0 && v.chroma <= .4 && v.hue >= 0 && v.hue <= 1,`${name} perceptual color controls`);
+    require(channelBounds.every(([min,max]) => Number.isFinite(v[min]) && Number.isFinite(v[max]) && v[min] >= 0 && v[max] <= 1 && v[min] <= v[max]),`${name} channel ranges`);
+    require(Number.isFinite(v.originalHue) && v.originalHue >= 0 && v.originalHue <= 1 && Number.isFinite(v.gamma) && v.gamma >= .2 && v.gamma <= 3 && Number.isFinite(v.rgbSaturation) && v.rgbSaturation >= 0 && v.rgbSaturation <= 2,`${name} channel tuners`);
     require(['short','long','increasing','decreasing'].includes(v.arc) && typeof v.contrast === 'boolean',`${name} color options`);
     require(integer(v.reroll,0,1e9) && Array.isArray(v.draws) && v.draws.length === 6 && v.draws.every(x => typeof x === 'string' && /^\d{1,20}$/.test(x) && BigInt(x) <= 18446744073709551615n),`${name} random parameters`);
   }
   // Strip unrelated properties; resolved values are recomputed from these inputs.
-  return { version:2,viewRotation:s.viewRotation,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,
+  return { version:3,viewRotation:s.viewRotation,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,
     styles:Object.fromEntries(names.map(name => [name,Object.fromEntries(Object.keys(state.styles.field).map(key => [key,s.styles[name][key]]))])) };
 }
 $('file').onchange = async () => {
