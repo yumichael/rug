@@ -703,15 +703,15 @@ function regionHTML(name) {
         <label class="rgb-controls check"><input data-key="contrast" type="checkbox">Square RGB</label>
       </div>
       <div class="traditional-controls">
-        <label>Hue offset · turns<input data-key="originalHue" type="number" step=".01" title="Hue wraps around every full turn"></label>
-        <div class="row">
-          <label>Min saturation<input data-key="saturationMin" type="number" min="0" max="1" step=".01"></label>
-          <label>Max saturation<input data-key="saturationMax" type="number" min="0" max="1" step=".01"></label>
-        </div>
         <div class="row">
           <label>Min value<input data-key="toneMin" type="number" min="0" max="1" step=".01"></label>
           <label>Max value<input data-key="toneMax" type="number" min="0" max="1" step=".01"></label>
         </div>
+        <div class="row">
+          <label>Min saturation<input data-key="saturationMin" type="number" min="0" max="1" step=".01"></label>
+          <label>Max saturation<input data-key="saturationMax" type="number" min="0" max="1" step=".01"></label>
+        </div>
+        <label>Hue offset · turns<input data-key="originalHue" type="number" step=".01" title="Hue wraps around every full turn"></label>
       </div>
       <div class="rgb-tuners">
         ${['red','green','blue'].map(channel => `<div class="row">
