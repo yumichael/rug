@@ -142,7 +142,8 @@
 </main>
 
 <!-- The worker owns the integer math and pixel loops. It has no DOM dependencies. -->
-<script id="renderer" type="text/plain">
+<!-- text/babel enables VS Code JavaScript highlighting while keeping the worker source inert in the page. -->
+<script id="renderer" type="text/babel">
 'use strict';
 const tau = 6.283185307179586;
 const FULL_PREVIEW_LIMIT = 2 ** 24;
