@@ -122,6 +122,10 @@
       <label>Main border<select id="border"></select></label>
       <label>Each guard<input id="guard" readonly aria-label="Guard width"></label>
     </div>
+    <div class="row">
+      <label class="check"><input type="checkbox" id="inner-enabled" checked>Inner guard</label>
+      <label class="check"><input type="checkbox" id="outer-enabled" checked>Outer guard</label>
+    </div>
     <button id="generate">Generate from seed</button>
     <details class="seed-history">
       <summary>Seed history · <span id="history-count">0 rugs</span></summary>
@@ -134,7 +138,7 @@
     <h2>Pattern &amp; color</h2>
     <label class="check"><input type="checkbox" id="lock" checked>Lock guard styles</label>
     <label class="check"><input type="checkbox" id="shared">Reuse the field palette</label>
-    <p class="hint">Shared palettes keep each region's brightness controls. Guards always have equal widths.</p>
+    <p class="hint">Shared palettes keep each region's brightness controls. Enabled guards each have half the main border's width. Their visibility is independent of the style lock.</p>
     <div id="regions"></div>
   </section>
 </aside>
@@ -201,8 +205,11 @@ function geometry(settings) {
   const S = 2 ** settings.k, B = settings.border, G = B / 2;
   const W = S * settings.aspect, H = S;
   const scale = settings.cellScale ?? 1;
-  const width = (W + 4 * B)*scale, height = (H + 4 * B)*scale;
-  return { S, B, G, W, H, scale, width, height };
+  const inner = settings.innerEnabled === false ? 0 : G;
+  const outer = settings.outerEnabled === false ? 0 : G;
+  const margin = inner + B + outer;
+  const width = (W + 2*margin)*scale, height = (H + 2*margin)*scale;
+  return { S, B, G, W, H, inner, outer, margin, scale, width, height };
 }
 
 // Inverse rotation acts on pixels; phase and diagonal transforms act on cells.
@@ -416,14 +423,15 @@ function compileRegion(settings, palettes, name, cellRect, cellPeriod = null) {
 }
 
 function compile(settings, palettes) {
-  const g = geometry(settings), { W,H,B,G } = g;
-  // Draw outer to inner, masking each ring with the next rectangle.
-  const regions = [
-    compileRegion(settings, palettes, 'outer', { x:0,y:0,width:W+4*B,height:H+4*B }, G),
-    compileRegion(settings, palettes, 'main', { x:G,y:G,width:W+3*B,height:H+3*B }, B),
-    compileRegion(settings, palettes, 'inner', { x:G+B,y:G+B,width:W+B,height:H+B }, G),
-    compileRegion(settings, palettes, 'field', { x:2*B,y:2*B,width:W,height:H })
-  ];
+  const g = geometry(settings), { W,H,B,G,inner,outer,margin } = g;
+  const regions = [];
+  // Draw each enabled ring outside-in. Disabled guards consume no space.
+  const add = (name, inset, period) => regions.push(compileRegion(settings, palettes, name,
+    { x:inset,y:inset,width:W+2*(margin-inset),height:H+2*(margin-inset) },period));
+  if (outer) add('outer',0,G);
+  add('main',outer,B);
+  if (inner) add('inner',outer+B,G);
+  add('field',margin,null);
   return { g, regions };
 }
 
@@ -625,7 +633,7 @@ function newStyle(name, seed, N, reroll = 0, previous = null) {
     mapping:'linear',levels:0,lightMin:.35,lightMax:.85,chromaMin:0,chroma:.12,hue:0,arc:'short',contrast:false,
     ...previous, power:parity === 'even' ? 2*q : 2*q-1, draws:Array.from({ length:6 },draw64), reroll };
 }
-let state = { version:5,cellScale:2,alignmentVersion:2,viewRotation:0,k:9,aspect:2,border:64,seed:'0',lock:true,shared:false,styles:{} };
+let state = { version:5,cellScale:2,alignmentVersion:2,viewRotation:0,k:9,aspect:2,border:64,seed:'0',lock:true,shared:false,innerEnabled:true,outerEnabled:true,styles:{} };
 for (const name of names) state.styles[name] = newStyle(name,state.seed,2048);
 const rugPresets = JSON.parse($('preset-data').textContent);
 let selectedPreset = 0, seedHistory = [], selectedHistory = -1;
@@ -643,7 +651,8 @@ function status(message, error = false) {
 }
 function dimensions() {
   const S = 2 ** state.k, W = S*state.aspect, H = S;
-  return { W,H,width:(W+4*state.border)*state.cellScale,height:(H+4*state.border)*state.cellScale };
+  const margin = state.border * (1 + (state.innerEnabled ? .5 : 0) + (state.outerEnabled ? .5 : 0));
+  return { W,H,width:(W+2*margin)*state.cellScale,height:(H+2*margin)*state.cellScale };
 }
 // View rotation never changes the field math or triggers pixel generation.
 function rotatedDimensions({ width,height }, rotation) {
@@ -793,6 +802,7 @@ function refreshStyle(name, activeInput = null) {
 function refresh() {
   $('aspect').value = state.aspect; $('seed').value = state.seed;
   $('lock').checked = state.lock; $('shared').checked = state.shared;
+  $('inner-enabled').checked = state.innerEnabled; $('outer-enabled').checked = state.outerEnabled;
   $('view-rotation').value = state.viewRotation; $('cell-scale').value = state.cellScale;
   sizeOptions(); names.forEach(refreshStyle);
 }
@@ -889,6 +899,7 @@ function showParameters(parameters) {
   lastParameters = parameters;
   for (const name of names) {
     const p = parameters[name];
+    if (!p) { $(`math-${name}`).textContent = 'Guard disabled.'; continue; }
     $(`math-${name}`).textContent = `${p.basis} coordinates · ${p.cellScale}× cells\nN = ${p.N}\np = ${p.power}\nM = ${p.modulus}\n` + p.channels.map((c,i) => `channel ${i+1}: ×${c.multiply} +${c.add}`).join('\n');
   }
 }
@@ -1122,6 +1133,10 @@ $('aspect').onchange = () => { state.aspect = Number($('aspect').value); sizeOpt
 $('size').onchange = () => { state.k = Number($('size').value); sizeOptions(); scheduleRender(); };
 $('border').onchange = () => { state.border = Number($('border').value); sizeOptions(); scheduleRender(); };
 $('seed').oninput = () => { state.seed = $('seed').value; };
+for (const name of ['inner','outer']) $(''+name+'-enabled').onchange = () => {
+  state[name+'Enabled'] = $(name+'-enabled').checked;
+  sizeOptions(); scheduleRender();
+};
 $('lock').onchange = () => { state.lock = $('lock').checked; refreshStyle('outer'); scheduleRender(); };
 $('shared').onchange = () => { state.shared = $('shared').checked; names.forEach(refreshStyle); scheduleRender(); };
 $('view-mode').onchange = () => { viewing.mode = $('view-mode').value; fitPreview(true); };
@@ -1218,7 +1233,8 @@ function upgradeSettings(input) {
 
 // Validate the complete settings contract before replacing the current rug.
 function validateSettings(input) {
-  const s = upgradeSettings(input);
+  const upgraded = upgradeSettings(input);
+  const s = upgraded && { innerEnabled:true,outerEnabled:true,...upgraded };
   const require = (valid,message) => { if (!valid) throw Error(`Invalid settings: ${message}`); };
   const integer = (v,min,max) => Number.isInteger(v) && v >= min && v <= max;
   require(s && s.version === 5,'unsupported version');
@@ -1228,6 +1244,7 @@ function validateSettings(input) {
   require(integer(s.border,2,2**(s.k-1)) && (s.border & (s.border-1)) === 0,'border width');
   require(typeof s.seed === 'string' && s.seed.length <= 100,'seed');
   require(typeof s.lock === 'boolean' && typeof s.shared === 'boolean','locks');
+  require(typeof s.innerEnabled === 'boolean' && typeof s.outerEnabled === 'boolean','guard visibility');
   for (const name of names) {
     const v = s.styles?.[name];
     require(v && ['xor','2','4'].includes(v.family) && (name !== 'field' || v.family === 'xor'),`${name} family`);
@@ -1243,7 +1260,7 @@ function validateSettings(input) {
     require(integer(v.reroll,0,1e9) && Array.isArray(v.draws) && v.draws.length === 6 && v.draws.every(x => typeof x === 'string' && /^\d{1,20}$/.test(x) && BigInt(x) <= 18446744073709551615n),`${name} random parameters`);
   }
   // Strip unrelated properties; resolved values are recomputed from these inputs.
-  return { version:5,cellScale:s.cellScale,alignmentVersion:s.alignmentVersion,viewRotation:s.viewRotation,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,
+  return { version:5,cellScale:s.cellScale,alignmentVersion:s.alignmentVersion,viewRotation:s.viewRotation,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,innerEnabled:s.innerEnabled,outerEnabled:s.outerEnabled,
     styles:Object.fromEntries(names.map(name => [name,Object.fromEntries(Object.keys(state.styles.field).map(key => [key,s.styles[name][key]]))])) };
 }
 $('file').onchange = async () => {
