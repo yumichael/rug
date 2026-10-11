@@ -703,7 +703,7 @@ function regionHTML(name) {
         <label class="rgb-controls check"><input data-key="contrast" type="checkbox">Square RGB</label>
       </div>
       <div class="traditional-controls">
-        <label>Hue offset · turns<input data-key="originalHue" type="number" min="0" max="1" step=".01"></label>
+        <label>Hue offset · turns<input data-key="originalHue" type="number" step=".01" title="Hue wraps around every full turn"></label>
         <div class="row">
           <label>Min saturation<input data-key="saturationMin" type="number" min="0" max="1" step=".01"></label>
           <label>Max saturation<input data-key="saturationMax" type="number" min="0" max="1" step=".01"></label>
@@ -734,7 +734,7 @@ function regionHTML(name) {
           <label class="chroma-min">Min chroma<input data-key="chromaMin" type="number" min="0" max=".4" step=".01"></label>
           <label>Chroma<input data-key="chroma" type="number" min="0" max=".4" step=".01"></label>
         </div>
-        <label>Hue offset · turns<input data-key="hue" type="number" min="0" max="1" step=".01"></label>
+        <label>Hue offset · turns<input data-key="hue" type="number" step=".01" title="Hue wraps around every full turn"></label>
         <label class="duo-controls">Hue arc<select data-key="arc">${optionHTML({ short:'Shorter',long:'Longer',increasing:'Increasing',decreasing:'Decreasing' })}</select></label>
       </div>
       <button data-reroll="${name}">Reroll ${titles[name].toLowerCase()}</button>
@@ -1147,7 +1147,14 @@ function changeStyle(event, live = false) {
   if (input.type === 'number') value = input.valueAsNumber;
   else if (['rotation','levels'].includes(key)) value = Number(value);
   if (key === 'centered') value = value === 'true';
-  if (input.type === 'number' && (!Number.isFinite(value) || value < Number(input.min) || value > Number(input.max))) {
+  const cyclicHue = key === 'hue' || key === 'originalHue';
+  if (cyclicHue && Number.isFinite(value)) {
+    // Leave native steppers unbounded, then wrap hue into one turn.
+    value = Math.round(turn(value)*1e12)/1e12;
+    if (value === 1) value = 0;
+    if (input.valueAsNumber !== value) input.value = value;
+  }
+  if (input.type === 'number' && (!Number.isFinite(value) || (!cyclicHue && (value < Number(input.min) || value > Number(input.max))))) {
     // Keep an unfinished decimal or minus sign intact while the user types.
     if (!live) refreshStyle(name);
     return;
