@@ -112,7 +112,7 @@
   <section class="section">
     <h2>Shape &amp; scale</h2>
     <div class="row">
-      <label>Field shape<select id="aspect"><option value="1">Square · 1:1</option><option value="2">Rectangle · 2:1</option></select></label>
+      <label>Field shape<select id="aspect"><option value="1">Square · 1:1</option><option value="1.25">Rectangle · 1.25:1</option><option value="1.5">Rectangle · 1.5:1</option><option value="1.75">Rectangle · 1.75:1</option><option value="2">Rectangle · 2:1</option><option value="2.5">Rectangle · 2.5:1</option><option value="3">Rectangle · 3:1</option><option value="4">Rectangle · 4:1</option><option value="5">Rectangle · 5:1</option><option value="6">Rectangle · 6:1</option><option value="8">Rectangle · 8:1</option></select></label>
       <label>Seed<input id="seed" value="0" maxlength="100"></label>
     </div>
     <label>Cell size<select id="cell-scale"><option value="2">2× · boundary-symmetric axes</option><option value="1">1× · asymmetric pixel-center axes</option></select></label>
@@ -662,15 +662,28 @@ function renderKey(settings) {
   const { viewRotation, ...pattern } = settings;
   return JSON.stringify(pattern);
 }
+const fieldRatios = [1,1.25,1.5,1.75,2,2.5,3,4,5,6,8];
+const maxShortExponent = aspect => aspect >= 4 ? 11 : 12;
+function maxBorderWidth(k, aspect) {
+  const short = 2**k, long = short*aspect;
+  let width = short/2;
+  // Both field sides must contain whole border motifs, including at corners.
+  while (long % width || short % width) width /= 2;
+  return width;
+}
 function sizeOptions() {
-  $('size').innerHTML = Array.from({ length:10 },(_,i) => {
-    const k = i+3, w = k+(state.aspect === 2 ? 1 : 0);
-    return `<option value="${k}">${2**w} × ${2**k} cells (2^${w} × 2^${k})</option>`;
+  const maxK = maxShortExponent(state.aspect);
+  state.k = Math.min(state.k,maxK);
+  $('size').innerHTML = Array.from({ length:maxK-2 },(_,i) => {
+    const k = i+3, exponent = Math.log2(state.aspect);
+    const longPower = Number.isInteger(exponent) ? `2^${k+exponent}` : `${state.aspect}·2^${k}`;
+    return `<option value="${k}">${state.aspect*2**k} × ${2**k} cells (${longPower} × 2^${k})</option>`;
   }).join('');
   $('size').value = state.k;
   $('legacy-sampling').classList.toggle('hidden',state.alignmentVersion !== 1);
-  const widths = Array.from({ length:state.k-1 },(_,i) => 2**(i+1));
-  state.border = Math.min(state.border,2**(state.k-1));
+  const maxBorder = maxBorderWidth(state.k,state.aspect);
+  const widths = Array.from({ length:Math.log2(maxBorder) },(_,i) => 2**(i+1));
+  state.border = Math.min(state.border,maxBorder);
   $('border').innerHTML = widths.map(b => `<option value="${b}">${b} cells · ${b*state.cellScale} px${b === 2 ? ' · solid guards' : ''}</option>`).join('');
   $('border').value = state.border;
   $('guard').value = `${state.border/2} ${state.border === 2 ? 'cell' : 'cells'} · ${state.border*state.cellScale/2} px`;
@@ -1240,8 +1253,8 @@ function validateSettings(input) {
   require(s && s.version === 5,'unsupported version');
   require([1,2].includes(s.cellScale) && [1,2].includes(s.alignmentVersion) && (s.alignmentVersion === 2 || s.cellScale === 1),'cell sampling');
   require([0,90,180,270].includes(s.viewRotation),'view rotation');
-  require(integer(s.k,3,12) && [1,2].includes(s.aspect),'field dimensions');
-  require(integer(s.border,2,2**(s.k-1)) && (s.border & (s.border-1)) === 0,'border width');
+  require(fieldRatios.includes(s.aspect) && integer(s.k,3,maxShortExponent(s.aspect)),'field dimensions');
+  require(integer(s.border,2,maxBorderWidth(s.k,s.aspect)) && (s.border & (s.border-1)) === 0,'border width');
   require(typeof s.seed === 'string' && s.seed.length <= 100,'seed');
   require(typeof s.lock === 'boolean' && typeof s.shared === 'boolean','locks');
   require(typeof s.innerEnabled === 'boolean' && typeof s.outerEnabled === 'boolean','guard visibility');
@@ -1291,7 +1304,7 @@ function applyPreset(index, initial = false) {
   }
   // Present rectangular presets along the long axis of a stacked, tall viewport.
   const tallViewport = matchMedia('(max-width:950px) and (orientation:portrait)').matches;
-  state.viewRotation = state.aspect === 2 && tallViewport ? 90 : 0;
+  state.viewRotation = state.aspect > 1 && tallViewport ? 90 : 0;
   selectedPreset = index; selectedHistory = -1; $('preset').value = index; refreshHistory();
   viewing.mode = 'fit'; viewing.step = 6; $('view-mode').value = 'fit';
   refresh(); render();
