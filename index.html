@@ -646,7 +646,9 @@ function newStyle(name, seed, N, reroll = 0, previous = null) {
   const rng = randomStream(`${seed}/${name}/${reroll}`);
   const draw64 = () => String(BigInt(rng()) << 32n | BigInt(rng()));
   const parity = previous?.parity || 'even';
-  const q = 1 + randomInteger(rng,Math.max(1,N*N/32-1));
+  // Count the positive integers below N²/32, including fractional bounds at small sizes.
+  const qCount = Math.max(1,Math.ceil(N*N/32)-1);
+  const q = 1 + randomInteger(rng,qCount);
   return { ...originalColorDefaults, family:'xor',parity,power:parity === 'even' ? 2*q : 2*q-1,
     basis:'diagonal',rotation:0,centered:Boolean(rng()%2),phaseX:0,phaseY:0,mode:'hsv',preset:'heritage',
     mapping:'linear',levels:0,lightMin:.35,lightMax:.85,chromaMin:0,chroma:.12,hue:0,arc:'short',contrast:false,
