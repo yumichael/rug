@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 5,
   "viewRotation": 0,
   "k": 9,
   "aspect": 2,
@@ -35,7 +35,21 @@
         "6375033603928556124",
         "9772152463369915412"
       ],
-      "reroll": 0
+      "reroll": 0,
+      "originalHue": 0,
+      "saturationMin": 0,
+      "saturationMax": 1,
+      "toneMin": 0,
+      "toneMax": 1,
+      "redMin": 0,
+      "redMax": 1,
+      "greenMin": 0,
+      "greenMax": 1,
+      "blueMin": 0,
+      "blueMax": 1,
+      "gamma": 1,
+      "rgbSaturation": 1,
+      "chromaMin": 0
     },
     "inner": {
       "family": "xor",
@@ -64,7 +78,21 @@
         "5203253342233444509",
         "3815125263062298610"
       ],
-      "reroll": 0
+      "reroll": 0,
+      "originalHue": 0,
+      "saturationMin": 0,
+      "saturationMax": 1,
+      "toneMin": 0,
+      "toneMax": 1,
+      "redMin": 0,
+      "redMax": 1,
+      "greenMin": 0,
+      "greenMax": 1,
+      "blueMin": 0,
+      "blueMax": 1,
+      "gamma": 1,
+      "rgbSaturation": 1,
+      "chromaMin": 0
     },
     "main": {
       "family": "4",
@@ -93,7 +121,21 @@
         "5557568346915596537",
         "3350759173212454011"
       ],
-      "reroll": 0
+      "reroll": 0,
+      "originalHue": 0,
+      "saturationMin": 0,
+      "saturationMax": 1,
+      "toneMin": 0,
+      "toneMax": 1,
+      "redMin": 0,
+      "redMax": 1,
+      "greenMin": 0,
+      "greenMax": 1,
+      "blueMin": 0,
+      "blueMax": 1,
+      "gamma": 1,
+      "rgbSaturation": 1,
+      "chromaMin": 0
     },
     "outer": {
       "family": "xor",
@@ -122,89 +164,23 @@
         "1155587632004842772",
         "8079220470704433352"
       ],
-      "reroll": 0
+      "reroll": 0,
+      "originalHue": 0,
+      "saturationMin": 0,
+      "saturationMax": 1,
+      "toneMin": 0,
+      "toneMax": 1,
+      "redMin": 0,
+      "redMax": 1,
+      "greenMin": 0,
+      "greenMax": 1,
+      "blueMin": 0,
+      "blueMax": 1,
+      "gamma": 1,
+      "rgbSaturation": 1,
+      "chromaMin": 0
     }
   },
-  "resolved": {
-    "outer": {
-      "N": 4096,
-      "basis": "diagonal",
-      "modulus": "256",
-      "power": 189580,
-      "channels": [
-        {
-          "multiply": "247",
-          "add": "61"
-        },
-        {
-          "multiply": "221",
-          "add": "177"
-        },
-        {
-          "multiply": "59",
-          "add": "242"
-        }
-      ]
-    },
-    "main": {
-      "N": 4096,
-      "basis": "straight",
-      "modulus": "256",
-      "power": 98158,
-      "channels": [
-        {
-          "multiply": "141",
-          "add": "59"
-        },
-        {
-          "multiply": "49",
-          "add": "49"
-        },
-        {
-          "multiply": "243",
-          "add": "123"
-        }
-      ]
-    },
-    "inner": {
-      "N": 4096,
-      "basis": "diagonal",
-      "modulus": "256",
-      "power": 189580,
-      "channels": [
-        {
-          "multiply": "247",
-          "add": "61"
-        },
-        {
-          "multiply": "221",
-          "add": "177"
-        },
-        {
-          "multiply": "59",
-          "add": "242"
-        }
-      ]
-    },
-    "field": {
-      "N": 2048,
-      "basis": "diagonal",
-      "modulus": "16384",
-      "power": 153640,
-      "channels": [
-        {
-          "multiply": "9219",
-          "add": "12791"
-        },
-        {
-          "multiply": "11847",
-          "add": "3619"
-        },
-        {
-          "multiply": "1209",
-          "add": "3092"
-        }
-      ]
-    }
-  }
+  "cellScale": 2,
+  "alignmentVersion": 2
 }

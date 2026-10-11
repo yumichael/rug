@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 5,
   "viewRotation": 0,
   "k": 9,
   "aspect": 2,
@@ -48,7 +48,8 @@
         "1285786350312078410",
         "3761770661736914631"
       ],
-      "reroll": 5
+      "reroll": 5,
+      "chromaMin": 0
     },
     "inner": {
       "originalHue": 0,
@@ -90,7 +91,8 @@
         "2069382394510389021",
         "1227839817963484660"
       ],
-      "reroll": 3
+      "reroll": 3,
+      "chromaMin": 0
     },
     "main": {
       "originalHue": 0.75,
@@ -132,7 +134,8 @@
         "1499250172458226427",
         "8888205524835991687"
       ],
-      "reroll": 0
+      "reroll": 0,
+      "chromaMin": 0
     },
     "outer": {
       "originalHue": 0,
@@ -174,89 +177,10 @@
         "17451186254787889403",
         "17616021318864397639"
       ],
-      "reroll": 0
+      "reroll": 0,
+      "chromaMin": 0
     }
   },
-  "resolved": {
-    "outer": {
-      "N": 4096,
-      "basis": "diagonal",
-      "modulus": "128",
-      "power": 92326,
-      "channels": [
-        {
-          "multiply": "125",
-          "add": "7"
-        },
-        {
-          "multiply": "113",
-          "add": "59"
-        },
-        {
-          "multiply": "59",
-          "add": "116"
-        }
-      ]
-    },
-    "main": {
-      "N": 4096,
-      "basis": "straight",
-      "modulus": "512",
-      "power": 32356,
-      "channels": [
-        {
-          "multiply": "391",
-          "add": "442"
-        },
-        {
-          "multiply": "363",
-          "add": "437"
-        },
-        {
-          "multiply": "503",
-          "add": "135"
-        }
-      ]
-    },
-    "inner": {
-      "N": 4096,
-      "basis": "diagonal",
-      "modulus": "128",
-      "power": 92326,
-      "channels": [
-        {
-          "multiply": "125",
-          "add": "7"
-        },
-        {
-          "multiply": "113",
-          "add": "59"
-        },
-        {
-          "multiply": "59",
-          "add": "116"
-        }
-      ]
-    },
-    "field": {
-      "N": 2048,
-      "basis": "diagonal",
-      "modulus": "2048",
-      "power": 139873,
-      "channels": [
-        {
-          "multiply": "335",
-          "add": "469"
-        },
-        {
-          "multiply": "23",
-          "add": "58"
-        },
-        {
-          "multiply": "149",
-          "add": "1735"
-        }
-      ]
-    }
-  }
+  "cellScale": 2,
+  "alignmentVersion": 2
 }

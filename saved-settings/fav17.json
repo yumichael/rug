@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "viewRotation": 0,
   "k": 9,
   "aspect": 2,
@@ -181,86 +181,6 @@
       "reroll": 0
     }
   },
-  "resolved": {
-    "outer": {
-      "N": 4096,
-      "basis": "diagonal",
-      "modulus": "128",
-      "power": 233110,
-      "channels": [
-        {
-          "multiply": "117",
-          "add": "57"
-        },
-        {
-          "multiply": "15",
-          "add": "114"
-        },
-        {
-          "multiply": "37",
-          "add": "21"
-        }
-      ]
-    },
-    "main": {
-      "N": 4096,
-      "basis": "straight",
-      "modulus": "32768",
-      "power": 23296,
-      "channels": [
-        {
-          "multiply": "3791",
-          "add": "19699"
-        },
-        {
-          "multiply": "6725",
-          "add": "7365"
-        },
-        {
-          "multiply": "9599",
-          "add": "29772"
-        }
-      ]
-    },
-    "inner": {
-      "N": 4096,
-      "basis": "diagonal",
-      "modulus": "128",
-      "power": 233110,
-      "channels": [
-        {
-          "multiply": "117",
-          "add": "57"
-        },
-        {
-          "multiply": "15",
-          "add": "114"
-        },
-        {
-          "multiply": "37",
-          "add": "21"
-        }
-      ]
-    },
-    "field": {
-      "N": 2048,
-      "basis": "diagonal",
-      "modulus": "2048",
-      "power": 60919,
-      "channels": [
-        {
-          "multiply": "133",
-          "add": "620"
-        },
-        {
-          "multiply": "677",
-          "add": "105"
-        },
-        {
-          "multiply": "147",
-          "add": "9"
-        }
-      ]
-    }
-  }
+  "cellScale": 2,
+  "alignmentVersion": 2
 }

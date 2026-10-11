@@ -23,6 +23,12 @@
   p { margin:0; }
   .subtitle,.hint { color:var(--muted); }
   .hint { font-size:12px; margin-top:7px; }
+  .preset-strip { padding:14px 28px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .preset-strip label { flex:0 1 460px; }
+  .preset-strip .hint { flex:1 1 240px; margin:0; }
+  .seed-history { margin-top:12px; }
+  .seed-history summary { padding:0; font-size:12px; font-weight:400; }
+  .seed-history label { margin-top:8px; }
   .actions { display:flex; gap:8px; flex-wrap:wrap; }
   main { display:grid; grid-template-columns:340px minmax(0,1fr); min-height:calc(100vh - 100px); }
   aside { padding:20px; border-right:1px solid var(--line); }
@@ -41,7 +47,7 @@
   .region .math summary { padding:7px 0; font-size:12px; font-weight:400; }
   pre { white-space:pre-wrap; overflow-wrap:anywhere; font-size:11px; line-height:1.6; margin:0; }
   .locked { display:none; padding:0 12px 12px; color:var(--muted); font-size:12px; }
-  .preview { --preview-padding:28px; position:sticky; top:0; height:calc(100vh - var(--preview-top,106px)); min-height:420px; display:flex; flex-direction:column; padding:22px var(--preview-padding); gap:16px; min-width:0; }
+  .preview { --preview-padding:28px; position:sticky; top:0; height:calc(100vh - var(--preview-top,106px)); height:calc(100dvh - var(--preview-top,106px)); min-height:420px; display:flex; flex-direction:column; padding:22px var(--preview-padding); gap:16px; min-width:0; }
   .preview.info-hidden { padding-bottom:var(--preview-padding); }
   .preview-bar { display:flex; justify-content:space-between; gap:15px; flex-wrap:wrap; align-items:center; }
   .dimensions { font-size:13px; font-variant-numeric:tabular-nums; }
@@ -60,7 +66,7 @@
   .zoom-controls input { width:72px; }
   .zoom-controls button { padding:7px 10px; }
   #zoom-label { min-width:76px; font-size:12px; font-variant-numeric:tabular-nums; }
-  .preview-info { display:flex; flex-direction:column; gap:12px; }
+  .preview-info { display:flex; flex-direction:column; gap:12px; flex-shrink:0; }
   .info-status { display:flex; align-items:center; justify-content:space-between; gap:12px; }
   .info-status button { padding:1px 7px; font-size:18px; line-height:1.2; }
   .status { min-height:22px; color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums; }
@@ -70,7 +76,19 @@
   .about p { margin-top:8px; max-width:70ch; }
   .hidden { display:none!important; }
   @media(max-width:850px) { header { padding:18px; } main { grid-template-columns:300px minmax(0,1fr); } aside { padding:14px; } .preview { --preview-padding:16px; padding:16px; } .viewport { padding:12px; } }
-  @media(max-width:650px) { header { align-items:flex-start; flex-direction:column; gap:12px; } main { display:flex; flex-direction:column; } aside { order:2; border-right:0; } .preview { position:static; height:65vh; min-height:420px; } }
+  /* Stacked previews stay in document flow: expanded details push settings down.
+     A safe viewport unit accounts for phone browser bars in either orientation. */
+  @media(max-width:950px), (max-height:500px) and (pointer:coarse) {
+    header { align-items:flex-start; flex-direction:column; gap:12px; }
+    .preset-strip { padding:14px 16px; gap:10px; }
+    main { display:flex; flex-direction:column; min-height:0; }
+    aside { order:2; border-right:0; }
+    .preview { --preview-padding:16px; position:static; height:auto; min-height:0; padding:16px; }
+    .viewport { flex:none; height:72vh; height:72svh; min-height:260px; padding:12px; }
+  }
+  @media(max-width:950px) and (orientation:portrait) {
+    .viewport { height:85vh; height:85svh; min-height:360px; }
+  }
 </style>
 </head>
 <body>
@@ -84,6 +102,10 @@
     <input id="file" type="file" accept="application/json,.json" class="hidden" aria-label="Settings file">
   </div>
 </header>
+<section class="preset-strip" aria-label="Favorite presets">
+  <label>Try a favorite preset<select id="preset" aria-describedby="preset-hint"></select></label>
+  <p class="hint" id="preset-hint">Choose a preset to start. Click <strong>New rug</strong> for more rugs with a similar style, then fine-tune any details you like.</p>
+</section>
 <main>
 <aside>
   <section class="section">
@@ -100,6 +122,11 @@
       <label>Each guard<input id="guard" readonly aria-label="Guard width"></label>
     </div>
     <button id="generate">Generate from seed</button>
+    <details class="seed-history">
+      <summary>Seed history · <span id="history-count">0 rugs</span></summary>
+      <label>Return to a rug<select id="history"></select></label>
+      <p class="hint" id="history-hint">New rug keeps the seed and settings of each result here, including your edits before moving on. History is saved in this browser.</p>
+    </details>
     <p class="hint">2× uses 2 × 2 pixels per cell and doubles the output dimensions. Changing a control keeps the other regions' random parameters.</p>
   </section>
   <section>
@@ -145,7 +172,6 @@
 <!-- text/babel enables VS Code JavaScript highlighting while keeping the worker source inert in the page. -->
 <script id="renderer" type="text/babel">
 'use strict';
-const tau = 6.283185307179586;
 const FULL_PREVIEW_LIMIT = 2 ** 24;
 const clamp = (x, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, x));
 const lowbit = p => p & -p;
@@ -518,6 +544,18 @@ self.onmessage = async ({ data }) => {
 };
 </script>
 
+<!-- Representatives of six favorite groups; seeds and exponents were excluded from style similarity. -->
+<script id="preset-data" type="application/json">
+[
+{"source":"fav13.json","group":["fav1.json","fav12.json","fav13.json"],"settings":{"version":5,"viewRotation":90,"k":9,"aspect":2,"border":64,"seed":"1053131968","lock":true,"shared":false,"styles":{"field":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0.09,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"oklch","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.19,"lightMax":0.94,"chromaMin":0.02,"chroma":0.24,"hue":0.12,"arc":"short","contrast":false,"power":49946,"draws":["15817448186601301867","648859027407234719","10090816139510318375","1428913592064311958","12741509655949175711","15821385396219922190"],"reroll":6},"inner":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":0.9,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":90,"centered":false,"phaseX":0,"phaseY":0,"mode":"rgb","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":144912,"draws":["7432701828573070765","982560382074632291","5799633156789184327","5904492075866274852","12405941512262898883","2702807349876482509"],"reroll":0},"main":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":0.9,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":90,"centered":false,"phaseX":0,"phaseY":0,"mode":"rgb","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":258298,"draws":["3178896736718994012","12475961785858685063","710418978866186172","7837288321544439551","14516701905106147610","7123185401695239208"],"reroll":0},"outer":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":260486,"draws":["8646490458603342517","4754952902283953737","11401405581803583152","17494434761753235041","16187450947976961766","1331363098683601776"],"reroll":0}},"cellScale":2,"alignmentVersion":2},"title":"Jewel & RGB"},
+{"source":"fav20.json","group":["fav2.json","fav18.json","fav20.json"],"settings":{"version":5,"cellScale":2,"alignmentVersion":2,"viewRotation":0,"k":9,"aspect":2,"border":32,"seed":"3149243084","lock":true,"shared":false,"styles":{"field":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":176310,"draws":["15326352534418589254","3140417903432752629","2319035875520730323","16088472360119905441","170804488322158542","8990193628182120318"],"reroll":0},"inner":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":0,"centered":false,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":216450,"draws":["27729339677729446","7725698620484579902","7453434574562686518","1963346133127156618","14888045347761872817","13782655161878048370"],"reroll":0},"main":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":0,"centered":false,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":24106,"draws":["2913399958762792086","1555250458720404336","7784222600120265240","13526715220292218599","9110624158221948703","16370673630912595706"],"reroll":0},"outer":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":19018,"draws":["680926979338991484","14155241244451544375","7986273172411150147","12774454165432044045","8262611870155458424","2960271913892179079"],"reroll":0}}},"title":"Classic HSV"},
+{"source":"fav3.json","group":["fav3.json"],"settings":{"version":5,"viewRotation":0,"k":8,"aspect":2,"border":32,"seed":"0","lock":true,"shared":true,"styles":{"field":{"family":"xor","parity":"even","power":40836,"basis":"diagonal","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"oklch","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"draws":["3646356009788150744","2888339224364593416","16405575029962987344","705490805577152995","5652637369182145166","7549804576364287004"],"reroll":0,"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"chromaMin":0},"inner":{"family":"xor","parity":"even","power":13580,"basis":"diagonal","rotation":0,"centered":false,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"draws":["7592573863479953616","7198547417603198625","10596145609055891723","9976105854525360680","2086718747889641615","13832498963811414118"],"reroll":0,"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"chromaMin":0},"main":{"family":"2","parity":"even","power":49978,"basis":"straight","rotation":90,"centered":false,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"draws":["2100795851711556523","1727365547842062547","1178041361318667832","3855082183748644726","1379190555743329447","18367910147854182855"],"reroll":0,"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"chromaMin":0},"outer":{"family":"xor","parity":"even","power":19046,"basis":"diagonal","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"draws":["1975542759397709931","15404628090396862375","16829189004343540676","16676347423364904963","10568938883184462348","12572198727080495248"],"reroll":0,"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"chromaMin":0}},"cellScale":2,"alignmentVersion":2},"title":"Shared color"},
+{"source":"fav6.json","group":["fav4.json","fav6.json","fav7.json","fav8.json","fav14.json","fav16.json","fav17.json"],"settings":{"version":5,"viewRotation":0,"k":9,"aspect":2,"border":64,"seed":"6","lock":true,"shared":false,"styles":{"field":{"family":"xor","parity":"even","power":99524,"basis":"diagonal","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"oklch","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.31,"lightMax":0.85,"chroma":0.13,"hue":0,"arc":"short","contrast":false,"draws":["11839846832269166809","9164632291832902576","5100498658385805313","1677958720385574375","6702726689513899677","8242040364590520932"],"reroll":0,"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"chromaMin":0},"inner":{"family":"xor","parity":"even","power":66586,"basis":"diagonal","rotation":0,"centered":false,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"draws":["15321628070984134041","56950360061266755","5329748919052489801","3640564926513152123","2614353530963361288","12646281651152148567"],"reroll":0,"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"chromaMin":0},"main":{"family":"4","parity":"even","power":90212,"basis":"straight","rotation":0,"centered":false,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"draws":["8786573006253281794","12918780892540950645","11174814210866450161","11314290882336077976","16004739262102933100","11015041893517170679"],"reroll":0,"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"chromaMin":0},"outer":{"family":"xor","parity":"even","power":146338,"basis":"diagonal","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"draws":["9435965908308468413","17127693867186305492","10678566897500791539","1481310912136018313","18420711760013456605","11523712061181323203"],"reroll":0,"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"chromaMin":0}},"cellScale":2,"alignmentVersion":2},"title":"Woven color"},
+{"source":"fav15.json","group":["fav5.json","fav15.json"],"settings":{"version":5,"viewRotation":0,"k":9,"aspect":2,"border":64,"seed":"1876999871","lock":true,"shared":false,"styles":{"field":{"originalHue":0,"saturationMin":0,"saturationMax":0.52,"toneMin":0,"toneMax":0.96,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"odd","basis":"diagonal","rotation":90,"centered":true,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":116481,"draws":["14669816391001808347","4583626459932435172","16715951561958021863","2531104145217264777","3369731701713553590","15189860632475915416"],"reroll":0},"inner":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":0,"centered":false,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":27052,"draws":["691932719732287531","10332293248959959456","14389613014638064264","13808644398247040561","8657233251096367274","5550663281633317184"],"reroll":0},"main":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"2","parity":"even","basis":"straight","rotation":0,"centered":false,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":132896,"draws":["11508783319297446631","18320541176575516582","10834540411743445245","2993384254096701900","14027494503005726551","18365398605131980939"],"reroll":0},"outer":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":12066,"draws":["14868512029188544245","1922285548714470374","8126475607182489953","15575202836361452386","9946347409905806463","18350180479868147376"],"reroll":0}},"cellScale":2,"alignmentVersion":2},"title":"Soft color"},
+{"source":"fav19.json","group":["fav9.json","fav10.json","fav11.json","fav19.json"],"settings":{"version":5,"viewRotation":0,"k":9,"aspect":2,"border":64,"seed":"4122555049","lock":true,"shared":false,"styles":{"field":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"odd","basis":"diagonal","rotation":90,"centered":false,"phaseX":0,"phaseY":0,"mode":"oklch","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.25,"lightMax":0.88,"chromaMin":0,"chroma":0.28,"hue":0.5,"arc":"short","contrast":false,"power":77945,"draws":["15960980362770482762","11956317729097678538","5461124371629012931","9526425460002036110","1369864388640051916","12319844828329942924"],"reroll":0},"inner":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":90,"centered":false,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":116796,"draws":["11501065332489011234","4465442504293639310","2066585928820764047","2760246781531625945","17680325861367307586","247489664077031141"],"reroll":0},"main":{"originalHue":0.75,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"2","parity":"even","basis":"straight","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":63542,"draws":["11036937703824831222","7640911351660848080","5161795729089823880","2772517083462430259","1492943392552911788","16248668726507630786"],"reroll":0},"outer":{"originalHue":0,"saturationMin":0,"saturationMax":1,"toneMin":0,"toneMax":1,"redMin":0,"redMax":1,"greenMin":0,"greenMax":1,"blueMin":0,"blueMax":1,"gamma":1,"rgbSaturation":1,"family":"xor","parity":"even","basis":"diagonal","rotation":0,"centered":true,"phaseX":0,"phaseY":0,"mode":"hsv","preset":"heritage","mapping":"linear","levels":0,"lightMin":0.35,"lightMax":0.85,"chromaMin":0,"chroma":0.12,"hue":0,"arc":"short","contrast":false,"power":135458,"draws":["16621438872575993749","8642811925476716747","9024886771169252376","16974497440407245122","4547151138139962302","16858867694848957535"],"reroll":0}},"cellScale":2,"alignmentVersion":2},"title":"Vivid diagonals"}
+]
+</script>
+
 <script>
 'use strict';
 const tau = 6.283185307179586;
@@ -583,12 +621,17 @@ function newStyle(name, seed, N, reroll = 0, previous = null) {
     mapping:'linear',levels:0,lightMin:.35,lightMax:.85,chromaMin:0,chroma:.12,hue:0,arc:'short',contrast:false,
     ...previous, power:parity === 'even' ? 2*q : 2*q-1, draws:Array.from({ length:6 },draw64), reroll };
 }
-let state = { version:5,cellScale:2,alignmentVersion:2,viewRotation:0,k:8,aspect:1,border:32,seed:'0',lock:true,shared:false,styles:{} };
-for (const name of names) state.styles[name] = newStyle(name,state.seed,512);
+let state = { version:5,cellScale:2,alignmentVersion:2,viewRotation:0,k:9,aspect:2,border:64,seed:'0',lock:true,shared:false,styles:{} };
+for (const name of names) state.styles[name] = newStyle(name,state.seed,2048);
+const rugPresets = JSON.parse($('preset-data').textContent);
+let selectedPreset = 0, seedHistory = [], selectedHistory = -1;
 let worker = null, busy = false, exporting = false, currentFull = false;
 let timer, jobStart, renderCanvas, lastParameters = {}, renderedSettings = '';
 const paletteCache = new Map();
-const workerURL = URL.createObjectURL(new Blob([$('renderer').textContent], { type:'text/javascript' }));
+// Give the isolated worker the same constant without a second editor declaration.
+const workerURL = URL.createObjectURL(new Blob([
+  `'use strict';\nconst tau = ${tau};\n`, $('renderer').textContent
+], { type:'text/javascript' }));
 
 function status(message, error = false) {
   $('status').textContent = message; $('status').classList.toggle('error',error);
@@ -964,7 +1007,7 @@ function drawPixels(canvas,width,rows,buffer,y = 0) {
   canvas.getContext('2d',{ colorSpace:'srgb' }).putImageData(new ImageData(new Uint8ClampedArray(buffer),width,rows),0,y);
 }
 function exportControls(disabled) {
-  for (const control of document.querySelectorAll('aside input, aside select, aside button, header button, #view-rotation')) control.disabled = disabled;
+  for (const control of document.querySelectorAll('aside input, aside select, aside button, header button, #view-rotation, #preset, #history')) control.disabled = disabled;
   if (!disabled) names.forEach(refreshStyle);
 }
 function finishJob() {
@@ -1135,8 +1178,10 @@ function generateFromSeed() {
 $('generate').onclick = generateFromSeed;
 $('randomize').onclick = () => {
   if (exporting) return;
+  rememberRug();
   state.seed = String(crypto.getRandomValues(new Uint32Array(1))[0]);
   generateFromSeed();
+  rememberRug();
 };
 $('png').onclick = () => {
   if (busy || exporting) return;
@@ -1195,12 +1240,84 @@ $('file').onchange = async () => {
   try {
     const file = $('file').files[0]; if (!file) return;
     if (file.size > 100000) throw Error('Settings file is too large.');
-    state = validateSettings(JSON.parse(await file.text())); refresh(); render();
+    state = validateSettings(JSON.parse(await file.text())); selectedPreset = null; selectedHistory = -1; $('preset').value = ''; refreshHistory(); refresh(); render();
   } catch (error) { status(error.message,true); }
   finally { $('file').value = ''; }
 };
+// Presets retain an actual favorite's settings. New rug rerolls only the random
+// pattern parameters, preserving the chosen pattern families and color controls.
+function buildPresets() {
+  const custom = document.createElement('option'); custom.value = ''; custom.textContent = 'Custom rug';
+  $('preset').replaceChildren(custom);
+  rugPresets.forEach((preset,index) => {
+    const option = document.createElement('option'), settings = preset.settings;
+    option.value = index;
+    option.textContent = `${preset.title} · ${settings.aspect}:1 · ${settings.aspect*2**settings.k} × ${2**settings.k} cells`;
+    $('preset').append(option);
+  });
+}
+function applyPreset(index, initial = false) {
+  state = validateSettings(structuredClone(rugPresets[index].settings));
+  if (initial) {
+    state.aspect = 2; state.k = 9; state.border = 64;
+    state.viewRotation = matchMedia('(max-width:600px) and (orientation:portrait)').matches ? 90 : 0;
+  }
+  selectedPreset = index; selectedHistory = -1; $('preset').value = index; refreshHistory();
+  viewing.mode = 'fit'; viewing.step = 6; $('view-mode').value = 'fit';
+  refresh(); render();
+}
+$('preset').onchange = () => {
+  if ($('preset').value !== '' && !exporting) applyPreset(Number($('preset').value));
+};
+
+// Store snapshots rather than seeds alone: edits and preset changes must not
+// alter a rug when it is revisited. Storage failure still leaves session history.
+function refreshHistory() {
+  const placeholder = document.createElement('option');
+  placeholder.value = ''; placeholder.textContent = 'Choose a past rug';
+  $('history').replaceChildren(placeholder);
+  seedHistory.forEach((entry,index) => {
+    const option = document.createElement('option'), settings = entry.settings;
+    option.value = index;
+    option.textContent = `${index+1}. Seed ${settings.seed} · ${settings.aspect*2**settings.k} × ${2**settings.k} cells`;
+    $('history').append(option);
+  });
+  $('history').value = selectedHistory >= 0 ? selectedHistory : '';
+  $('history-count').textContent = `${seedHistory.length} ${seedHistory.length === 1 ? 'rug' : 'rugs'}`;
+}
+function rememberRug() {
+  const entry = { settings:structuredClone(state),preset:rugPresets[selectedPreset]?.source ?? null };
+  const last = seedHistory.length-1;
+  if (selectedHistory === last && last >= 0 && seedHistory[last].settings.seed === state.seed) seedHistory[last] = entry;
+  else seedHistory.push(entry);
+  selectedHistory = seedHistory.length-1;
+  refreshHistory();
+  try { localStorage.setItem('rug.seedHistory',JSON.stringify(seedHistory)); }
+  catch { $('history-hint').textContent = 'Browser storage is unavailable or full. These rugs remain in history for this session.'; }
+}
+function loadHistory() {
+  try {
+    const entries = JSON.parse(localStorage.getItem('rug.seedHistory') || '[]');
+    if (!Array.isArray(entries)) return;
+    for (const entry of entries) {
+      try { seedHistory.push({ settings:validateSettings(entry.settings),preset:entry.preset }); }
+      catch { /* Skip damaged entries without losing other rugs. */ }
+    }
+  } catch { /* An unavailable history store does not prevent rendering. */ }
+}
+$('history').onchange = () => {
+  if (exporting || $('history').value === '') return;
+  selectedHistory = Number($('history').value);
+  const entry = seedHistory[selectedHistory]; if (!entry) return;
+  state = structuredClone(entry.settings);
+  const index = rugPresets.findIndex(preset => preset.source === entry.preset);
+  selectedPreset = index < 0 ? null : index;
+  $('preset').value = selectedPreset ?? '';
+  refresh(); render();
+};
+
 window.addEventListener('beforeunload',() => { worker?.terminate(); URL.revokeObjectURL(workerURL); });
-refresh(); render();
+buildPresets(); loadHistory(); applyPreset(0,true);
 </script>
 </body>
 </html>
