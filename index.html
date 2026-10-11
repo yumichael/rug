@@ -1260,8 +1260,10 @@ function applyPreset(index, initial = false) {
   state = validateSettings(structuredClone(rugPresets[index].settings));
   if (initial) {
     state.aspect = 2; state.k = 9; state.border = 64;
-    state.viewRotation = matchMedia('(max-width:600px) and (orientation:portrait)').matches ? 90 : 0;
   }
+  // Present rectangular presets along the long axis of a stacked, tall viewport.
+  const tallViewport = matchMedia('(max-width:950px) and (orientation:portrait)').matches;
+  state.viewRotation = state.aspect === 2 && tallViewport ? 90 : 0;
   selectedPreset = index; selectedHistory = -1; $('preset').value = index; refreshHistory();
   viewing.mode = 'fit'; viewing.step = 6; $('view-mode').value = 'fit';
   refresh(); render();
