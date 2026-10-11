@@ -138,6 +138,8 @@
     <h2>Pattern &amp; color</h2>
     <label class="check"><input type="checkbox" id="lock" checked>Lock guard styles</label>
     <label class="check"><input type="checkbox" id="shared">Reuse the field palette</label>
+    <label class="check"><input type="checkbox" id="keep-reference">Keep references when generating</label>
+    <p class="hint">Sizing edits keep each function fixed by default. New rug and Reroll use the current size as a new reference unless checked above.</p>
     <p class="hint">Shared palettes keep each region's brightness controls. Enabled guards each have half the main border's width. Their visibility is independent of the style lock.</p>
     <div id="regions"></div>
   </section>
@@ -378,26 +380,43 @@ function compileRegion(settings, palettes, name, cellRect, cellPeriod = null) {
   const color = effectiveColor(settings, styleName);
   const scale = settings.cellScale ?? 1, aligned = settings.alignmentVersion === 2;
   const rect = Object.fromEntries(Object.entries(cellRect).map(([key,value]) => [key,value*scale]));
-  const period = cellPeriod ? cellPeriod*scale : null;
-  const L = nextPowerOfTwo(Math.max(cellRect.width,cellRect.height));
-  const domain = cellPeriod ? 2*cellPeriod : 2*L;
+  const mode = settings.resizeModes?.[styleName] || 'adapt';
+  const reference = mode === 'adapt' ? null : settings.references?.[styleName];
+  const source = reference || { width:cellRect.width,height:cellRect.height,period:cellPeriod };
+  const L = nextPowerOfTwo(Math.max(source.width,source.height));
+  let factorX = 1, factorY = 1;
+  if (mode === 'scale') {
+    factorX = factorY = cellPeriod ? cellPeriod/source.period : cellRect.height/source.height;
+  } else if (mode === 'stretch') {
+    factorX = cellRect.width/source.width; factorY = cellRect.height/source.height;
+  }
+  if (![factorX,factorY].every(f => Number.isInteger(f) && f >= 1)) throw Error('Pattern scaling requires integer enlargement. Use Crop or rebase the reference.');
+  const period = source.period ? source.period*scale*factorX : null;
+  const domain = source.period ? 2*source.period : 2*L;
   const pre = name === 'field' || style.family === 'xor' ? 1 : Number(style.family);
   const basis = pre === 1 ? 'diagonal' : (style.basis || 'diagonal');
   const { colors, modulus, channels } = colorTable(style, domain, color, palettes[styleName],basis === 'straight');
   const powers = prePowerTable(domain, pre), mask = domain - 1;
-  const cropY = cellPeriod ? 0 : (L-cellRect.height)*scale/2;
-  const cropX = cellPeriod ? 0 : (L-cellRect.width)*scale/2;
+  const cropY = source.period ? 0 : (L-source.height)*scale/2;
+  const cropX = source.period ? 0 : (L-source.width)*scale/2;
+  // Center the visible window on the reference. Integer scaling duplicates
+  // source pixels exactly; it never interpolates colors or skips source cells.
+  const offsetY = (source.height*scale*factorY-rect.height)/2;
+  const offsetX = (source.width*scale*factorX-rect.width)/2;
 
   // Quarter-turns keep the two coordinate contributions separable even
   // after 2× sampling. Precompute them once; pixels still use table lookups.
-  const coordinates = (y,x) => patternCoordinates(cropY+y,cropX+x,L,style,scale,aligned,basis);
+  const coordinates = (y,x) => patternCoordinates(
+    cropY+Math.floor((offsetY+y)/factorY),cropX+Math.floor((offsetX+x)/factorX),
+    L,style,scale,aligned,basis);
   const [u0,v0] = coordinates(0,0);
-  const xU = new Int32Array(rect.width), xV = new Int32Array(rect.width);
-  const yU = new Int32Array(rect.height), yV = new Int32Array(rect.height);
-  for (let x = 0; x < rect.width; x++) {
+  const xCount = Math.max(rect.width,period || 0), yCount = Math.max(rect.height,period || 0);
+  const xU = new Int32Array(xCount), xV = new Int32Array(xCount);
+  const yU = new Int32Array(yCount), yV = new Int32Array(yCount);
+  for (let x = 0; x < xCount; x++) {
     const [u,v] = coordinates(0,x); xU[x] = u & mask; xV[x] = v & mask;
   }
-  for (let y = 0; y < rect.height; y++) {
+  for (let y = 0; y < yCount; y++) {
     const [u,v] = coordinates(y,0); yU[y] = (u-u0) & mask; yV[y] = (v-v0) & mask;
   }
   const region = { name, rect, colors, powers, mask, xU, xV, yU, yV, xor:pre === 1 };
@@ -406,7 +425,7 @@ function compileRegion(settings, palettes, name, cellRect, cellPeriod = null) {
   // At one-cell guard width, intentionally use one solid sample.
   if (period) {
     const tile = new Uint32Array(period * period);
-    if (cellPeriod === 1) {
+    if (source.period === 1) {
       const a = powers[xU[0]], b = powers[xV[0]];
       tile.fill(colors[region.xor ? a^b : a|b]);
     } else for (let y = 0; y < period; y++) for (let x = 0; x < period; x++) {
@@ -417,7 +436,7 @@ function compileRegion(settings, palettes, name, cellRect, cellPeriod = null) {
     region.tile = tile;
     region.period = period;
   }
-  region.parameters = { N:2*L, basis, cellScale:scale, alignmentVersion:aligned ? 2 : 1, modulus:String(modulus), power:style.power,
+  region.parameters = { N:2*L, domain,reference:source,resizeMode:mode, basis, cellScale:scale, alignmentVersion:aligned ? 2 : 1, modulus:String(modulus), power:style.power,
     channels:channels.map(c => ({ multiply:String(c.multiply), add:String(c.add) })) };
   return region;
 }
@@ -633,8 +652,9 @@ function newStyle(name, seed, N, reroll = 0, previous = null) {
     mapping:'linear',levels:0,lightMin:.35,lightMax:.85,chromaMin:0,chroma:.12,hue:0,arc:'short',contrast:false,
     ...previous, power:parity === 'even' ? 2*q : 2*q-1, draws:Array.from({ length:6 },draw64), reroll };
 }
-let state = { version:5,cellScale:2,alignmentVersion:2,viewRotation:0,k:9,aspect:2,border:64,seed:'0',lock:true,shared:false,innerEnabled:true,outerEnabled:true,styles:{} };
+let state = { version:6,resizeModes:{field:'crop',inner:'crop',main:'crop',outer:'crop'},references:{},keepReference:false,cellScale:2,alignmentVersion:2,viewRotation:0,k:9,aspect:2,border:64,seed:'0',lock:true,shared:false,innerEnabled:true,outerEnabled:true,styles:{} };
 for (const name of names) state.styles[name] = newStyle(name,state.seed,2048);
+state.references = referencesFor(state);
 const rugPresets = JSON.parse($('preset-data').textContent);
 let selectedPreset = 0, seedHistory = [], selectedHistory = -1;
 let worker = null, busy = false, exporting = false, currentFull = false;
@@ -659,7 +679,7 @@ function rotatedDimensions({ width,height }, rotation) {
   return rotation % 180 ? { width:height,height:width } : { width,height };
 }
 function renderKey(settings) {
-  const { viewRotation, ...pattern } = settings;
+  const { viewRotation, keepReference, ...pattern } = settings;
   return JSON.stringify(pattern);
 }
 const fieldRatios = [1,1.25,1.5,1.75,2,2.5,3,4,5,6,8];
@@ -670,6 +690,39 @@ function maxBorderWidth(k, aspect) {
   // Both field sides must contain whole border motifs, including at corners.
   while (long % width || short % width) width /= 2;
   return width;
+}
+function referencesFor(settings) {
+  const S = 2**settings.k, W = S*settings.aspect, B = settings.border, G = B/2;
+  const inner = settings.innerEnabled === false ? 0 : G;
+  const outer = settings.outerEnabled === false ? 0 : G;
+  const margin = inner+B+outer;
+  return Object.fromEntries(names.map(name => {
+    const inset = { outer:0,main:outer,inner:outer+B,field:margin }[name];
+    return [name,{ width:W+2*(margin-inset),height:S+2*(margin-inset),
+      period:name === 'field' ? null : name === 'main' ? B : G }];
+  }));
+}
+function resizeAllowed(name, mode, current = referencesFor(state)) {
+  if (mode === 'crop' || mode === 'adapt') return true;
+  const ref = state.references[name], target = current[name];
+  const integer = f => Number.isInteger(f) && f >= 1;
+  if (mode === 'scale') return integer(name === 'field' ? target.height/ref.height : target.period/ref.period);
+  return name === 'field' && integer(target.width/ref.width) && integer(target.height/ref.height);
+}
+function refreshReferences() {
+  const current = referencesFor(state);
+  for (const name of names) {
+    // Crop is the safe fallback when a geometry edit cannot be an exact enlargement.
+    if (!resizeAllowed(name,state.resizeModes[name],current)) state.resizeModes[name] = 'crop';
+    const select = document.querySelector(`[data-resize="${name}"]`);
+    for (const option of select.options) option.disabled = !resizeAllowed(name,option.value,current);
+    select.value = state.resizeModes[name];
+    const ref = state.references[name];
+    $(`reference-${name}`).textContent = name === 'field' ? `${ref.width} × ${ref.height} cells` : `${ref.period}-cell motif · ${ref.width} × ${ref.height} reference`;
+  }
+}
+function rebaseReference(name) {
+  state.references[name] = referencesFor(state)[name];
 }
 function sizeOptions() {
   const maxK = maxShortExponent(state.aspect);
@@ -687,6 +740,7 @@ function sizeOptions() {
   $('border').innerHTML = widths.map(b => `<option value="${b}">${b} cells · ${b*state.cellScale} px${b === 2 ? ' · solid guards' : ''}</option>`).join('');
   $('border').value = state.border;
   $('guard').value = `${state.border/2} ${state.border === 2 ? 'cell' : 'cells'} · ${state.border*state.cellScale/2} px`;
+  refreshReferences();
   const d = dimensions();
   const view = rotatedDimensions(d,state.viewRotation);
   const field = rotatedDimensions({ width:d.W*state.cellScale,height:d.H*state.cellScale },state.viewRotation);
@@ -760,6 +814,11 @@ function regionHTML(name) {
         <label class="duo-controls">Hue arc<select data-key="arc">${optionHTML({ short:'Shorter',long:'Longer',increasing:'Increasing',decreasing:'Decreasing' })}</select></label>
       </div>
       <button data-reroll="${name}">Reroll ${titles[name].toLowerCase()}</button>
+      <details class="math"><summary>Resizing &amp; reference</summary>
+        <label>When resized<select data-resize="${name}">${optionHTML({ crop:'Crop · fixed function',scale:'Scale · integer enlargement',...(field ? { stretch:'Stretch · integer enlargement' } : {}),adapt:'Adapt · size-dependent function' })}</select></label>
+        <p class="hint">Reference: <span id="reference-${name}"></span>. Scale and stretch require whole-number enlargement on each affected axis. Incompatible sizing edits return to Crop. Cropping can expose partial border motifs.</p>
+        <button data-rebase="${name}">Use current size as reference</button>
+      </details>
       <details class="math"><summary>Resolved math</summary><pre id="math-${name}"></pre></details>
     </div>
   </details>`;
@@ -816,6 +875,7 @@ function refresh() {
   $('aspect').value = state.aspect; $('seed').value = state.seed;
   $('lock').checked = state.lock; $('shared').checked = state.shared;
   $('inner-enabled').checked = state.innerEnabled; $('outer-enabled').checked = state.outerEnabled;
+  $('keep-reference').checked = state.keepReference;
   $('view-rotation').value = state.viewRotation; $('cell-scale').value = state.cellScale;
   sizeOptions(); names.forEach(refreshStyle);
 }
@@ -1151,6 +1211,7 @@ for (const name of ['inner','outer']) $(''+name+'-enabled').onchange = () => {
   sizeOptions(); scheduleRender();
 };
 $('lock').onchange = () => { state.lock = $('lock').checked; refreshStyle('outer'); scheduleRender(); };
+$('keep-reference').onchange = () => { state.keepReference = $('keep-reference').checked; };
 $('shared').onchange = () => { state.shared = $('shared').checked; names.forEach(refreshStyle); scheduleRender(); };
 $('view-mode').onchange = () => { viewing.mode = $('view-mode').value; fitPreview(true); };
 $('zoom-out').onclick = () => { if (viewing.mode === 'physical') viewing.integer = Math.max(1,viewing.integer-1); else viewing.step = Math.max(0,viewing.step-1); fitPreview(true); };
@@ -1198,18 +1259,27 @@ function changeStyle(event, live = false) {
   }
   names.forEach(region => refreshStyle(region,live ? input : null)); scheduleRender();
 }
-$('regions').onchange = event => changeStyle(event);
+$('regions').onchange = event => {
+  const name = event.target.dataset.resize;
+  if (name) { state.resizeModes[name] = event.target.value; scheduleRender(); }
+  else changeStyle(event);
+};
 $('regions').oninput = event => {
   if (event.target.type === 'number') changeStyle(event,true);
 };
 $('regions').onclick = event => {
+  const rebase = event.target.dataset.rebase;
+  if (rebase) { rebaseReference(rebase); refreshReferences(); scheduleRender(); return; }
   const name = event.target.dataset.reroll;
   if (!name) return;
+  if (!state.keepReference) rebaseReference(name);
+  refreshReferences();
   const N = 2*Math.max(dimensions().W,dimensions().H);
   state.styles[name] = newStyle(name,state.seed,N,state.styles[name].reroll+1,state.styles[name]);
   refreshStyle(name); scheduleRender();
 };
 function generateFromSeed() {
+  if (!state.keepReference) state.references = referencesFor(state);
   const N = 2*Math.max(dimensions().W,dimensions().H);
   for (const name of names) state.styles[name] = newStyle(name,state.seed,N,0,state.styles[name]);
   refresh(); render();
@@ -1250,7 +1320,7 @@ function validateSettings(input) {
   const s = upgraded && { innerEnabled:true,outerEnabled:true,...upgraded };
   const require = (valid,message) => { if (!valid) throw Error(`Invalid settings: ${message}`); };
   const integer = (v,min,max) => Number.isInteger(v) && v >= min && v <= max;
-  require(s && s.version === 5,'unsupported version');
+  require(s && [5,6].includes(s.version),'unsupported version');
   require([1,2].includes(s.cellScale) && [1,2].includes(s.alignmentVersion) && (s.alignmentVersion === 2 || s.cellScale === 1),'cell sampling');
   require([0,90,180,270].includes(s.viewRotation),'view rotation');
   require(fieldRatios.includes(s.aspect) && integer(s.k,3,maxShortExponent(s.aspect)),'field dimensions');
@@ -1272,8 +1342,22 @@ function validateSettings(input) {
     require(['short','long','increasing','decreasing'].includes(v.arc) && typeof v.contrast === 'boolean',`${name} color options`);
     require(integer(v.reroll,0,1e9) && Array.isArray(v.draws) && v.draws.length === 6 && v.draws.every(x => typeof x === 'string' && /^\d{1,20}$/.test(x) && BigInt(x) <= 18446744073709551615n),`${name} random parameters`);
   }
+  const references = s.version === 5 ? referencesFor(s) : s.references;
+  const resizeModes = s.version === 5 ? Object.fromEntries(names.map(name => [name,'crop'])) : s.resizeModes;
+  const keepReference = s.version === 5 ? false : s.keepReference;
+  require(typeof keepReference === 'boolean','reference generation setting');
+  for (const name of names) {
+    const r = references?.[name], mode = resizeModes?.[name];
+    require(r && integer(r.width,2,65536) && integer(r.height,2,65536) &&
+      (name === 'field' ? r.period === null : integer(r.period,1,2048) && (r.period & (r.period-1)) === 0),`${name} reference`);
+    require(['crop','scale','adapt',...(name === 'field' ? ['stretch'] : [])].includes(mode),`${name} resizing mode`);
+    const target = referencesFor(s)[name];
+    const whole = f => Number.isInteger(f) && f >= 1;
+    require(mode !== 'scale' || whole(name === 'field' ? target.height/r.height : target.period/r.period),`${name} integer scale`);
+    require(mode !== 'stretch' || whole(target.width/r.width) && whole(target.height/r.height),`${name} integer stretch`);
+  }
   // Strip unrelated properties; resolved values are recomputed from these inputs.
-  return { version:5,cellScale:s.cellScale,alignmentVersion:s.alignmentVersion,viewRotation:s.viewRotation,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,innerEnabled:s.innerEnabled,outerEnabled:s.outerEnabled,
+  return { version:6,references:Object.fromEntries(names.map(name => [name,{...references[name]}])),resizeModes:{...resizeModes},keepReference,cellScale:s.cellScale,alignmentVersion:s.alignmentVersion,viewRotation:s.viewRotation,k:s.k,aspect:s.aspect,border:s.border,seed:s.seed,lock:s.lock,shared:s.shared,innerEnabled:s.innerEnabled,outerEnabled:s.outerEnabled,
     styles:Object.fromEntries(names.map(name => [name,Object.fromEntries(Object.keys(state.styles.field).map(key => [key,s.styles[name][key]]))])) };
 }
 $('file').onchange = async () => {
