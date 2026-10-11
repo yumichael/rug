@@ -5,6 +5,8 @@ fav18
 fav11
 fav16
 fav10
-fav14
+fav21
 fav8
+fav24
+fav14
 fav5
