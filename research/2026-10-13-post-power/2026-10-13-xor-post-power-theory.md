@@ -2633,8 +2633,8 @@ The historical generator should still be retained as a versioned legacy recipe i
 
 The starting point for this document was:
 
-- `research/2026-10-11-post-power-range.md`
-- `research/2026-10-11-post-power-range.py`
+- `research/2026-10-11-post-power/2026-10-11-post-power-range.md`
+- `research/2026-10-11-post-power/2026-10-11-post-power-range.py`
 
 The original report also cites the standard structure of odd units modulo powers of two; a useful reference is Keith Conrad, *Prime Powers, Units, and Finite Subgroups of GL_n(Q)*, especially the discussion of units modulo $2^k$.
 
