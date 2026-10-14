@@ -7,18 +7,10 @@ The rug generator applies a **post-power** after its diagonal XOR combiner. Hist
 The questions behind this research were therefore practical:
 
 - Does sampling larger and larger integer exponents actually produce new XOR patterns, or does it mostly revisit old ones?
-- Why does the historical rule
-    $$
-  M=C\operatorname{lowbit}(p)
-    $$
-  preserve the intended repetition period?
+- Why does the historical rule $M = C \mathrm{lowbit}(p)$ preserve the intended repetition period?
 - What happens if the coordinate domain $C$ and modulus $M$ are varied independently?
 - Given a desired spatial period $R$, what choices of $C$, $M$, and $p$ are sufficient or redundant?
-- If
-    $$
-  p=2^v u,\qquad u\text{ odd},
-    $$
-  what does the odd part $u$ control, and what does the power-of-two valuation $v$ control?
+- If $p = 2^v u$ with $u$ odd, what does the odd part $u$ control, and what does the power-of-two valuation $v$ control?
 - Is there a finite point beyond which increasing $v$ gives no new spatial arithmetic motifs?
 - If the goal is to sample **distinct exponent patterns uniformly**, rather than integers uniformly, how should $v$ and $u$ be sampled?
 
@@ -78,22 +70,18 @@ $$
 
 This is the central simplification behind the XOR theory: post-powering acts only on odd residues modulo powers of two.
 
-### Lemma 2: the complete motif encounters every odd residue modulo $C$
+### Lemma 2: the complete motif encounters every odd residue modulo *C*
 
 Let $z$ be any odd residue with $1\le z<C$. Choose
 
 $$
-x=\frac{z-1}{2},
-\qquad
-y=\frac{z+1}{2}.
+x=\frac{z-1}{2}, \qquad y=\frac{z+1}{2}.
 $$
 
 Then
 
 $$
-y-x-1=0,
-\qquad
-y+x=z,
+y-x-1=0, \qquad y+x=z,
 $$
 
 and therefore
@@ -139,10 +127,10 @@ is odd.
 Equivalently,
 
 $$
-2^v=\operatorname{lowbit}(p).
+2^v=\mathrm{lowbit}(p).
 $$
 
-The case $p=0$ is separate: $z^0=1$ for all XOR inputs, so it gives a constant post-power value for a fixed positive modulus. Under the bitwise definition, $\operatorname{lowbit}(0)=0$, while $\nu_2(0)$ is undefined or conventionally $+\infty$. The balanced rule would give $M=0$, so it does not define a valid modulus in this case.
+The case $p=0$ is separate: $z^0=1$ for all XOR inputs, so it gives a constant post-power value for a fixed positive modulus. Under the bitwise definition, $\mathrm{lowbit}(0)=0$, while $\nu_2(0)$ is undefined or conventionally $+\infty$. The balanced rule would give $M=0$, so it does not define a valid modulus in this case.
 
 ---
 
@@ -157,15 +145,13 @@ $$
 The arithmetic post-power motif is
 
 $$
-F_{C,p,M}(x,y)
-=
-z_C(x,y)^p\bmod M.
+F_{C,p,M}(x,y) = z_C(x,y)^p\bmod M.
 $$
 
 The historical rug rule is
 
 $$
-\boxed{M=C\,2^v=C\operatorname{lowbit}(p).}
+\boxed{M=C\,2^v=C\mathrm{lowbit}(p).}
 $$
 
 We will call this the **balanced rule**.
@@ -173,11 +159,7 @@ We will call this the **balanced rule**.
 For a general power-of-two $M$, define
 
 $$
-\boxed{
-K=\frac{M}{2^v}
-=\frac{M}{\operatorname{lowbit}(p)}
-=2^{m-v}.
-}
+\boxed{ K=\frac{M}{2^v} =\frac{M}{\mathrm{lowbit}(p)} =2^{m-v}. }
 $$
 
 The quantity $K$ is the effective post-power domain. It will be the second participant, alongside $C$, in the period theorem.
@@ -198,10 +180,7 @@ Before giving the main results, it is important to distinguish different equival
 
 Two parameter choices can have:
 
-1. **the same exact post-power values**
-    $$
-   z^p\bmod M;
-    $$
+1. **the same exact post-power values** $z^p\bmod M$;
 
 2. **the same normalized spatial arithmetic motif**, meaning the same position-dependent structure after a constant phase-like term is removed;
 
@@ -221,7 +200,7 @@ This distinction is essential when deciding which repetitions should count as re
 
 ---
 
-# 3. $C/M$ theory
+# 3. *C*/*M* theory
 
 The first question is:
 
@@ -231,16 +210,14 @@ The answer is especially clean for powers of two.
 
 ---
 
-## 3.1 A standard 2-adic lemma
+## 3.1 *A* standard 2-adic lemma
 
 We will repeatedly use the following form of the lifting-the-exponent principle.
 
 If $x$ and $y$ are odd and $n$ is even, then
 
 $$
-\nu_2(x^n-y^n)
-=
-\nu_2(x-y)+\nu_2(x+y)+\nu_2(n)-1.
+\nu_2(x^n-y^n) = \nu_2(x-y)+\nu_2(x+y)+\nu_2(n)-1.
 $$
 
 Because two odd integers have even sum,
@@ -253,7 +230,7 @@ This is the mechanism by which a factor $2^v$ in the exponent supplies an additi
 
 ---
 
-## 3.2 The post-power only needs the input modulo $K$
+## 3.2 The post-power only needs the input modulo *K*
 
 ### Claim
 
@@ -282,9 +259,7 @@ $$
 implies
 
 $$
-\boxed{
-z_1^p\equiv z_2^p\pmod M.
-}
+\boxed{ z_1^p\equiv z_2^p\pmod M. }
 $$
 
 ### Proof
@@ -294,13 +269,7 @@ If $v=0$, then $K=M$, so the claim is immediate.
 Now suppose $v\ge1$. By the 2-adic lifting formula,
 
 $$
-\nu_2(z_1^p-z_2^p)
-=
-\nu_2(z_1-z_2)
-+
-\nu_2(z_1+z_2)
-+
-v-1.
+\nu_2(z_1^p-z_2^p) = \nu_2(z_1-z_2) + \nu_2(z_1+z_2) + v-1.
 $$
 
 Since
@@ -324,19 +293,13 @@ $$
 Therefore
 
 $$
-\nu_2(z_1^p-z_2^p)
-\ge
-(m-v)+1+v-1
-=
-m.
+\nu_2(z_1^p-z_2^p) \ge (m-v)+1+v-1 = m.
 $$
 
 Hence
 
 $$
-M=2^m
-\mid
-z_1^p-z_2^p,
+M=2^m \mid z_1^p-z_2^p,
 $$
 
 which proves the claim.
@@ -346,14 +309,14 @@ which proves the claim.
 Once $p$ and $M$ are fixed, the post-power cannot distinguish two odd inputs that agree modulo
 
 $$
-K=M/\operatorname{lowbit}(p).
+K=M/\mathrm{lowbit}(p).
 $$
 
 So $K$, rather than $M$ alone, is the effective amount of input information surviving exponentiation.
 
 ---
 
-## 3.3 Growing $C$ eventually changes nothing at all
+## 3.3 Growing *C* eventually changes nothing at all
 
 ### Claim
 
@@ -366,9 +329,7 @@ $$
 then increasing the power-of-two coordinate domain $C$ further does not merely preserve the same period. It preserves the **entire post-powered arithmetic motif**:
 
 $$
-\boxed{
-F_{C,p,M}(x,y)=F_{K,p,M}(x,y)
-}
+\boxed{ F_{C,p,M}(x,y)=F_{K,p,M}(x,y) }
 $$
 
 for every cell $(x,y)$.
@@ -402,10 +363,7 @@ $$
 Both values are odd. By the preceding theorem,
 
 $$
-z_C(x,y)^p
-\equiv
-z_K(x,y)^p
-\pmod M.
+z_C(x,y)^p \equiv z_K(x,y)^p \pmod M.
 $$
 
 Thus the exact residue modulo $M$ is identical at every cell.
@@ -413,18 +371,14 @@ Thus the exact residue modulo $M$ is identical at every cell.
 ### Consequence
 
 $$
-\boxed{
-C\ge K
-\quad\Longrightarrow\quad
-\text{all larger }C\text{ are exactly redundant for the post-power motif.}
-}
+\boxed{ C\ge K \quad\Longrightarrow\quad \text{all larger }C\text{ are exactly redundant for the post-power motif.} }
 $$
 
 This is stronger than merely saying that the repetition period has stopped growing.
 
 ---
 
-## 3.4 The raw XOR motif has axis period $C/2$
+## 3.4 The raw XOR motif has axis period *C*/2
 
 Let
 
@@ -445,11 +399,7 @@ $$
 XORing both operands with the same top bit does not change their XOR:
 
 $$
-(a\mathbin{\mathrm{XOR}}T)
-\mathbin{\mathrm{XOR}}
-(b\mathbin{\mathrm{XOR}}T)
-=
-a\mathbin{\mathrm{XOR}}b.
+(a\mathbin{\mathrm{XOR}}T) \mathbin{\mathrm{XOR}} (b\mathbin{\mathrm{XOR}}T) = a\mathbin{\mathrm{XOR}}b.
 $$
 
 Therefore
@@ -505,14 +455,7 @@ We compare their post-powers.
 By the binomial theorem,
 
 $$
-\left(1+\frac C2\right)^p
-=
-1
-+
-p\frac C2
-+
-\binom p2\left(\frac C2\right)^2
-+\cdots.
+\left(1+\frac C2\right)^p = 1 + p\frac C2 + \binom p2\left(\frac C2\right)^2 +\cdots.
 $$
 
 Since
@@ -524,23 +467,13 @@ $$
 with $u$ odd,
 
 $$
-p\frac C2
-=
-u\frac{C2^v}{2}
-=
-u\frac M2
-\equiv
-\frac M2
-\pmod M.
+p\frac C2 = u\frac{C2^v}{2} = u\frac M2 \equiv \frac M2 \pmod M.
 $$
 
 For $C\ge8$, every higher binomial term is divisible by $M$. Hence
 
 $$
-\left(1+\frac C2\right)^p
-\equiv
-1+\frac M2
-\pmod M.
+\left(1+\frac C2\right)^p \equiv 1+\frac M2 \pmod M.
 $$
 
 The first cell gives
@@ -554,9 +487,7 @@ Thus the two cells differ by exactly $M/2$, so an $x$-shift by $C/4$ cannot be a
 For the $y$-axis, consider $(x,y)=(0,0)$ and $(x,y)=(0,C/4)$. Their XOR inputs are $C-1$ and $C/2-1$. Their difference has 2-adic valuation $c-1$, and their sum has valuation $1$ because $C\ge8$. For even $p$, the lifting-the-exponent formula therefore gives
 
 $$
-\nu_2\left((C-1)^p-(C/2-1)^p\right)
-=(c-1)+1+v-1
-=c+v-1.
+\nu_2\left((C-1)^p-(C/2-1)^p\right) =(c-1)+1+v-1 =c+v-1.
 $$
 
 For odd $p$, factoring the difference of powers leaves an odd quotient, giving the same formula with $v=0$. Thus these post-powers also differ by $M/2$ modulo $M$, so a $y$-shift by $C/4$ cannot be a period.
@@ -598,31 +529,20 @@ $$
 Then the exact diagonal-XOR arithmetic axis period is
 
 $$
-\boxed{
-R(C,p,M)
-=
-\frac12\min(C,K).
-}
+\boxed{ R(C,p,M) = \frac12\min(C,K). }
 $$
 
 Equivalently,
 
 $$
-\boxed{
-R(C,p,M)
-=
-\min\left(
-\frac C2,
-\frac{M}{2\operatorname{lowbit}(p)}
-\right).
-}
+\boxed{ R(C,p,M) = \min\left( \frac C2, \frac{M}{2\mathrm{lowbit}(p)} \right). }
 $$
 
 ### Proof
 
 There are two cases.
 
-#### Case 1: $C\ge K$
+#### Case 1: *C* ≥ *K*
 
 Section 3.3 proved that the entire motif is exactly the same as the motif with coordinate domain $K$.
 
@@ -644,7 +564,7 @@ $$
 R=K/2.
 $$
 
-#### Case 2: $C\le K$
+#### Case 2: *C* ≤ *K*
 
 The raw XOR construction already has period $C/2$, so the post-powered motif has period at most $C/2$.
 
@@ -683,14 +603,7 @@ $$
 The theorem can be read as
 
 $$
-\boxed{
-R
-=
-\min\left(
-\underbrace{C/2}_{\text{coordinate-domain limit}},
-\underbrace{M/(2\operatorname{lowbit}(p))}_{\text{post-power/modulus limit}}
-\right).
-}
+\boxed{ R = \min\left( \underbrace{C/2}_{\text{coordinate-domain limit}}, \underbrace{M/(2\mathrm{lowbit}(p))}_{\text{post-power/modulus limit}} \right). }
 $$
 
 The coordinate system can only offer period $C/2$.
@@ -698,27 +611,25 @@ The coordinate system can only offer period $C/2$.
 The post-power can only preserve period
 
 $$
-M/(2\operatorname{lowbit}(p)).
+M/(2\mathrm{lowbit}(p)).
 $$
 
 Whichever is smaller is the actual period.
 
 ---
 
-## 3.8 Why the historical $M$ rule is natural
+## 3.8 Why the historical *M* rule is natural
 
 The historical rule is
 
 $$
-M=C\operatorname{lowbit}(p).
+M=C\mathrm{lowbit}(p).
 $$
 
 Substituting it into the period theorem gives
 
 $$
-\frac{M}{2\operatorname{lowbit}(p)}
-=
-\frac C2.
+\frac{M}{2\mathrm{lowbit}(p)} = \frac C2.
 $$
 
 So the two bottlenecks are exactly equal.
@@ -726,9 +637,7 @@ So the two bottlenecks are exactly equal.
 Thus:
 
 $$
-\boxed{
-M=C\operatorname{lowbit}(p)
-}
+\boxed{ M=C\mathrm{lowbit}(p) }
 $$
 
 is the **smallest power-of-two modulus that preserves the full coordinate-domain period $C/2$**.
@@ -741,7 +650,7 @@ This explains the old empirically discovered rule in structural terms.
 
 ---
 
-## 3.9 Designing for a fixed target period $R$
+## 3.9 Designing for a fixed target period *R*
 
 Suppose
 
@@ -760,9 +669,7 @@ $$
 Therefore the necessary and sufficient nondegenerate condition is
 
 $$
-C\ge2R,
-\qquad
-K\ge2R,
+C\ge2R, \qquad K\ge2R,
 $$
 
 with at least one of $C$ or $K$ equal to $2R$.
@@ -782,18 +689,12 @@ $$
 The most economical and symmetric choice is
 
 $$
-\boxed{
-C=2R,
-\qquad
-K=2R,
-\qquad
-M=2R\,2^v.
-}
+\boxed{ C=2R, \qquad K=2R, \qquad M=2R\,2^v. }
 $$
 
 This is just the balanced rule with $C=2R$.
 
-### If $C$ is made larger while $R$ is held fixed
+### If *C* is made larger while *R* is held fixed
 
 Set
 
@@ -823,7 +724,7 @@ $$
 
 once $K=2R$.
 
-### If $M$ is made larger instead
+### If *M* is made larger instead
 
 If
 
@@ -859,7 +760,7 @@ The answer is exact.
 
 ---
 
-## 4.1 A useful fact about $5$ modulo powers of two
+## 4.1 *A* useful fact about 5 modulo powers of two
 
 For odd $t$,
 
@@ -876,9 +777,7 @@ $$
 then the lifting-the-exponent formula gives
 
 $$
-\boxed{
-\nu_2(5^n-1)=s+2.
-}
+\boxed{ \nu_2(5^n-1)=s+2. }
 $$
 
 Therefore the multiplicative order of $5$ modulo $2^q$, for $q\ge3$, is
@@ -891,7 +790,7 @@ This is the standard cyclic principal-unit part of the group of odd residues mod
 
 ---
 
-## 4.2 Exact period of the odd part $u$
+## 4.2 Exact period of the odd part *u*
 
 ### Theorem
 
@@ -904,9 +803,7 @@ $$
 two odd factors $u,u'$ give the same post-power function on the entire diagonal XOR motif if and only if
 
 $$
-\boxed{
-u\equiv u'\pmod{C/4}.
-}
+\boxed{ u\equiv u'\pmod{C/4}. }
 $$
 
 Equivalently,
@@ -934,9 +831,7 @@ $$
 is divisible by $C/4=2^{c-2}$, then the exponent difference is divisible by
 
 $$
-2^v2^{c-2}
-=
-2^{c+v-2}.
+2^v2^{c-2} = 2^{c+v-2}.
 $$
 
 But the exponent of the group of odd units modulo
@@ -948,10 +843,7 @@ $$
 is $2^{c+v-2}$. Therefore every odd $z$ satisfies
 
 $$
-z^{2^vu'}
-\equiv
-z^{2^vu}
-\pmod M.
+z^{2^vu'} \equiv z^{2^vu} \pmod M.
 $$
 
 Since every XOR input is odd, the whole motif is unchanged.
@@ -969,10 +861,7 @@ $$
 Therefore equality
 
 $$
-5^{2^vu'}
-\equiv
-5^{2^vu}
-\pmod{2^{c+v}}
+5^{2^vu'} \equiv 5^{2^vu} \pmod{2^{c+v}}
 $$
 
 forces
@@ -997,7 +886,7 @@ So no smaller universal period works.
 
 ---
 
-## 4.3 Number of exact $u$-classes
+## 4.3 Number of exact *u*-classes
 
 The odd residues modulo $C/4$ are
 
@@ -1016,19 +905,13 @@ of them.
 Thus, for every fixed $v$,
 
 $$
-\boxed{
-\text{number of exact odd-part post-power classes}=C/8.
-}
+\boxed{ \text{number of exact odd-part post-power classes}=C/8. }
 $$
 
 A canonical representative is
 
 $$
-\boxed{
-u_{\mathrm{can}}
-=
-u\bmod(C/4),
-}
+\boxed{ u_{\mathrm{can}} = u\bmod(C/4), }
 $$
 
 where the remainder is automatically odd and nonzero.
@@ -1036,18 +919,14 @@ where the remainder is automatically odd and nonzero.
 The corresponding canonical exponent is
 
 $$
-\boxed{
-p_{\mathrm{can}}
-=
-2^v u_{\mathrm{can}}.
-}
+\boxed{ p_{\mathrm{can}} = 2^v u_{\mathrm{can}}. }
 $$
 
 Because $v$ is preserved, the modulus $M=C2^v$ is also preserved. This is an **exact** simplification: raw post-power values, existing channel draws, and final rendering are unchanged.
 
 ---
 
-## 4.4 Generalization to arbitrary $M$
+## 4.4 Generalization to arbitrary *M*
 
 At fixed $v$ with general
 
@@ -1096,21 +975,13 @@ This is the construction used by the current generator and the cleanest construc
 For odd $z$, define
 
 $$
-\boxed{
-A_{v,u}(z)
-=
-\frac{z^{2^vu}-1}{2^v}
-\pmod C.
-}
+\boxed{ A_{v,u}(z) = \frac{z^{2^vu}-1}{2^v} \pmod C. }
 $$
 
 Then
 
 $$
-z^{2^vu}
-\equiv
-1+2^vA_{v,u}(z)
-\pmod{C2^v}.
+z^{2^vu} \equiv 1+2^vA_{v,u}(z) \pmod{C2^v}.
 $$
 
 After normalization by
@@ -1122,14 +993,7 @@ $$
 the post-power is
 
 $$
-\boxed{
-\frac{z^p\bmod M}{M}
-\equiv
-\frac{A_{v,u}(z)}{C}
-+
-\frac1{C2^v}
-\pmod1.
-}
+\boxed{ \frac{z^p\bmod M}{M} \equiv \frac{A_{v,u}(z)}{C} + \frac1{C2^v} \pmod1. }
 $$
 
 This decomposition explains nearly all of the high-$v$ behavior.
@@ -1154,7 +1018,7 @@ Therefore “the spatial motif has stabilized” does **not** by itself mean tha
 
 ---
 
-## 5.2 Recurrence as $v$ increases
+## 5.2 Recurrence as *v* increases
 
 First take $u=1$ and write
 
@@ -1165,53 +1029,32 @@ $$
 For $v\ge1$,
 
 $$
-z^{2^v}
-\equiv
-1+2^vA_v
-\pmod{C2^v}.
+z^{2^v} \equiv 1+2^vA_v \pmod{C2^v}.
 $$
 
 Squaring,
 
 $$
-z^{2^{v+1}}
-=
-(z^{2^v})^2
-\equiv
-(1+2^vA_v)^2.
+z^{2^{v+1}} = (z^{2^v})^2 \equiv (1+2^vA_v)^2.
 $$
 
 Expanding,
 
 $$
-z^{2^{v+1}}
-\equiv
-1
-+
-2^{v+1}A_v
-+
-2^{2v}A_v^2
-\pmod{C2^{v+1}}.
+z^{2^{v+1}} \equiv 1 + 2^{v+1}A_v + 2^{2v}A_v^2 \pmod{C2^{v+1}}.
 $$
 
 After division by $2^{v+1}$,
 
 $$
-\boxed{
-A_{v+1}
-\equiv
-A_v
-+
-2^{v-1}A_v^2
-\pmod C.
-}
+\boxed{ A_{v+1} \equiv A_v + 2^{v-1}A_v^2 \pmod C. }
 $$
 
 This is the central recurrence for the valuation direction.
 
 ---
 
-## 5.3 Every $A_v$ is divisible by $4$ for $v\ge1$
+## 5.3 Every *A*<sub>*v*</sub> is divisible by 4 for *v* ≥ 1
 
 For odd $z$,
 
@@ -1234,10 +1077,7 @@ $$
 is always divisible by $4$:
 
 $$
-\boxed{
-4\mid A_v(z)
-\qquad(v\ge1).
-}
+\boxed{ 4\mid A_v(z) \qquad(v\ge1). }
 $$
 
 Hence the correction term in the recurrence,
@@ -1249,14 +1089,12 @@ $$
 is divisible by
 
 $$
-2^{v-1}2^4
-=
-2^{v+3}.
+2^{v-1}2^4 = 2^{v+3}.
 $$
 
 ---
 
-## 5.4 Fixed-$u$ stabilization
+## 5.4 Fixed-*u* stabilization
 
 ### Theorem
 
@@ -1269,9 +1107,7 @@ $$
 stops changing once
 
 $$
-\boxed{
-v\ge \max(1,c-3).
-}
+\boxed{ v\ge \max(1,c-3). }
 $$
 
 For $c\ge5$, this bound is sharp.
@@ -1316,7 +1152,7 @@ $$
 
 For sharpness when $c\ge5$, take $z=3$. The relevant coefficient has exactly the minimal required 2-adic valuation, so the correction immediately before the threshold is nonzero modulo $C$. Thus the preceding level genuinely differs.
 
-### Example: $C=256$
+### Example: *C*=256
 
 Here
 
@@ -1340,7 +1176,7 @@ all have the same $A$-motif.
 
 ---
 
-## 5.5 High-$v$ linearization of the odd part
+## 5.5 High-*v* linearization of the odd part
 
 There is another important simplification one level earlier.
 
@@ -1353,12 +1189,7 @@ v\ge\max(1,c-4),
 $$
 
 $$
-\boxed{
-A_{v,u}(z)
-\equiv
-u\,A_{v,1}(z)
-\pmod C.
-}
+\boxed{ A_{v,u}(z) \equiv u\,A_{v,1}(z) \pmod C. }
 $$
 
 ### Proof
@@ -1366,8 +1197,7 @@ $$
 Choose the integer lift
 
 $$
-A=\frac{z^{2^v}-1}{2^v}
-\equiv A_{v,1}(z)\pmod C.
+A=\frac{z^{2^v}-1}{2^v} \equiv A_{v,1}(z)\pmod C.
 $$
 
 Then
@@ -1379,34 +1209,19 @@ $$
 Raising to the odd power $u$ gives
 
 $$
-z^{2^vu}
-=
-(1+2^vA)^u.
+z^{2^vu} = (1+2^vA)^u.
 $$
 
 Expanding,
 
 $$
-(1+2^vA)^u
-=
-1
-+
-u2^vA
-+
-\binom u2 2^{2v}A^2
-+\cdots.
+(1+2^vA)^u = 1 + u2^vA + \binom u2 2^{2v}A^2 +\cdots.
 $$
 
 After subtracting $1$ and dividing by $2^v$,
 
 $$
-A_{v,u}
-\equiv
-uA
-+
-\binom u2 2^vA^2
-+\cdots
-\pmod C.
+A_{v,u} \equiv uA + \binom u2 2^vA^2 +\cdots \pmod C.
 $$
 
 Since $A$ is divisible by $4$, every nonlinear term is divisible by at least
@@ -1429,7 +1244,7 @@ $$
 
 ---
 
-# 6. Stronger valuation result: the whole high-$v$ tail repeats
+# 6. Stronger valuation result: the whole high-*v* tail repeats
 
 Fixed-$u$ stabilization is not yet the strongest useful statement for a generator.
 
@@ -1452,9 +1267,7 @@ $$
 Define
 
 $$
-\boxed{
-v_0=c-4.
-}
+\boxed{ v_0=c-4. }
 $$
 
 ### Theorem
@@ -1476,9 +1289,7 @@ Because fixed-$u$ stabilization begins at $v=c-3$, every later level has the sam
 Therefore
 
 $$
-\boxed{
-v=0,1,\ldots,c-4
-}
+\boxed{ v=0,1,\ldots,c-4 }
 $$
 
 are the only valuation levels needed to represent every distinct $A$-motif.
@@ -1486,9 +1297,7 @@ are the only valuation levels needed to represent every distinct $A$-motif.
 All
 
 $$
-\boxed{
-v\ge c-3
-}
+\boxed{ v\ge c-3 }
 $$
 
 are spatially redundant once $u$ is allowed to vary.
@@ -1512,12 +1321,7 @@ $$
 The recurrence gives
 
 $$
-A_{v_0+1,1}
-\equiv
-A
-+
-2^{c-5}A^2
-\pmod C.
+A_{v_0+1,1} \equiv A + 2^{c-5}A^2 \pmod C.
 $$
 
 Since $A$ is divisible by $4$, write
@@ -1529,29 +1333,19 @@ $$
 Then
 
 $$
-2^{c-5}A^2
-=
-2^{c-5}16B^2
-=
-2^{c-1}B^2.
+2^{c-5}A^2 = 2^{c-5}16B^2 = 2^{c-1}B^2.
 $$
 
 On the other hand,
 
 $$
-\frac C8A
-=
-2^{c-3}4B
-=
-2^{c-1}B.
+\frac C8A = 2^{c-3}4B = 2^{c-1}B.
 $$
 
 Their difference is
 
 $$
-2^{c-1}(B^2-B)
-=
-2^{c-1}B(B-1).
+2^{c-1}(B^2-B) = 2^{c-1}B(B-1).
 $$
 
 One of $B,B-1$ is even, so this is divisible by
@@ -1563,19 +1357,13 @@ $$
 Therefore
 
 $$
-A_{v_0+1,1}
-\equiv
-\left(1+\frac C8\right)A
-\pmod C.
+A_{v_0+1,1} \equiv \left(1+\frac C8\right)A \pmod C.
 $$
 
 At both $v_0$ and $v_0+1$, the high-$v$ linearization theorem applies. Hence
 
 $$
-A_{v_0+1,u}
-\equiv
-u\left(1+\frac C8\right)A
-\pmod C.
+A_{v_0+1,u} \equiv u\left(1+\frac C8\right)A \pmod C.
 $$
 
 Multiplication by the odd number
@@ -1619,9 +1407,7 @@ By Section 3.2 with $K=C$, the coefficient $A_{v,u}(z)$ depends only on the odd 
 For integers $j\ge0$, define
 
 $$
-B_{v,u}(j)
-=
-A_{v,u}(5^j).
+B_{v,u}(j) = A_{v,u}(5^j).
 $$
 
 Let
@@ -1633,19 +1419,13 @@ $$
 Define the integer lift
 
 $$
-\widetilde B_{v,u}(j)
-=
-\frac{q^j-1}{2^v}
-\equiv B_{v,u}(j)
-\pmod C.
+\widetilde B_{v,u}(j) = \frac{q^j-1}{2^v} \equiv B_{v,u}(j) \pmod C.
 $$
 
 Take its second forward finite difference in $j$:
 
 $$
-\Delta^2\widetilde B_{v,u}(j)
-=
-\frac{q^j(q-1)^2}{2^v}.
+\Delta^2\widetilde B_{v,u}(j) = \frac{q^j(q-1)^2}{2^v}.
 $$
 
 Because $q$ is odd,
@@ -1663,11 +1443,7 @@ $$
 gives
 
 $$
-\nu_2(\Delta^2\widetilde B_{v,u}(j))
-=
-2(v+2)-v
-=
-\boxed{v+4}.
+\nu_2(\Delta^2\widetilde B_{v,u}(j)) = 2(v+2)-v = \boxed{v+4}.
 $$
 
 Therefore, while
@@ -1691,9 +1467,7 @@ the second difference first vanishes modulo $C$. That row is still distinct from
 Thus the rows
 
 $$
-\boxed{
-v=0,\ldots,c-4
-}
+\boxed{ v=0,\ldots,c-4 }
 $$
 
 are pairwise disjoint as sets of spatial coefficient motifs.
@@ -1706,48 +1480,29 @@ Combined with the preceding section, this completely classifies the valuation di
 
 For $C\ge32$:
 
-- productive valuation levels:
-    $$
-  0,1,\ldots,c-4;
-    $$
-- number of productive levels:
-    $$
-  c-3;
-    $$
-- exact $u$-classes at every productive level:
-    $$
-  C/8;
-    $$
+- productive valuation levels: $0,1,\ldots,c-4$;
+- number of productive levels: $c-3$;
+- exact $u$-classes at every productive level: $C/8$;
 - productive rows are pairwise disjoint.
 
 Therefore the total number of distinct normalized spatial exponent motifs over **all positive exponents $p$** is
 
 $$
-\boxed{
-N_{\mathrm{spatial}}(C)
-=
-(c-3)\frac C8.
-}
+\boxed{ N_{\mathrm{spatial}}(C) = (c-3)\frac C8. }
 $$
 
 If only even exponents are allowed, remove the $v=0$ row:
 
 $$
-\boxed{
-N_{\mathrm{spatial,even}}(C)
-=
-(c-4)\frac C8.
-}
+\boxed{ N_{\mathrm{spatial,even}}(C) = (c-4)\frac C8. }
 $$
 
-### Example: $C=256$
+### Example: *C*=256
 
 Here
 
 $$
-c=8,
-\qquad
-C/8=32.
+c=8, \qquad C/8=32.
 $$
 
 The productive levels are
@@ -1778,7 +1533,7 @@ adds no new $A$-motifs.
 
 ---
 
-# 8. Fixed target period $R$
+# 8. Fixed target period *R*
 
 The canonical construction for target period
 
@@ -1805,17 +1560,13 @@ $$
 For $R\ge16$, the productive valuations are
 
 $$
-\boxed{
-v=0,1,\ldots,r-3.
-}
+\boxed{ v=0,1,\ldots,r-3. }
 $$
 
 The first spatially redundant valuation is
 
 $$
-\boxed{
-v=r-2.
-}
+\boxed{ v=r-2. }
 $$
 
 The fixed-$u$ sequence itself stabilizes starting at that same first redundant row,
@@ -1833,9 +1584,7 @@ $$
 The canonical odd parts are
 
 $$
-\boxed{
-u=1,3,5,\ldots,R/2-1.
-}
+\boxed{ u=1,3,5,\ldots,R/2-1. }
 $$
 
 There are
@@ -1849,34 +1598,26 @@ of them.
 Therefore
 
 $$
-\boxed{
-N_{\mathrm{spatial}}(R)
-=
-(r-2)\frac R4.
-}
+\boxed{ N_{\mathrm{spatial}}(R) = (r-2)\frac R4. }
 $$
 
 For even exponents only,
 
 $$
-\boxed{
-N_{\mathrm{spatial,even}}(R)
-=
-(r-3)\frac R4.
-}
+\boxed{ N_{\mathrm{spatial,even}}(R) = (r-3)\frac R4. }
 $$
 
 ### Examples
 
-| Target period $R$ | $C=2R$ | Productive $v$ values | First redundant $v$ | $u$-classes per productive $v$ |
+| Target period *R* | *C* = 2*R* | Productive *v* values | First redundant *v* | *u*-classes per productive *v* |
 |---:|---:|---|---:|---:|
-| 16 | 32 | $0,1$ | 2 | 4 |
-| 32 | 64 | $0,1,2$ | 3 | 8 |
-| 64 | 128 | $0,1,2,3$ | 4 | 16 |
-| 128 | 256 | $0,1,2,3,4$ | 5 | 32 |
-| 256 | 512 | $0,\ldots,5$ | 6 | 64 |
-| 512 | 1024 | $0,\ldots,6$ | 7 | 128 |
-| 1024 | 2048 | $0,\ldots,7$ | 8 | 256 |
+| 16 | 32 | 0,1 | 2 | 4 |
+| 32 | 64 | 0,1,2 | 3 | 8 |
+| 64 | 128 | 0,1,2,3 | 4 | 16 |
+| 128 | 256 | 0,1,2,3,4 | 5 | 32 |
+| 256 | 512 | 0,…,5 | 6 | 64 |
+| 512 | 1024 | 0,…,6 | 7 | 128 |
+| 1024 | 2048 | 0,…,7 | 8 | 256 |
 
 ---
 
@@ -1899,17 +1640,13 @@ $$
 this becomes
 
 $$
-\boxed{
-v_{\max}=\log_2R-3.
-}
+\boxed{ v_{\max}=\log_2R-3. }
 $$
 
 Equivalently, valuation $v$ can introduce a genuinely new spatial family only once
 
 $$
-\boxed{
-R\ge2^{v+3}.
-}
+\boxed{ R\ge2^{v+3}. }
 $$
 
 Thus higher $v$ is not intrinsically meaningless. It requires exponentially larger periods to reveal a new spatial family.
@@ -1923,18 +1660,14 @@ $$
 then it immediately obtains a global useful valuation cap
 
 $$
-\boxed{
-v_{\max}
-=
-\log_2R_{\max}-3
-}
+\boxed{ v_{\max} = \log_2R_{\max}-3 }
 $$
 
 for the canonical XOR construction.
 
 ---
 
-# 10. There is no useful reason to sample a contiguous interval of $p$
+# 10. There is no useful reason to sample a contiguous interval of *p*
 
 At fixed $R$, the canonical exponent representatives are
 
@@ -1957,13 +1690,7 @@ $$
 The largest numerical representative is
 
 $$
-p_{\max}
-=
-2^{r-3}\left(\frac R2-1\right)
-=
-\boxed{
-\frac R8\left(\frac R2-1\right).
-}
+p_{\max} = 2^{r-3}\left(\frac R2-1\right) = \boxed{ \frac R8\left(\frac R2-1\right). }
 $$
 
 But this should **not** be interpreted as a recommendation to sample uniformly from
@@ -1989,6 +1716,7 @@ Large numerical $p$ is not itself a measure of pattern complexity.
 The natural general rule is:
 
 > If valuation $v$ contributes $n_v$ distinct pattern classes, then sampling every pattern uniformly requires
+>
 > $$
 > P(v)=\frac{n_v}{\sum_j n_j}.
 > $$
@@ -2012,9 +1740,7 @@ and the high-$v$ tail contributes no new spatial classes.
 Therefore:
 
 $$
-\boxed{
-\text{To sample distinct XOR spatial exponent motifs uniformly, sample productive }v\text{ uniformly.}
-}
+\boxed{ \text{To sample distinct XOR spatial exponent motifs uniformly, sample productive }v\text{ uniformly.} }
 $$
 
 Then sample canonical odd $u$ uniformly.
@@ -2022,25 +1748,17 @@ Then sample canonical odd $u$ uniformly.
 For fixed target period $R=2^r$:
 
 $$
-\boxed{
-v\sim\mathrm{Uniform}\{0,\ldots,r-3\},
-}
+\boxed{ v\sim\mathrm{Uniform}\{0,\ldots,r-3\}, }
 $$
 
 $$
-\boxed{
-u\sim\mathrm{Uniform}\{1,3,\ldots,R/2-1\},
-}
+\boxed{ u\sim\mathrm{Uniform}\{1,3,\ldots,R/2-1\}, }
 $$
 
 and set
 
 $$
-\boxed{
-p=2^vu,
-\qquad
-M=2R\,2^v.
-}
+\boxed{ p=2^vu, \qquad M=2R\,2^v. }
 $$
 
 Every canonical $A$-motif then receives the same probability.
@@ -2081,7 +1799,7 @@ Thus a separate 50/50 “odd versus even” choice is generally **not** uniform 
 
 ---
 
-# 12. Why the historical $q$-sampler is nonuniform
+# 12. Why the historical *q*-sampler is nonuniform
 
 In the inherited even-power generator, when
 
@@ -2164,14 +1882,12 @@ $$
 within that finite range is only
 
 $$
-\boxed{
-(c-1)\frac C8-1.
-}
+\boxed{ (c-1)\frac C8-1. }
 $$
 
 Examples:
 
-| $C=N$ | sampled $q$ values | odd-power classes | even function/modulus pairs |
+| *C*=*N* | sampled *q* values | odd-power classes | even function/modulus pairs |
 |---:|---:|---:|---:|
 | 64 | 127 | 8 | 39 |
 | 128 | 511 | 16 | 95 |
@@ -2199,7 +1915,7 @@ That difference is precisely why the notion of equivalence must be stated explic
 
 ---
 
-# 14. How much of the old even sampler lies in the spatially redundant high-$v$ tail?
+# 14. How much of the old even sampler lies in the spatially redundant high-*v* tail?
 
 For $C=2^c\ge32$, the first spatially redundant valuation is
 
@@ -2216,19 +1932,13 @@ $$
 is
 
 $$
-\boxed{
-\frac{2^{c-1}-1}{2^{2c-5}-1}.
-}
+\boxed{ \frac{2^{c-1}-1}{2^{2c-5}-1}. }
 $$
 
 For large $C$, this is approximately
 
 $$
-\boxed{
-\frac{16}{C}
-=
-\frac8R.
-}
+\boxed{ \frac{16}{C} = \frac8R. }
 $$
 
 So, for example, at target period
@@ -2280,15 +1990,7 @@ differs.
 The rug's affine channel arithmetic can be written, for fixed raw multiplier and additive draws $a,b$, as
 
 $$
-\boxed{
-\operatorname{channel}(z)
-=
-\operatorname{frac}\left(
-\frac{a+b}{M}
-+
-\frac{(a\bmod C)A(z)}{C}
-\right).
-}
+\boxed{ \mathrm{channel}(z) = \mathrm{frac}\left( \frac{a+b}{M} + \frac{(a\bmod C)A(z)}{C} \right). }
 $$
 
 The second term contains the spatially varying motif.
@@ -2319,9 +2021,9 @@ This is why a generator intended to sample **spatial arithmetic structures** has
 
 The mathematics supports three different design philosophies.
 
-| What counts as a new exponent state? | High-$v$ behavior |
+| What counts as a new exponent state? | High-*v* behavior |
 |---|---|
-| New **spatial arithmetic motif** $A(z)$ | finite; stop after $v=c-4$ for $C\ge32$ |
+| New **spatial arithmetic motif** *A*(*z*) | finite; stop after *v* = *c* − 4 for *C* ≥ 32 |
 | Same spatial motif but a different global arithmetic/channel phase counts as new | no finite exact cutoff from this theory |
 | Different final rendered pixels with all current random channel/color parameters held fixed | no finite cutoff proved |
 
@@ -2338,7 +2040,7 @@ Under that interpretation, sampling arbitrarily high $v$ merely to obtain increa
 
 ---
 
-# 17. Fixed-$R$ canonical sampler
+# 17. Fixed-*R* canonical sampler
 
 For a target period
 
@@ -2348,32 +2050,15 @@ $$
 
 a mathematically clean XOR sampler for distinct spatial exponent motifs is:
 
-1. choose
-    $$
-   C=2R;
-    $$
+1. choose $C=2R$;
 
-2. sample
-    $$
-   v\in\{0,\ldots,r-3\}
-    $$
-   uniformly;
+2. sample $v \in \{0,\ldots,r-3\}$ uniformly;
 
-3. sample
-    $$
-   u\in\{1,3,\ldots,R/2-1\}
-    $$
-   uniformly;
+3. sample $u \in \{1,3,\ldots,R/2-1\}$ uniformly;
 
-4. set
-    $$
-   p=2^vu;
-    $$
+4. set $p=2^v u$;
 
-5. set
-    $$
-   M=2R\,2^v.
-    $$
+5. set $M=2R\,2^v$.
 
 This gives:
 
@@ -2399,11 +2084,7 @@ For each chosen finite $R$, the conditional exponent sampler can then use the fi
 If the allowed periods form a finite set and the goal is uniformity over **all spatial exponent motifs across all periods**, then period $R=2^r$ should receive weight proportional to
 
 $$
-\boxed{
-N_{\mathrm{spatial}}(R)
-=
-(r-2)\frac R4.
-}
+\boxed{ N_{\mathrm{spatial}}(R) = (r-2)\frac R4. }
 $$
 
 After choosing $R$ with that weight, sample $v$ and $u$ uniformly within the chosen period.
@@ -2461,7 +2142,7 @@ The original combined XOR/OR script reported $173{,}018$ exact integer identity 
 The later results in this document add proofs for:
 
 - the general $C/M$ period formula;
-- exact motif independence from $C$ once $C\ge K$;
+- exact motif independence from $C$ once $C \ge K$;
 - the setwise collapse of all high-$v$ rows onto the last productive row;
 - pairwise distinctness of all productive valuation rows;
 - the resulting finite count of spatial XOR exponent motifs;
@@ -2473,20 +2154,18 @@ Those extensions were derived mathematically in the follow-up discussion and are
 
 # 21. Summary of the three theories
 
-## $C/M$ theory
+## *C*/*M* theory
 
 Define
 
 $$
-K=\frac{M}{\operatorname{lowbit}(p)}.
+K=\frac{M}{\mathrm{lowbit}(p)}.
 $$
 
 For nondegenerate power-of-two $C,K$,
 
 $$
-\boxed{
-R=\frac12\min(C,K).
-}
+\boxed{ R=\frac12\min(C,K). }
 $$
 
 If
@@ -2500,7 +2179,7 @@ the complete post-powered arithmetic motif is exactly independent of any further
 The historical choice
 
 $$
-M=C\operatorname{lowbit}(p)
+M=C\mathrm{lowbit}(p)
 $$
 
 sets
@@ -2518,11 +2197,7 @@ $$
 For target period $R$, the canonical economical choice is
 
 $$
-\boxed{
-C=2R,
-\qquad
-M=2R\operatorname{lowbit}(p).
-}
+\boxed{ C=2R, \qquad M=2R\mathrm{lowbit}(p). }
 $$
 
 ---
@@ -2540,9 +2215,7 @@ with $u$ odd.
 Under the balanced rule, at fixed $v$,
 
 $$
-\boxed{
-u\equiv u'\pmod{C/4}
-}
+\boxed{ u\equiv u'\pmod{C/4} }
 $$
 
 if and only if the two exponents give the same complete raw XOR post-power function.
@@ -2574,10 +2247,7 @@ $$
 define the spatial coefficient motif
 
 $$
-A_{v,u}(z)
-=
-\frac{z^{2^vu}-1}{2^v}
-\pmod C.
+A_{v,u}(z) = \frac{z^{2^vu}-1}{2^v} \pmod C.
 $$
 
 A fixed $u$ stabilizes at
@@ -2591,31 +2261,23 @@ But if $u$ may vary, the entire stabilized family is already present one level e
 The only valuation rows needed to represent every distinct spatial coefficient motif are
 
 $$
-\boxed{
-v=0,\ldots,c-4.
-}
+\boxed{ v=0,\ldots,c-4. }
 $$
 
 Each productive row has $C/8$ classes, and the rows are mutually disjoint. Therefore
 
 $$
-\boxed{
-N_{\mathrm{spatial}}=(c-3)C/8.
-}
+\boxed{ N_{\mathrm{spatial}}=(c-3)C/8. }
 $$
 
 For fixed period $R=2^r$ with $C=2R$,
 
 $$
-\boxed{
-v=0,\ldots,r-3,
-}
+\boxed{ v=0,\ldots,r-3, }
 $$
 
 $$
-\boxed{
-u=1,3,\ldots,R/2-1.
-}
+\boxed{ u=1,3,\ldots,R/2-1. }
 $$
 
 Every productive $v$-row contains the same number $R/4$ of spatial classes, so **uniform sampling of distinct spatial exponent motifs means uniform sampling of $v$** followed by uniform sampling of canonical $u$.
