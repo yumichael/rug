@@ -1,0 +1,6056 @@
+{
+  "checks": {
+    "odd_exponent_equivalence": 55200,
+    "normalized_xor_stability": 76,
+    "odd_part_is_channel_multiplier": 324,
+    "stability_bound_sharp": 5,
+    "distinct_odd_tables": 35,
+    "or_period_and_saturated_tail": 29362,
+    "or_normalized_stability": 176,
+    "stable_channel_offset_identity": 87840
+  },
+  "total_checks": 173018,
+  "range_results": [
+    {
+      "domain": 8,
+      "old_q_choices": 1,
+      "odd_function_choices": 1,
+      "even_function_modulus_pairs": 1,
+      "largest_v": 1,
+      "normalized_stability_v": 1
+    },
+    {
+      "domain": 16,
+      "old_q_choices": 7,
+      "odd_function_choices": 2,
+      "even_function_modulus_pairs": 5,
+      "largest_v": 3,
+      "normalized_stability_v": 1
+    },
+    {
+      "domain": 32,
+      "old_q_choices": 31,
+      "odd_function_choices": 4,
+      "even_function_modulus_pairs": 15,
+      "largest_v": 5,
+      "normalized_stability_v": 2
+    },
+    {
+      "domain": 64,
+      "old_q_choices": 127,
+      "odd_function_choices": 8,
+      "even_function_modulus_pairs": 39,
+      "largest_v": 7,
+      "normalized_stability_v": 3
+    },
+    {
+      "domain": 128,
+      "old_q_choices": 511,
+      "odd_function_choices": 16,
+      "even_function_modulus_pairs": 95,
+      "largest_v": 9,
+      "normalized_stability_v": 4
+    },
+    {
+      "domain": 256,
+      "old_q_choices": 2047,
+      "odd_function_choices": 32,
+      "even_function_modulus_pairs": 223,
+      "largest_v": 11,
+      "normalized_stability_v": 5
+    },
+    {
+      "domain": 512,
+      "old_q_choices": 8191,
+      "odd_function_choices": 64,
+      "even_function_modulus_pairs": 511,
+      "largest_v": 13,
+      "normalized_stability_v": 6
+    }
+  ],
+  "or_results": [
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "combined_values": 2,
+      "odd_values": 2,
+      "even_nonzero_values": 0,
+      "odd_part_period": 2,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "combined_values": 4,
+      "odd_values": 2,
+      "even_nonzero_values": 1,
+      "odd_part_period": 2,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "combined_values": 1,
+      "odd_values": 1,
+      "even_nonzero_values": 0,
+      "odd_part_period": 1,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "combined_values": 2,
+      "odd_values": 1,
+      "even_nonzero_values": 0,
+      "odd_part_period": 1,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "combined_values": 4,
+      "odd_values": 4,
+      "even_nonzero_values": 0,
+      "odd_part_period": 4,
+      "odd_stability_v": 1
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "combined_values": 6,
+      "odd_values": 4,
+      "even_nonzero_values": 1,
+      "odd_part_period": 4,
+      "odd_stability_v": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "combined_values": 1,
+      "odd_values": 1,
+      "even_nonzero_values": 0,
+      "odd_part_period": 1,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "combined_values": 2,
+      "odd_values": 1,
+      "even_nonzero_values": 0,
+      "odd_part_period": 1,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "combined_values": 8,
+      "odd_values": 8,
+      "even_nonzero_values": 0,
+      "odd_part_period": 8,
+      "odd_stability_v": 2
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "combined_values": 12,
+      "odd_values": 8,
+      "even_nonzero_values": 3,
+      "odd_part_period": 8,
+      "odd_stability_v": 2
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "combined_values": 2,
+      "odd_values": 2,
+      "even_nonzero_values": 0,
+      "odd_part_period": 2,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "combined_values": 4,
+      "odd_values": 2,
+      "even_nonzero_values": 1,
+      "odd_part_period": 2,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "combined_values": 16,
+      "odd_values": 16,
+      "even_nonzero_values": 0,
+      "odd_part_period": 16,
+      "odd_stability_v": 3
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "combined_values": 22,
+      "odd_values": 16,
+      "even_nonzero_values": 5,
+      "odd_part_period": 16,
+      "odd_stability_v": 3
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "combined_values": 4,
+      "odd_values": 4,
+      "even_nonzero_values": 0,
+      "odd_part_period": 4,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "combined_values": 6,
+      "odd_values": 4,
+      "even_nonzero_values": 1,
+      "odd_part_period": 4,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "combined_values": 32,
+      "odd_values": 32,
+      "even_nonzero_values": 0,
+      "odd_part_period": 32,
+      "odd_stability_v": 4
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "combined_values": 44,
+      "odd_values": 32,
+      "even_nonzero_values": 11,
+      "odd_part_period": 32,
+      "odd_stability_v": 4
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "combined_values": 8,
+      "odd_values": 8,
+      "even_nonzero_values": 0,
+      "odd_part_period": 8,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "combined_values": 10,
+      "odd_values": 8,
+      "even_nonzero_values": 1,
+      "odd_part_period": 8,
+      "odd_stability_v": 0
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "combined_values": 64,
+      "odd_values": 64,
+      "even_nonzero_values": 0,
+      "odd_part_period": 64,
+      "odd_stability_v": 5
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "combined_values": 86,
+      "odd_values": 64,
+      "even_nonzero_values": 21,
+      "odd_part_period": 64,
+      "odd_stability_v": 5
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "combined_values": 16,
+      "odd_values": 16,
+      "even_nonzero_values": 0,
+      "odd_part_period": 16,
+      "odd_stability_v": 1
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "combined_values": 18,
+      "odd_values": 16,
+      "even_nonzero_values": 1,
+      "odd_part_period": 16,
+      "odd_stability_v": 1
+    },
+    {
+      "domain": 512,
+      "pre": 2,
+      "diagonal": true,
+      "combined_values": 128,
+      "odd_values": 128,
+      "even_nonzero_values": 0,
+      "odd_part_period": 128,
+      "odd_stability_v": 6
+    },
+    {
+      "domain": 512,
+      "pre": 2,
+      "diagonal": false,
+      "combined_values": 172,
+      "odd_values": 128,
+      "even_nonzero_values": 43,
+      "odd_part_period": 128,
+      "odd_stability_v": 6
+    },
+    {
+      "domain": 512,
+      "pre": 4,
+      "diagonal": true,
+      "combined_values": 32,
+      "odd_values": 32,
+      "even_nonzero_values": 0,
+      "odd_part_period": 32,
+      "odd_stability_v": 2
+    },
+    {
+      "domain": 512,
+      "pre": 4,
+      "diagonal": false,
+      "combined_values": 36,
+      "odd_values": 32,
+      "even_nonzero_values": 3,
+      "odd_part_period": 32,
+      "odd_stability_v": 2
+    }
+  ],
+  "favorite_reductions": [
+    {
+      "file": "fav1.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 208308,
+      "equivalent_power": 1460,
+      "v": 2,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav1.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 30224,
+      "equivalent_power": 16,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav1.json",
+      "region": "main",
+      "domain": 128,
+      "power": 18610,
+      "equivalent_power": 50,
+      "v": 1,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav1.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 30224,
+      "equivalent_power": 16,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav10.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 23661,
+      "equivalent_power": 109,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav10.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 25216,
+      "equivalent_power": 640,
+      "v": 7,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav10.json",
+      "region": "main",
+      "domain": 128,
+      "power": 218268,
+      "equivalent_power": 28,
+      "v": 2,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav10.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 25216,
+      "equivalent_power": 640,
+      "v": 7,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav11.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 156357,
+      "equivalent_power": 197,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav11.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 233168,
+      "equivalent_power": 208,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav11.json",
+      "region": "main",
+      "domain": 128,
+      "power": 216686,
+      "equivalent_power": 46,
+      "v": 1,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav11.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 233168,
+      "equivalent_power": 208,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav12.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 135940,
+      "equivalent_power": 772,
+      "v": 2,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav12.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 125424,
+      "equivalent_power": 240,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav12.json",
+      "region": "main",
+      "domain": 128,
+      "power": 211088,
+      "equivalent_power": 144,
+      "v": 4,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav12.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 125424,
+      "equivalent_power": 240,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav13-square.json",
+      "region": "field",
+      "domain": 1024,
+      "power": 49946,
+      "equivalent_power": 282,
+      "v": 1,
+      "bases_checked": 512
+    },
+    {
+      "file": "fav13-square.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 144912,
+      "equivalent_power": 16,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav13-square.json",
+      "region": "main",
+      "domain": 128,
+      "power": 258298,
+      "equivalent_power": 58,
+      "v": 1,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav13-square.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 144912,
+      "equivalent_power": 16,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav13.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 49946,
+      "equivalent_power": 794,
+      "v": 1,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav13.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 144912,
+      "equivalent_power": 16,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav13.json",
+      "region": "main",
+      "domain": 128,
+      "power": 258298,
+      "equivalent_power": 58,
+      "v": 1,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav13.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 144912,
+      "equivalent_power": 16,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav14.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 156614,
+      "equivalent_power": 966,
+      "v": 1,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav14.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 166192,
+      "equivalent_power": 48,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav14.json",
+      "region": "main",
+      "domain": 128,
+      "power": 60726,
+      "equivalent_power": 6,
+      "v": 1,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav14.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 166192,
+      "equivalent_power": 48,
+      "v": 4,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav15.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 116481,
+      "equivalent_power": 257,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav15.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 27052,
+      "equivalent_power": 44,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav15.json",
+      "region": "main",
+      "domain": 128,
+      "power": 132896,
+      "equivalent_power": 800,
+      "v": 5,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav15.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 27052,
+      "equivalent_power": 44,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav16.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 252737,
+      "equivalent_power": 321,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav16.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 77804,
+      "equivalent_power": 44,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav16.json",
+      "region": "main",
+      "domain": 128,
+      "power": 202970,
+      "equivalent_power": 10,
+      "v": 1,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav16.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 77804,
+      "equivalent_power": 44,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav17.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 60919,
+      "equivalent_power": 503,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav17.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 233110,
+      "equivalent_power": 22,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav17.json",
+      "region": "main",
+      "domain": 128,
+      "power": 23296,
+      "equivalent_power": 768,
+      "v": 8,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav17.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 233110,
+      "equivalent_power": 22,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav18.json",
+      "region": "field",
+      "domain": 1024,
+      "power": 40836,
+      "equivalent_power": 900,
+      "v": 2,
+      "bases_checked": 512
+    },
+    {
+      "file": "fav18.json",
+      "region": "inner",
+      "domain": 32,
+      "power": 13580,
+      "equivalent_power": 12,
+      "v": 2,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav18.json",
+      "region": "main",
+      "domain": 64,
+      "power": 49978,
+      "equivalent_power": 26,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav18.json",
+      "region": "outer",
+      "domain": 32,
+      "power": 13580,
+      "equivalent_power": 12,
+      "v": 2,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav19.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 77945,
+      "equivalent_power": 121,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav19.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 116796,
+      "equivalent_power": 60,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav19.json",
+      "region": "main",
+      "domain": 128,
+      "power": 63542,
+      "equivalent_power": 54,
+      "v": 1,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav19.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 116796,
+      "equivalent_power": 60,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav2-1.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 214357,
+      "equivalent_power": 341,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav2-1.json",
+      "region": "inner",
+      "domain": 32,
+      "power": 231720,
+      "equivalent_power": 40,
+      "v": 3,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav2-1.json",
+      "region": "main",
+      "domain": 64,
+      "power": 135418,
+      "equivalent_power": 26,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav2-1.json",
+      "region": "outer",
+      "domain": 32,
+      "power": 231720,
+      "equivalent_power": 40,
+      "v": 3,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav2.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 214357,
+      "equivalent_power": 341,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav2.json",
+      "region": "inner",
+      "domain": 32,
+      "power": 231720,
+      "equivalent_power": 40,
+      "v": 3,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav2.json",
+      "region": "main",
+      "domain": 64,
+      "power": 135418,
+      "equivalent_power": 26,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav2.json",
+      "region": "outer",
+      "domain": 32,
+      "power": 231720,
+      "equivalent_power": 40,
+      "v": 3,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav20.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 176310,
+      "equivalent_power": 182,
+      "v": 1,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav20.json",
+      "region": "inner",
+      "domain": 32,
+      "power": 216450,
+      "equivalent_power": 2,
+      "v": 1,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav20.json",
+      "region": "main",
+      "domain": 64,
+      "power": 24106,
+      "equivalent_power": 10,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav20.json",
+      "region": "outer",
+      "domain": 32,
+      "power": 216450,
+      "equivalent_power": 2,
+      "v": 1,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav21.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 19353,
+      "equivalent_power": 409,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav21.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 152300,
+      "equivalent_power": 44,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav21.json",
+      "region": "main",
+      "domain": 128,
+      "power": 192380,
+      "equivalent_power": 124,
+      "v": 2,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav21.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 152300,
+      "equivalent_power": 44,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav22.json",
+      "region": "field",
+      "domain": 4096,
+      "power": 288407,
+      "equivalent_power": 663,
+      "v": 0,
+      "bases_checked": 2048
+    },
+    {
+      "file": "fav22.json",
+      "region": "inner",
+      "domain": 128,
+      "power": 699056,
+      "equivalent_power": 176,
+      "v": 4,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav22.json",
+      "region": "main",
+      "domain": 256,
+      "power": 390830,
+      "equivalent_power": 46,
+      "v": 1,
+      "bases_checked": 128
+    },
+    {
+      "file": "fav22.json",
+      "region": "outer",
+      "domain": 128,
+      "power": 699056,
+      "equivalent_power": 176,
+      "v": 4,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav23.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 173953,
+      "equivalent_power": 385,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav23.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 77444,
+      "equivalent_power": 4,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav23.json",
+      "region": "main",
+      "domain": 128,
+      "power": 205832,
+      "equivalent_power": 8,
+      "v": 3,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav23.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 77444,
+      "equivalent_power": 4,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav24.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 44177,
+      "equivalent_power": 145,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav24.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 126432,
+      "equivalent_power": 480,
+      "v": 5,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav24.json",
+      "region": "main",
+      "domain": 128,
+      "power": 73638,
+      "equivalent_power": 38,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav24.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 126432,
+      "equivalent_power": 480,
+      "v": 5,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav25.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 948002,
+      "equivalent_power": 802,
+      "v": 1,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav25.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 52894,
+      "equivalent_power": 30,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav25.json",
+      "region": "main",
+      "domain": 128,
+      "power": 703560,
+      "equivalent_power": 72,
+      "v": 3,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav25.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 52894,
+      "equivalent_power": 30,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav3.json",
+      "region": "field",
+      "domain": 1024,
+      "power": 40836,
+      "equivalent_power": 900,
+      "v": 2,
+      "bases_checked": 512
+    },
+    {
+      "file": "fav3.json",
+      "region": "inner",
+      "domain": 32,
+      "power": 13580,
+      "equivalent_power": 12,
+      "v": 2,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav3.json",
+      "region": "main",
+      "domain": 64,
+      "power": 49978,
+      "equivalent_power": 26,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav3.json",
+      "region": "outer",
+      "domain": 32,
+      "power": 13580,
+      "equivalent_power": 12,
+      "v": 2,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav4.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 215528,
+      "equivalent_power": 2536,
+      "v": 3,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav4.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 66366,
+      "equivalent_power": 30,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav4.json",
+      "region": "main",
+      "domain": 128,
+      "power": 90580,
+      "equivalent_power": 20,
+      "v": 2,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav4.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 66366,
+      "equivalent_power": 30,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav5.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 215528,
+      "equivalent_power": 2536,
+      "v": 3,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav5.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 66366,
+      "equivalent_power": 30,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav5.json",
+      "region": "main",
+      "domain": 128,
+      "power": 90580,
+      "equivalent_power": 84,
+      "v": 2,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav5.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 66366,
+      "equivalent_power": 30,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav6.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 99524,
+      "equivalent_power": 1220,
+      "v": 2,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav6.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 66586,
+      "equivalent_power": 26,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav6.json",
+      "region": "main",
+      "domain": 128,
+      "power": 90212,
+      "equivalent_power": 4,
+      "v": 2,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav6.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 66586,
+      "equivalent_power": 26,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav7.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 97350,
+      "equivalent_power": 70,
+      "v": 1,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav7.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 44962,
+      "equivalent_power": 2,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav7.json",
+      "region": "main",
+      "domain": 128,
+      "power": 46692,
+      "equivalent_power": 4,
+      "v": 2,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav7.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 44962,
+      "equivalent_power": 2,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav8.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 153640,
+      "equivalent_power": 2088,
+      "v": 3,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav8.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 189580,
+      "equivalent_power": 12,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav8.json",
+      "region": "main",
+      "domain": 128,
+      "power": 98158,
+      "equivalent_power": 14,
+      "v": 1,
+      "bases_checked": 16
+    },
+    {
+      "file": "fav8.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 189580,
+      "equivalent_power": 12,
+      "v": 2,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav9.json",
+      "region": "field",
+      "domain": 2048,
+      "power": 139873,
+      "equivalent_power": 97,
+      "v": 0,
+      "bases_checked": 1024
+    },
+    {
+      "file": "fav9.json",
+      "region": "inner",
+      "domain": 64,
+      "power": 92326,
+      "equivalent_power": 6,
+      "v": 1,
+      "bases_checked": 32
+    },
+    {
+      "file": "fav9.json",
+      "region": "main",
+      "domain": 128,
+      "power": 32356,
+      "equivalent_power": 100,
+      "v": 2,
+      "bases_checked": 64
+    },
+    {
+      "file": "fav9.json",
+      "region": "outer",
+      "domain": 64,
+      "power": 92326,
+      "equivalent_power": 6,
+      "v": 1,
+      "bases_checked": 32
+    }
+  ],
+  "favorite_bases_checked": 30000,
+  "spatial_period_checks": 675,
+  "spatial_periods": [
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 1,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 2,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 4
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 1
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 2
+    },
+    {
+      "domain": 8,
+      "pre": 4,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 1,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 32,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 96,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 2,
+      "diagonal": false,
+      "power": 160,
+      "axis_period": 8
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 1
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 32,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 96,
+      "axis_period": 2
+    },
+    {
+      "domain": 16,
+      "pre": 4,
+      "diagonal": false,
+      "power": 160,
+      "axis_period": 2
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 1,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 32,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 96,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 160,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 64,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 192,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 2,
+      "diagonal": false,
+      "power": 320,
+      "axis_period": 16
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 32,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 96,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 160,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 64,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 192,
+      "axis_period": 8
+    },
+    {
+      "domain": 32,
+      "pre": 4,
+      "diagonal": false,
+      "power": 320,
+      "axis_period": 8
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 128,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 384,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 1,
+      "diagonal": true,
+      "power": 640,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 128,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 384,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": true,
+      "power": 640,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 32,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 96,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 160,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 64,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 192,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 320,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 128,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 384,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 2,
+      "diagonal": false,
+      "power": 640,
+      "axis_period": 32
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 128,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 384,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": true,
+      "power": 640,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 32,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 96,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 160,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 64,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 192,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 320,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 128,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 384,
+      "axis_period": 16
+    },
+    {
+      "domain": 64,
+      "pre": 4,
+      "diagonal": false,
+      "power": 640,
+      "axis_period": 16
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 128,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 384,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 640,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 256,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 768,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 1,
+      "diagonal": true,
+      "power": 1280,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 128,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 384,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 640,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 256,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 768,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": true,
+      "power": 1280,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 32,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 96,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 160,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 64,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 192,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 320,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 128,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 384,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 640,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 256,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 768,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 2,
+      "diagonal": false,
+      "power": 1280,
+      "axis_period": 64
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 128,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 384,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 640,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 256,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 768,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": true,
+      "power": 1280,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 32,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 96,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 160,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 64,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 192,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 320,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 128,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 384,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 640,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 256,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 768,
+      "axis_period": 32
+    },
+    {
+      "domain": 128,
+      "pre": 4,
+      "diagonal": false,
+      "power": 1280,
+      "axis_period": 32
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 128,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 384,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 640,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 256,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 768,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 1280,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 512,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 1536,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 1,
+      "diagonal": true,
+      "power": 2560,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 128,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 384,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 640,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 256,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 768,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 1280,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 512,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 1536,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": true,
+      "power": 2560,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 32,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 96,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 160,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 64,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 192,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 320,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 128,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 384,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 640,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 256,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 768,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 1280,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 512,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 1536,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 2,
+      "diagonal": false,
+      "power": 2560,
+      "axis_period": 128
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 1,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 3,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 5,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 2,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 6,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 10,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 4,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 12,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 20,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 8,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 24,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 40,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 16,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 48,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 80,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 32,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 96,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 160,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 64,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 192,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 320,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 128,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 384,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 640,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 256,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 768,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 1280,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 512,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 1536,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": true,
+      "power": 2560,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 1,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 3,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 5,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 2,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 6,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 10,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 4,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 12,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 20,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 8,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 24,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 40,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 16,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 48,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 80,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 32,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 96,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 160,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 64,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 192,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 320,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 128,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 384,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 640,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 256,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 768,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 1280,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 512,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 1536,
+      "axis_period": 64
+    },
+    {
+      "domain": 256,
+      "pre": 4,
+      "diagonal": false,
+      "power": 2560,
+      "axis_period": 64
+    }
+  ]
+}
