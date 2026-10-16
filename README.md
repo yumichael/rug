@@ -2,6 +2,8 @@
 
 Get your rug here: <https://yumichael.github.io/rug/>
 
+Agent-specific guidance is in [AGENTS.md](AGENTS.md).
+
 ## Development
 
 Install Node.js 22 or newer with npm, then run:
