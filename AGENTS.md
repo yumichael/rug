@@ -4,7 +4,7 @@ This file is the single source of truth for repository-specific agent instructio
 
 ## Repository layout
 
-The web application lives in `index.html`. `prototype.md` describes the application design, `research/` contains mathematical investigations and supporting artifacts, and `saved-settings/` contains saved generator settings. Development tooling lives in `scripts/` and `.github/workflows/`.
+The web application lives in `index.html`. See [Documentation](README.md#documentation) for project documents and their purpose. `research/` contains mathematical investigations and supporting artifacts, and `saved-settings/` contains saved generator settings. Development tooling lives in `scripts/` and `.github/workflows/`.
 
 ## Working in this repository
 
