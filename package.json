@@ -1,0 +1,11 @@
+{
+  "name": "rug",
+  "private": true,
+  "scripts": {
+    "check:markdown": "node scripts/markdown.mjs --check",
+    "format:markdown": "node scripts/markdown.mjs --write"
+  },
+  "devDependencies": {
+    "rumdl": "0.2.77"
+  }
+}

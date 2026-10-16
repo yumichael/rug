@@ -24,9 +24,9 @@ This document focuses only on the **diagonal XOR combiner**. OR-family combiners
 
 ---
 
-# 1. Construction and assumptions
+## 1. Construction and assumptions
 
-## 1.1 Coordinate domain and diagonal XOR
+### 1.1 Coordinate domain and diagonal XOR
 
 Let
 
@@ -54,7 +54,7 @@ $$
 z_C(x,y)=a_C(x,y)\mathbin{\mathrm{XOR}}b_C(x,y).
 $$
 
-### Lemma 1: every diagonal-XOR input is odd
+#### Lemma 1: every diagonal-XOR input is odd
 
 Modulo $2$,
 
@@ -70,7 +70,7 @@ $$
 
 This is the central simplification behind the XOR theory: post-powering acts only on odd residues modulo powers of two.
 
-### Lemma 2: the complete motif encounters every odd residue modulo *C*
+#### Lemma 2: the complete motif encounters every odd residue modulo _C_
 
 Let $z$ be any odd residue with $1\le z<C$. Choose
 
@@ -96,7 +96,7 @@ Consequently, a distinction that can be witnessed on one odd residue such as $5$
 
 ---
 
-## 1.2 Exponent decomposition
+### 1.2 Exponent decomposition
 
 The post-power exponent is assumed positive:
 
@@ -134,7 +134,7 @@ The case $p=0$ is separate: $z^0=1$ for all XOR inputs, so it gives a constant p
 
 ---
 
-## 1.3 Modulus and post-power
+### 1.3 Modulus and post-power
 
 Let the modulus be a power of two,
 
@@ -174,7 +174,7 @@ These are the nondegenerate sizes relevant to normal rug motifs.
 
 ---
 
-# 2. Several notions of “the same pattern”
+## 2. Several notions of “the same pattern”
 
 Before giving the main results, it is important to distinguish different equivalence notions.
 
@@ -200,7 +200,7 @@ This distinction is essential when deciding which repetitions should count as re
 
 ---
 
-# 3. *C*/*M* theory
+## 3. _C_/_M_ theory
 
 The first question is:
 
@@ -210,7 +210,7 @@ The answer is especially clean for powers of two.
 
 ---
 
-## 3.1 *A* standard 2-adic lemma
+### 3.1 _A_ standard 2-adic lemma
 
 We will repeatedly use the following form of the lifting-the-exponent principle.
 
@@ -230,9 +230,9 @@ This is the mechanism by which a factor $2^v$ in the exponent supplies an additi
 
 ---
 
-## 3.2 The post-power only needs the input modulo *K*
+### 3.2 The post-power only needs the input modulo _K_
 
-### Claim
+#### Claim: The post-power only needs the input modulo _K_
 
 Let
 
@@ -262,7 +262,7 @@ $$
 \boxed{ z_1^p\equiv z_2^p\pmod M. }
 $$
 
-### Proof
+#### Proof: The post-power only needs the input modulo _K_
 
 If $v=0$, then $K=M$, so the claim is immediate.
 
@@ -304,7 +304,7 @@ $$
 
 which proves the claim.
 
-### Interpretation
+#### Interpretation
 
 Once $p$ and $M$ are fixed, the post-power cannot distinguish two odd inputs that agree modulo
 
@@ -316,9 +316,9 @@ So $K$, rather than $M$ alone, is the effective amount of input information surv
 
 ---
 
-## 3.3 Growing *C* eventually changes nothing at all
+### 3.3 Growing _C_ eventually changes nothing at all
 
-### Claim
+#### Claim: Growing _C_ eventually changes nothing at all
 
 If
 
@@ -334,7 +334,7 @@ $$
 
 for every cell $(x,y)$.
 
-### Proof
+#### Proof: Growing _C_ eventually changes nothing at all
 
 Because $C$ and $K$ are powers of two and $C\ge K$,
 
@@ -368,7 +368,7 @@ $$
 
 Thus the exact residue modulo $M$ is identical at every cell.
 
-### Consequence
+#### Consequence
 
 $$
 \boxed{ C\ge K \quad\Longrightarrow\quad \text{all larger }C\text{ are exactly redundant for the post-power motif.} }
@@ -378,7 +378,7 @@ This is stronger than merely saying that the repetition period has stopped growi
 
 ---
 
-## 3.4 The raw XOR motif has axis period *C*/2
+### 3.4 The raw XOR motif has axis period _C_/2
 
 Let
 
@@ -416,7 +416,7 @@ $$
 
 ---
 
-## 3.5 Why the balanced modulus preserves the full period
+### 3.5 Why the balanced modulus preserves the full period
 
 Under the balanced rule,
 
@@ -502,9 +502,9 @@ This is the theoretical explanation of the empirical behavior that originally mo
 
 ---
 
-## 3.6 General exact period theorem
+### 3.6 General exact period theorem
 
-### Theorem
+#### Theorem: General exact period theorem
 
 Assume
 
@@ -538,11 +538,11 @@ $$
 \boxed{ R(C,p,M) = \min\left( \frac C2, \frac{M}{2\mathrm{lowbit}(p)} \right). }
 $$
 
-### Proof
+#### Proof: General exact period theorem
 
 There are two cases.
 
-#### Case 1: *C* ≥ *K*
+##### Case 1: _C_ ≥ _K_
 
 Section 3.3 proved that the entire motif is exactly the same as the motif with coordinate domain $K$.
 
@@ -564,7 +564,7 @@ $$
 R=K/2.
 $$
 
-#### Case 2: *C* ≤ *K*
+##### Case 2: _C_ ≤ _K_
 
 The raw XOR construction already has period $C/2$, so the post-powered motif has period at most $C/2$.
 
@@ -598,7 +598,7 @@ $$
 
 ---
 
-## 3.7 Interpretation: two independent bottlenecks
+### 3.7 Interpretation: two independent bottlenecks
 
 The theorem can be read as
 
@@ -618,7 +618,7 @@ Whichever is smaller is the actual period.
 
 ---
 
-## 3.8 Why the historical *M* rule is natural
+### 3.8 Why the historical _M_ rule is natural
 
 The historical rule is
 
@@ -650,7 +650,7 @@ This explains the old empirically discovered rule in structural terms.
 
 ---
 
-## 3.9 Designing for a fixed target period *R*
+### 3.9 Designing for a fixed target period _R_
 
 Suppose
 
@@ -694,7 +694,7 @@ $$
 
 This is just the balanced rule with $C=2R$.
 
-### If *C* is made larger while *R* is held fixed
+#### If _C_ is made larger while _R_ is held fixed
 
 Set
 
@@ -724,7 +724,7 @@ $$
 
 once $K=2R$.
 
-### If *M* is made larger instead
+#### If _M_ is made larger instead
 
 If
 
@@ -746,7 +746,7 @@ So “same target period” does not by itself mean “same motif.”
 
 ---
 
-# 4. Odd-part theory
+## 4. Odd-part theory
 
 We now return to the balanced construction
 
@@ -760,7 +760,7 @@ The answer is exact.
 
 ---
 
-## 4.1 *A* useful fact about 5 modulo powers of two
+### 4.1 _A_ useful fact about 5 modulo powers of two
 
 For odd $t$,
 
@@ -790,9 +790,9 @@ This is the standard cyclic principal-unit part of the group of odd residues mod
 
 ---
 
-## 4.2 Exact period of the odd part *u*
+### 4.2 Exact period of the odd part _u_
 
-### Theorem
+#### Theorem: Exact period of the odd part _u_
 
 For fixed $v$ under the balanced rule,
 
@@ -814,7 +814,7 @@ $$
 
 is the exact odd-part cycle.
 
-### Proof: sufficiency
+#### Proof: sufficiency
 
 The exponent difference is
 
@@ -848,7 +848,7 @@ $$
 
 Since every XOR input is odd, the whole motif is unchanged.
 
-### Proof: minimality
+#### Proof: minimality
 
 The complete motif encounters $z=5$.
 
@@ -886,7 +886,7 @@ So no smaller universal period works.
 
 ---
 
-## 4.3 Number of exact *u*-classes
+### 4.3 Number of exact _u_-classes
 
 The odd residues modulo $C/4$ are
 
@@ -926,7 +926,7 @@ Because $v$ is preserved, the modulus $M=C2^v$ is also preserved. This is an **e
 
 ---
 
-## 4.4 Generalization to arbitrary *M*
+### 4.4 Generalization to arbitrary _M_
 
 At fixed $v$ with general
 
@@ -952,7 +952,7 @@ This is useful conceptually: the number of exponent classes at a fixed $v$ is co
 
 ---
 
-# 5. Valuation theory
+## 5. Valuation theory
 
 The odd-part theory completely solves duplication in $u$ at fixed $v$.
 
@@ -970,7 +970,7 @@ This is the construction used by the current generator and the cleanest construc
 
 ---
 
-## 5.1 Separate the spatial term from the constant phase
+### 5.1 Separate the spatial term from the constant phase
 
 For odd $z$, define
 
@@ -1018,7 +1018,7 @@ Therefore “the spatial motif has stabilized” does **not** by itself mean tha
 
 ---
 
-## 5.2 Recurrence as *v* increases
+### 5.2 Recurrence as _v_ increases
 
 First take $u=1$ and write
 
@@ -1054,7 +1054,7 @@ This is the central recurrence for the valuation direction.
 
 ---
 
-## 5.3 Every *A*<sub>*v*</sub> is divisible by 4 for *v* ≥ 1
+### 5.3 Every _Aᵥ_ is divisible by 4 for _v_ ≥ 1
 
 For odd $z$,
 
@@ -1094,9 +1094,9 @@ $$
 
 ---
 
-## 5.4 Fixed-*u* stabilization
+### 5.4 Fixed-_u_ stabilization
 
-### Theorem
+#### Theorem: Fixed-_u_ stabilization
 
 For a fixed odd $u$,
 
@@ -1112,7 +1112,7 @@ $$
 
 For $c\ge5$, this bound is sharp.
 
-### Proof
+#### Proof: Fixed-_u_ stabilization
 
 Apply the recurrence to the odd base $z^u$. The correction from level $v$ to $v+1$ is divisible by
 
@@ -1152,7 +1152,7 @@ $$
 
 For sharpness when $c\ge5$, take $z=3$. The relevant coefficient has exactly the minimal required 2-adic valuation, so the correction immediately before the threshold is nonzero modulo $C$. Thus the preceding level genuinely differs.
 
-### Example: *C*=256
+#### Example: _C_=256 for Fixed-_u_ stabilization
 
 Here
 
@@ -1176,11 +1176,11 @@ all have the same $A$-motif.
 
 ---
 
-## 5.5 High-*v* linearization of the odd part
+### 5.5 High-_v_ linearization of the odd part
 
 There is another important simplification one level earlier.
 
-### Theorem
+#### Theorem: High-_v_ linearization of the odd part
 
 For
 
@@ -1192,7 +1192,7 @@ $$
 \boxed{ A_{v,u}(z) \equiv u\,A_{v,1}(z) \pmod C. }
 $$
 
-### Proof
+#### Proof: High-_v_ linearization of the odd part
 
 Choose the integer lift
 
@@ -1244,7 +1244,7 @@ $$
 
 ---
 
-# 6. Stronger valuation result: the whole high-*v* tail repeats
+## 6. Stronger valuation result: the whole high-_v_ tail repeats
 
 Fixed-$u$ stabilization is not yet the strongest useful statement for a generator.
 
@@ -1256,7 +1256,7 @@ For $C\ge32$, the answer is one level earlier than fixed-$u$ stabilization.
 
 ---
 
-## 6.1 The last new valuation level
+### 6.1 The last new valuation level
 
 Let
 
@@ -1270,7 +1270,7 @@ $$
 \boxed{ v_0=c-4. }
 $$
 
-### Theorem
+#### Theorem: The last new valuation level
 
 The complete set of spatial coefficient motifs at
 
@@ -1304,7 +1304,7 @@ are spatially redundant once $u$ is allowed to vary.
 
 ---
 
-## 6.2 Proof that the first stabilized row is a permutation of the previous row
+### 6.2 Proof that the first stabilized row is a permutation of the previous row
 
 Let
 
@@ -1392,7 +1392,7 @@ No new spatial motif appears.
 
 ---
 
-## 6.3 The productive valuation rows are mutually distinct
+### 6.3 The productive valuation rows are mutually distinct
 
 It remains to prove that the rows
 
@@ -1476,7 +1476,7 @@ Combined with the preceding section, this completely classifies the valuation di
 
 ---
 
-# 7. Complete count of XOR spatial exponent motifs
+## 7. Complete count of XOR spatial exponent motifs
 
 For $C\ge32$:
 
@@ -1497,7 +1497,7 @@ $$
 \boxed{ N_{\mathrm{spatial,even}}(C) = (c-4)\frac C8. }
 $$
 
-### Example: *C*=256
+### Example: _C_=256 for Complete count of XOR spatial exponent motifs
 
 Here
 
@@ -1533,7 +1533,7 @@ adds no new $A$-motifs.
 
 ---
 
-# 8. Fixed target period *R*
+## 8. Fixed target period _R_
 
 The canonical construction for target period
 
@@ -1609,19 +1609,19 @@ $$
 
 ### Examples
 
-| Target period *R* | *C* = 2*R* | Productive *v* values | First redundant *v* | *u*-classes per productive *v* |
-|---:|---:|---|---:|---:|
-| 16 | 32 | 0,1 | 2 | 4 |
-| 32 | 64 | 0,1,2 | 3 | 8 |
-| 64 | 128 | 0,1,2,3 | 4 | 16 |
-| 128 | 256 | 0,1,2,3,4 | 5 | 32 |
-| 256 | 512 | 0,…,5 | 6 | 64 |
-| 512 | 1024 | 0,…,6 | 7 | 128 |
-| 1024 | 2048 | 0,…,7 | 8 | 256 |
+| Target period _R_ | _C_ = 2*R* | Productive _v_ values | First redundant _v_ | _u_-classes per productive _v_ |
+| ----------------: | ---------: | --------------------- | ------------------: | -----------------------------: |
+|                16 |         32 | 0,1                   |                   2 |                              4 |
+|                32 |         64 | 0,1,2                 |                   3 |                              8 |
+|                64 |        128 | 0,1,2,3               |                   4 |                             16 |
+|               128 |        256 | 0,1,2,3,4             |                   5 |                             32 |
+|               256 |        512 | 0,…,5                 |                   6 |                             64 |
+|               512 |       1024 | 0,…,6                 |                   7 |                            128 |
+|              1024 |       2048 | 0,…,7                 |                   8 |                            256 |
 
 ---
 
-# 9. What happens when the allowed period is unbounded?
+## 9. What happens when the allowed period is unbounded?
 
 There is no universal finite cutoff on $v$ if the allowed spatial period can grow without bound.
 
@@ -1667,7 +1667,7 @@ for the canonical XOR construction.
 
 ---
 
-# 10. There is no useful reason to sample a contiguous interval of *p*
+## 10. There is no useful reason to sample a contiguous interval of _p_
 
 At fixed $R$, the canonical exponent representatives are
 
@@ -1711,7 +1711,7 @@ Large numerical $p$ is not itself a measure of pattern complexity.
 
 ---
 
-# 11. Uniform sampling of distinct exponent motifs
+## 11. Uniform sampling of distinct exponent motifs
 
 The natural general rule is:
 
@@ -1799,7 +1799,7 @@ Thus a separate 50/50 “odd versus even” choice is generally **not** uniform 
 
 ---
 
-# 12. Why the historical *q*-sampler is nonuniform
+## 12. Why the historical _q_-sampler is nonuniform
 
 In the inherited even-power generator, when
 
@@ -1855,7 +1855,7 @@ The old distribution may still be aesthetically desirable. The point is that its
 
 ---
 
-# 13. Redundancy in the historical exponent range
+## 13. Redundancy in the historical exponent range
 
 The original research quantified how many exact fixed-$v$ post-power/modulus cases the old range revisits.
 
@@ -1887,13 +1887,13 @@ $$
 
 Examples:
 
-| *C*=*N* | sampled *q* values | odd-power classes | even function/modulus pairs |
-|---:|---:|---:|---:|
-| 64 | 127 | 8 | 39 |
-| 128 | 511 | 16 | 95 |
-| 256 | 2,047 | 32 | 223 |
-| 512 | 8,191 | 64 | 511 |
-| 2,048 | 131,071 | 256 | 2,559 |
+| _C_=_N_ | sampled _q_ values | odd-power classes | even function/modulus pairs |
+| ------: | -----------------: | ----------------: | --------------------------: |
+|      64 |                127 |                 8 |                          39 |
+|     128 |                511 |                16 |                          95 |
+|     256 |              2,047 |                32 |                         223 |
+|     512 |              8,191 |                64 |                         511 |
+|   2,048 |            131,071 |               256 |                       2,559 |
 
 This count is **not** the same as the spatial-$A$ count derived later in this report.
 
@@ -1915,7 +1915,7 @@ That difference is precisely why the notion of equivalence must be stated explic
 
 ---
 
-# 14. How much of the old even sampler lies in the spatially redundant high-*v* tail?
+## 14. How much of the old even sampler lies in the spatially redundant high-_v_ tail?
 
 For $C=2^c\ge32$, the first spatially redundant valuation is
 
@@ -1959,7 +1959,7 @@ At large periods this tail is not the dominant source of redundancy. Repeated sa
 
 ---
 
-# 15. Why “same spatial motif” does not imply the same channel phases
+## 15. Why “same spatial motif” does not imply the same channel phases
 
 Suppose two exponent choices have the same spatial coefficient function
 
@@ -2017,15 +2017,15 @@ This is why a generator intended to sample **spatial arithmetic structures** has
 
 ---
 
-# 16. Three reasonable equivalence choices for generator design
+## 16. Three reasonable equivalence choices for generator design
 
 The mathematics supports three different design philosophies.
 
-| What counts as a new exponent state? | High-*v* behavior |
-|---|---|
-| New **spatial arithmetic motif** *A*(*z*) | finite; stop after *v* = *c* − 4 for *C* ≥ 32 |
-| Same spatial motif but a different global arithmetic/channel phase counts as new | no finite exact cutoff from this theory |
-| Different final rendered pixels with all current random channel/color parameters held fixed | no finite cutoff proved |
+| What counts as a new exponent state?                                                        | High-_v_ behavior                             |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| New **spatial arithmetic motif** _A_(_z_)                                                   | finite; stop after _v_ = _c_ − 4 for _C_ ≥ 32 |
+| Same spatial motif but a different global arithmetic/channel phase counts as new            | no finite exact cutoff from this theory       |
+| Different final rendered pixels with all current random channel/color parameters held fixed | no finite cutoff proved                       |
 
 The first choice gives the clean finite canonical sampler.
 
@@ -2040,7 +2040,7 @@ Under that interpretation, sampling arbitrarily high $v$ merely to obtain increa
 
 ---
 
-# 17. Fixed-*R* canonical sampler
+## 17. Fixed-_R_ canonical sampler
 
 For a target period
 
@@ -2071,7 +2071,7 @@ If preserving the visual statistics of the historical generator is more importan
 
 ---
 
-# 18. Unbounded-period sampler
+## 18. Unbounded-period sampler
 
 If the period itself is allowed to be arbitrarily large, then there are infinitely many distinct spatial exponent motifs overall.
 
@@ -2091,7 +2091,7 @@ After choosing $R$ with that weight, sample $v$ and $u$ uniformly within the cho
 
 ---
 
-# 19. Small-domain exceptions
+## 19. Small-domain exceptions
 
 The clean valuation classification
 
@@ -2121,7 +2121,7 @@ For normal rug sizes, these exceptions are best handled explicitly rather than c
 
 ---
 
-# 20. What was verified computationally in the original research
+## 20. What was verified computationally in the original research
 
 The original exact-integer research script did not rely solely on visual inspection.
 
@@ -2152,9 +2152,9 @@ Those extensions were derived mathematically in the follow-up discussion and are
 
 ---
 
-# 21. Summary of the three theories
+## 21. Summary of the three theories
 
-## *C*/*M* theory
+### _C_/_M_ theory
 
 Define
 
@@ -2202,7 +2202,7 @@ $$
 
 ---
 
-## Odd-part theory
+### Odd-part theory
 
 Write
 
@@ -2236,7 +2236,7 @@ Large decimal values of $u$ merely cycle through these finite classes.
 
 ---
 
-## Valuation theory
+### Valuation theory
 
 For
 
@@ -2284,7 +2284,7 @@ Every productive $v$-row contains the same number $R/4$ of spatial classes, so *
 
 ---
 
-# 22. Recommended interpretation for future generator work
+## 22. Recommended interpretation for future generator work
 
 The post-power exponent should not be viewed primarily as one large integer.
 
@@ -2307,13 +2307,13 @@ The historical generator should still be retained as a versioned legacy recipe i
 
 ---
 
-# 23. Reference to the original research
+## 23. Reference to the original research
 
 The starting point for this document was:
 
 - `research/2026-10-11-post-power/2026-10-11-post-power-range.md`
 - `research/2026-10-11-post-power/2026-10-11-post-power-range.py`
 
-The original report also cites the standard structure of odd units modulo powers of two; a useful reference is Keith Conrad, *Prime Powers, Units, and Finite Subgroups of GL_n(Q)*, especially the discussion of units modulo $2^k$.
+The original report also cites the standard structure of odd units modulo powers of two; a useful reference is Keith Conrad, _Prime Powers, Units, and Finite Subgroups of GL_n(Q)_, especially the discussion of units modulo $2^k$.
 
 This document intentionally stops at the diagonal XOR combiner. A later addendum can develop the corresponding theory for squared OR, fourth-power OR, straight versus diagonal variants, or other future combiners.

@@ -35,12 +35,12 @@ This preserves `M`, all post-power values on odd inputs, and the derived channel
 For `v = 1,...,d−2`, all `D/8` odd-part classes occur. At higher valuations the class counts halve successively to one. Summing the full levels and the geometric tail gives the formula. These counts refer to the full raw XOR table plus its modulus, not to distinct rendered rugs with independently randomized colors.
 
 | D = N | Sampled q choices | Odd-power classes | Even function/modulus pairs | Largest v sampled |
-|---:|---:|---:|---:|---:|
-| 64 | 127 | 8 | 39 | 7 |
-| 128 | 511 | 16 | 95 | 9 |
-| 256 | 2,047 | 32 | 223 | 11 |
-| 512 | 8,191 | 64 | 511 | 13 |
-| 2,048 | 131,071 | 256 | 2,559 | 17 |
+| ----: | ----------------: | ----------------: | --------------------------: | ----------------: |
+|    64 |               127 |                 8 |                          39 |                 7 |
+|   128 |               511 |                16 |                          95 |                 9 |
+|   256 |             2,047 |                32 |                         223 |                11 |
+|   512 |             8,191 |                64 |                         511 |                13 |
+| 2,048 |           131,071 |               256 |                       2,559 |                17 |
 
 The first four rows were directly counted; the final row follows from the proved formula. For odd powers, using the same q range and `p = 2q−1` covers only `D/8` distinct exponent functions, repeatedly. At `D = 2048`, 131,071 candidate q values represent just 256 odd-power tables.
 

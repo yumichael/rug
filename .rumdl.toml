@@ -1,0 +1,105 @@
+# rumdl owns Markdown formatting, document structure, and content checks.
+
+# Use rumdl's default rules, including new defaults added by future upgrades.
+# Configure file discovery, opt-in rules, and exceptions here.
+[global]
+# These rules are opt-in, so add them without replacing the default rule set.
+extend-enable = [
+    "MD060", # Align table columns.
+    "MD070", # Detect nested code fences that close the outer block early.
+    "MD080", # Heading anchors must be unique, including explicit IDs.
+]
+disable = [
+    "MD038", # Disable to allow surrounding space in inline code spans
+    "MD040", # Disable to allow fenced code blocks without a language label.
+]
+
+# Leave include unset to use rumdl's native Markdown extensions.
+# Exclude archived and vendored files.
+exclude = ["archives/**", "**/_vendor/**"]
+respect-gitignore = true
+
+# These structural repairs need a human decision even in an explicit --fix run.
+unfixable = [
+    "MD001", # Changing heading levels can change the intended hierarchy.
+    "MD025", # Demoting a top-level heading can change the document structure.
+    "MD041", # Promoting the first heading can change the document structure.
+    "MD046", # Closing a fence requires deciding where the code ends.
+    "MD056", # Equalizing table columns can discard or reinterpret cell content.
+    "MD069", # Removing repeated list markers can remove an intended nesting level.
+    "MD070", # Repairing nested fences requires identifying the intended nesting.
+]
+
+# Use ATX (#) headings.
+[MD003]
+style = "atx"
+
+# Use dash markers for unordered lists.
+[MD004]
+style = "dash"
+
+# Use two-space indentation for nested unordered lists.
+[MD007]
+indent = 2
+
+# Check for tabs in prose while leaving code-block indentation alone.
+[MD010]
+code-blocks = false
+
+# Join ordinary paragraphs onto one source line without a length limit.
+# Leave code blocks, tables, and headings out of paragraph reflow.
+# In rumdl 0.2.66, reflow can merge 1)/2) list items; use 1./2. markers.
+[MD013]
+reflow = true
+reflow-mode = "normalize"
+line-length = 0
+paragraphs = true
+code-blocks = false
+tables = false
+headings = false
+
+# Check duplicate heading text among siblings within the same section.
+[MD024]
+siblings-only = true
+
+# Allow one H1; a front-matter title does not count as an H1.
+[MD025]
+front-matter-title = ""
+
+# Accept sequential ordered-list numbering or all-ones numbering.
+[MD029]
+style = "one_or_ordered"
+
+# Use --- for thematic breaks.
+[MD035]
+style = "---"
+
+# Report emphasis used instead of a heading without converting it automatically.
+[MD036]
+fix = false
+
+# Require an opening H1; a front-matter title does not satisfy this requirement.
+[MD041]
+front-matter-title = ""
+
+# Use backticks for fenced code blocks.
+[MD048]
+style = "backtick"
+
+# Use underscores for emphasis (italics).
+[MD049]
+style = "underscore"
+
+# Use asterisks for strong emphasis (bold).
+[MD050]
+style = "asterisk"
+
+# Align table columns without a width limit, following their alignment markers.
+[MD060]
+style = "aligned"
+max-width = 0
+column-align = "auto"
+
+# Allow blank lines around continuation paragraphs within list items.
+[MD076]
+allow-loose-continuation = true

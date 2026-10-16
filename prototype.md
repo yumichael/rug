@@ -60,11 +60,11 @@ The original random generator chooses an even post-power by drawing `q` uniforml
 
 Give the main border and each guard independent pattern settings. Each supports these families:
 
-| Family | Coordinate pre-power | Combiner | Post-power |
-| --- | --- | --- | --- |
-| XOR | 1 | XOR | Odd or even |
-| Squared OR | 2 | OR | Odd or even |
-| Fourth-power OR | 4 | OR | Odd or even |
+| Family          | Coordinate pre-power | Combiner | Post-power  |
+| --------------- | -------------------- | -------- | ----------- |
+| XOR             | 1                    | XOR      | Odd or even |
+| Squared OR      | 2                    | OR       | Odd or even |
+| Fourth-power OR | 4                    | OR       | Odd or even |
 
 Each ring also supports all four rotations. Provide **Lock guard styles**, making the outer guard use the inner guard's complete pattern and color settings. Their placement origins remain local to their respective enclosing rectangles. Unlocking permits independent edits; the width relationship always remains fixed.
 
@@ -118,17 +118,16 @@ vec3 palette(float t, vec3 a, vec3 b, vec3 c, vec3 d) {
 
 Here `a` sets the midpoint, `b` the amplitude, `c` the frequency, and `d` the phase of each color channel. Use a few named presets and clamp the result to `[0, 1]`. A shared palette across field and border can help the rug read as one composition, while independent region palettes allow stronger guard contrast. The migrated coloring is the baseline; the following palette additions are optional.
 
-
 ### OKLab and OKLCH palettes
 
 Suggest perceptual palettes using [OKLab and its polar form, OKLCH](https://bottosson.github.io/posts/oklab/). OKLab supports smooth interpolation between chosen colors; OKLCH separates lightness `L`, chroma `C`, and hue `h`, making palette contrast and hue range easy to control. Feed these palettes one normalized modular scalar `t = r_c / M`, with optional quantization for a limited set of yarn-like colors.
 
-| Scheme | Construction | Suggested colors |
-| --- | --- | --- |
-| OKLab gradient | Interpolate named palette stops in OKLab; repeat the first stop at the end for a cyclic palette. | Indigo → burgundy → ochre → ivory → indigo |
-| OKLCH hue cycle | Sweep hue through one turn at fixed lightness and target chroma. | A spectrum with more even perceived lightness |
-| OKLCH tonal palette | Keep hue fixed and vary lightness and chroma smoothly. | Indigo and cream, or terracotta and sand |
-| OKLCH two-hue palette | Interpolate between two hues along an explicitly chosen hue arc, with independently controlled lightness and chroma. | Teal and rust, or plum and gold |
+| Scheme                | Construction                                                                                                         | Suggested colors                              |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| OKLab gradient        | Interpolate named palette stops in OKLab; repeat the first stop at the end for a cyclic palette.                     | Indigo → burgundy → ochre → ivory → indigo    |
+| OKLCH hue cycle       | Sweep hue through one turn at fixed lightness and target chroma.                                                     | A spectrum with more even perceived lightness |
+| OKLCH tonal palette   | Keep hue fixed and vary lightness and chroma smoothly.                                                               | Indigo and cream, or terracotta and sand      |
+| OKLCH two-hue palette | Interpolate between two hues along an explicitly chosen hue arc, with independently controlled lightness and chroma. | Teal and rust, or plum and gold               |
 
 These are proposed art directions, not fixed color values. Provide named presets and, if useful, expose lightness range, target chroma, hue offset, and palette level count. Reuse a palette across regions while allowing guards to use a darker or lighter lightness range.
 
@@ -136,7 +135,7 @@ Prefer native CSS [`oklab()` and `oklch()` colors](https://developer.mozilla.org
 
 ```javascript
 // Hue-cycle palette: L and C are preset parameters; h0 is a turn offset.
-const h = ((h0 + t) % 1 + 1) % 1;
+const h = (((h0 + t) % 1) + 1) % 1;
 ctx.fillStyle = `oklch(${L} ${C} ${h}turn)`;
 ```
 

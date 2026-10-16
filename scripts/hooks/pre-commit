@@ -1,0 +1,15 @@
+#!/bin/sh
+# Check indexed Markdown without stashing or changing working-tree files.
+set -eu
+cd "$(git rev-parse --show-toplevel)"
+rug_node=${RUG_NODE:-$(git config --local --get rug.nodeExecutable || true)}
+if [ -z "$rug_node" ]; then
+  rug_node=$(command -v node || true)
+elif [ "${rug_node#*/}" = "$rug_node" ]; then
+  rug_node=$(command -v "$rug_node" || true)
+fi
+if [ -z "$rug_node" ] || [ ! -x "$rug_node" ]; then
+  echo 'Error: Node.js is unavailable. Run sh scripts/setup-rumdl.sh after installing Node.js and npm.' >&2
+  exit 1
+fi
+exec "$rug_node" scripts/markdown.mjs --staged

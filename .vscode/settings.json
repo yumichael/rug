@@ -1,5 +1,13 @@
 {
   "files.readonlyInclude": {
-    "**/*": true
-  }
+    "**/*": true,
+  },
+  "files.associations": {
+    "**/.vscode/*.json": "jsonc",
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "rvben.rumdl",
+    "editor.formatOnSave": true,
+  },
+  "rumdl.server.path": "node_modules/.bin/rumdl",
 }
