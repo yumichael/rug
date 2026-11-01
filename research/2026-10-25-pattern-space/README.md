@@ -2,6 +2,8 @@
 
 Read [the report](2026-10-25-pattern-space-theory.md) for proofs, sampling recommendations, symmetry classifications, and scope. This is a continuation of the October 13 post-power research, based on repository commit `e1fde1ca97c9644511d4b4e9a264f532a75b1090`.
 
+For a concrete introduction to the existing XOR algorithm, read [Understanding XOR post-power, multiplier, and offset](2026-11-01-xor-post-operations-explained.md). It follows the discussion through numerical examples, structural versus exact output families, the growing-modulus tail, and the current sampler.
+
 Run the exact checks and regenerate figures from the repository root:
 
 ```sh
