@@ -4,7 +4,7 @@ This report records the understanding developed in our discussion of the existin
 
 The scope is one numerical channel, with no pre-operation, followed by a positive integer post-power, an odd post-multiplier, and a post-add. We consider complete periodic patterns before color conversion, quantization, cropping, and stretching. Those later stages can hide numerical differences. Polynomial post-operations and powered pre-operations are separate extensions.
 
-The central distinction is between a **structural family**, which sets aside common shifts and odd value rescalings, and an **exact output family**, which retains every distinct numerical result at a specified modulus. This distinction matters especially when the modulus changes.
+We distinguish an **affine family**, which sets aside common shifts and odd value rescalings; a **shift class**, which sets aside only common shifts; and an **exact output family**, which retains every distinct numerical result at a specified modulus. The term **structural family** used below means the affine family, not a proven grouping by visual similarity. These distinctions matter especially when the modulus changes.
 
 ## 1. What one channel computes
 
@@ -111,7 +111,7 @@ $$
 \text{odd families}=C/8,\qquad\text{even families}=C/32,\qquad\text{total}=5C/32.
 $$
 
-These families retain numerical relationships that matter under a fixed color mapping. Merely asking which cells have equal values would give a coarser classification: all odd powers share one equality partition, and all even powers share another.
+These families distinguish numerical relationships under the allowed affine controls. Merely asking which cells have equal values would give a coarser classification: all odd powers share one equality partition, and all even powers share another. Neither classification by itself establishes which rugs will look most similar; Section 11 explains that limitation.
 
 ## 5. How the tail can stay structurally fixed while its modulus grows
 
@@ -318,19 +318,214 @@ For even powers under the balanced modulus rule, the checkerboard pattern has fu
 
 The checkerboard version still encounters every odd input and retains exact axis period $C/2$. Consequently, the structural family counts and samplers in this report apply to both the full-grid construction and this checkerboard version. These results do not require making checkerboard selection the default for future algorithms or establish the same counts for arbitrary selection rules.
 
-## 11. What a generator can preserve separately
+## 11. Does an affine family describe visual similarity?
 
-For this established XOR family, the research supports separating three decisions:
+The affine grouping answers an operational question: does a post-power add possibilities that multiplier and offset adjustments cannot already supply? It does not establish that patterns within a family look more alike than patterns from different families.
 
-1. Choose a structural family at the requested period, using a compact canonical index.
-1. Choose its odd relative-value rearrangement and common phase as numerical color controls.
-1. Specify the phase precision, including whether to preserve the exact phase possibilities of an older recipe.
+Within each power parity, the groups of equal-valued cells stay the same. Changing the power or multiplier changes the numerical labels assigned to those groups. A fixed color mapping turns those numerical relationships into color relationships, which can change which shapes or textures stand out.
 
-This separation explains both conclusions we reached: a finite set of structural families is sufficient at fixed domain size, while retaining every exact output from arbitrarily large tail moduli requires unbounded phase precision. The tail family stays structurally fixed; its exact output sets keep growing.
+There are several useful levels of comparison:
+
+| What the comparison retains                        | What it distinguishes                                   |
+| -------------------------------------------------- | ------------------------------------------------------- |
+| Which cells have equal values                      | Two equality partitions: odd and even                   |
+| Numerical arrangements up to multiplier and offset | The affine families counted above                       |
+| Numerical arrangements up to offset only           | The shift classes introduced below                      |
+| A chosen color mapping and its settings            | Potentially many visibly different rugs within a family |
+
+If color style allowed an arbitrary lookup table, it could absorb every bijective relabeling. Within each parity, changing the post-power would then supply no new equality geometry or attainable coloring possibilities. A restricted color mapping does not have that freedom, so numerical relabelings can still matter greatly.
+
+The existing research gives no guarantee that two patterns in different affine families look more different than two patterns within one family. Its equality-based measurements cannot distinguish relabelings of the same partition, and its numerical phase measurements depend on the chosen representative. Those measurements are diagnostics, not a validated perceptual distance.
+
+Uniform affine-family sampling therefore means equal probability per family under the selected controls. It does not mean equal probability per visually salient kind of rug.
+
+## 12. Counting patterns that differ only by a common shift as equal
+
+A **shift class** identifies normalized patterns that differ by one common circular phase at every cell:
+
+$$
+G_i\equiv F_i+\theta\pmod1.
+$$
+
+It retains the different relative arrangements produced by multiplication. In the representation from Section 5, it removes $\theta$ while retaining the table $aT_i/Q$.
+
+Every affine family contains one shift class per effective odd multiplier modulo $Q$. There are $Q/2$ such multipliers. Different effective multipliers give different shift classes; multipliers belonging to different affine families cannot produce the same shift class.
+
+At $C=256$, the counts are:
+
+| Power parity | Affine families | Effective denominator | Shift classes per affine family | Total shift classes |
+| ------------ | --------------: | --------------------: | ------------------------------: | ------------------: |
+| Odd          |              32 |                   128 |                              64 |               2,048 |
+| Even         |               8 |                    64 |                              32 |                 256 |
+| Both         |              40 |                       |                                 |               2,304 |
+
+These shift-class counts and the sampler below are applications of the theory report's affine-action formula and family classification.
+
+Within either parity, all affine families contain the same number of shift classes. Consequently, choosing an affine family uniformly and then choosing an effective odd multiplier uniformly gives uniform shift classes for that parity.
+
+Across both parities, each odd affine family contains twice as many shift classes as each even affine family. Uniform shift-class sampling therefore assigns the parities probabilities
+
+$$
+\Pr(\text{odd})=\frac89,\qquad\Pr(\text{even})=\frac19.
+$$
+
+This differs from the $4/5$ versus $1/5$ weighting for uniform affine families. At $C=256$, the full shift-class distribution by representative valuation is:
+
+| Representative valuation | Shift classes | Probability |
+| -----------------------: | ------------: | ----------- |
+|           0 — odd powers |         2,048 | 8/9         |
+|                        1 |           128 | 1/18        |
+|                        2 |            64 | 1/36        |
+|                        3 |            32 | 1/72        |
+|  4 — tail representative |            32 | 1/72        |
+
+Choosing only even powers gives the valuation probabilities already listed in Section 7: one half, one quarter, one eighth, and one eighth. The older uniform-valuation, uniform-odd-part proposal instead gives each even row one quarter. Adding a uniform multiplier spreads probability within each selected family; it does not correct how often that family was selected.
+
+The current integer sampler is different from that older proposal. In the $N=C=256$ example, its nearly uniform even-family probabilities also give nearly uniform even shift classes when followed by uniform effective multiplier draws. The code retains the selected parity; it does not automatically choose either of the all-parity weightings discussed here.
+
+## 13. A uniform shift-class sampler
+
+For the balanced XOR construction at $C\ge32$, the following procedure samples the shift classes uniformly:
+
+1. Choose odd powers with probability $8/9$ and even powers with probability $1/9$ if both are allowed. If a parity is fixed by the style, keep that parity instead.
+1. Choose a representative power uniformly from the appropriate range in Section 8.
+1. Choose the effective multiplier uniformly from the odd numbers below $Q$, where $Q=C/2$ for odd powers and $Q=C/4$ for even powers.
+1. Set $M=C2^{\nu_2(p)}$. To display a fixed representative of the shift class, use $\beta\equiv-\alpha\pmod M$, making the output at input $z=1$ equal zero.
+
+The actual parameter ranges at $C=256$ are:
+
+| Parity | Probability if both allowed | Representative powers | Effective multipliers |
+| ------ | --------------------------- | --------------------- | --------------------- |
+| Odd    | 8/9                         | 1, 3, …, 63           | 1, 3, …, 127          |
+| Even   | 1/9                         | 2, 4, …, 16           | 1, 3, …, 63           |
+
+Each of the 2,304 shift classes receives equal probability. An additional common phase can then be selected independently without changing the chosen class. The phase's precision remains a separate choice.
+
+This sampler uses fixed raw power representatives. Applying the same fixed color style to a different representative of an affine family still requires the compensation discussed earlier. Uniform sampling and consistent parameter interpretation are separate concerns.
+
+The power and multiplier ranges have power-of-two sizes. Independent sufficiently large uniform binary master draws can therefore project uniformly into those ranges. The nine-way parity weighting needs unbiased bounded sampling or a separately stored choice; a finite uniform binary seed cannot give that weighting exactly by simple modulo alone.
+
+## 14. Do master parameters agree with their reduced representatives?
+
+Suppose a master power and multiplier are chosen independently from large ranges. There are two ways to use them: reduce them to compact representatives before evaluation, or evaluate the master parameters directly with the power-dependent modulus. These methods can give the same sampling distribution without giving the same individual pattern for a particular master pair.
+
+For example, take $C=256$, master power 18, multiplier 1, and offset zero. Reducing the even power into the representative range 2 through 16 gives power 2. Both use modulus 512, but the outputs differ:
+
+| Input | Direct power 18 | Reduced power 2 |
+| ----: | --------------: | --------------: |
+|     1 |               1 |               1 |
+|     3 |             329 |               9 |
+|     5 |             473 |              25 |
+
+Their differences are not constant, so these are different shift classes. The identity from Section 3 tells us how to compensate:
+
+$$
+\alpha z^{18}+\beta\equiv(41\alpha)z^2+(\beta-40\alpha)\pmod{512}.
+$$
+
+The reduced power needs a correspondingly changed multiplier. For exact equality it also needs the changed offset. For shift-class equality, the offset compensation can be ignored, but the multiplier compensation remains necessary.
+
+Different reductions provide different guarantees:
+
+| Reduction                                                         | Guarantee                                                 |
+| ----------------------------------------------------------------- | --------------------------------------------------------- |
+| Multiplier modulo the raw modulus, with power fixed               | Exact output equality                                     |
+| Multiplier modulo the effective denominator, with power fixed     | Equality up to a common shift                             |
+| Even power into the compact affine-family representative range    | Same affine family; multiplier compensation can be needed |
+| Odd part modulo the older exponent cycle, keeping valuation fixed | Exact powered output equality                             |
+
+That last reduction is the earlier report's exact exponent simplification. Write $p=2^vu$, keep $v$, and use
+
+$$
+p'=2^v\bigl(u\bmod(C/4)\bigr).
+$$
+
+The odd remainder is nonzero. This reduction preserves $M$ and all powered values, so unchanged multiplier and offset settings give unchanged outputs. It does not reduce to the smallest affine-family range and does not eliminate large tail valuations.
+
+With independent uniform effective multiplier draws, an odd compensating multiplier merely permutes those draws. Thus direct and compact evaluation can have the same uniform shift-class distribution when the master ranges cover the family and multiplier indices evenly, despite selecting different patterns for individual master pairs. Uniform master exponents also need the intended parity selection; they do not automatically provide the $8/9$ versus $1/9$ mixture.
+
+For a reproducible generator, choose which calculation defines the stored variation. Either evaluate compact parameters as the definition, or retain direct master evaluation and perform the compensating transformations when canonicalizing. The affine index projection across domain sizes from Section 9 alone does not establish that independently reduced raw powers and multipliers preserve a particular shift class.
+
+## 15. Can post-powers alone supply every multiplier arrangement?
+
+Some post-powers reproduce affine adjustments of other powers, but powers alone do not cover all affine possibilities. At a fixed modulus every pure power sends input $z=1$ to residue 1, so it cannot supply arbitrary offsets. Even after ignoring common shifts, some multiplier arrangements remain unavailable.
+
+At $C=256$, the comparison is:
+
+| Allowed operations, ignoring common shifts | Odd-power shift classes | Even-power shift classes | Total |
+| ------------------------------------------ | ----------------------: | -----------------------: | ----: |
+| Post-power alone                           |                      32 |                      128 |   160 |
+| Post-power and odd multiplier              |                   2,048 |                      256 | 2,304 |
+
+The first row uses the earlier coefficient-motif classification. Pure odd powers supply only one shift class per odd affine family, whereas the multiplier supplies 64. Changing to another odd power either repeats that powered table or enters a different affine family; it cannot supply the other 63 arrangements inside the original family.
+
+Even powers absorb more multiplier arrangements, as the power-18 example demonstrates. They still reach only 128 of the 256 even shift classes at this domain size. The overlap makes some parameter descriptions redundant without making the multiplier dispensable.
+
+## 16. How the counts grow at useful field sizes
+
+For a power-of-two domain $C=2^c\ge32$, the shift-class counts are:
+
+| Allowed operations            | Odd powers | Even powers | Both parities |
+| ----------------------------- | ---------- | ----------- | ------------- |
+| Post-power alone              | C/8        | (c − 4)C/8  | (c − 3)C/8    |
+| Post-power and odd multiplier | C²/32      | C²/256      | 9C²/256       |
+
+The multiplier-inclusive counts follow by multiplying the number of affine families by the number of effective odd multipliers in each family. For example, the even count is
+
+$$
+\frac{C}{32}\cdot\frac{C}{8}=\frac{C^2}{256}.
+$$
+
+The ratio between multiplier-inclusive and power-only even counts is
+
+$$
+\frac{C^2/256}{(c-4)C/8}=\frac{C}{32(c-4)}.
+$$
+
+The factor of two at $C=256$ is therefore specific to that domain. The multiplier-inclusive space grows quadratically in $C$, while the power-only even space grows roughly as $C\log_2 C$.
+
+For a fresh or adapted field reference, the app chooses its coordinate domain from the field's cell dimensions. For the power-of-two longer sides below,
+
+$$
+C=2\max(\text{field width in cells},\text{field height in cells}).
+$$
+
+The even-power comparison for the field sizes discussed is:
+
+| Field dimensions in cells    | Coordinate domain | Power alone | Power and odd multiplier | Increase |
+| ---------------------------- | ----------------: | ----------: | -----------------------: | -------- |
+| 512 × 256                    |             1,024 |         768 |                    4,096 | 5.33×    |
+| 1,024 × 512                  |             2,048 |       1,792 |                   16,384 | 9.14×    |
+| 2,048 × 512 or 2,048 × 1,024 |             4,096 |       4,096 |                   65,536 | 16×      |
+
+Including both parities gives:
+
+| Field dimensions in cells    | Odd powers alone | Even powers alone | Odd powers and multiplier | Even powers and multiplier | Total with multiplier |
+| ---------------------------- | ---------------: | ----------------: | ------------------------: | -------------------------: | --------------------: |
+| 512 × 256                    |              128 |               768 |                    32,768 |                      4,096 |                36,864 |
+| 1,024 × 512                  |              256 |             1,792 |                   131,072 |                     16,384 |               147,456 |
+| 2,048 × 512 or 2,048 × 1,024 |              512 |             4,096 |                   524,288 |                     65,536 |               589,824 |
+
+Each doubling of the longer field dimension quadruples the multiplier-inclusive counts. The last two shapes share a coordinate domain and therefore share these complete underlying pattern counts. The counts do not assert that every corresponding visible crop or color-converted image remains distinct.
+
+Cell dimensions are the dimensions shown in the size selector. Displaying each cell at twice the pixel size does not increase the pattern space: a 512 × 256-cell field enlarged to 1,024 × 512 pixels still uses the first row. Cropping or stretching a saved reference can retain its earlier domain; those counts follow the reference rather than the current display dimensions.
+
+These are single-channel counts. They do not count complete RGB or other three-channel rugs, where the power may be shared and channel multipliers, offsets, and subsequent color conversion interact.
+
+## 17. What a generator can preserve separately
+
+For this established XOR family, the research supports separating these decisions:
+
+1. Choose the intended equivalence: affine families, shift classes, or exact outputs. This determines which choices receive equal sampling weight.
+1. Select a family and its effective odd multiplier with the corresponding weights. Uniform shift-class sampling retains multiplier arrangements and uses the $8/9$ versus $1/9$ mixture when both parities are allowed.
+1. Choose the common phase and its precision separately, including whether to preserve exact phase possibilities from an older recipe.
+1. Specify how stored master draws become parameters, including any compensation needed when changing representatives.
+
+At fixed domain size there are finitely many affine families and finitely many shift classes. Retaining every exact output from arbitrarily large tail moduli still requires unbounded phase precision. These are algebraic sampling guarantees; the existing research does not establish them as a uniform distribution of perceived visual variety.
 
 ## Sources
 
-- [October 25 theory report](2026-10-25-pattern-space-theory.md), Sections 2–4: equivalence, normalization, exact output counts, family classification, and sampling; Sections 7.2 and 7.5: full-grid and checkerboard symmetries; Section 12: variation and color contracts.
+- [October 25 theory report](2026-10-25-pattern-space-theory.md), Sections 2–4: equivalence, normalization, exact output counts, family classification, and sampling; Sections 7.2 and 7.5: full-grid and checkerboard symmetries; Section 12: variation and color contracts; Section 13.1: measurement definitions and their limits. The shift-class distributions and size tables above apply these existing counting formulas.
 - [October 13 XOR post-power theory](../2026-10-13-post-power/2026-10-13-xor-post-power-theory.md): balanced period rule, coefficient motifs, and the earlier valuation/odd-part classification.
 - [October 11 post-power investigation](../2026-10-11-post-power/2026-10-11-post-power-range.md): the actual domain versus generation-size distinction, inherited sampling range, and changing common phases.
-- [Current generator source](../../index.html): `newStyle` samples powers, `channelParameters` selects odd multipliers and offsets, and `colorTable` applies the post-power and modulus. The implementation comparison describes the source inspected on November 1, 2026.
+- [Current generator source](../../index.html): `newStyle` samples powers, `channelParameters` selects odd multipliers and offsets, and `colorTable` applies the post-power and modulus. The implementation comparisons describe the source inspected on November 2, 2026.
