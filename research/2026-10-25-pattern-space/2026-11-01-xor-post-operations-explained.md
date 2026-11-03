@@ -461,6 +461,68 @@ The first row uses the earlier coefficient-motif classification. Pure odd powers
 
 Even powers absorb more multiplier arrangements, as the power-18 example demonstrates. They still reach only 128 of the 256 even shift classes at this domain size. The overlap makes some parameter descriptions redundant without making the multiplier dispensable.
 
+### A worked example inside the power-2 family
+
+Keep $C=256$ and consider the affine family represented by power 2. After removing the common shift, its multiplier arrangements can be written as
+
+$$
+\frac{aT(z)}{64}\pmod1,\qquad T(z)=\frac{z^2-1}{8}\bmod64.
+$$
+
+The division is exact because $z$ is odd. Here $a$ is the effective odd multiplier modulo 64. Its 32 possible values, 1 through 63 in steps of two, give 32 different shift classes.
+
+Changing the power alone reaches only eight of those arrangements. The following table gives a complete set of power-only representatives inside this family, expressed relative to the power-2 table:
+
+| Pure post-power | Equivalent effective multiplier |
+| --------------: | ------------------------------: |
+|               2 |                               1 |
+|              18 |                              41 |
+|              34 |                              17 |
+|              50 |                              57 |
+|              66 |                              33 |
+|              82 |                               9 |
+|              98 |                              49 |
+|             114 |                              25 |
+
+Larger powers in this family repeat these arrangements. In increasing order, the effective multipliers reachable through powers alone are
+
+$$
+a\in\{1,9,17,25,33,41,49,57\}.
+$$
+
+An independent odd multiplier supplies all 32 odd values below 64, including multiplier 3, which is absent from that list.
+
+To see its effect numerically, choose power 2, multiplier 3, and offset $-3$ modulo 512. Its anchored normalized output is
+
+$$
+\frac{3(z^2-1)\bmod512}{512}=\frac{3T(z)\bmod64}{64}.
+$$
+
+Compare it with power 2 anchored using multiplier 1 and offset $-1$:
+
+| Input | Effective index | Anchored power 2 | Anchored power 2 with multiplier 3 |
+| ----: | --------------: | ---------------- | ---------------------------------- |
+|     1 |               0 | 0                | 0                                  |
+|     3 |               1 | 1/64             | 3/64                               |
+|     5 |               3 | 3/64             | 9/64                               |
+
+Both outputs are zero at input 1, so any common shift relating them would have to be zero modulo 1. Their other values differ, establishing that they are different shift classes.
+
+No pure post-power reproduces the multiplier-3 arrangement up to a shift: it is missing from the complete effective-multiplier list above. A power from another affine family cannot reproduce it either, because that would place the power in this affine family. Thus this family grows from eight power-only shift classes to 32 when the multiplier is allowed.
+
+### Why a fourfold increase in one family gives a twofold increase overall
+
+The eight even affine families gain different numbers of shift classes. Grouping them by their representative powers gives:
+
+| Affine families represented by powers | Combined power-only shift classes | Combined classes with multiplier |
+| ------------------------------------- | --------------------------------: | -------------------------------: |
+| 2, 6, 10, 14                          |                                32 |                              128 |
+| 4, 12                                 |                                32 |                               64 |
+| 8, 16                                 |                                64 |                               64 |
+| Total                                 |                               128 |                              256 |
+
+Each of the first four families grows from eight to 32 arrangements, adding 24. Each of the next two grows from 16 to 32, adding 16. The last two already have all 32 multiplier arrangements available through powers alone. This adds 128 shift classes overall, doubling the total despite the fourfold increase within the power-2 family.
+
 ## 16. How the counts grow at useful field sizes
 
 For a power-of-two domain $C=2^c\ge32$, the shift-class counts are:
