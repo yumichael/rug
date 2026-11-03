@@ -1,0 +1,1152 @@
+{
+  "checks": 59463,
+  "coverage": {
+    "literal_spatial_pair_cases": 8,
+    "exhaustive_same_v_spaces": 16,
+    "independent_monomial_coefficient_vectors": 4096,
+    "exhaustive_arbitrary_polynomial_spaces": [
+      [
+        8,
+        0
+      ],
+      [
+        8,
+        1
+      ],
+      [
+        8,
+        2
+      ],
+      [
+        8,
+        3
+      ],
+      [
+        16,
+        0
+      ],
+      [
+        16,
+        1
+      ],
+      [
+        16,
+        2
+      ],
+      [
+        32,
+        0
+      ],
+      [
+        32,
+        1
+      ],
+      [
+        64,
+        0
+      ]
+    ],
+    "seeded_arbitrary_polynomials": 480,
+    "explicit_recipe_cases": 2,
+    "general_vs_derivative_formula_cases": 18
+  },
+  "same_valuation": [
+    {
+      "C": 256,
+      "v": 0,
+      "modulus": 256,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        7,
+        5,
+        1
+      ],
+      "period_character": [
+        1,
+        0,
+        0
+      ],
+      "valid_bits": 12,
+      "valid_shift_classes": 4096
+    },
+    {
+      "C": 256,
+      "v": 1,
+      "modulus": 512,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        6,
+        2
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 7,
+      "valid_shift_classes": 128
+    },
+    {
+      "C": 256,
+      "v": 2,
+      "modulus": 1024,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        6,
+        1
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 6,
+      "valid_shift_classes": 64
+    },
+    {
+      "C": 256,
+      "v": 3,
+      "modulus": 2048,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        6
+      ],
+      "period_character": [
+        1
+      ],
+      "valid_bits": 5,
+      "valid_shift_classes": 32
+    },
+    {
+      "C": 256,
+      "v": 4,
+      "modulus": 4096,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        6
+      ],
+      "period_character": [
+        1
+      ],
+      "valid_bits": 5,
+      "valid_shift_classes": 32
+    },
+    {
+      "C": 1024,
+      "v": 0,
+      "modulus": 1024,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        9,
+        7,
+        3
+      ],
+      "period_character": [
+        1,
+        0,
+        0
+      ],
+      "valid_bits": 18,
+      "valid_shift_classes": 262144
+    },
+    {
+      "C": 1024,
+      "v": 1,
+      "modulus": 2048,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        8,
+        4
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 11,
+      "valid_shift_classes": 2048
+    },
+    {
+      "C": 1024,
+      "v": 2,
+      "modulus": 4096,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        8,
+        3
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 10,
+      "valid_shift_classes": 1024
+    },
+    {
+      "C": 1024,
+      "v": 3,
+      "modulus": 8192,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        8,
+        2
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 9,
+      "valid_shift_classes": 512
+    },
+    {
+      "C": 1024,
+      "v": 4,
+      "modulus": 16384,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        8,
+        1
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 8,
+      "valid_shift_classes": 256
+    },
+    {
+      "C": 1024,
+      "v": 5,
+      "modulus": 32768,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        8
+      ],
+      "period_character": [
+        1
+      ],
+      "valid_bits": 7,
+      "valid_shift_classes": 128
+    },
+    {
+      "C": 1024,
+      "v": 6,
+      "modulus": 65536,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        8
+      ],
+      "period_character": [
+        1
+      ],
+      "valid_bits": 7,
+      "valid_shift_classes": 128
+    },
+    {
+      "C": 2048,
+      "v": 0,
+      "modulus": 2048,
+      "spanning_columns": 4,
+      "coordinate_bits": [
+        10,
+        8,
+        4,
+        1
+      ],
+      "period_character": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "valid_bits": 22,
+      "valid_shift_classes": 4194304
+    },
+    {
+      "C": 2048,
+      "v": 1,
+      "modulus": 4096,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        9,
+        5
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 13,
+      "valid_shift_classes": 8192
+    },
+    {
+      "C": 2048,
+      "v": 2,
+      "modulus": 8192,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        9,
+        4
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 12,
+      "valid_shift_classes": 4096
+    },
+    {
+      "C": 2048,
+      "v": 3,
+      "modulus": 16384,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        9,
+        3
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 11,
+      "valid_shift_classes": 2048
+    },
+    {
+      "C": 2048,
+      "v": 4,
+      "modulus": 32768,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        9,
+        2
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 10,
+      "valid_shift_classes": 1024
+    },
+    {
+      "C": 2048,
+      "v": 5,
+      "modulus": 65536,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        9,
+        1
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 9,
+      "valid_shift_classes": 512
+    },
+    {
+      "C": 2048,
+      "v": 6,
+      "modulus": 131072,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        9
+      ],
+      "period_character": [
+        1
+      ],
+      "valid_bits": 8,
+      "valid_shift_classes": 256
+    },
+    {
+      "C": 2048,
+      "v": 7,
+      "modulus": 262144,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        9
+      ],
+      "period_character": [
+        1
+      ],
+      "valid_bits": 8,
+      "valid_shift_classes": 256
+    },
+    {
+      "C": 4096,
+      "v": 0,
+      "modulus": 4096,
+      "spanning_columns": 4,
+      "coordinate_bits": [
+        11,
+        9,
+        5,
+        2
+      ],
+      "period_character": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "valid_bits": 26,
+      "valid_shift_classes": 67108864
+    },
+    {
+      "C": 4096,
+      "v": 1,
+      "modulus": 8192,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        10,
+        6,
+        1
+      ],
+      "period_character": [
+        1,
+        0,
+        0
+      ],
+      "valid_bits": 16,
+      "valid_shift_classes": 65536
+    },
+    {
+      "C": 4096,
+      "v": 2,
+      "modulus": 16384,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        10,
+        5
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 14,
+      "valid_shift_classes": 16384
+    },
+    {
+      "C": 4096,
+      "v": 3,
+      "modulus": 32768,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        10,
+        4
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 13,
+      "valid_shift_classes": 8192
+    },
+    {
+      "C": 4096,
+      "v": 4,
+      "modulus": 65536,
+      "spanning_columns": 3,
+      "coordinate_bits": [
+        10,
+        3
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 12,
+      "valid_shift_classes": 4096
+    },
+    {
+      "C": 4096,
+      "v": 5,
+      "modulus": 131072,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        10,
+        2
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 11,
+      "valid_shift_classes": 2048
+    },
+    {
+      "C": 4096,
+      "v": 6,
+      "modulus": 262144,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        10,
+        1
+      ],
+      "period_character": [
+        1,
+        0
+      ],
+      "valid_bits": 10,
+      "valid_shift_classes": 1024
+    },
+    {
+      "C": 4096,
+      "v": 7,
+      "modulus": 524288,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        10
+      ],
+      "period_character": [
+        1
+      ],
+      "valid_bits": 9,
+      "valid_shift_classes": 512
+    },
+    {
+      "C": 4096,
+      "v": 8,
+      "modulus": 1048576,
+      "spanning_columns": 2,
+      "coordinate_bits": [
+        10
+      ],
+      "period_character": [
+        1
+      ],
+      "valid_bits": 9,
+      "valid_shift_classes": 512
+    }
+  ],
+  "arbitrary_polynomials": [
+    {
+      "C": 256,
+      "v": 0,
+      "modulus": 256,
+      "coordinate_bits": [
+        7,
+        5,
+        4,
+        1
+      ],
+      "all_shift_class_bits": 17,
+      "derivative_coordinate_bits": [
+        1
+      ],
+      "derivative_image_bits": 1,
+      "valid_shift_classes": 65536
+    },
+    {
+      "C": 256,
+      "v": 1,
+      "modulus": 512,
+      "coordinate_bits": [
+        8,
+        6,
+        5,
+        2,
+        1
+      ],
+      "all_shift_class_bits": 22,
+      "derivative_coordinate_bits": [
+        2
+      ],
+      "derivative_image_bits": 2,
+      "valid_shift_classes": 3145728
+    },
+    {
+      "C": 256,
+      "v": 2,
+      "modulus": 1024,
+      "coordinate_bits": [
+        9,
+        7,
+        6,
+        3,
+        2
+      ],
+      "all_shift_class_bits": 27,
+      "derivative_coordinate_bits": [
+        3,
+        1
+      ],
+      "derivative_image_bits": 4,
+      "valid_shift_classes": 125829120
+    },
+    {
+      "C": 256,
+      "v": 3,
+      "modulus": 2048,
+      "coordinate_bits": [
+        10,
+        8,
+        7,
+        4,
+        3,
+        1
+      ],
+      "all_shift_class_bits": 33,
+      "derivative_coordinate_bits": [
+        4,
+        2,
+        1
+      ],
+      "derivative_image_bits": 7,
+      "valid_shift_classes": 8522825728
+    },
+    {
+      "C": 256,
+      "v": 4,
+      "modulus": 4096,
+      "coordinate_bits": [
+        11,
+        9,
+        8,
+        5,
+        4,
+        2,
+        1
+      ],
+      "all_shift_class_bits": 40,
+      "derivative_coordinate_bits": [
+        5,
+        3,
+        2
+      ],
+      "derivative_image_bits": 10,
+      "valid_shift_classes": 1098437885952
+    },
+    {
+      "C": 1024,
+      "v": 0,
+      "modulus": 1024,
+      "coordinate_bits": [
+        9,
+        7,
+        6,
+        3,
+        2
+      ],
+      "all_shift_class_bits": 27,
+      "derivative_coordinate_bits": [
+        1
+      ],
+      "derivative_image_bits": 1,
+      "valid_shift_classes": 67108864
+    },
+    {
+      "C": 1024,
+      "v": 1,
+      "modulus": 2048,
+      "coordinate_bits": [
+        10,
+        8,
+        7,
+        4,
+        3,
+        1
+      ],
+      "all_shift_class_bits": 33,
+      "derivative_coordinate_bits": [
+        2
+      ],
+      "derivative_image_bits": 2,
+      "valid_shift_classes": 6442450944
+    },
+    {
+      "C": 1024,
+      "v": 2,
+      "modulus": 4096,
+      "coordinate_bits": [
+        11,
+        9,
+        8,
+        5,
+        4,
+        2,
+        1
+      ],
+      "all_shift_class_bits": 40,
+      "derivative_coordinate_bits": [
+        3,
+        1
+      ],
+      "derivative_image_bits": 4,
+      "valid_shift_classes": 1030792151040
+    },
+    {
+      "C": 1024,
+      "v": 3,
+      "modulus": 8192,
+      "coordinate_bits": [
+        12,
+        10,
+        9,
+        6,
+        5,
+        3,
+        2
+      ],
+      "all_shift_class_bits": 47,
+      "derivative_coordinate_bits": [
+        4,
+        2,
+        1
+      ],
+      "derivative_image_bits": 7,
+      "valid_shift_classes": 139637976727552
+    },
+    {
+      "C": 1024,
+      "v": 4,
+      "modulus": 16384,
+      "coordinate_bits": [
+        13,
+        11,
+        10,
+        7,
+        6,
+        4,
+        3
+      ],
+      "all_shift_class_bits": 54,
+      "derivative_coordinate_bits": [
+        5,
+        3,
+        2
+      ],
+      "derivative_image_bits": 10,
+      "valid_shift_classes": 17996806323437568
+    },
+    {
+      "C": 1024,
+      "v": 5,
+      "modulus": 32768,
+      "coordinate_bits": [
+        14,
+        12,
+        11,
+        8,
+        7,
+        5,
+        4
+      ],
+      "all_shift_class_bits": 61,
+      "derivative_coordinate_bits": [
+        6,
+        4,
+        3
+      ],
+      "derivative_image_bits": 13,
+      "valid_shift_classes": 2305561534236983296
+    },
+    {
+      "C": 1024,
+      "v": 6,
+      "modulus": 65536,
+      "coordinate_bits": [
+        15,
+        13,
+        12,
+        9,
+        8,
+        6,
+        5,
+        1
+      ],
+      "all_shift_class_bits": 69,
+      "derivative_coordinate_bits": [
+        7,
+        5,
+        4,
+        1
+      ],
+      "derivative_image_bits": 17,
+      "valid_shift_classes": 590291306759078281216
+    },
+    {
+      "C": 2048,
+      "v": 0,
+      "modulus": 2048,
+      "coordinate_bits": [
+        10,
+        8,
+        7,
+        4,
+        3,
+        1
+      ],
+      "all_shift_class_bits": 33,
+      "derivative_coordinate_bits": [
+        1
+      ],
+      "derivative_image_bits": 1,
+      "valid_shift_classes": 4294967296
+    },
+    {
+      "C": 2048,
+      "v": 1,
+      "modulus": 4096,
+      "coordinate_bits": [
+        11,
+        9,
+        8,
+        5,
+        4,
+        2,
+        1
+      ],
+      "all_shift_class_bits": 40,
+      "derivative_coordinate_bits": [
+        2
+      ],
+      "derivative_image_bits": 2,
+      "valid_shift_classes": 824633720832
+    },
+    {
+      "C": 2048,
+      "v": 2,
+      "modulus": 8192,
+      "coordinate_bits": [
+        12,
+        10,
+        9,
+        6,
+        5,
+        3,
+        2
+      ],
+      "all_shift_class_bits": 47,
+      "derivative_coordinate_bits": [
+        3,
+        1
+      ],
+      "derivative_image_bits": 4,
+      "valid_shift_classes": 131941395333120
+    },
+    {
+      "C": 2048,
+      "v": 3,
+      "modulus": 16384,
+      "coordinate_bits": [
+        13,
+        11,
+        10,
+        7,
+        6,
+        4,
+        3
+      ],
+      "all_shift_class_bits": 54,
+      "derivative_coordinate_bits": [
+        4,
+        2,
+        1
+      ],
+      "derivative_image_bits": 7,
+      "valid_shift_classes": 17873661021126656
+    },
+    {
+      "C": 2048,
+      "v": 4,
+      "modulus": 32768,
+      "coordinate_bits": [
+        14,
+        12,
+        11,
+        8,
+        7,
+        5,
+        4
+      ],
+      "all_shift_class_bits": 61,
+      "derivative_coordinate_bits": [
+        5,
+        3,
+        2
+      ],
+      "derivative_image_bits": 10,
+      "valid_shift_classes": 2303591209400008704
+    },
+    {
+      "C": 2048,
+      "v": 5,
+      "modulus": 65536,
+      "coordinate_bits": [
+        15,
+        13,
+        12,
+        9,
+        8,
+        6,
+        5,
+        1
+      ],
+      "all_shift_class_bits": 69,
+      "derivative_coordinate_bits": [
+        6,
+        4,
+        3
+      ],
+      "derivative_image_bits": 13,
+      "valid_shift_classes": 590223752764667723776
+    },
+    {
+      "C": 2048,
+      "v": 6,
+      "modulus": 131072,
+      "coordinate_bits": [
+        16,
+        14,
+        13,
+        10,
+        9,
+        7,
+        6,
+        2,
+        1
+      ],
+      "all_shift_class_bits": 78,
+      "derivative_coordinate_bits": [
+        7,
+        5,
+        4,
+        1
+      ],
+      "derivative_image_bits": 17,
+      "valid_shift_classes": 302229149060648079982592
+    },
+    {
+      "C": 2048,
+      "v": 7,
+      "modulus": 262144,
+      "coordinate_bits": [
+        17,
+        15,
+        14,
+        11,
+        10,
+        8,
+        7,
+        3,
+        2
+      ],
+      "all_shift_class_bits": 87,
+      "derivative_coordinate_bits": [
+        8,
+        6,
+        5,
+        2,
+        1
+      ],
+      "derivative_image_bits": 22,
+      "valid_shift_classes": 154742468017184386943287296
+    },
+    {
+      "C": 4096,
+      "v": 0,
+      "modulus": 4096,
+      "coordinate_bits": [
+        11,
+        9,
+        8,
+        5,
+        4,
+        2,
+        1
+      ],
+      "all_shift_class_bits": 40,
+      "derivative_coordinate_bits": [
+        1
+      ],
+      "derivative_image_bits": 1,
+      "valid_shift_classes": 549755813888
+    },
+    {
+      "C": 4096,
+      "v": 1,
+      "modulus": 8192,
+      "coordinate_bits": [
+        12,
+        10,
+        9,
+        6,
+        5,
+        3,
+        2
+      ],
+      "all_shift_class_bits": 47,
+      "derivative_coordinate_bits": [
+        2
+      ],
+      "derivative_image_bits": 2,
+      "valid_shift_classes": 105553116266496
+    },
+    {
+      "C": 4096,
+      "v": 2,
+      "modulus": 16384,
+      "coordinate_bits": [
+        13,
+        11,
+        10,
+        7,
+        6,
+        4,
+        3
+      ],
+      "all_shift_class_bits": 54,
+      "derivative_coordinate_bits": [
+        3,
+        1
+      ],
+      "derivative_image_bits": 4,
+      "valid_shift_classes": 16888498602639360
+    },
+    {
+      "C": 4096,
+      "v": 3,
+      "modulus": 32768,
+      "coordinate_bits": [
+        14,
+        12,
+        11,
+        8,
+        7,
+        5,
+        4
+      ],
+      "all_shift_class_bits": 61,
+      "derivative_coordinate_bits": [
+        4,
+        2,
+        1
+      ],
+      "derivative_image_bits": 7,
+      "valid_shift_classes": 2287828610704211968
+    },
+    {
+      "C": 4096,
+      "v": 4,
+      "modulus": 65536,
+      "coordinate_bits": [
+        15,
+        13,
+        12,
+        9,
+        8,
+        6,
+        5,
+        1
+      ],
+      "all_shift_class_bits": 69,
+      "derivative_coordinate_bits": [
+        5,
+        3,
+        2
+      ],
+      "derivative_image_bits": 10,
+      "valid_shift_classes": 589719349606402228224
+    },
+    {
+      "C": 4096,
+      "v": 5,
+      "modulus": 131072,
+      "coordinate_bits": [
+        16,
+        14,
+        13,
+        10,
+        9,
+        7,
+        6,
+        2,
+        1
+      ],
+      "all_shift_class_bits": 78,
+      "derivative_coordinate_bits": [
+        6,
+        4,
+        3
+      ],
+      "derivative_image_bits": 13,
+      "valid_shift_classes": 302194561415509874573312
+    },
+    {
+      "C": 4096,
+      "v": 6,
+      "modulus": 262144,
+      "coordinate_bits": [
+        17,
+        15,
+        14,
+        11,
+        10,
+        8,
+        7,
+        3,
+        2
+      ],
+      "all_shift_class_bits": 87,
+      "derivative_coordinate_bits": [
+        7,
+        5,
+        4,
+        1
+      ],
+      "derivative_image_bits": 17,
+      "valid_shift_classes": 154741324319051816951087104
+    },
+    {
+      "C": 4096,
+      "v": 7,
+      "modulus": 524288,
+      "coordinate_bits": [
+        18,
+        16,
+        15,
+        12,
+        11,
+        9,
+        8,
+        4,
+        3,
+        1
+      ],
+      "all_shift_class_bits": 97,
+      "derivative_coordinate_bits": [
+        8,
+        6,
+        5,
+        2,
+        1
+      ],
+      "derivative_image_bits": 22,
+      "valid_shift_classes": 158456287249596812229926191104
+    },
+    {
+      "C": 4096,
+      "v": 8,
+      "modulus": 1048576,
+      "coordinate_bits": [
+        19,
+        17,
+        16,
+        13,
+        12,
+        10,
+        9,
+        5,
+        4,
+        2,
+        1
+      ],
+      "all_shift_class_bits": 108,
+      "derivative_coordinate_bits": [
+        9,
+        7,
+        6,
+        3,
+        2
+      ],
+      "derivative_image_bits": 27,
+      "valid_shift_classes": 324518551240575087553897671163904
+    }
+  ]
+}
