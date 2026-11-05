@@ -10,7 +10,7 @@ indent-style = "space"
 skip-magic-trailing-comma = false
 
 [lint]
-# Vir's correctness, NumPy, pytest, modernization, and low-noise rule selection.
+# Correctness, NumPy, pytest, modernization, and low-noise checks.
 preview = true
 explicit-preview-rules = true
 select = [

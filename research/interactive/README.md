@@ -4,6 +4,8 @@ Open `explore.ipynb` with the **Rug research (Python 3.15)** kernel, or open [ex
 
 ## Setup and launch
 
+This is an optional environment for Python research. The repository’s general app development setup does not install it.
+
 Run these commands from this directory:
 
 ```sh
