@@ -4,6 +4,8 @@
 
 This research brief records the discussion of November 3–4, 2026, including the expanded four-stage model. It records the intended investigation, the obstacles identified in applying the initial prompt, and the working resolutions. It supplies no new classification, experiments, or sampler implementation.
 
+The investigation's results are in [the November 4 report](2026-11-04-combiners-and-order-classes.md), with [a plain-language explanation](explained.md). This document states the research contract; the report identifies which questions have been resolved and which remain open.
+
 The overarching goal is to expand the rug generator's aesthetic possibilities while maintaining control of the repetition domain and the choice of useful sampling. Seek reproducible numerical pattern families with clear period guarantees and practical parameter choices. The motivating baseline is the existing pre-power-one XOR work, explained in the [post-operation companion](../2026-10-25-pattern-space/2026-11-01-xor-post-operations-explained.md).
 
 Investigate shared pre-operations and symmetric combinations. The initial combiners are AND, OR, XOR, ADD, MULT, CLMUL, and ABSDIFF. Powers are one starting pre-operation family; a central goal is to obtain results for entire families such as polynomials with a consistent pre-modulus, rather than only one exponent at a time. Stage-three combinations may also use several intermediate combined values and further operations on them.
@@ -42,7 +44,7 @@ $$
 A=P(a)\bmod K,\qquad B=P(b)\bmod K.
 $$
 
-Seek the minimum suitable $K$ that avoids collapsing the requested repetition domain. Determine this modulus rather than setting it equal to $C$ automatically. Assess the reduced pair as well as the complete construction: preserving the pair's distinctions is necessary, but a later symmetric combination may still discard the distinctions responsible for the period.
+Choose the minimum suitable $K$ by testing the sampled output of the immediate basic combiner $Z_K=G(A,B)$, before further post-operations. Its smallest axis periods must be at least the requested axis periods, so that this stage does not shrink the repetition domain. The reduced operand pair alone is insufficient to determine this minimum. For several basic combiners, test the tuple of their intermediate outputs. State the target axis periods and sampling coordinates used for this test. The final output must attain those periods exactly; requiring exact periods at the basic-combiner stage as well is a stricter optional style constraint, since intermediate periods can jump past a requested size.
 
 ### Stage 3: Symmetric combination, including further operations
 
@@ -70,7 +72,7 @@ Seek the minimum suitable $M$ for the exact requested displayed period. Polynomi
 
 ### Minimum moduli and family-level guarantees
 
-Characterize feasible pairs of pre- and post-moduli for a specified style, sampling rule, and parameter family. State what the stage-two minimum preserves and whether the complete construction can attain the target at that minimum. If the smallest pre-modulus preserving the pair fails after combination, distinguish that failure from complete impossibility and identify whether a larger pre-modulus would be required. Do not assume independent greedy minimization of both moduli succeeds.
+First determine the minimum pre-modulus from the immediate basic-combiner output. At that chosen $K$, characterize the post-operations and post-moduli that retain the exact target period. If a later post-operation cannot retain it, record that operation as inadmissible at the chosen $K$; increasing $K$ defines a separately specified policy or style. The pre-modulus selection does not depend on which later post-power or post-polynomial is drawn.
 
 A central deliverable is a family-level result: one consistent pre-modulus, with explicit admissibility conditions, for a useful set of pre-functions such as polynomials. Distinguish a member's individual minimum from the least common sufficient modulus for the eligible family. Determine whether such a finite shared modulus exists for the claimed parameter ranges. A theorem for unrestricted coefficients cannot silently exclude period-collapsing members or impose an undisclosed precision bound.
 
@@ -221,7 +223,7 @@ The future report should provide, for each prioritized family of four-stage cons
 
 Favor results that avoid enumerating enormous tables at the user's usual field sizes. The [November 2 XOR polynomial report](../2026-11-02-xor-polynomial-period/2026-11-02-xor-polynomial-period.md) is a useful model: it gives coefficient-level period criteria and independent coordinates where possible, and explicitly identifies broader cases requiring finite matrix calculations. Its XOR-specific criteria must be proved anew before applying them to other combiners or pre-powers.
 
-The minimum pre-modulus and its family-wide feasibility, cross-pre-modulus priorities, the classifier for order classes, search bounds, tie-breakers, and any joint distribution across styles remain unresolved. This brief records them as research tasks rather than completed resolutions. The four-stage architecture and the scope extensions are the user's current direction; no new investigation has been performed here.
+The research tasks include minimum pre-moduli and family-wide feasibility, order-class classifiers and search bounds, reproducible tie-breakers, and a joint distribution across styles. Assess their resolution against the accompanying report. The pre-modulus policy fixes the basic-combiner minimum before post-operations are chosen; a larger shared family-level modulus must be declared as part of its style.
 
 ## Existing research to consult
 
