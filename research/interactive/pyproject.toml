@@ -1,0 +1,19 @@
+[project]
+name = "rug-research"
+version = "0.1.0"
+description = "Interactive numerical rug research"
+requires-python = ">=3.12"
+dependencies = ["numpy>=2", "matplotlib>=3.9", "pillow>=11", "cmasher>=1.9", "jupytext>=1.17", "ipykernel>=6", "jupyterlab>=4", "ipywidgets>=8"]
+
+[dependency-groups]
+dev = ["pytest>=8", "nbclient>=0.10", "ruff>=0.11"]
+
+[tool.jupytext]
+formats = "ipynb,py:percent"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
