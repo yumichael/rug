@@ -3,7 +3,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-
 from ruglab import Sweep, dsl, evaluate, gallery, paired
 from ruglab.diagnostics import periods, signature
 from ruglab.operations import clmul
@@ -114,18 +113,16 @@ def test_dsl_pre_and_colors():
 
 
 def test_dsl_rejects_unknown_execution():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Unsupported DSL expression"):
         dsl.channel("8;;^;__import__(1);gray")
 
 
 def test_sweep_and_pairs():
-    sweep = Sweep(
-        {"n": 8, "pre": [["pow", [2, 4]]], "combine": ["or", "xor"], "post": [["pow", [1, 2]]]}
-    )
+    sweep = Sweep({"n": 8, "pre": [["pow", [2, 4]]], "combine": ["or", "xor"], "post": [["pow", [1, 2]]]})
     assert sweep.count == 8
     assert [n for n, _ in sweep.page(6, 8)] == ["6", "7"]
     assert next(iter(sweep.page(0, 1)))[1]["pre"] == [["pow", 2]]
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Paired variation lengths differ"):
         list(paired({}, M=[1], K=[1, 2]))
 
 
@@ -135,9 +132,9 @@ def test_research_rules_and_periods():
     r = evaluate(s)
     assert periods(r, certified_torus=True) == (32, 32)
     assert minimum_post_modulus(s, 32, 2) == 2048
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="known complete periodic torus"):
         periods(r)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="exceeds max_cells"):
         minimum_post_modulus({**s, "K": 1024}, 32)
 
 
@@ -166,9 +163,7 @@ def test_presets_render():
 
 
 def test_sweep_direct_lookup_and_truncated_clmul():
-    sweep = Sweep(
-        {"n": 8, "pre": [["pow", [2, 4]]], "combine": ["or", "xor"], "post": [["pow", [1, 2]]]}
-    )
+    sweep = Sweep({"n": 8, "pre": [["pow", [2, 4]]], "combine": ["or", "xor"], "post": [["pow", [1, 2]]]})
     assert sweep.get(7)["post"] == [["pow", 2]]
     with pytest.raises(IndexError):
         sweep.get(8)
@@ -190,10 +185,10 @@ def test_nonpolynomial_expression_does_not_reduce_before_division():
     z = r.stages["z0"]
     assert np.array_equal(r.values, ((z + 8) // 2) % 8)
     assert np.array_equal(evaluate({"n": 8, "expression": "7"}).values, np.full((8, 8), 7))
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Integer operations require integer arguments"):
         dsl.expression("z**0.5", {"z": np.arange(8, dtype=object)})
 
 
 def test_native_rejects_fractional_arithmetic():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Native expressions use integer arithmetic"):
         evaluate({"n": 8, "expression": "z0/2"})

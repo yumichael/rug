@@ -12,4 +12,8 @@ if [ -z "$rug_node" ] || [ ! -x "$rug_node" ]; then
   echo 'Error: Node.js is unavailable. Run sh scripts/setup-rumdl.sh after installing Node.js and npm.' >&2
   exit 1
 fi
-exec "$rug_node" scripts/markdown.mjs --staged
+git --no-pager diff --cached --check
+"$rug_node" scripts/markdown.mjs --staged
+# uv preserves local .venv discovery and the optional UV_PROJECT_ENVIRONMENT.
+unset VIRTUAL_ENV
+uv run --locked --project research/interactive python scripts/lint_staged_python.py

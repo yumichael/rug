@@ -73,9 +73,7 @@ grid(page, cols=4)
 # Updating these controls evaluates one page. Color changes reuse basic stages.
 
 # %%
-page_control = widgets.IntSlider(
-    min=0, max=(sweep.count - 1) // 8, description="Page", continuous_update=False
-)
+page_control = widgets.IntSlider(min=0, max=(sweep.count - 1) // 8, description="Page", continuous_update=False)
 mode_control = widgets.Dropdown(options=["values", "anchored", "order"], description="View")
 output = widgets.Output()
 

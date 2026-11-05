@@ -24,9 +24,7 @@ class Result:
         a = self.values
         if self.modulus:
             a = (a - int(a.flat[0])) % self.modulus if anchored else a % self.modulus
-            return np.asarray(
-                np.frompyfunc(lambda x: float(int(x) / self.modulus), 1, 1)(a), dtype=float
-            )
+            return np.asarray(np.frompyfunc(lambda x: float(int(x) / self.modulus), 1, 1)(a), dtype=float)
         if anchored:
             raise ValueError("Anchoring requires a declared modulus")
         return np.asarray(a, dtype=float)
@@ -56,8 +54,7 @@ def evaluate(spec):
     z = stages["z0"]
     if "expression" in s:
         if any(
-            isinstance(node, ast.Div)
-            or (isinstance(node, ast.Constant) and isinstance(node.value, float))
+            isinstance(node, ast.Div) or (isinstance(node, ast.Constant) and isinstance(node.value, float))
             for node in ast.walk(ast.parse(s["expression"], mode="eval"))
         ):
             raise ValueError(

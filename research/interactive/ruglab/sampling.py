@@ -15,9 +15,7 @@ def coordinates(shape, sampling="full", origin=(0, 0)):
         return i, j
     if sampling.startswith("checkerboard"):
         return i + j + (sampling == "checkerboard_opposite"), i - j
-    ex, ey = {"even_even": (0, 0), "even_odd": (0, 1), "odd_even": (1, 0), "odd_odd": (1, 1)}[
-        sampling
-    ]
+    ex, ey = {"even_even": (0, 0), "even_odd": (0, 1), "odd_even": (1, 0), "odd_odd": (1, 1)}[sampling]
     return 2 * i + ex, 2 * j + ey
 
 

@@ -29,10 +29,7 @@ def family_pre_modulus(q, R, combiner):
 
 @lru_cache(maxsize=1)
 def _theory():
-    path = (
-        Path(__file__).resolve().parents[2]
-        / "2026-11-03-combiners-and-order-classes/combiners_order_classes.py"
-    )
+    path = Path(__file__).resolve().parents[2] / "2026-11-03-combiners-and-order-classes/combiners_order_classes.py"
     spec = importlib.util.spec_from_file_location("_rug_theory", path)
     module = importlib.util.module_from_spec(spec)
     old = sys.dont_write_bytecode
@@ -49,10 +46,8 @@ def minimum_post_modulus(spec, target, power=1, max_cells=262144):
 
     s = resolve(spec)
     K = s["K"]
-    if K * K > max_cells:
-        raise ValueError(
-            "Full-torus check exceeds max_cells; use an analytical rule or explicitly raise the limit"
-        )
+    if max_cells < K * K:
+        raise ValueError("Full-torus check exceeds max_cells; use an analytical rule or explicitly raise the limit")
     if isinstance(s["combine"], list) or "expression" in s:
         raise ValueError("This helper handles one basic combiner and one post-power")
     if power < 1:

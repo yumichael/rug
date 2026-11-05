@@ -44,7 +44,7 @@ def grid(items, cols=4, width=12, mode="values", cmap=None):
     fig, axes = plt.subplots(rows, cols, figsize=(width, width / cols * rows), squeeze=False)
     for ax in axes.flat:
         ax.axis("off")
-    for ax, (name, spec) in zip(axes.flat, items):
+    for ax, (name, spec) in zip(axes.flat, items, strict=False):
         if isinstance(spec, list):
             from .dsl import render
 

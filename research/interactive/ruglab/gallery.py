@@ -17,8 +17,4 @@ def save(path, name, spec, notes="", seed=None):
 
 def load(path, query=""):
     data = json.loads(Path(path).read_text())
-    return {
-        name: item
-        for name, item in data.items()
-        if query.lower() in (name + " " + item.get("notes", "")).lower()
-    }
+    return {name: item for name, item in data.items() if query.lower() in (name + " " + item.get("notes", "")).lower()}

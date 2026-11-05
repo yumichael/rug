@@ -12,13 +12,13 @@ The [interactive research workbench](research/interactive/README.md) provides Py
 
 ## Development
 
-Install Node.js 22 or newer with npm, then run:
+Install Node.js 22 or newer with npm and uv, then run:
 
 ```sh
 sh setup-dev.sh
 ```
 
-Setup installs the pinned rumdl npm dependency, records the Node.js executable and installation in local Git configuration as `rug.nodeExecutable` and `rug.nodeModules`, and activates the versioned hook with `git config --local core.hooksPath scripts/hooks`. The hook uses the recorded Node.js executable when committing from an editor. Rerun `sh scripts/setup-rumdl.sh` after moving or replacing that runtime.
+Setup installs the interactive Python environment with uv and registers its notebook kernel. It also installs the pinned rumdl npm dependency, records the Node.js executable and installation in local Git configuration as `rug.nodeExecutable` and `rug.nodeModules`, and activates the versioned hook with `git config --local core.hooksPath scripts/hooks`. The hook uses the recorded Node.js executable when committing from an editor. Rerun `sh scripts/setup-rumdl.sh` after moving or replacing that runtime.
 
 ### External dependencies
 
@@ -44,3 +44,16 @@ Both commands accept optional paths, such as `npm run check:markdown -- README.m
 VS Code recommends the rumdl extension and uses `node_modules/.bin/rumdl` to format Markdown on save. Files under `.vscode/` use JSONC, allowing comments and trailing commas.
 
 The pre-commit hook checks formatting and lint in added, copied, modified, and renamed Markdown from the Git index. It also checks relative links and heading anchors throughout indexed Markdown, so deleting or renaming a target can fail the gate even when no Markdown is staged. Unstaged edits are left untouched. After formatting, review and stage the intended changes before committing. CI runs `npm run check:markdown` on pull requests and pushes to `main`.
+
+### Python checks
+
+The interactive workbench requires uv and Python 3.15.2. Setup uses a local `research/interactive/.venv` by default; external Python environments are opt-in through `UV_PROJECT_ENVIRONMENT`, as described in the [workbench setup](research/interactive/README.md#setup-and-launch).
+
+Ruff configuration lives in [ruff.toml](ruff.toml). Its rules follow Vir's correctness, NumPy, pytest, import, and modernization checks, with cell-specific allowances for the single notebook. Dated mathematical proof artifacts retain their original formatting. From the repository root, run:
+
+```sh
+uv run --project research/interactive ruff check .
+uv run --project research/interactive ruff format --check .
+```
+
+The pre-commit gate checks indexed Python and indexed Ruff configuration without stashing, formatting, or modifying working-tree files. A Ruff configuration change checks all maintained indexed Python. The existing Markdown gate remains enabled. Install uv before running `sh setup-dev.sh`.

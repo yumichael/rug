@@ -32,9 +32,9 @@ class Sweep:
         choices.reverse()
         s = deepcopy(self.spec)
         p = len(s.get("pre", []))
-        s["pre"] = [[name, v] for (name, _), v in zip(s.get("pre", []), choices[:p])]
+        s["pre"] = [[name, v] for (name, _), v in zip(s.get("pre", []), choices[:p], strict=True)]
         s["combine"] = choices[p]
-        s["post"] = [[name, v] for (name, _), v in zip(s.get("post", []), choices[p + 1 :])]
+        s["post"] = [[name, v] for (name, _), v in zip(s.get("post", []), choices[p + 1 :], strict=True)]
         s.setdefault("coordinates", "straight")
         return resolve(s)
 
@@ -43,7 +43,7 @@ def paired(base, **columns):
     lengths = {len(v) for v in columns.values()}
     if len(lengths) != 1:
         raise ValueError("Paired variation lengths differ")
-    for i, values in enumerate(zip(*columns.values())):
+    for i, values in enumerate(zip(*columns.values(), strict=True)):
         s = deepcopy(base)
-        s.update(zip(columns, values))
+        s.update(zip(columns, values, strict=True))
         yield str(i), resolve(s)

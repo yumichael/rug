@@ -29,10 +29,7 @@ def expression(text, variables, modulus=None):
     tree = ast.parse(text, mode="eval")
     if any(
         isinstance(node, ast.Call)
-        or (
-            isinstance(node, ast.BinOp)
-            and not isinstance(node.op, (ast.Add, ast.Sub, ast.Mult, ast.Pow))
-        )
+        or (isinstance(node, ast.BinOp) and not isinstance(node.op, (ast.Add, ast.Sub, ast.Mult, ast.Pow)))
         for node in ast.walk(tree)
     ):
         modulus = None
@@ -45,9 +42,7 @@ def expression(text, variables, modulus=None):
         if isinstance(node, (ast.List, ast.Tuple)):
             return [visit(v) for v in node.elts]
         if isinstance(node, ast.UnaryOp):
-            f = {ast.USub: operator.neg, ast.UAdd: operator.pos, ast.Invert: operator.invert}.get(
-                type(node.op)
-            )
+            f = {ast.USub: operator.neg, ast.UAdd: operator.pos, ast.Invert: operator.invert}.get(type(node.op))
             if f:
                 return f(visit(node.operand))
         if isinstance(node, ast.BinOp):
@@ -123,11 +118,7 @@ def channel(text):
             if not variables["l"]:
                 raise ValueError("map01 requires an earlier %modulus")
             values = Result(z, variables["l"], {}).normalized()
-            return (
-                values
-                if name == "map01"
-                else np.nextafter(np.sin(values * math.tau) * 0.5 + 0.5, 0.0)
-            )
+            return values if name == "map01" else np.nextafter(np.sin(values * math.tau) * 0.5 + 0.5, 0.0)
         if name == "binary":
             return (z >= args[0]) * np.nextafter(1.0, 0.0)
         if name == "discrete":
@@ -146,7 +137,7 @@ def channel(text):
             source = part
         future = None
         # Fuse only polynomial arithmetic up to an explicit modulo.
-        for step in [part] + later:
+        for step in [part, *later]:
             if step.startswith("%"):
                 future = int(expression(step[1:], variables))
                 break
@@ -156,8 +147,7 @@ def channel(text):
             except SyntaxError:
                 break
             if any(
-                isinstance(v, ast.BinOp)
-                and not isinstance(v.op, (ast.Add, ast.Sub, ast.Mult, ast.Pow))
+                (isinstance(v, ast.BinOp) and not isinstance(v.op, (ast.Add, ast.Sub, ast.Mult, ast.Pow)))
                 or isinstance(v, ast.Call)
                 for v in ast.walk(tree)
             ):

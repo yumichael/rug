@@ -13,7 +13,7 @@ def test_setup_environment_is_opt_in(tmp_path, external):
     binary = tmp_path / "uv"
     binary.write_text(
         "#!/usr/bin/env python3\n"
-        + """import json, os, sys
+        """import json, os, sys
 with open(os.environ['SETUP_LOG'], 'a') as log:
     log.write(json.dumps([sys.argv[1:], os.environ.get('UV_PROJECT_ENVIRONMENT'), os.environ.get('VIRTUAL_ENV')]) + '\\n')
 """

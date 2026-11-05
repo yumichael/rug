@@ -3,4 +3,5 @@ set -eu
 cd "$(dirname "$0")"
 sh scripts/setup-rumdl.sh
 git config --local core.hooksPath scripts/hooks
-echo 'Installed rumdl and enabled the Markdown pre-commit gate.'
+sh research/interactive/setup.sh
+echo 'Installed development dependencies and enabled Markdown and Python pre-commit gates.'

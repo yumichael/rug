@@ -63,13 +63,9 @@ def operation(values, name, arg=0, *, width=None, modulus=None):
     if name == "pow":
         if arg < 0:
             raise ValueError("Negative powers are not integer operations")
-        return elementwise(
-            lambda x: pow(int(x), arg, modulus) if modulus else pow(int(x), arg), values
-        )
+        return elementwise(lambda x: pow(int(x), arg, modulus) if modulus else pow(int(x), arg), values)
     if name == "expo":
-        return elementwise(
-            lambda x: pow(arg, int(x), modulus) if modulus else pow(arg, int(x)), values
-        )
+        return elementwise(lambda x: pow(arg, int(x), modulus) if modulus else pow(arg, int(x)), values)
     if name == "add":
         return values + arg
     if name == "mult":
@@ -121,11 +117,7 @@ def steps(values, instructions, *, modulus=None, width=None):
         future = modulus if safe else None
         if name == "pow" and future is None:
             for following in instructions[i + 1 :]:
-                op, val = (
-                    following
-                    if not isinstance(following, dict)
-                    else (following["op"], following["value"])
-                )
+                op, val = following if not isinstance(following, dict) else (following["op"], following["value"])
                 if op == "mod":
                     future = int(val)
                     break
