@@ -12,9 +12,17 @@ uv run jupytext --sync explore.py
 uv run jupyter lab explore.ipynb
 ```
 
-Setup installs the locked dependencies in an external environment, links `.venv` to it, and registers the notebook kernel. It leaves any different existing `.venv` untouched. Set `RUG_PYTHON_ENV` to choose a different external environment. Setup performs no Git operations. VS Code can also open the local notebook with the registered kernel. After external Python edits, synchronize before reopening the notebook; after notebook edits, save and synchronize before reviewing the Python source.
+Setup installs the locked dependencies in a local `.venv` and registers the notebook kernel. It performs no Git operations. VS Code can also open the local notebook with the registered kernel. After external Python edits, synchronize before reopening the notebook; after notebook edits, save and synchronize before reviewing the Python source.
 
-On this machine the environment and kernel are already installed. Run the second and third commands to start exploring. The first command is for reproducing or updating the setup.
+An external environment is optional, using uv's standard project setting:
+
+```sh
+UV_PROJECT_ENVIRONMENT="$HOME/.venvs/rug-research" sh setup.sh
+```
+
+Keep that variable set for subsequent uv commands, or optionally create a `.venv` symlink to the external installation for discovery without the variable. Setup does not create or replace symlinks. Before switching an existing environment's location, stop its kernels and preserve the existing environment; remove only an obsolete symlink, or move a real environment aside before recreating it. Virtual environments should be recreated at their final paths.
+
+The current checkout uses a local `.venv`. The Python pin is in [.python-version](.python-version); use a current uv release to obtain it.
 
 ## Exploration loop
 
