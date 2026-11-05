@@ -21,3 +21,34 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check:markdown
+
+  python-lint:
+    name: Python formatting and lint (Ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: research/interactive/uv.lock
+      - run: uv sync --locked --project research/interactive
+      - run: uv run --locked --project research/interactive ruff format --check .
+      - run: uv run --locked --project research/interactive ruff check .
+
+  python-test:
+    name: Python tests and fresh-kernel notebook
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: research/interactive
+    env:
+      MPLBACKEND: Agg
+      MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: research/interactive/uv.lock
+      - run: uv sync --locked
+      - run: uv run --locked pytest -q

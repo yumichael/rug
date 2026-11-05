@@ -57,3 +57,5 @@ uv run --project research/interactive ruff format --check .
 ```
 
 The pre-commit gate checks indexed Python and indexed Ruff configuration without stashing, formatting, or modifying working-tree files. A Ruff configuration change checks all maintained indexed Python. The existing Markdown gate remains enabled. Install uv before running `sh setup-dev.sh`.
+
+CI runs the same Ruff formatting and lint commands, plus the workbench tests and fresh-kernel notebook execution on Linux with the locked dependencies and pinned Python. Notebook tests create a temporary kernel specification using their current interpreter and do not depend on user kernel registration.
