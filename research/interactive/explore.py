@@ -7,7 +7,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.6
 #   kernelspec:
-#     display_name: Rug research (Python 3.12)
+#     display_name: Rug research (Python 3.15)
 #     language: python
 #     name: rug-research
 # ---

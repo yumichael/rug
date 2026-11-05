@@ -1,6 +1,6 @@
 # Interactive rug research
 
-Open `explore.ipynb` with the **Rug research (Python 3.12)** kernel, or open [explore.py](explore.py) as a percent-format notebook. The Python notebook is the versioned source; the local `.ipynb` retains outputs and is ignored. The notebook supplies editable examples and page controls; numerical and display logic lives in [ruglab](ruglab/).
+Open `explore.ipynb` with the **Rug research (Python 3.15)** kernel, or open [explore.py](explore.py) as a percent-format notebook. The Python notebook is the versioned source; the local `.ipynb` retains outputs and is ignored. The notebook supplies editable examples and page controls; numerical and display logic lives in [ruglab](ruglab/).
 
 ## Setup and launch
 

@@ -10,5 +10,5 @@ if [ -e .venv ] || [ -L .venv ]; then
 else
     ln -s "$rug_env" .venv
 fi
-UV_PROJECT_ENVIRONMENT="$rug_env" uv sync --python 3.12 --locked
-"$rug_env/bin/python" -m ipykernel install --user --name rug-research --display-name 'Rug research (Python 3.12)'
+UV_PROJECT_ENVIRONMENT="$rug_env" uv sync --python 3.15 --locked
+"$rug_env/bin/python" -m ipykernel install --user --name rug-research --display-name 'Rug research (Python 3.15)'
