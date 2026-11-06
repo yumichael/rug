@@ -82,6 +82,7 @@ page_control = widgets.IntSlider(min=0, max=(sweep.count - 1) // 8, description=
 back_button = widgets.Button(description="Back", disabled=True, layout=widgets.Layout(width="auto"))
 next_button = widgets.Button(description="Next", disabled=page_control.max == 0, layout=widgets.Layout(width="auto"))
 mode_control = widgets.Dropdown(options=["values", "anchored", "order"], description="View")
+width_control = widgets.IntSlider(value=1200, min=320, max=1600, step=20, description="Width (px)")
 page_preview = widgets.Image(format="png", layout=widgets.Layout(max_width="100%"))
 
 
@@ -105,13 +106,19 @@ def next_page(button):
     page_control.value += 1
 
 
+def resize_preview(change=None):
+    page_preview.layout.width = f"{width_control.value}px"
+
+
 back_button.on_click(previous_page)
 next_button.on_click(next_page)
 page_control.observe(redraw, names="value")
 mode_control.observe(redraw, names="value")
+width_control.observe(resize_preview, names="value")
 controls = widgets.HBox(
-    [back_button, next_button, page_control, mode_control], layout=widgets.Layout(flex_flow="row wrap")
+    [back_button, next_button, page_control, mode_control, width_control], layout=widgets.Layout(flex_flow="row wrap")
 )
+resize_preview()
 redraw()
 display(widgets.VBox([controls, page_preview]))
 

@@ -37,8 +37,14 @@ def test_fresh_kernel(tmp_path):
 assert page_control.value == 0
 first_page = bytes(page_preview.value)
 assert first_page.startswith(b"\\x89PNG")
+assert page_preview.layout.width == "1200px"
+width_control.value = 640
+assert page_preview.layout.width == "640px"
+assert page_control.value == 0
+assert bytes(page_preview.value) == first_page
 next_button.click()
 assert page_control.value == 1
+assert page_preview.layout.width == "640px"
 assert bytes(page_preview.value) != first_page
 back_button.click()
 assert page_control.value == 0
