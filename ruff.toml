@@ -2,7 +2,12 @@
 line-length = 120
 target-version = "py315"
 force-exclude = true
-include = ["research/interactive/**/*.py", "scripts/lint_staged_python.py"]
+# VS Code formats the local notebook before Jupytext updates the Python source.
+include = [
+  "research/interactive/**/*.py",
+  "research/interactive/explore.ipynb",
+  "scripts/lint_staged_python.py"
+]
 
 [format]
 quote-style = "preserve"
@@ -179,7 +184,11 @@ ignore = [
 
 [lint.per-file-ignores]
 # Cell-scoped imports, displays, and exploratory variables are intentional.
-"research/interactive/explore.py" = ["F401", "F841", "E402", "I001", "B018", "F811", "RUF059"]
+"research/interactive/explore.{ipynb,py}" = ["F401", "F841", "E402", "I001", "B018", "F811", "RUF059"]
+
+[lint.extend-per-file-ignores]
+# The notebook explicitly imports IPython names that its kernel also injects.
+"research/interactive/explore.ipynb" = ["A004"]
 
 [lint.flake8-comprehensions]
 allow-dict-calls-with-keyword-arguments = true

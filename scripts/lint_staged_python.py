@@ -29,7 +29,7 @@ def main():
         config.write_bytes(git('show', ':ruff.toml'))
         for path in paths:
             source = git('show', ':' + path)
-            for command in (['format', '--check'], ['check']):
+            for label, command in (('formatting', ['format', '--diff']), ('lint', ['check', '--quiet'])):
                 result = subprocess.run(
                     [
                         sys.executable,
@@ -46,7 +46,11 @@ def main():
                     cwd=root,
                     check=False,
                 )
-                failed |= result.returncode != 0
+                if result.returncode:
+                    print(f'Python {label} failed (Ruff) for {path}', file=sys.stderr)
+                    failed = True
+                elif label == 'lint':
+                    print(f'Python lint passed (Ruff) for {path}')
     return int(failed)
 
 

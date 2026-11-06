@@ -30,12 +30,21 @@ def run_gate(tmp_path, staged, working, *, config_change=False, filename="with s
 
 
 @pytest.mark.parametrize(
-    ('staged', 'working', 'success'),
-    [('x = 1\n', 'x=missing\n', True), ('x = missing\n', 'x = 1\n', False), ('x=1\n', 'x = 1\n', False)],
+    ('staged', 'working', 'failure'),
+    [
+        ('x = 1\n', 'x=missing\n', None),
+        ('x = missing\n', 'x = 1\n', 'lint'),
+        ('x = (\n    1 + 2\n)\n', 'x = 1 + 2\n', 'formatting'),
+    ],
 )
-def test_gate_uses_index_and_preserves_worktree(tmp_path, staged, working, success):
+def test_gate_uses_index_and_preserves_worktree(tmp_path, staged, working, failure):
     result = run_gate(tmp_path, staged, working)
-    assert (result.returncode == 0) == success, result.stdout + result.stderr
+    assert (result.returncode == 0) == (failure is None), result.stdout + result.stderr
+    assert ('Python lint passed (Ruff)' in result.stdout) == (failure != 'lint')
+    if failure:
+        assert f'Python {failure} failed (Ruff)' in result.stderr
+    if failure == 'formatting':
+        assert '+x = 1 + 2' in result.stdout
 
 
 def test_gate_uses_indexed_configuration(tmp_path):

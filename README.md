@@ -55,6 +55,8 @@ sh research/interactive/setup.sh
 
 This optional setup requires uv, installs Python 3.15.2 and the locked research dependencies, and registers the notebook kernel. General HTML/JS app development requires only the app setup above. Research setup uses a local `research/interactive/.venv` by default; external Python environments are opt-in through `UV_PROJECT_ENVIRONMENT`, as described in the [workbench setup](research/interactive/README.md#setup-and-launch).
 
+Use the [optional VS Code research workspace](research/interactive/README.md#vs-code) for notebook editing and Python format on save.
+
 Ruff configuration lives in [ruff.toml](ruff.toml). Its rules cover correctness, NumPy, pytest, imports, and modernization, with cell-specific allowances for the single notebook. Dated mathematical proof artifacts retain their original formatting. From the repository root, run:
 
 ```sh

@@ -1,0 +1,30 @@
+{
+  "folders": [
+    { "path": "../.." }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder}/research/interactive/.venv",
+    "jupytextSync.pythonExecutable": "${workspaceFolder}/research/interactive/.venv/bin/python",
+    "jupytextSync.syncDocuments": {
+      "onNotebookDocumentSave": true
+    },
+    "ruff.path": ["${workspaceFolder}/research/interactive/.venv/bin/ruff"],
+    "ruff.configuration": "${workspaceFolder}/ruff.toml",
+    "ruff.configurationPreference": "filesystemFirst",
+    "[python]": {
+      "editor.defaultFormatter": "charliermarsh.ruff",
+      "editor.formatOnSave": true
+    },
+    "notebook.defaultFormatter": "charliermarsh.ruff",
+    "notebook.formatOnSave.enabled": true
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.vscode-pylance",
+      "ms-toolsai.jupyter",
+      "charliermarsh.ruff",
+      "caenrigen.jupytext-sync"
+    ]
+  }
+}

@@ -14,7 +14,7 @@ uv run jupytext --sync explore.py
 uv run jupyter lab explore.ipynb
 ```
 
-Setup installs the locked dependencies in a local `.venv` and registers the notebook kernel. It performs no Git operations. VS Code can also open the local notebook with the registered kernel. After external Python edits, synchronize before reopening the notebook; after notebook edits, save and synchronize before reviewing the Python source.
+Setup installs the locked dependencies in a local `.venv` and registers the notebook kernel. It performs no Git operations. After external Python edits, synchronize before reopening the notebook. After notebook edits in JupyterLab, save and run `uv run jupytext --sync explore.ipynb` before reviewing the Python source.
 
 An external environment is optional, using uv's standard project setting:
 
@@ -24,7 +24,18 @@ UV_PROJECT_ENVIRONMENT="$HOME/.venvs/rug-research" sh setup.sh
 
 Keep that variable set for subsequent uv commands, or optionally create a `.venv` symlink to the external installation for discovery without the variable. Setup does not create or replace symlinks. Before switching an existing environment's location, stop its kernels and preserve the existing environment; remove only an obsolete symlink, or move a real environment aside before recreating it. Virtual environments should be recreated at their final paths.
 
-The current checkout uses a local `.venv`. The Python pin is in [.python-version](.python-version); use a current uv release to obtain it.
+The Python pin is in [.python-version](.python-version). Use a current uv release to obtain it.
+
+### VS Code
+
+1. Run `sh setup.sh` and `uv run jupytext --sync explore.py` from this directory.
+1. Open [rug-research.code-workspace](rug-research.code-workspace) using **File → Open Workspace from File** and install its recommended extensions. The workspace opens the repository root with research-specific settings.
+1. If the status bar shows a different interpreter in a Python file, run **Python: Select Interpreter** and choose `research/interactive/.venv/bin/python`. In `explore.ipynb`, select the **Rug research (Python 3.15)** kernel.
+1. Save `explore.ipynb` and review the synced `explore.py` before staging it. After editing `explore.py` directly, run `uv run jupytext --sync explore.py` before reopening the notebook.
+
+The workspace uses the locked Ruff from the research environment for both Python and notebook format on save. The notebook is formatted before Jupytext Sync updates the tracked Python source. The editor, pre-commit hook, and CI use the same [Ruff configuration](../../ruff.toml).
+
+For an external environment without a symlink, copy the workspace file to `rug-research.local.code-workspace` in this directory. In that local copy, point `python.defaultInterpreterPath`, `jupytextSync.pythonExecutable`, and `ruff.path` at the external environment directory, its Python executable, and its Ruff executable, respectively. Open the local workspace and select the kernel registered by setup. Run commits from a shell with `UV_PROJECT_ENVIRONMENT` exported so the hook can find the same environment.
 
 ### Optional terminal activation with direnv
 
@@ -36,7 +47,7 @@ With direnv installed and its shell hook enabled, run this once from the researc
 direnv allow .
 ```
 
-Your terminal can then use `python`, `pytest`, and `ruff` directly. Select the editor interpreter and notebook kernel separately in VS Code.
+Your terminal can then use `python`, `pytest`, and `ruff` directly. VS Code uses the interpreter and kernel selected in the research workspace.
 
 ## Exploration loop
 

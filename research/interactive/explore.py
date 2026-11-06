@@ -7,16 +7,16 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.6
 #   kernelspec:
-#     display_name: Rug research (Python 3.15)
+#     display_name: rug-research (3.15.2)
 #     language: python
-#     name: rug-research
+#     name: python3
 # ---
 
 # %% [markdown]
 # # Rug pattern workbench
-# Edit the small specifications below and rerun a cell. Numerical evaluation,
-# plotting, diagnostics, and persistence live in `ruglab`. Rows are y, columns x
-# for native specifications; imported DSL keeps its original array orientation.
+#
+# Edit the small specifications below and rerun a cell. Numerical evaluation, plotting, diagnostics, and persistence live in `ruglab`. Rows are y, columns x for native specifications; imported DSL keeps its original array orientation.
+#
 
 # %%
 from IPython import get_ipython
@@ -49,8 +49,9 @@ presets = json.loads(Path("presets/examples.json").read_text())
 
 # %% [markdown]
 # ## JSON parameter grid
-# The original sweep shape is retained. K, M, coordinates, and sampling now
-# control evaluation explicitly. Only the requested page is generated.
+#
+# The original sweep shape is retained. K, M, coordinates, and sampling now control evaluation explicitly. Only the requested page is generated.
+#
 
 # %%
 sweep_spec = {
@@ -70,7 +71,9 @@ print(f"{sweep.count} combinations; showing {len(page)}")
 grid(page, cols=4)
 # %% [markdown]
 # ## Optional page controls
+#
 # Updating these controls evaluates one page. Color changes reuse basic stages.
+#
 
 # %%
 page_control = widgets.IntSlider(min=0, max=(sweep.count - 1) // 8, description="Page", continuous_update=False)
@@ -93,7 +96,9 @@ display(widgets.HBox([page_control, mode_control]), output)
 
 # %% [markdown]
 # ## DSL, including color channels
+#
 # Five sections: n ; pre ; combiner ; post ; color.
+#
 
 # %%
 dsl_examples = {
@@ -111,8 +116,9 @@ dsl_examples = {
 grid(dsl_examples, cols=3)
 # %% [markdown]
 # ## Native research specifications
-# Compare sampling with the same arithmetic first. Then choose each style's
-# appropriate modulus. Polynomial coefficients are listed constant-term first.
+#
+# Compare sampling with the same arithmetic first. Then choose each style's appropriate modulus. Polynomial coefficients are listed constant-term first.
+#
 
 # %%
 selected = presets["squared_and"]
@@ -142,6 +148,7 @@ grid(
 )
 # %% [markdown]
 # ## Paired variations, uniform XOR classes, and duplicate inspection
+#
 
 # %%
 base = presets["xor"]
@@ -153,8 +160,9 @@ print("Order groups:", duplicates([(name, evaluate(s)) for name, s in random_exa
 
 # %% [markdown]
 # ## Favorites and exports
-# Run these examples deliberately after choosing a candidate. Everything saved
-# is relative to this workbench; presets can be shared as JSON without outputs.
+#
+# Run these examples deliberately after choosing a candidate. Everything saved is relative to this workbench; presets can be shared as JSON without outputs.
+#
 
 # %%
 # from ruglab import gallery
