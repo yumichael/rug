@@ -26,6 +26,18 @@ Keep that variable set for subsequent uv commands, or optionally create a `.venv
 
 The current checkout uses a local `.venv`. The Python pin is in [.python-version](.python-version); use a current uv release to obtain it.
 
+### Optional terminal activation with direnv
+
+Direnv activates the existing research environment on entry and restores the previous shell environment on exit. It uses `.venv` by default and respects `UV_PROJECT_ENVIRONMENT` for external installations. [Shared direnv configuration](.envrc)
+
+With direnv installed and its shell hook enabled, run this once from the research directory.
+
+```sh
+direnv allow .
+```
+
+Your terminal can then use `python`, `pytest`, and `ruff` directly. Select the editor interpreter and notebook kernel separately in VS Code.
+
 ## Exploration loop
 
 1. Edit the JSON sweep or DSL examples and rerun their cell.
