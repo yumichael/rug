@@ -25,11 +25,12 @@ get_ipython().run_line_magic("load_ext", "autoreload")
 get_ipython().run_line_magic("autoreload", "2")
 get_ipython().run_line_magic("matplotlib", "inline")
 import json
+from io import BytesIO
 from pathlib import Path
 
 import ipywidgets as widgets
 import matplotlib.pyplot as plt
-from IPython.display import clear_output, display
+from IPython.display import display
 
 from ruglab import (
     Sweep,
@@ -78,22 +79,41 @@ plt.show()
 
 # %%
 page_control = widgets.IntSlider(min=0, max=(sweep.count - 1) // 8, description="Page", continuous_update=False)
+back_button = widgets.Button(description="Back", disabled=True, layout=widgets.Layout(width="auto"))
+next_button = widgets.Button(description="Next", disabled=page_control.max == 0, layout=widgets.Layout(width="auto"))
 mode_control = widgets.Dropdown(options=["values", "anchored", "order"], description="View")
-output = widgets.Output()
+page_preview = widgets.Image(format="png", layout=widgets.Layout(max_width="100%"))
 
 
 def redraw(change=None):
-    with output:
-        clear_output(wait=True)
+    back_button.disabled = page_control.value == page_control.min
+    next_button.disabled = page_control.value == page_control.max
+    with plt.ioff(), BytesIO() as buffer:
         fig = grid(sweep.page(page_control.value * 8, 8), cols=4, mode=mode_control.value)
-        display(fig)
-        plt.close(fig)
+        try:
+            fig.savefig(buffer, format="png", bbox_inches="tight")
+            page_preview.value = buffer.getvalue()
+        finally:
+            plt.close(fig)
 
 
+def previous_page(button):
+    page_control.value -= 1
+
+
+def next_page(button):
+    page_control.value += 1
+
+
+back_button.on_click(previous_page)
+next_button.on_click(next_page)
 page_control.observe(redraw, names="value")
 mode_control.observe(redraw, names="value")
-display(widgets.HBox([page_control, mode_control]), output)
-# Change a control or call redraw() to populate this panel.
+controls = widgets.HBox(
+    [back_button, next_button, page_control, mode_control], layout=widgets.Layout(flex_flow="row wrap")
+)
+redraw()
+display(widgets.VBox([controls, page_preview]))
 
 # %% [markdown]
 # ## DSL, including color channels

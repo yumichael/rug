@@ -6,6 +6,7 @@ import jupytext
 from jupyter_client import KernelManager
 from jupyter_client.kernelspec import KernelSpecManager
 from nbclient import NotebookClient
+from nbformat.v4 import new_code_cell
 
 
 def test_text_notebook_roundtrip():
@@ -30,6 +31,21 @@ def test_fresh_kernel(tmp_path):
     )
     manager = KernelManager(kernel_name='rug-test', kernel_spec_manager=KernelSpecManager(kernel_dirs=[str(kernels)]))
     book = jupytext.read('explore.py')
+    pager = next(cell for cell in book.cells if 'back_button = widgets.Button' in cell.source)
+    navigate = new_code_cell(
+        """
+assert page_control.value == 0
+first_page = bytes(page_preview.value)
+assert first_page.startswith(b"\\x89PNG")
+next_button.click()
+assert page_control.value == 1
+assert bytes(page_preview.value) != first_page
+back_button.click()
+assert page_control.value == 0
+assert bytes(page_preview.value) == first_page
+"""
+    )
+    book.cells.append(navigate)
     client = NotebookClient(
         book, timeout=120, km=manager, kernel_name='rug-test', resources={'metadata': {'path': str(Path.cwd())}}
     )
@@ -40,6 +56,10 @@ def test_fresh_kernel(tmp_path):
             client.kc.stop_channels()
         if manager.has_kernel:
             manager.shutdown_kernel(now=True)
+
+    assert len(pager.outputs) == 1
+    assert 'application/vnd.jupyter.widget-view+json' in pager.outputs[0].data
+    assert not navigate.outputs
 
     # A trailing Figure expression would also render via IPython's display hook.
     images = [
