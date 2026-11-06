@@ -40,3 +40,10 @@ def test_fresh_kernel(tmp_path):
             client.kc.stop_channels()
         if manager.has_kernel:
             manager.shutdown_kernel(now=True)
+
+    # A trailing Figure expression would also render via IPython's display hook.
+    images = [
+        output for cell in book.cells for output in cell.get('outputs', ()) if 'image/png' in output.get('data', {})
+    ]
+    assert images
+    assert all(output.output_type == 'display_data' for output in images)

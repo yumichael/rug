@@ -69,6 +69,7 @@ sweep = Sweep(sweep_spec)
 page = list(sweep.page(start=0, size=8))
 print(f"{sweep.count} combinations; showing {len(page)}")
 grid(page, cols=4)
+plt.show()
 # %% [markdown]
 # ## Optional page controls
 #
@@ -114,6 +115,7 @@ dsl_examples = {
     ],
 }
 grid(dsl_examples, cols=3)
+plt.show()
 # %% [markdown]
 # ## Native research specifications
 #
@@ -125,6 +127,7 @@ selected = presets["squared_and"]
 result = evaluate(selected)
 display(summary(result))
 sampling_gallery(selected, cols=4)
+plt.show()
 # %%
 stages(result)
 grid({"numerical": result}, mode="anchored", cols=1, width=5)
@@ -146,6 +149,7 @@ grid(
     },
     cols=3,
 )
+plt.show()
 # %% [markdown]
 # ## Paired variations, uniform XOR classes, and duplicate inspection
 #
