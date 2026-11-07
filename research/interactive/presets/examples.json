@@ -1,7 +1,0 @@
-{
-  "xor": {"n":64,"shape":[32,32],"K":64,"M":128,"combine":"xor","sampling":"checkerboard_same","post":[["pow",2]]},
-  "squared_and": {"n":64,"K":64,"M":64,"combine":"and","pre":[["pow",2]]},
-  "polynomial": {"n":64,"K":64,"M":256,"combine":"or","pre":[["poly",[0,0,-1,0,2]]],"post":[["poly",[0,3,1]]]},
-  "multiple_features": {"n":64,"K":64,"M":256,"combine":["xor","absdiff"],"expression":"z0 + z1**2"},
-  "dsl": ["64;;^;diag1:**2:%128:map01;cmr.infinity"]
-}

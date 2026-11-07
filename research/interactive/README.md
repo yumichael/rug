@@ -55,7 +55,9 @@ Your terminal can then use `python`, `pytest`, and `ruff` directly. VS Code uses
 1. Browse one page at a time. Thumbnail labels are stable sweep indices; `sweep.get(index)` retrieves one specification directly without generating earlier pages.
 1. Inspect a candidate with `evaluate`, `stages`, and `sampling_gallery`. Toggle numerical, anchored, or order coloring in the page controls.
 1. Save a complete specification and notes with `gallery.save`. Reload and search it with `gallery.load`.
-1. Export an image with `export`. Output files and local favorites default to the ignored `output/` directory; copy selected JSON specifications into `presets/` when you want to share them.
+1. Export an image with `export`. Output files and local favorites default to the ignored `output/` directory. To share selected specifications, copy them into a `.jsonc` file in `presets/`.
+
+Preset files use JSONC, which allows `//` and `/* ... */` comments and trailing commas in arrays and objects. [Example presets](presets/examples.jsonc)
 
 The examples are adaptations of the existing JSON parameter-grid viewer and the five-section DSL experiments, inspected November 4, 2026. Their dependencies and useful numerical operations have been extracted into this repository. The workbench does not import the original notebooks, their common imports module, or their output directories.
 

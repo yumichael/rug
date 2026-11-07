@@ -1,6 +1,6 @@
-import json
 from pathlib import Path
 
+import json5
 import numpy as np
 import pytest
 from ruglab import Sweep, dsl, evaluate, gallery, paired
@@ -154,7 +154,7 @@ def test_seed_is_local_and_repeatable():
 
 
 def test_presets_render():
-    presets = json.loads(Path("presets/examples.json").read_text())
+    presets = json5.loads(Path("presets/examples.jsonc").read_text(encoding="utf-8"))
     for key, value in presets.items():
         if key == "dsl":
             dsl.render(value)

@@ -5,6 +5,12 @@
   "files.associations": {
     "**/.vscode/*.json": "jsonc",
   },
+  "json.schemas": [
+    {
+      "fileMatch": ["/research/interactive/presets/*.jsonc"],
+      "schema": { "allowTrailingCommas": true },
+    },
+  ],
   "[markdown]": {
     "editor.defaultFormatter": "rvben.rumdl",
     "editor.formatOnSave": true,

@@ -24,11 +24,11 @@ from IPython import get_ipython
 get_ipython().run_line_magic("load_ext", "autoreload")
 get_ipython().run_line_magic("autoreload", "2")
 get_ipython().run_line_magic("matplotlib", "inline")
-import json
 from io import BytesIO
 from pathlib import Path
 
 import ipywidgets as widgets
+import json5
 import matplotlib.pyplot as plt
 from IPython.display import display
 
@@ -46,7 +46,7 @@ from ruglab import (
 )
 from ruglab.research import family_pre_modulus, minimum_post_modulus, uniform_xor
 
-presets = json.loads(Path("presets/examples.json").read_text())
+presets = json5.loads(Path("presets/examples.jsonc").read_text(encoding="utf-8"))
 
 # %% [markdown]
 # ## JSON parameter grid
@@ -192,7 +192,7 @@ print("Order groups:", duplicates([(name, evaluate(s)) for name, s in random_exa
 # %% [markdown]
 # ## Favorites and exports
 #
-# Run these examples deliberately after choosing a candidate. Everything saved is relative to this workbench; presets can be shared as JSON without outputs.
+# Run these examples deliberately after choosing a candidate. Everything saved is relative to this workbench. Share presets as JSONC without outputs.
 #
 
 # %%
