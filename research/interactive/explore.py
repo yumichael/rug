@@ -82,7 +82,7 @@ page_control = widgets.IntSlider(min=0, max=(sweep.count - 1) // 8, description=
 back_button = widgets.Button(description="Back", disabled=True, layout=widgets.Layout(width="auto"))
 next_button = widgets.Button(description="Next", disabled=page_control.max == 0, layout=widgets.Layout(width="auto"))
 mode_control = widgets.Dropdown(options=["values", "anchored", "order"], description="View")
-width_control = widgets.IntSlider(value=1200, min=320, max=1600, step=20, description="Width (px)")
+width_control = widgets.IntSlider(value=1200, min=320, max=3200, step=20, description="Width (px)")
 page_preview = widgets.Image(format="png", layout=widgets.Layout(max_width="100%"))
 
 
@@ -153,7 +153,7 @@ plt.show()
 selected = presets["squared_and"]
 result = evaluate(selected)
 display(summary(result))
-sampling_gallery(selected, cols=4)
+sampling_gallery(selected, cols=7, width=28)
 plt.show()
 # %%
 stages(result)
