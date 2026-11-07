@@ -35,7 +35,7 @@ def expression(text, variables, modulus=None):
         modulus = None
 
     def visit(node):
-        if isinstance(node, ast.Constant) and type(node.value) in (int, float):
+        if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)) and not isinstance(node.value, bool):
             return node.value
         if isinstance(node, ast.Name) and node.id in variables:
             return variables[node.id]
@@ -81,12 +81,20 @@ def expression(text, variables, modulus=None):
     return visit(tree.body)
 
 
+def _scalar(value: object, role: str) -> int | float | np.integer | np.floating:
+    if isinstance(value, np.ndarray) and value.ndim == 0:
+        value = value.item()
+    if not isinstance(value, (int, float, np.integer, np.floating)):
+        raise ValueError(f"{role} must be a numeric scalar")
+    return value
+
+
 def channel(text):
     sections = text.split(";")
     if len(sections) != 5:
         raise ValueError("DSL needs n;pre;combine;post;color")
     size, pre, comb, post, color = sections
-    n = int(expression(size, {}))
+    n = int(_scalar(expression(size, {}), "DSL size"))
     if not 1 <= n <= 8192:
         raise ValueError("DSL size must be between 1 and 8192")
     s = np.arange(n, dtype=object)
@@ -98,20 +106,12 @@ def channel(text):
             call = ast.parse(part, mode="eval").body
         except SyntaxError:
             call = None
-        name = (
-            call.id
-            if isinstance(call, ast.Name)
-            else call.func.id
-            if isinstance(call, ast.Call) and isinstance(call.func, ast.Name)
-            else None
-        )
-        args = (
-            []
-            if isinstance(call, ast.Name)
-            else [expression(ast.unparse(a), variables) for a in call.args]
-            if name
-            else []
-        )
+        if isinstance(call, ast.Call) and isinstance(call.func, ast.Name):
+            name = call.func.id
+            args = [expression(ast.unparse(a), variables) for a in call.args]
+        else:
+            name = call.id if isinstance(call, ast.Name) else None
+            args = []
         if name in ("diag0", "diag1", "diag1m", "diag1m_1", "ddiag0", "ddiag1", "skip"):
             return legacy_sample(z, name)
         if name in ("map01", "map01cyclic"):
@@ -122,13 +122,17 @@ def channel(text):
         if name == "binary":
             return (z >= args[0]) * np.nextafter(1.0, 0.0)
         if name == "discrete":
-            if args[0] < 2:
+            levels = _scalar(args[0], "Level count")
+            if levels < 2:
                 raise ValueError("discrete needs at least two levels")
-            return np.floor(z * np.nextafter(float(args[0]), 0)) / (args[0] - 1)
+            return np.floor(z * np.nextafter(float(levels), 0)) / (levels - 1)
         if name == "power_mod":
-            return operation(z, "pow", args[0], modulus=int(args[1]))
+            power = _scalar(args[0], "Exponent")
+            modulus = int(_scalar(args[1], "Modulus"))
+            return operation(z, "pow", power, modulus=modulus)
         if name in ("gray", "bitrev", "rotl", "inv"):
-            return operation(z, name, args[0] if args else 1, width=(n - 1).bit_length())
+            arg = _scalar(args[0], "Bit-operation argument") if args else 1
+            return operation(z, name, arg, width=(n - 1).bit_length())
         if part[0] in "*%&|^/+-" or part.startswith("**"):
             source = variable + part
         elif part[-1] in "*%&|^/+-":
@@ -139,7 +143,7 @@ def channel(text):
         # Fuse only polynomial arithmetic up to an explicit modulo.
         for step in [part, *later]:
             if step.startswith("%"):
-                future = int(expression(step[1:], variables))
+                future = int(_scalar(expression(step[1:], variables), "Modulus"))
                 break
             probe = (variable + step) if step[0] in "*+-" else step
             try:
@@ -154,12 +158,13 @@ def channel(text):
                 break
         value = expression(source, variables, modulus=future)
         if part.startswith("%"):
-            variables["l"] = int(expression(part[1:], variables))
+            variables["l"] = int(_scalar(expression(part[1:], variables), "Modulus"))
         return value
 
     for source, var in ((pre, "s"), (post, "z")):
         if var == "z":
-            x, y = np.meshgrid(s, s, indexing="ij")
+            axis = np.asanyarray(s)
+            x, y = np.meshgrid(axis, axis, indexing="ij")
             variables.update(x=x, y=y)
             z = expression("x" + comb + "y", variables)
         items = [v for v in source.split(":") if v]

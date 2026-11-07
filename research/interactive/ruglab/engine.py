@@ -22,9 +22,10 @@ class Result:
 
     def normalized(self, anchored=False):
         a = self.values
-        if self.modulus:
-            a = (a - int(a.flat[0])) % self.modulus if anchored else a % self.modulus
-            return np.asarray(np.frompyfunc(lambda x: float(int(x) / self.modulus), 1, 1)(a), dtype=float)
+        modulus = self.modulus
+        if modulus:
+            a = (a - int(a.flat[0])) % modulus if anchored else a % modulus
+            return np.asarray(np.frompyfunc(lambda x: float(int(x) / modulus), 1, 1)(a), dtype=float)
         if anchored:
             raise ValueError("Anchoring requires a declared modulus")
         return np.asarray(a, dtype=float)

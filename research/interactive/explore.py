@@ -90,7 +90,8 @@ def redraw(change=None):
     back_button.disabled = page_control.value == page_control.min
     next_button.disabled = page_control.value == page_control.max
     with plt.ioff(), BytesIO() as buffer:
-        fig = grid(sweep.page(page_control.value * 8, 8), cols=4, mode=mode_control.value)
+        mode = mode_control.value
+        fig = grid(sweep.page(page_control.value * 8, 8), cols=4, mode=mode if isinstance(mode, str) else "values")
         try:
             fig.savefig(buffer, format="png", bbox_inches="tight")
             page_preview.value = buffer.getvalue()

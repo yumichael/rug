@@ -75,7 +75,7 @@ def minimum_post_modulus(spec, target, power=1, max_cells=262144):
         upper = min(upper, _shift_depth(table, period, axis, power))
         if period > 1:
             lower = max(lower, 1 + _shift_depth(table, period // 2, axis, power))
-    return 1 << lower if lower <= upper and lower != math.inf else None
+    return 1 << int(lower) if lower <= upper and lower != math.inf else None
 
 
 def uniform_xor(C=64, seed=0, parity="both", sampling="checkerboard_same"):

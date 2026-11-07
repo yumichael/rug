@@ -1,6 +1,8 @@
 """Exact integer operations extracted and adapted from the symbols experiments."""
 
 import math
+from collections.abc import Sequence
+from typing import SupportsIndex, SupportsInt
 
 import numpy as np
 
@@ -47,8 +49,12 @@ def combine(name, a, b):
     return elementwise(functions[name], a, b)
 
 
-def operation(values, name, arg=0, *, width=None, modulus=None):
+def operation(
+    values, name, arg: SupportsInt | SupportsIndex | str | Sequence | np.ndarray = 0, *, width=None, modulus=None
+):
     if name == "poly":
+        if not isinstance(arg, (Sequence, np.ndarray)):
+            raise ValueError("Polynomial operations require a coefficient sequence")
         out = np.zeros_like(values, dtype=object)
         for coefficient in reversed(arg):
             out = out * values + int(coefficient)
@@ -58,6 +64,8 @@ def operation(values, name, arg=0, *, width=None, modulus=None):
     if name == "self" and isinstance(arg, str):
         arg = {"identity": 0, "negative": 1}[arg]
     if isinstance(arg, float) and not arg.is_integer():
+        raise ValueError("Integer operations require integer arguments")
+    if not isinstance(arg, (str, bytes, bytearray, SupportsInt, SupportsIndex)):
         raise ValueError("Integer operations require integer arguments")
     arg = int(arg)
     if name == "pow":

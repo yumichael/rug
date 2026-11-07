@@ -4,8 +4,8 @@ from pathlib import Path
 
 import jupytext
 import pytest
-from jupyter_client import KernelManager
 from jupyter_client.kernelspec import KernelSpecManager
+from jupyter_client.manager import KernelManager
 from nbclient import NotebookClient
 from nbformat.v4 import new_code_cell
 
