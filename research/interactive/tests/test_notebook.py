@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 import jupytext
+import pytest
 from jupyter_client import KernelManager
 from jupyter_client.kernelspec import KernelSpecManager
 from nbclient import NotebookClient
@@ -16,6 +17,7 @@ def test_text_notebook_roundtrip():
     assert [c.source for c in book.cells] == [c.source for c in again.cells]
 
 
+@pytest.mark.integration
 def test_fresh_kernel(tmp_path):
     kernels = tmp_path / 'kernels'
     location = kernels / 'rug-test'

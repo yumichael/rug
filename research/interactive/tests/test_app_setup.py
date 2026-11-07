@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path.cwd().parents[1]
+pytestmark = pytest.mark.integration
 
 
 def app_repo(tmp_path):
@@ -33,12 +34,12 @@ def test_general_setup_does_not_install_research(tmp_path):
     assert not (tmp_path / 'research').exists()
 
 
-@pytest.mark.parametrize('path', ['index.html', 'docs/example.md', 'research/dated/proof.py'])
-def test_nonresearch_commit_needs_no_uv(tmp_path, path):
+def test_nonresearch_commit_needs_no_uv(tmp_path):
     env = app_repo(tmp_path)
-    source = tmp_path / path
-    source.parent.mkdir(parents=True, exist_ok=True)
-    source.write_text('content\n')
+    for path in ('index.html', 'docs/example.md', 'research/theory/dated/proof.py'):
+        source = tmp_path / path
+        source.parent.mkdir(parents=True, exist_ok=True)
+        source.write_text('content\n')
     subprocess.run(['git', '-C', str(tmp_path), 'add', '.'], check=True)
     subprocess.run(['/bin/sh', str(ROOT / 'scripts/hooks/pre-commit')], cwd=tmp_path, env=env, check=True)
 

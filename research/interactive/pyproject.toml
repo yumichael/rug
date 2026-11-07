@@ -14,3 +14,4 @@ formats = "ipynb,py:percent"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = ["integration: exercises real Git hooks, indexed Ruff checks, or a fresh Jupyter kernel"]

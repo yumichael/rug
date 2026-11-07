@@ -133,6 +133,8 @@ The engine uses arbitrary-precision Python integers in NumPy object arrays. Modu
 
 ## Validation
 
+Run `uv run pytest -q -m 'not integration'` for the unit tests. The full suite also exercises Git hooks, staged Ruff checks, and fresh-kernel notebook execution, as CI does.
+
 ```sh
 uv run pytest -q
 uv run ruff check .
