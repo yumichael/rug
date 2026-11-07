@@ -28,6 +28,8 @@ from . import (
     summary,
     symmetries,
 )
+from .operations import steps
+from .plotting import colorize
 from .research import family_pre_modulus, minimum_post_modulus, uniform_xor
 
 __all__ = [
@@ -36,6 +38,7 @@ __all__ = [
     "Result",
     "Sweep",
     "clear_cache",
+    "colorize",
     "display",
     "dsl",
     "duplicates",
@@ -53,6 +56,7 @@ __all__ = [
     "sampling_gallery",
     "signature",
     "stages",
+    "steps",
     "summary",
     "symmetries",
     "uniform_xor",
