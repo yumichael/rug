@@ -6,21 +6,32 @@ from pathlib import Path
 import pytest
 
 ROOT = Path.cwd().parents[1]
-GATE = ROOT / 'scripts/lint_staged_python.py'
+GATE = ROOT / 'research/interactive/scripts/lint_staged_python.py'
 CHECK_IMPORTS = runpy.run_path(str(GATE))['check_imports']
 
 
-def run_gate(tmp_path, staged, working, *, config_change=False, filename="ruglab/with spaces.py"):
+def run_gate(tmp_path, staged, working, *, config_change=False, filename="ruglab/with spaces.py", extra=None):
     subprocess.run(['git', 'init', '-q', str(tmp_path)], check=True)
     source = tmp_path / 'research/interactive' / filename
     source.parent.mkdir(parents=True)
-    config = tmp_path / 'ruff.toml'
-    config.write_text((ROOT / 'ruff.toml').read_text())
+    for name in (
+        'ruff.toml',
+        '.vscode/basedpyright.json',
+        'research/interactive/pyproject.toml',
+        'research/interactive/uv.lock',
+    ):
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((ROOT / name).read_bytes())
+    for name, contents in (extra or {}).items():
+        target = tmp_path / 'research/interactive' / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(contents)
     source.write_text(staged)
     subprocess.run(['git', '-C', str(tmp_path), 'add', '.'], check=True)
     source.write_text(working)
     if config_change:
-        config.write_text('[lint]\nignore=["F821"]\n')
+        (tmp_path / 'ruff.toml').write_text('[lint]\nignore=["F821"]\n')
     result = subprocess.run(
         [sys.executable, str(GATE)],
         cwd=tmp_path,
@@ -71,9 +82,24 @@ def test_gate_uses_indexed_configuration(tmp_path):
 
 @pytest.mark.integration
 def test_gate_preserves_notebook_allowances(tmp_path):
-    source = 'from ruglab.studio import *\n\npresets = load_presets()\n'
+    source = 'from math import *\n\nx = ceil(2.5)\n'
     result = run_gate(tmp_path, source, source, filename='notebooks/nested/new.py')
     assert result.returncode == 0, result.stdout + result.stderr
+    assert 'Checking indexed Python types (Basedpyright)' in result.stdout
+
+
+@pytest.mark.integration
+def test_gate_typechecks_indexed_imports(tmp_path):
+    result = run_gate(
+        tmp_path,
+        'value = "text"\n',
+        'value = 1\n',
+        filename='ruglab/provider.py',
+        extra={'ruglab/consumer.py': 'from ruglab.provider import value\n\nnumber: int = value\n'},
+    )
+    assert result.returncode == 1
+    assert 'Python lint passed (Ruff)' in result.stdout
+    assert 'reportAssignmentType' in result.stdout
 
 
 @pytest.mark.parametrize(

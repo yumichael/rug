@@ -15,11 +15,11 @@ fi
 git --no-pager diff --cached --check
 "$rug_node" scripts/markdown.mjs --staged
 # App and documentation commits do not require Python or uv.
-if [ -n "$(git diff --cached --name-only --diff-filter=ACMR -- ':(glob)research/interactive/**/*.py' ':(glob)research/interactive/**/*.pyi' scripts/lint_staged_python.py ruff.toml)" ]; then
+if [ -n "$(git diff --cached --name-only -- ':(glob)research/interactive/**/*.py' ':(glob)research/interactive/**/*.pyi' research/interactive/pyproject.toml research/interactive/uv.lock .vscode/basedpyright.json ruff.toml)" ]; then
   if ! command -v uv >/dev/null 2>&1; then
-    echo 'Error: Python files or Ruff configuration are staged. Install uv and run sh research/interactive/setup.sh.' >&2
+    echo 'Error: Research Python files or check configuration are staged. Install uv and run sh research/interactive/setup.sh.' >&2
     exit 1
   fi
   unset VIRTUAL_ENV
-  uv run --locked --project research/interactive python scripts/lint_staged_python.py
+  uv run --locked --project research/interactive python research/interactive/scripts/lint_staged_python.py
 fi

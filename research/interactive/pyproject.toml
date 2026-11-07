@@ -14,7 +14,12 @@ module-name = "ruglab"
 module-root = ""
 
 [dependency-groups]
-dev = ["pytest>=8", "nbclient>=0.10", "ruff>=0.11"]
+dev = [
+    "pytest>=8",
+    "nbclient>=0.10",
+    "ruff>=0.11",
+    "basedpyright==1.40.2",
+]
 
 [tool.jupytext]
 formats = "ipynb,py:percent"

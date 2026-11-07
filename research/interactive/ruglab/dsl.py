@@ -161,18 +161,17 @@ def channel(text):
             variables["l"] = int(_scalar(expression(part[1:], variables), "Modulus"))
         return value
 
-    for source, var in ((pre, "s"), (post, "z")):
-        if var == "z":
-            axis = np.asanyarray(s)
-            x, y = np.meshgrid(axis, axis, indexing="ij")
-            variables.update(x=x, y=y)
-            z = expression("x" + comb + "y", variables)
+    def apply_steps(value, source, variable):
         items = [v for v in source.split(":") if v]
         for i, item in enumerate(items):
-            if var == "s":
-                s = apply(s, item, var, items[i + 1 :])
-            else:
-                z = apply(z, item, var, items[i + 1 :])
+            value = apply(value, item, variable, items[i + 1 :])
+        return value
+
+    s = apply_steps(s, pre, "s")
+    axis = np.asanyarray(s)
+    x, y = np.meshgrid(axis, axis, indexing="ij")
+    variables.update(x=x, y=y)
+    z = apply_steps(expression("x" + comb + "y", variables), post, "z")
     floating = np.asarray(z).dtype.kind == "f"
     return Result(np.asarray(z), None if floating else variables["l"], {"dsl": text}, colors=color)
 

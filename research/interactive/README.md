@@ -34,7 +34,7 @@ The Python pin is in [.python-version](.python-version). Use a current uv releas
 1. If the status bar shows a different interpreter in a Python file, run **Python: Select Interpreter** and choose `research/interactive/.venv/bin/python`. In the notebook, select the **Rug research (Python 3.15)** kernel.
 1. Save the notebook and review its synced `.py` source before staging it. After editing a notebook's `.py` source directly, synchronize the pair before reopening it.
 
-The workspace uses the locked Ruff from the research environment for both Python and notebook format on save. The notebook is formatted before Jupytext Sync updates the tracked Python source. The editor, pre-commit hook, and CI use the same [Ruff configuration](../../ruff.toml).
+The workspace uses the locked Ruff from the research environment for both Python and notebook format on save. The notebook is formatted before Jupytext Sync updates the tracked Python source. The editor, pre-commit hook, and CI use the same [Ruff configuration](../../ruff.toml). If the Basedpyright extension is installed, the workspace also uses the shared [type-check configuration](../../.vscode/basedpyright.json).
 
 For an external environment without a symlink, copy the workspace file to `rug-research.local.code-workspace` in this directory. In that local copy, point `python.defaultInterpreterPath`, `jupytextSync.pythonExecutable`, and `ruff.path` at the external environment directory, its Python executable, and its Ruff executable, respectively. Open the local workspace and select the kernel registered by setup. Run commits from a shell with `UV_PROJECT_ENVIRONMENT` exported so the hook can find the same environment.
 
@@ -149,12 +149,13 @@ The engine uses arbitrary-precision Python integers in NumPy object arrays. Modu
 
 ## Validation
 
-Run `uv run pytest -q -m 'not integration'` for the unit tests. The full suite also exercises Git hooks, staged Ruff checks, and fresh-kernel notebook execution, as CI does.
+Run `uv run pytest -q -m 'not integration'` for the unit tests. The full suite also exercises Git hooks, staged Python checks, and fresh-kernel notebook execution, as CI does.
 
 ```sh
 uv run pytest -q
 uv run ruff check .
 uv run ruff format --check .
+uv run --locked basedpyright --project ../../.vscode/basedpyright.json --warnings
 ```
 
 Tests cover literal integer references, large powers and moduli, sampling phases, polynomial features, DSL rendering and colors, lazy sweeps, exact signatures, saved specifications, research rules, Jupytext round trips, and fresh-kernel notebook execution. The project lockfile pins the resolved dependency set.

@@ -5,8 +5,8 @@ force-exclude = true
 # VS Code formats the local notebooks before Jupytext updates their Python sources.
 include = [
   "research/interactive/**/*.py",
-  "research/interactive/notebooks/**/*.ipynb",
-  "scripts/lint_staged_python.py"
+  "research/interactive/**/*.pyi",
+  "research/interactive/notebooks/**/*.ipynb"
 ]
 
 [format]

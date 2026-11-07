@@ -3,6 +3,7 @@
     { "path": "../.." }
   ],
   "settings": {
+    "basedpyright.analysis.configFilePath": "${workspaceFolder}/.vscode/basedpyright.json",
     "python.defaultInterpreterPath": "${workspaceFolder}/research/interactive/.venv",
     "jupytextSync.pythonExecutable": "${workspaceFolder}/research/interactive/.venv/bin/python",
     "jupytextSync.syncDocuments": {
@@ -22,6 +23,7 @@
     "recommendations": [
       "ms-python.python",
       "ms-python.vscode-pylance",
+      "detachhead.basedpyright",
       "ms-toolsai.jupyter",
       "charliermarsh.ruff",
       "caenrigen.jupytext-sync"

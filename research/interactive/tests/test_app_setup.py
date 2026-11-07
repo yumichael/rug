@@ -50,7 +50,10 @@ def test_nonresearch_commit_needs_no_uv(tmp_path):
         'research/interactive/notebooks/explore.py',
         'research/interactive/ruglab/a.py',
         'research/interactive/a.pyi',
-        'scripts/lint_staged_python.py',
+        'research/interactive/scripts/lint_staged_python.py',
+        'research/interactive/pyproject.toml',
+        'research/interactive/uv.lock',
+        '.vscode/basedpyright.json',
         'ruff.toml',
     ],
 )

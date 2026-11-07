@@ -62,11 +62,12 @@ Ruff configuration lives in [ruff.toml](ruff.toml). Its rules cover correctness,
 ```sh
 uv run --project research/interactive ruff check .
 uv run --project research/interactive ruff format --check .
-uv run --project research/interactive python scripts/lint_staged_python.py --imports
+uv run --project research/interactive python research/interactive/scripts/lint_staged_python.py --imports
+uv run --locked --project research/interactive basedpyright --project .vscode/basedpyright.json --warnings
 ```
 
 Reusable workbench Python lives in `research/interactive/ruglab/`. The notebook and tests call into the package, and the dated theory scripts serve as standalone verification. Imports in `ruglab` must resolve to the package, the standard library, or a declared dependency approved by the boundary check. Use static imports so the hook and CI can check them.
 
-The pre-commit gate checks indexed Python and indexed Ruff configuration without stashing, formatting, or modifying working-tree files. A Ruff configuration change checks all maintained indexed Python. App and documentation commits run the whitespace and Markdown checks without invoking uv or installing Python. The Python gate runs when maintained Python files or Ruff configuration are staged.
+The pre-commit gate runs Ruff and Basedpyright on indexed research Python. Ruff checks staged Python files, or all indexed research Python when its configuration changes. Basedpyright checks the full indexed research tree when Python, its type-check configuration, or the research dependency files change. Stage the manifest and lockfile together after updating dependencies. App and documentation commits run the whitespace and Markdown checks without invoking uv or installing Python.
 
-CI runs the same Ruff formatting and lint commands, plus the workbench tests and fresh-kernel notebook execution on Linux with the locked dependencies and pinned Python. Notebook tests create a temporary kernel specification using their current interpreter and do not depend on user kernel registration.
+CI runs Ruff, the import boundary check, and Basedpyright using the locked research environment. Basedpyright uses its standard ruleset with a wildcard import exception for notebook sources. CI also runs the workbench tests and fresh-kernel notebook execution on Linux. Notebook tests create a temporary kernel specification using their current interpreter.

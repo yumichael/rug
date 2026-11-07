@@ -34,7 +34,19 @@ jobs:
       - run: uv sync --locked --project research/interactive
       - run: uv run --locked --project research/interactive ruff format --check .
       - run: uv run --locked --project research/interactive ruff check .
-      - run: uv run --locked --project research/interactive python scripts/lint_staged_python.py --imports
+      - run: uv run --locked --project research/interactive python research/interactive/scripts/lint_staged_python.py --imports
+
+  python-typecheck:
+    name: Python type checking (Basedpyright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: research/interactive/uv.lock
+      - run: uv sync --locked --project research/interactive
+      - run: uv run --locked --project research/interactive basedpyright --project .vscode/basedpyright.json --warnings
 
   python-test:
     name: Python tests and fresh-kernel notebook

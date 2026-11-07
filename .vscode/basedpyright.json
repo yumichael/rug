@@ -1,0 +1,14 @@
+{
+  "include": ["../research/interactive"],
+  "pythonVersion": "3.15",
+  "typeCheckingMode": "standard",
+  "executionEnvironments": [
+    {
+      "root": "../research/interactive/notebooks",
+      "reportWildcardImportFromLibrary": "none"
+    },
+    {
+      "root": ".."
+    }
+  ]
+}
