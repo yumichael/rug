@@ -9,7 +9,7 @@ The central result for sums of same-valuation powers is simple: the full axis pe
 Run the reproducible checks from the repository root:
 
 ```sh
-python3 research/2026-11-02-xor-polynomial-period/xor_polynomial_period.py
+python3 research/theory/2026-11-02-xor-polynomial-period/xor_polynomial_period.py
 ```
 
 The script uses only the Python standard library. It writes [results.json](results.json) beside itself and prints the check count and selected numerical results. It does not change application settings or Git state. The report distinguishes proved statements, formula-based calculations, and finite verification coverage.

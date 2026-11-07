@@ -320,7 +320,7 @@ Uniformity here is over anchored numerical shift classes at fixed domain, modulu
 The [script](xor_polynomial_period.py) uses Python integer arithmetic and the standard library. Run it from the repository root:
 
 ```sh
-python3 research/2026-11-02-xor-polynomial-period/xor_polynomial_period.py
+python3 research/theory/2026-11-02-xor-polynomial-period/xor_polynomial_period.py
 ```
 
 It writes [results.json](results.json), including independent coordinate orders, period characters, valid counts, derivative-image orders, and coverage. The run accompanying this report completed **59,463 exact checks**. Proofs establish the general results; these checks verify the implementation and explicit examples over finite ranges.

@@ -1219,7 +1219,7 @@ The research folder contains:
 From the repository root, run:
 
 ```sh
-python3 research/2026-10-25-pattern-space/pattern_space.py --figures
+python3 research/theory/2026-10-25-pattern-space/pattern_space.py --figures
 ```
 
 The script uses Python 3, NumPy, and Matplotlib. Python integer arithmetic supplies all modular identities, class signatures, and period comparisons. Floating point is used for entropy, complex-phase measurements, and plotting. The observed environment used NumPy 2.3.5 and Matplotlib 3.10.8.

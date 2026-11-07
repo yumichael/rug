@@ -129,7 +129,7 @@ def run():
 
 def favorite_examples():
     """Verify reductions against saved random arithmetic, without editing files."""
-    root=Path(__file__).resolve().parents[1]
+    root=Path(__file__).resolve().parents[3]
     results=[]
     for file in sorted((root/'saved-settings').glob('*.json')):
         s=json.loads(file.read_text())

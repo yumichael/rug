@@ -101,7 +101,7 @@ Retain the entire product until the declared post-modulus stage. A low-word trun
 
 ABSDIFF is the ordinary nonnegative absolute difference $|A-B|$. It is not the shortest circular distance between two residues.
 
-The fixed pre-modulus model in [October 25, Section 1.1](../2026-10-25-pattern-space/2026-10-25-pattern-space-theory.md) and [index.html](../../index.html) remains a reference case. Reassess its results under the newly selected $K$ and complete stage-three expression rather than assuming every conclusion transfers.
+The fixed pre-modulus model in [October 25, Section 1.1](../2026-10-25-pattern-space/2026-10-25-pattern-space-theory.md) and [index.html](../../../index.html) remains a reference case. Reassess its results under the newly selected $K$ and complete stage-three expression rather than assuming every conclusion transfers.
 
 ## 3. Sampling scope and inactive cells
 

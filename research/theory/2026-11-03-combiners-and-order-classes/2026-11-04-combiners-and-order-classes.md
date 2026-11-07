@@ -587,7 +587,7 @@ For even-only polynomials, the corresponding minimum moduli are $2^{11}$ for the
 Run the standard-library checker from the repository root:
 
 ```sh
-python3 research/2026-11-03-combiners-and-order-classes/combiners_order_classes.py
+python3 research/theory/2026-11-03-combiners-and-order-classes/combiners_order_classes.py
 ```
 
 It regenerates [results.json](results.json). The accompanying run completed **39,928 exact assertions**. The checks compare pre-period formulas with literal sequences, common family minima with literal grids, difference depths with integer powers, predicted minimum post-moduli with independently scanned axis periods, XOR saturation with complete small-space enumeration, interpolation with direct evaluation, and antipodal compression with explicit finite labels. They also compare the complete odd-valued power catalogues with an independent enumeration through post-power 128. A complete polynomial-image search through the proved bounds recovers all four AND order classes and their canonical minimum moduli. The report's general results rest on the proofs; finite checks validate the implementation and examples within their stated ranges.

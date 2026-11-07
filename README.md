@@ -8,7 +8,7 @@ Agent-specific guidance is in [AGENTS.md](AGENTS.md).
 
 Project documentation lives in [docs/](docs/). The [original kickoff prompt](docs/prototype.md) was a one-time instruction to an agent to begin implementing the app. It is preserved as historical context, rather than maintained as a description of the current design.
 
-The [interactive research workbench](research/interactive/README.md) provides Python pattern tools and a Jupytext notebook for parameter grids, DSL rendering, sampling comparisons, and numerical diagnostics.
+The [theory research](research/theory/) contains mathematical reports and their verification scripts. The [interactive research workbench](research/interactive/README.md) provides Python pattern tools and a Jupytext notebook for parameter grids, DSL rendering, sampling comparisons, and numerical diagnostics.
 
 ## Development
 

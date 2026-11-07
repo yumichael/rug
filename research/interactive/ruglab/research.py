@@ -29,7 +29,8 @@ def family_pre_modulus(q, R, combiner):
 
 @lru_cache(maxsize=1)
 def _theory():
-    path = Path(__file__).resolve().parents[2] / "2026-11-03-combiners-and-order-classes/combiners_order_classes.py"
+    theory_dir = Path(__file__).resolve().parents[2] / "theory"
+    path = theory_dir / "2026-11-03-combiners-and-order-classes/combiners_order_classes.py"
     spec = importlib.util.spec_from_file_location("_rug_theory", path)
     module = importlib.util.module_from_spec(spec)
     old = sys.dont_write_bytecode

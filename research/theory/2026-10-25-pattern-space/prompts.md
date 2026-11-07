@@ -31,7 +31,7 @@ First think about my request and check your understanding of the task with me in
 
 ---
 
-> I read the [October 13 theory](https://github.com/yumichael/rug/blob/main/research/2026-10-13-post-power/2026-10-13-xor-post-power-theory.md), its October 11 predecessor, and the relevant renderer code. My understanding is that **the goal is a mathematical foundation for a reusable pattern sampling system**, with the proposed rug controls providing its design requirements.
+> I read the [October 13 theory](../2026-10-13-post-power/2026-10-13-xor-post-power-theory.md), its October 11 predecessor, and the relevant renderer code. My understanding is that **the goal is a mathematical foundation for a reusable pattern sampling system**, with the proposed rug controls providing its design requirements.
 > 
 > For terminology, I suggest:
 > 

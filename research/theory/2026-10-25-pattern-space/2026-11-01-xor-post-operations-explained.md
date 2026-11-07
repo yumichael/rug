@@ -261,7 +261,7 @@ $$
 
 For $k=0$, use $p=C/16=2W$, the tail representative. Thus its power set is exactly the consecutive even range above.
 
-The current implementation also chooses a uniform integer and doubles it. For even powers, its relevant calculation in [index.html](../../index.html) is
+The current implementation also chooses a uniform integer and doubles it. For even powers, its relevant calculation in [index.html](../../../index.html) is
 
 ```js
 const qCount = Math.max(1, Math.ceil(N*N/32) - 1);
@@ -590,4 +590,4 @@ At fixed domain size there are finitely many affine families and finitely many s
 - [October 25 theory report](2026-10-25-pattern-space-theory.md), Sections 2–4: equivalence, normalization, exact output counts, family classification, and sampling; Sections 7.2 and 7.5: full-grid and checkerboard symmetries; Section 12: variation and color contracts; Section 13.1: measurement definitions and their limits. The shift-class distributions and size tables above apply these existing counting formulas.
 - [October 13 XOR post-power theory](../2026-10-13-post-power/2026-10-13-xor-post-power-theory.md): balanced period rule, coefficient motifs, and the earlier valuation/odd-part classification.
 - [October 11 post-power investigation](../2026-10-11-post-power/2026-10-11-post-power-range.md): the actual domain versus generation-size distinction, inherited sampling range, and changing common phases.
-- [Current generator source](../../index.html): `newStyle` samples powers, `channelParameters` selects odd multipliers and offsets, and `colorTable` applies the post-power and modulus. The implementation comparisons describe the source inspected on November 2, 2026.
+- [Current generator source](../../../index.html): `newStyle` samples powers, `channelParameters` selects odd multipliers and offsets, and `colorTable` applies the post-power and modulus. The implementation comparisons describe the source inspected on November 2, 2026.
