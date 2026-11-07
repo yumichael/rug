@@ -35,7 +35,7 @@ combiner_control = widgets.Dropdown(
     description="Combiner",
 )
 view_control = widgets.ToggleButtons(options=("Both", "Straight", "45°"), description="View")
-density_control = widgets.Dropdown(options=(2, 4, 6, 8), value=6, description="Per page")
+density_control = widgets.Dropdown(options=tuple(range(1, 17)), value=7, description="Per page")
 page_control = widgets.BoundedIntText(min=1, max=len(research_recipes), value=1, description="Page")
 back_button = widgets.Button(description="Back", layout=widgets.Layout(width="auto"))
 next_button = widgets.Button(description="Next", layout=widgets.Layout(width="auto"))
