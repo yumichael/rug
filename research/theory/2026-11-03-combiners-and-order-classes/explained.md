@@ -6,11 +6,9 @@ The [main report](2026-11-04-combiners-and-order-classes.md) contains the proofs
 
 First choose a pre-operation, basic combiner, sampling rule, and desired repetition size. Increase the pre-modulus until the **basic combined pattern** has enough repetition room on both displayed axes. Freeze that modulus. Only then choose the post-operation and find its smallest final modulus that retains the exact requested repetition.
 
-For example, squared-pre-operation rugs with a requested period of 32 select pre-modulus 64 on the full grid for all seven combiners. But their final moduli differ. With post-power one, XOR uses 64, MULT and carryless multiplication use 256, and ABSDIFF uses only four. AND uses 64 for post-power one but needs 2,048 for post-power two.
+With squared pre-operation and a requested period of 32, all seven combiners choose pre-modulus 64 on the whole operand grid and on the opposite-parity checkerboard. The final moduli can still differ. For squared AND with post-power two, the whole grid needs $M=128$ and the opposite-parity checkerboard needs $M=2{,}048$. A full-period shift and a half-period shift determine the allowed moduli on the chosen sample.
 
-So there is no replacement for the XOR modulus formula that can simply be applied unchanged to every combiner. There is, however, one exact method for finding the answer: test the differences caused by a full-period shift and a half-period shift. The report turns that into a complete interval of allowed moduli.
-
-Sometimes a basic combiner skips a requested size. Fourth-pre-power AND has axis periods eight at pre-moduli 32 through 256, then 128 at pre-modulus 512. For a target of 16, 512 is the first pre-modulus that does not shrink the domain. A later post-operation must still produce exactly 16; the pre-modulus test alone does not guarantee success.
+The opposite-parity checkerboard can skip requested sizes. With fourth-power pre-operation, AND has axis periods eight at pre-moduli 32 through 256 and 128 at pre-modulus 512. At that first candidate modulus for a target of 16, the polynomial feasibility test rules out a post-operation that gives periods 16. On the whole operand grid the same combiner already has basic period 16 at $K=64$.
 
 ## You can expose families of pre-polynomials
 
@@ -22,29 +20,21 @@ $$
 
 where $Q$ can be any integer polynomial. Choosing $Q=0$ gives the original power; choosing $q=2$ and $Q=1$ gives $2x^4-x^2$.
 
-These changes preserve the divisibility of every difference between pre-values. That gives a common minimum pre-modulus for the entire family, on the full historical grid, for six combiners. For OR, XOR, ADD, and ABSDIFF, use the requested period times $2^{\nu_2(q)}$. MULT and carryless multiplication use that too unless a larger modulus is needed to keep the even operand from becoming zero.
+These changes preserve the divisibility of every difference between pre-values. On the whole operand grid all seven combiners attain the requested basic period at the same minimum, $K=R\,2^{\nu_2(q)}$. A fixed second operand can detect every change in the first pre-value. For AND, choose the input that has a set bit where the two pre-values differ.
 
-For a period of 512, every squared-family member uses pre-modulus 1,024 for those six combiners. The fourth-power family uses 2,048. This is a genuinely broader family than selecting another exponent, with a proved modulus guarantee.
-
-AND is different because an operand acts as a bit mask. For pure even pre-powers, the report gives an exact rule: find the first bit position high enough to retain the requested period that can occur in both operands. Fourth-pre-power AND can use bit four, then none of bits five through seven, then bit eight and higher. That gap explains its jumps in repetition size.
-
-For the broader pre-polynomial family, individual AND minima can be smaller because the mask overlap can change. However, the pure-power minimum is proved sufficient for every family member, and it is the smallest modulus with that family-wide guarantee. So all seven combiners can use a consistent pre-modulus for this family.
-
-Arbitrary unrestricted pre-polynomials also cannot all share one modulus: multiplying a pre-polynomial by a sufficiently large power of two makes it zero at any fixed modulus.
+On the opposite-parity checkerboard the fixed operand must have the opposite parity. MULT and CLMUL need enough precision to keep some even pre-values nonzero. AND needs a bit that occurs in both parity branches, which explains the skipped sizes. The main report gives these minimum-modulus rules separately.
 
 ## Sampling can change the kind of pattern
 
-The full grid remains an important choice. Checkerboard sampling is particularly well matched to the existing no-pre-operation XOR construction, but its behavior changes with even pre-powers.
+Both checkerboards select from the original operand grid and rotate their selected cells into displayed axes. The same-parity checkerboard keeps even/even and odd/odd pairs. The opposite-parity checkerboard keeps even/odd and odd/even pairs. The four Cartesian selections isolate one parity pair each.
 
-For squared pre-operation at pre-modulus 64, the full grid has basic periods 32 by 32. Same-parity checkerboard sampling gives eight by sixteen; opposite-parity checkerboard sampling gives sixteen by eight. Each of the four original-grid parity selections gives sixteen by sixteen in this example.
+At pre-modulus 64 with squared pre-operation, XOR has basic axis periods 32 on the whole grid and on the opposite-parity checkerboard, and 16 on the same-parity checkerboard. In the Cartesian selections, the even branch has period eight and the odd branch period 16, measured in displayed cells. The even/even, even/odd, odd/even, and odd/odd period pairs are $(8,8)$, $(8,16)$, $(16,8)$, and $(16,16)$.
 
-The reason is that checkerboard sampling separates the odd-input pre-function onto one axis and the even-input pre-function onto the other. Those functions have different periods. At sufficiently large pre-powers, the even-input function vanishes entirely. Checkerboard sampling then exposes a constant direction for some combiners, rather than filtering out isolated dead cells.
-
-The report specifies all seven maps and their phases. A symmetry of the full pattern can exchange two sample phases, so the symmetry must be checked on the actual selected phase.
+A sufficiently large even pre-power makes every even operand zero. At pre-modulus 64 and pre-power six, AND is zero everywhere on the opposite-parity checkerboard, the same-parity checkerboard’s AND is zero on half the cells, and odd/odd AND has no zeros. Post-powering can erase further distinctions, so the report applies period and occupancy tests to each selected table.
 
 ## Order classes do not reduce the established XOR counts
 
-For the balanced no-pre-operation XOR single-power family, the distinct anchored values fill a complete, equally spaced grid. If there are 64 distinct values, they are exactly $0,1/64,\ldots,63/64$. Knowing the ascending order of the cell groups already tells you every numerical value.
+For the balanced single-power XOR family on the opposite-parity checkerboard and its additional display-grid sampling, the distinct anchored values fill a complete, equally spaced grid. If there are 64 distinct values, they are exactly $0,1/64,\ldots,63/64$. Knowing the ascending order of the cell groups already tells you every numerical value.
 
 Therefore two such patterns cannot have the same ordering but different numerical spacings. **Order classes and shift classes coincide.** The old counts, multiplier choices, tail identifications, and uniform samplers carry over unchanged.
 
@@ -54,9 +44,9 @@ This does not extend to every arbitrary or even-only post-polynomial. The main r
 
 ## Four other combiner families also have a finite power tail
 
-With even pre-powers, OR, XOR, ADD, and ABSDIFF produce odd basic values in the chosen coordinates. For any fixed table made entirely of odd values, increasing the post-power's valuation eventually stops introducing new normalized patterns, even though its final modulus keeps increasing. The report proves where that tail starts from the table's half-period difference depths.
+With even pre-powers, OR, XOR, ADD, and ABSDIFF produce only odd basic values on the opposite-parity checkerboard and on the two mixed-parity Cartesian selections. For any fixed table made entirely of odd values, increasing the post-power's valuation eventually stops introducing new normalized patterns, even though its final modulus keeps increasing. The report proves where that tail starts from the table's half-period difference depths.
 
-This gives a complete finite procedure for all positive post-powers and odd multipliers in these four cases, with no arbitrary precision cap. You can catalogue shift classes or order classes and sample either uniformly. The procedure applies to all seven sampling rules, after their separate pre-modulus and period checks. It does not assume that order and shift classes coincide outside the special XOR cases.
+This gives a complete finite procedure for all positive post-powers and odd multipliers in these four cases, with no arbitrary precision cap. You can catalogue shift classes or order classes and sample either uniformly. The procedure applies wherever the complete basic table consists of odd values. It does not assume that order and shift classes coincide outside the special XOR cases.
 
 ## Polynomial order classes have a finite stopping rule
 
@@ -70,7 +60,7 @@ This settles the theoretical stopping problem for these unrestricted polynomial 
 
 ## The infinite AND example remains useful
 
-The squared-pre AND example still selects minimum pre-modulus 64 for target period 32. Its three basic value groups are 0, 16, and 32.
+On the opposite-parity checkerboard, the squared-pre AND example selects minimum pre-modulus 64 for target period 32. Its three basic value groups are 0, 16, and 32.
 
 Single post-powers and odd multipliers give two order classes: the sixteen group falls either below or above the thirty-two group after anchoring the zero group. Both have representatives at post-power one and final modulus 64. The infinitely many numerical spacings are still infinitely many shift classes.
 

@@ -7,21 +7,26 @@ from .engine import evaluate
 from .specs import resolve
 
 
-def family_pre_modulus(q, R, combiner):
+def family_pre_modulus(q, R, combiner, *, sampling="full"):
+    """Return the common family minimum on the full grid or opposite-parity checkerboard."""
     if q < 2 or q % 2 or R < 8 or R & (R - 1):
         raise ValueError("Use even q>=2 and dyadic R>=8")
+    if combiner not in ("or", "xor", "add", "absdiff", "mult", "clmul", "and"):
+        raise ValueError("No proved family rule for this combiner")
+    if sampling == "full":
+        return R * (q & -q)
+    if sampling != "checkerboard_opposite":
+        raise ValueError("Use the full grid or opposite-parity checkerboard for this family rule")
     w = (q & -q).bit_length() - 1
     r = R.bit_length() - 1
     if combiner in ("or", "xor", "add", "absdiff"):
         k = r + w
     elif combiner in ("mult", "clmul"):
         k = max(r + w, q + 1)
-    elif combiner == "and":
+    else:
         threshold = r + w - 1
         j = max(4, threshold) if q == 2 else q if threshold <= q else max(q + w + 2, threshold)
         k = j + 1
-    else:
-        raise ValueError("No proved family rule for this combiner")
     return 1 << k
 
 
@@ -78,11 +83,11 @@ def minimum_post_modulus(spec, target, power=1, max_cells=262144):
     return 1 << int(lower) if lower <= upper and lower != math.inf else None
 
 
-def uniform_xor(C=64, seed=0, parity="both", sampling="checkerboard_same"):
+def uniform_xor(C=64, seed=0, parity="both", sampling="checkerboard_opposite"):
     if C < 32 or C & (C - 1):
         raise ValueError("C must be a power of two >=32")
-    if sampling not in ("full", "checkerboard_same", "checkerboard_opposite"):
-        raise ValueError("Sampler theorem covers full grid and checkerboard sampling")
+    if sampling != "checkerboard_opposite":
+        raise ValueError("Balanced XOR sampling requires the opposite-parity operand checkerboard")
     rng = random.Random(seed)
     if parity == "both":
         parity = "odd" if rng.randrange(9) < 8 else "even"
@@ -98,7 +103,6 @@ def uniform_xor(C=64, seed=0, parity="both", sampling="checkerboard_same"):
         "shape": [C // 2, C // 2],
         "K": C,
         "M": M,
-        "coordinates": "historical",
         "sampling": sampling,
         "pre": [],
         "combine": "xor",

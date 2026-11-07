@@ -34,7 +34,7 @@ def test_combiner_reference(name, fn):
     r = evaluate(s)
     for y in range(16):
         for x in range(16):
-            a, b = pow(y - x - 1, 2, 32), pow(y + x, 2, 32)
+            a, b = pow(x, 2, 32), pow(y, 2, 32)
             assert r.values[y, x] == (pow(fn(a, b), 3, 128) * 7 + 11) % 128
 
 
@@ -49,20 +49,29 @@ def test_absolute_parity(method, phase):
 
 
 def test_checkerboard():
-    x, y = coordinates((8, 8), "checkerboard_opposite")
-    assert set(((x + y) % 2).flat) == {1}
-    s = {"n": 32, "K": 32, "M": 64, "post": [["pow", 2]]}
-    assert np.array_equal(
-        evaluate({**s, "sampling": "checkerboard_same"}).values,
-        evaluate({**s, "sampling": "checkerboard_opposite"}).values,
+    spec = {"n": 32, "K": 32, "M": 64, "post": [["pow", 2]]}
+    full, same, opposite = (
+        evaluate({**spec, "sampling": method}) for method in ("full", "checkerboard_same", "checkerboard_opposite")
     )
+
+    def pairs(result):
+        return {(a % 2, b % 2) for a, b in zip(result.stages["A"].flat, result.stages["B"].flat, strict=True)}
+
+    assert pairs(full) == {(0, 0), (0, 1), (1, 0), (1, 1)}
+    assert pairs(same) == {(0, 0), (1, 1)}
+    assert pairs(opposite) == {(0, 1), (1, 0)}
+    assert not np.array_equal(same.values, opposite.values)
+
+    # The native checkerboard reindexes the same operands as the legacy renderer.
+    app_phase = evaluate({**spec, "sampling": "checkerboard_opposite", "shape": [16, 16], "origin": [-1, -16]})
+    assert np.array_equal(app_phase.values.T, dsl.channel("32;;^;diag1:**2:%64;gray").values)
 
 
 def test_large_powers_and_moduli():
     p = 2**40 + 6
     M = 2**100
     r = evaluate({"n": 8, "K": 8, "M": M, "post": [["pow", p], ["mult", 2**70 + 1]]})
-    assert int(r.values[1, 3]) == pow(((1 - 3 - 1) % 8) ^ ((1 + 3) % 8), p, M) * (2**70 + 1) % M
+    assert int(r.values[1, 3]) == pow(3 ^ 1, p, M) * (2**70 + 1) % M
     assert clmul(1 << 70, 1 << 70) == 1 << 140
 
 
@@ -79,14 +88,14 @@ def test_polynomials_and_features():
     )
     for y in range(8):
         for x in range(8):
-            a = (1 + 3 * (y - x - 1) ** 2) % 16
-            b = (1 + 3 * (y + x) ** 2) % 16
+            a = (1 + 3 * x**2) % 16
+            b = (1 + 3 * y**2) % 16
             assert r.values[y, x] == ((a ^ b) + abs(a - b) ** 3) % 64
 
 
 @pytest.mark.parametrize("name,arg", [("gray", 1), ("bitrev", 1), ("rotl", 3), ("inv", 1)])
 def test_bit_operations(name, arg):
-    r = evaluate({"n": 16, "K": 16, "M": 16, "coordinates": "straight", "pre": [[name, arg]]})
+    r = evaluate({"n": 16, "K": 16, "M": 16, "pre": [[name, arg]]})
     assert r.values.shape == (16, 16)
     assert all(0 <= v < 16 for v in r.values.flat)
 
@@ -127,11 +136,13 @@ def test_sweep_and_pairs():
 
 
 def test_research_rules_and_periods():
-    assert family_pre_modulus(8, 512, "and") == 16384
+    assert family_pre_modulus(8, 512, "and") == 4096
+    assert family_pre_modulus(8, 512, "and", sampling="checkerboard_opposite") == 16384
     s = {"n": 64, "K": 64, "M": 64, "pre": [["pow", 2]], "combine": "and"}
     r = evaluate(s)
     assert periods(r, certified_torus=True) == (32, 32)
-    assert minimum_post_modulus(s, 32, 2) == 2048
+    assert minimum_post_modulus(s, 32, 2) == 128
+    assert minimum_post_modulus({**s, "sampling": "checkerboard_opposite"}, 32, 2) == 2048
     with pytest.raises(ValueError, match="known complete periodic torus"):
         periods(r)
     with pytest.raises(ValueError, match="exceeds max_cells"):
@@ -139,8 +150,8 @@ def test_research_rules_and_periods():
 
 
 def test_signatures_and_gallery(tmp_path):
-    a = evaluate({"n": 8, "M": 32, "coordinates": "straight", "expression": "4*z"})
-    b = evaluate({"n": 8, "M": 64, "coordinates": "straight", "expression": "8*z"})
+    a = evaluate({"n": 8, "M": 32, "expression": "4*z"})
+    b = evaluate({"n": 8, "M": 64, "expression": "8*z"})
     assert signature(a) == signature(b)
     p = tmp_path / "favorites.json"
     gallery.save(p, "one", {"n": 8}, notes="interesting", seed=2)
@@ -151,6 +162,9 @@ def test_signatures_and_gallery(tmp_path):
 def test_seed_is_local_and_repeatable():
     assert uniform_xor(64, 3) == uniform_xor(64, 3)
     assert uniform_xor(64, 3)["post"][1][1] % 2 == 1
+    assert uniform_xor(64, 3)["sampling"] == "checkerboard_opposite"
+    with pytest.raises(ValueError, match="opposite-parity operand checkerboard"):
+        uniform_xor(64, sampling="checkerboard_same")
 
 
 def test_presets_render():
@@ -173,7 +187,6 @@ def test_sweep_direct_lookup_and_truncated_clmul():
             "n": 16,
             "K": 16,
             "M": 256,
-            "coordinates": "straight",
             "combine": {"name": "clmul_low", "width": 4},
         }
     )

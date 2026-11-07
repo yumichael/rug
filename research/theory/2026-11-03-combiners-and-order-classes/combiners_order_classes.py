@@ -47,6 +47,7 @@ COMBINERS = {
 
 
 def source(i: int, j: int, method: int) -> tuple[int, int]:
+    """Return the selected pair of operands before pre-processing."""
     if method == 1:
         return i, j
     if method in (2, 3):
@@ -67,8 +68,8 @@ def basic_table(k: int, q: int, name: str, method: int,
     for i in range(K):
         row = []
         for j in range(K):
-            x, y = source(i, j, method)
-            row.append(operation(pre[(y - x - 1) % K], pre[(y + x) % K]))
+            a, b = source(i, j, method)
+            row.append(operation(pre[a % K], pre[b % K]))
         result.append(row)
     return result
 
@@ -89,6 +90,22 @@ def axis_period(table: list[list[int]], axis: int) -> int:
             return h
         h *= 2
     return h
+
+
+def translation_basis(table, periods):
+    """Lift the subgroup of a least-axis-period rectangle to a lattice basis."""
+    width, height = periods
+    for bit in range(width.bit_length() - 1):
+        dx = 1 << bit
+        order = width // dx
+        if height % order:
+            continue
+        step = height // order
+        for dy in range(step, height, 2 * step):
+            if all(table[i][j] == table[(i + dx) % width][(j + dy) % height]
+                   for i in range(width) for j in range(height)):
+                return ((dx, dy), (0, height))
+    return ((width, 0), (0, height))
 
 
 def power_depth(a: int, b: int, p: int) -> int | float:
@@ -233,23 +250,34 @@ def check_common_pre_moduli() -> list[dict]:
                 k_min = max(r + w, q + 1) if name in ("MULT", "CLMUL") else r + w
                 for twist in ((0,), (1,), (1, 2), (2, 3, 1)):
                     for k in range(1, k_min + 1):
-                        table = basic_table(k, q, name, 1, twist)
+                        table = basic_table(k, q, name, 3, twist)
                         periods = tuple(axis_period(table, a) for a in (0, 1))
                         check((min(periods) >= R) == (k == k_min), "common_pre_minimum")
                     predicted = 1 << (k_min - w)
                     check(periods == (predicted, predicted), "common_pre_period")
                 records.append({"pre_power": q, "R": R, "combiner": name,
-                                "minimum_K": 1 << k_min,
+                                "minimum_K": 1 << k_min, "method": 3,
                                 "basic_axis_periods": [predicted, predicted]})
+    for q, R, name in itertools.product((2, 4, 6, 8, 10), (8, 16, 32), COMBINERS):
+        K = R * (q & -q)
+        k = K.bit_length() - 1
+        for twist in ((0,), (1,), (1, 2), (2, 3, 1)):
+            for trial in (k - 1, k):
+                table = basic_table(trial, q, name, 1, twist)
+                periods = tuple(axis_period(table, axis) for axis in (0, 1))
+                check((min(periods) >= R) == (trial == k), "operand_grid_common_pre_minimum")
+            check(periods == (R, R), "operand_grid_common_pre_period")
+        records.append({"pre_power": q, "R": R, "combiner": name, "method": 1,
+                        "minimum_K": K, "basic_axis_periods": [R, R]})
     for q, R in itertools.product((2, 4, 6), (8, 16)):
         k_min = 1
         while pure_and_period(k_min, q) < R:
             k_min += 1
         for twist in ((0,), (1,), (1, 2), (2, 3, 1)):
-            table = basic_table(k_min, q, "AND", 1, twist)
+            table = basic_table(k_min, q, "AND", 3, twist)
             check(min(axis_period(table, a) for a in (0, 1)) >= R,
                   "common_AND_pre_bound")
-        records.append({"pre_power": q, "R": R, "combiner": "AND",
+        records.append({"pre_power": q, "R": R, "combiner": "AND", "method": 3,
                         "minimum_common_K": 1 << k_min,
                         "individual_minima_can_be_smaller": True})
     return records
@@ -263,7 +291,7 @@ def basic_catalogue() -> dict:
                 for method in range(1, 8):
                     table = basic_table(k, q, name, method)
                     periods = tuple(axis_period(table, a) for a in (0, 1))
-                    if name == "AND" and method == 1:
+                    if name == "AND" and method == 3:
                         expected = pure_and_period(k, q)
                         check(periods == (expected, expected), "pure_AND_closed_period")
                     n = (1 << k) ** 2
@@ -272,6 +300,7 @@ def basic_catalogue() -> dict:
                               for p in (1, 2, 3, 4)}
                     records.append({"K": 1 << k, "pre_power": q, "combiner": name,
                                     "method": method, "axis_periods": periods,
+                                    "translation_basis": translation_basis(table, periods),
                                     "zero_fraction": [zero, n],
                                     "minimum_post_m_at_native_period": powers})
                     records[-1]["requested_periods"] = {}
@@ -295,11 +324,12 @@ def basic_catalogue() -> dict:
                             check(tuple(axis_period(output, a) for a in (0, 1)) != periods,
                                   "post_minimum_minimality")
                     if q >= k:
-                        if name in ("AND", "MULT", "CLMUL"):
-                            check(zero == n, "saturated_even_operand")
-                        elif name in ("OR", "XOR", "ADD", "ABSDIFF"):
-                            other = basic_table(k, q, "OR", method)
-                            check(table == other, "saturated_even_operand")
+                        # On cells with an even operand, that branch is zero.
+                        for i, j in itertools.product(range(1 << k), repeat=2):
+                            a, b = source(i, j, method)
+                            if (a & b & 1) == 0:
+                                expected = 0 if name in ("AND", "MULT", "CLMUL") else pow(a if a & 1 else b, q, 1 << k)
+                                check(table[i][j] == expected, "saturated_even_operand")
     minima = []
     for R, q, name, method in itertools.product((16, 32), (2, 4, 6, 8, 10),
                                                COMBINERS, range(1, 8)):
@@ -311,7 +341,11 @@ def basic_catalogue() -> dict:
             minima.append({"R": R, "pre_power": q, "combiner": name, "method": method,
                            "minimum_K": row["K"], "basic_axis_periods": row["axis_periods"],
                            **row["requested_periods"][str(R)]})
-    return {"records": records, "minimum_pre_moduli_found_through_128": minima,
+    return {"sampling_methods": {
+                1: "full", 2: "checkerboard_same", 3: "checkerboard_opposite",
+                4: "even_even", 5: "even_odd", 6: "odd_even", 7: "odd_odd",
+            },
+            "records": records, "minimum_pre_moduli_found_through_128": minima,
             "missing_minima_mean": "Not found through K=128; not an impossibility claim."}
 
 
@@ -331,11 +365,13 @@ def finite_power_catalogue(table: list[list[int]], M: int, R: int) -> dict:
                 order *= 2
             T = max(T, order)
     shifts, orders = {}, {}
+    full_edges = [edges(table, R, axis) for axis in (0, 1)]
+    half_edges = [edges(table, R // 2, axis) for axis in (0, 1)]
     for p, a in itertools.product(range(1, L + T), range(1, M, 2)):
         output = {z: a * pow(z, p, M) % M for z in atoms}
-        if any(any(output[x] != output[y] for x, y in edges(table, R, ax))
-               or all(output[x] == output[y] for x, y in edges(table, R // 2, ax))
-               for ax in (0, 1)):
+        if any(any(output[x] != output[y] for x, y in full)
+               or all(output[x] == output[y] for x, y in half)
+               for full, half in zip(full_edges, half_edges, strict=True)):
             continue
         values = tuple(output[z] for z in atoms)
         shifts.setdefault(shift_signature(values, M), (p, a))
@@ -347,10 +383,11 @@ def finite_power_catalogue(table: list[list[int]], M: int, R: int) -> dict:
 def fixed_precision_catalogues() -> dict:
     result = {}
     for name in COMBINERS:
-        table = basic_table(5, 2, name, 1)
-        result[name] = finite_power_catalogue(table, 64, 16)
-    return {"K": 32, "pre_power": 2, "method": 1, "M": 64, "R": 16,
-            "complete_positive_power_and_odd_multiplier_catalogues": result}
+        for method in range(1, 8):
+            table = basic_table(5, 2, name, method)
+            result.setdefault(str(method), {})[name] = finite_power_catalogue(table, 64, 16)
+    return {"K": 32, "pre_power": 2, "M": 64, "R": 16,
+            "complete_positive_power_and_odd_multiplier_catalogues_by_method": result}
 
 
 def unit_power_catalogue(table: list[list[int]], R: int, brute: bool = False) -> dict:
@@ -422,7 +459,7 @@ def unit_power_catalogue(table: list[list[int]], R: int, brute: bool = False) ->
 def unit_catalogues() -> dict:
     result = {}
     for name in ("OR", "XOR", "ADD", "ABSDIFF"):
-        result[name] = unit_power_catalogue(basic_table(5, 2, name, 1), 16, brute=True)
+        result[name] = unit_power_catalogue(basic_table(5, 2, name, 3), 16, brute=True)
     # Tail checks on the other sample phases and non-square pre-powers too.
     for k, q, name, method in itertools.product((4, 5, 6), (2, 4, 6),
                                                ("OR", "XOR", "ADD", "ABSDIFF"), range(1, 8)):
@@ -431,9 +468,9 @@ def unit_catalogues() -> dict:
         # The tail argument also works for rectangular periods. This invocation
         # uses a square target; infeasible parity cases correctly add no members.
         R = min(periods)
-        if R > 1:
+        if R > 1 and all(z & 1 for row in table for z in row):
             unit_power_catalogue(table, R)
-    return {"K": 32, "pre_power": 2, "method": 1, "R": 16,
+    return {"K": 32, "pre_power": 2, "method": 3, "R": 16,
             "complete_unbounded_minimum_modulus_catalogues": result}
 
 
@@ -614,34 +651,54 @@ def check_period_graph() -> None:
 def special_pre_examples() -> dict:
     periods = []
     for k in range(4, 10):
-        table = basic_table(k, 4, "AND", 1)
+        table = basic_table(k, 4, "AND", 3)
         pair = tuple(axis_period(table, axis) for axis in (0, 1))
         periods.append(pair)
     check(periods == [(1, 1), (8, 8), (8, 8), (8, 8), (8, 8), (128, 128)],
           "pre_period_jump")
     check(not polynomial_period_feasible(table, 16), "jump_target_impossible")
     for q, k in itertools.product((2, 4, 6, 8, 10, 12), range(1, 9)):
-        table = basic_table(k, q, "AND", 1)
+        table = basic_table(k, q, "AND", 3)
         expected = pure_and_period(k, q)
         check(tuple(axis_period(table, a) for a in (0, 1)) == (expected, expected),
               "pure_AND_closed_period")
-    table = basic_table(4, 2, "AND", 1, (1,))
+    table = basic_table(4, 2, "AND", 3, (1,))
     check(tuple(axis_period(table, a) for a in (0, 1)) == (8, 8), "and_twisted_pre")
     for name in COMBINERS:
-        table = basic_table(5, 2, name, 1)
+        table = basic_table(5, 2, name, 3)
         N = len(table)
         for i in range(N):
             for j in range(N):
-                check(table[i][j] == table[(-j) % N][(i + 1) % N], "full_grid_square_symmetry")
+                check(table[i][j] == table[j][(-i - 1) % N], "opposite_checkerboard_square_symmetry")
     return {"fourth_pre_AND_K": [16, 32, 64, 128, 256, 512],
-            "axis_periods": periods}
+            "method": 3, "axis_periods": periods}
+
+
+def check_sampling() -> None:
+    K = 16
+    expected_parities = (
+        {(0, 0), (0, 1), (1, 0), (1, 1)}, {(0, 0), (1, 1)}, {(0, 1), (1, 0)},
+        {(0, 0)}, {(0, 1)}, {(1, 0)}, {(1, 1)},
+    )
+    for method, expected in enumerate(expected_parities, 1):
+        selected = {tuple(z % K for z in source(i, j, method))
+                    for i, j in itertools.product(range(K), repeat=2)}
+        exact = {(a, b) for a, b in itertools.product(range(K), repeat=2)
+                 if (a % 2, b % 2) in expected}
+        check(selected == exact, "operand_sampling")
+
+    for method, expected in ((1, ((32, 32), (0, 64))), (2, ((16, 0), (0, 16))),
+                             (3, ((32, 0), (0, 32)))):
+        table = [[pow(z, 2, 128) for z in row] for row in basic_table(6, 1, "XOR", method)]
+        periods = tuple(axis_period(table, axis) for axis in (0, 1))
+        check(translation_basis(table, periods) == expected, "xor_translation_basis")
 
 
 def and_example() -> dict:
-    table = basic_table(6, 2, "AND", 1)
+    table = basic_table(6, 2, "AND", 3)
     check(sorted({x for row in table for x in row}) == [0, 16, 32], "and_example")
     for k in range(1, 6):
-        smaller = basic_table(k, 2, "AND", 1)
+        smaller = basic_table(k, 2, "AND", 3)
         check(max(axis_period(smaller, a) for a in (0, 1)) < 32, "and_pre_minimum")
     order_set = set()
     for p in range(1, 13):
@@ -664,13 +721,14 @@ def and_example() -> dict:
         values = [polynomial(z) for z in (0, 16, 32)]
         check(order_signature(values, 1024) in polynomial_orders, "and_polynomial_witness")
         check(valuation(values[2] - values[0]) == 9, "and_polynomial_witness")
-    return {"minimum_K": 64, "target_axis_periods": [32, 32],
+    return {"method": 3, "minimum_K": 64, "target_axis_periods": [32, 32],
             "raw_values": [0, 16, 32], "monomial_order_classes": sorted(order_set),
             "polynomial_order_classes": sorted(polynomial_orders)}
 
 
 def main() -> None:
     xor = load_xor_module()
+    check_sampling()
     check_pre_families()
     for a, b, p in itertools.product(range(20), range(20), range(1, 13)):
         check(power_depth(a, b, p) == valuation(a ** p - b ** p), "power_difference")

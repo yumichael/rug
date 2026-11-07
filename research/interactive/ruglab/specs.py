@@ -31,7 +31,6 @@ def resolve(spec):
     s = deepcopy(spec)
     n = s.setdefault("n", 64)
     s.setdefault("shape", [n, n])
-    s.setdefault("coordinates", "historical")
     s.setdefault("origin", [0, 0])
     s.setdefault("sampling", "full")
     s.setdefault("K", n)
@@ -41,8 +40,6 @@ def resolve(spec):
     s.setdefault("combine", "xor")
     if s["sampling"] not in SAMPLINGS:
         raise ValueError("Unknown sampling: " + s["sampling"])
-    if s["coordinates"] not in ("historical", "straight"):
-        raise ValueError("coordinates must be historical or straight")
     if len(s["shape"]) != 2 or any(not isinstance(v, int) or v < 1 for v in s["shape"]):
         raise ValueError("shape must contain two positive integers")
     for key in ("K", "M"):

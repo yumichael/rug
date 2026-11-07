@@ -17821,6 +17821,26 @@
       "p": 1,
       "sample": "full",
       "period": [
+        32,
+        32
+      ],
+      "support": 32,
+      "sym_cell": [
+        "r180",
+        "diag",
+        "anti"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "xor",
+      "q": 1,
+      "p": 1,
+      "sample": "checkerboard_same",
+      "period": [
         16,
         16
       ],
@@ -17841,7 +17861,23 @@
       "op": "xor",
       "q": 1,
       "p": 1,
-      "sample": "checker-even",
+      "sample": "checkerboard_opposite",
+      "period": [
+        16,
+        16
+      ],
+      "support": 16,
+      "sym_cell": [
+        "my"
+      ],
+      "sym_vertex": [],
+      "sym_legacy": []
+    },
+    {
+      "op": "xor",
+      "q": 1,
+      "p": 1,
+      "sample": "even_even",
       "period": [
         16,
         16
@@ -17861,7 +17897,7 @@
       "op": "xor",
       "q": 1,
       "p": 1,
-      "sample": "checker-odd",
+      "sample": "even_odd",
       "period": [
         16,
         16
@@ -17881,39 +17917,19 @@
       "op": "xor",
       "q": 1,
       "p": 1,
-      "sample": "decimate-00",
+      "sample": "odd_even",
       "period": [
-        8,
-        8
+        16,
+        16
       ],
-      "support": 8,
+      "support": 16,
       "sym_cell": [
-        "mx"
+        "r180",
+        "diag",
+        "anti"
       ],
       "sym_vertex": [
-        "my"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 1,
-      "p": 1,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "my"
-      ],
-      "sym_vertex": [
-        "mx"
+        "diag"
       ],
       "sym_legacy": []
     },
@@ -17921,12 +17937,52 @@
       "op": "xor",
       "q": 1,
       "p": 1,
-      "sample": "decimate-10",
+      "sample": "odd_odd",
+      "period": [
+        16,
+        16
+      ],
+      "support": 16,
+      "sym_cell": [
+        "r180",
+        "diag",
+        "anti"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "xor",
+      "q": 1,
+      "p": 2,
+      "sample": "full",
+      "period": [
+        32,
+        32
+      ],
+      "support": 12,
+      "sym_cell": [
+        "r180",
+        "diag",
+        "anti"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "xor",
+      "q": 1,
+      "p": 2,
+      "sample": "checkerboard_same",
       "period": [
         8,
         8
       ],
-      "support": 8,
+      "support": 4,
       "sym_cell": [
         "mx"
       ],
@@ -17942,11 +17998,11 @@
     {
       "op": "xor",
       "q": 1,
-      "p": 1,
-      "sample": "decimate-11",
+      "p": 2,
+      "sample": "checkerboard_opposite",
       "period": [
-        8,
-        8
+        16,
+        16
       ],
       "support": 8,
       "sym_cell": [
@@ -17959,29 +18015,27 @@
       "op": "xor",
       "q": 1,
       "p": 2,
-      "sample": "full",
+      "sample": "even_even",
       "period": [
-        16,
-        16
+        8,
+        8
       ],
-      "support": 8,
+      "support": 4,
       "sym_cell": [
-        "mx"
+        "r180",
+        "diag",
+        "anti"
       ],
       "sym_vertex": [
-        "my"
+        "diag"
       ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
+      "sym_legacy": []
     },
     {
       "op": "xor",
       "q": 1,
       "p": 2,
-      "sample": "checker-even",
+      "sample": "even_odd",
       "period": [
         16,
         16
@@ -18007,7 +18061,7 @@
       "op": "xor",
       "q": 1,
       "p": 2,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         16,
         16
@@ -18033,191 +18087,39 @@
       "op": "xor",
       "q": 1,
       "p": 2,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
         8,
         8
       ],
-      "support": 8,
+      "support": 4,
       "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [
-        "my"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 1,
-      "p": 2,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "my"
-      ],
-      "sym_vertex": [
-        "mx"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 1,
-      "p": 2,
-      "sample": "decimate-10",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [
-        "my"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 1,
-      "p": 2,
-      "sample": "decimate-11",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "my"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 1,
-      "p": 4,
-      "sample": "full",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [
-        "my"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 1,
-      "p": 4,
-      "sample": "checker-even",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx",
-        "my",
         "r180",
         "diag",
-        "anti",
-        "r90",
-        "r270"
+        "anti"
       ],
       "sym_vertex": [
         "diag"
       ],
-      "sym_legacy": [
-        "mx"
-      ]
+      "sym_legacy": []
     },
     {
       "op": "xor",
       "q": 1,
       "p": 4,
-      "sample": "checker-odd",
+      "sample": "full",
       "period": [
-        16,
-        16
+        32,
+        32
       ],
-      "support": 8,
+      "support": 10,
       "sym_cell": [
-        "mx",
-        "my",
         "r180",
         "diag",
-        "anti",
-        "r90",
-        "r270"
+        "anti"
       ],
       "sym_vertex": [
         "diag"
-      ],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 1,
-      "p": 4,
-      "sample": "decimate-00",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [
-        "my"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 1,
-      "p": 4,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "my"
-      ],
-      "sym_vertex": [
-        "mx"
       ],
       "sym_legacy": []
     },
@@ -18225,415 +18127,767 @@
       "op": "xor",
       "q": 1,
       "p": 4,
-      "sample": "decimate-10",
+      "sample": "checkerboard_same",
       "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [
-        "my"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 1,
-      "p": 4,
-      "sample": "decimate-11",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "my"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 1,
-      "sample": "full",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 1,
-      "sample": "checker-even",
-      "period": [
-        4,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "my"
-      ],
-      "sym_vertex": [
-        "mx"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 1,
-      "sample": "checker-odd",
-      "period": [
-        8,
-        4
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 1,
-      "sample": "decimate-00",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 1,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "diag"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 1,
-      "sample": "decimate-10",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 1,
-      "sample": "decimate-11",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 2,
-      "sample": "full",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 2,
-      "sample": "checker-even",
-      "period": [
-        4,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "my"
-      ],
-      "sym_vertex": [
-        "mx"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 2,
-      "sample": "checker-odd",
-      "period": [
-        8,
-        4
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 2,
-      "sample": "decimate-00",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 2,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "diag"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 2,
-      "sample": "decimate-10",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 2,
-      "sample": "decimate-11",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 4,
-      "sample": "full",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 4,
-      "sample": "checker-even",
-      "period": [
-        4,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "my"
-      ],
-      "sym_vertex": [
-        "mx"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 4,
-      "sample": "checker-odd",
-      "period": [
-        8,
-        4
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 4,
-      "sample": "decimate-00",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 4,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "diag"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 4,
-      "sample": "decimate-10",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 2,
-      "p": 4,
-      "sample": "decimate-11",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 4,
-      "p": 1,
-      "sample": "full",
-      "period": [
-        8,
-        8
+        1,
+        2
       ],
       "support": 2,
       "sym_cell": [
         "mx"
       ],
       "sym_vertex": [
+        "mx",
+        "my",
+        "r180"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 1,
+      "p": 4,
+      "sample": "checkerboard_opposite",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "my"
+      ],
+      "sym_vertex": [],
+      "sym_legacy": []
+    },
+    {
+      "op": "xor",
+      "q": 1,
+      "p": 4,
+      "sample": "even_even",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "r180",
+        "diag",
         "anti"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 1,
+      "p": 4,
+      "sample": "even_odd",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": [
+        "mx"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 1,
+      "p": 4,
+      "sample": "odd_even",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": [
+        "mx"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 1,
+      "p": 4,
+      "sample": "odd_odd",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "r180",
+        "diag",
+        "anti"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 1,
+      "sample": "full",
+      "period": [
+        16,
+        16
+      ],
+      "support": 14,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 1,
+      "sample": "checkerboard_same",
+      "period": [
+        8,
+        8
+      ],
+      "support": 6,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 1,
+      "sample": "checkerboard_opposite",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": [
+        "mx"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 1,
+      "sample": "even_even",
+      "period": [
+        4,
+        4
+      ],
+      "support": 4,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 1,
+      "sample": "even_odd",
+      "period": [
+        4,
+        8
+      ],
+      "support": 8,
+      "sym_cell": [
+        "my"
+      ],
+      "sym_vertex": [
+        "mx"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 1,
+      "sample": "odd_even",
+      "period": [
+        8,
+        4
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx"
+      ],
+      "sym_vertex": [
+        "my"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 1,
+      "sample": "odd_odd",
+      "period": [
+        8,
+        8
+      ],
+      "support": 4,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": [
+        "mx"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 2,
+      "sample": "full",
+      "period": [
+        16,
+        16
+      ],
+      "support": 10,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 2,
+      "sample": "checkerboard_same",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 2,
+      "sample": "checkerboard_opposite",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": [
+        "mx"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 2,
+      "sample": "even_even",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "r180",
+        "diag",
+        "anti"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 2,
+      "sample": "even_odd",
+      "period": [
+        4,
+        8
+      ],
+      "support": 8,
+      "sym_cell": [
+        "my"
+      ],
+      "sym_vertex": [
+        "mx"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 2,
+      "sample": "odd_even",
+      "period": [
+        8,
+        4
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx"
+      ],
+      "sym_vertex": [
+        "my"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 2,
+      "sample": "odd_odd",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 4,
+      "sample": "full",
+      "period": [
+        16,
+        16
+      ],
+      "support": 9,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 4,
+      "sample": "checkerboard_same",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 4,
+      "sample": "checkerboard_opposite",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": [
+        "mx"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 4,
+      "sample": "even_even",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 4,
+      "sample": "even_odd",
+      "period": [
+        4,
+        8
+      ],
+      "support": 8,
+      "sym_cell": [
+        "my"
+      ],
+      "sym_vertex": [
+        "mx"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 4,
+      "sample": "odd_even",
+      "period": [
+        8,
+        4
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx"
+      ],
+      "sym_vertex": [
+        "my"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 2,
+      "p": 4,
+      "sample": "odd_odd",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 4,
+      "p": 1,
+      "sample": "full",
+      "period": [
+        8,
+        8
+      ],
+      "support": 4,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 4,
+      "p": 1,
+      "sample": "checkerboard_same",
+      "period": [
+        4,
+        4
+      ],
+      "support": 2,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 4,
+      "p": 1,
+      "sample": "checkerboard_opposite",
+      "period": [
+        8,
+        8
+      ],
+      "support": 2,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -18643,7 +18897,35 @@
       "op": "xor",
       "q": 4,
       "p": 1,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "r180",
+        "diag",
+        "anti"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 4,
+      "p": 1,
+      "sample": "even_odd",
       "period": [
         2,
         4
@@ -18661,7 +18943,7 @@
       "op": "xor",
       "q": 4,
       "p": 1,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         4,
         2
@@ -18683,73 +18965,27 @@
       "op": "xor",
       "q": 4,
       "p": 1,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
         4,
         4
       ],
       "support": 2,
       "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 4,
-      "p": 1,
-      "sample": "decimate-01",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "diag"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
         "diag"
       ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 4,
-      "p": 1,
-      "sample": "decimate-10",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "diag"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 4,
-      "p": 1,
-      "sample": "decimate-11",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
+      "sym_legacy": [
+        "mx"
+      ]
     },
     {
       "op": "xor",
@@ -18760,12 +18996,78 @@
         8,
         8
       ],
-      "support": 2,
+      "support": 3,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 4,
+      "p": 2,
+      "sample": "checkerboard_same",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 4,
+      "p": 2,
+      "sample": "checkerboard_opposite",
+      "period": [
+        8,
+        8
+      ],
+      "support": 2,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -18775,7 +19077,41 @@
       "op": "xor",
       "q": 4,
       "p": 2,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 4,
+      "p": 2,
+      "sample": "even_odd",
       "period": [
         2,
         4
@@ -18793,7 +19129,7 @@
       "op": "xor",
       "q": 4,
       "p": 2,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         4,
         2
@@ -18815,73 +19151,35 @@
       "op": "xor",
       "q": 4,
       "p": 2,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
-        4,
-        4
+        1,
+        1
       ],
-      "support": 2,
+      "support": 1,
       "sym_cell": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
       ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 4,
-      "p": 2,
-      "sample": "decimate-01",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "diag"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 4,
-      "p": 2,
-      "sample": "decimate-10",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "diag"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 4,
-      "p": 2,
-      "sample": "decimate-11",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
     },
     {
       "op": "xor",
@@ -18892,12 +19190,78 @@
         8,
         8
       ],
-      "support": 2,
+      "support": 3,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 4,
+      "p": 4,
+      "sample": "checkerboard_same",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 4,
+      "p": 4,
+      "sample": "checkerboard_opposite",
+      "period": [
+        8,
+        8
+      ],
+      "support": 2,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -18907,7 +19271,41 @@
       "op": "xor",
       "q": 4,
       "p": 4,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "xor",
+      "q": 4,
+      "p": 4,
+      "sample": "even_odd",
       "period": [
         2,
         4
@@ -18925,7 +19323,7 @@
       "op": "xor",
       "q": 4,
       "p": 4,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         4,
         2
@@ -18947,73 +19345,35 @@
       "op": "xor",
       "q": 4,
       "p": 4,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
-        4,
-        4
+        1,
+        1
       ],
-      "support": 2,
+      "support": 1,
       "sym_cell": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
       ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 4,
-      "p": 4,
-      "sample": "decimate-01",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "diag"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 4,
-      "p": 4,
-      "sample": "decimate-10",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "diag"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "xor",
-      "q": 4,
-      "p": 4,
-      "sample": "decimate-11",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
     },
     {
       "op": "and",
@@ -19024,27 +19384,45 @@
         32,
         32
       ],
-      "support": 16,
+      "support": 32,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
-      "sym_vertex": [],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 1,
+      "sample": "checkerboard_same",
+      "period": [
+        32,
+        32
+      ],
+      "support": 32,
+      "sym_cell": [],
+      "sym_vertex": [
+        "my"
+      ],
       "sym_legacy": [
-        "mx"
+        "my"
       ]
     },
     {
       "op": "and",
       "q": 1,
       "p": 1,
-      "sample": "checker-even",
+      "sample": "checkerboard_opposite",
       "period": [
-        16,
-        16
+        32,
+        32
       ],
       "support": 16,
       "sym_cell": [
-        "anti"
+        "my"
       ],
       "sym_vertex": [],
       "sym_legacy": []
@@ -19053,14 +19431,122 @@
       "op": "and",
       "q": 1,
       "p": 1,
-      "sample": "checker-odd",
+      "sample": "even_even",
       "period": [
         16,
         16
       ],
       "support": 16,
       "sym_cell": [
-        "anti"
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 1,
+      "sample": "even_odd",
+      "period": [
+        16,
+        16
+      ],
+      "support": 16,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 1,
+      "sample": "odd_even",
+      "period": [
+        16,
+        16
+      ],
+      "support": 16,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 1,
+      "sample": "odd_odd",
+      "period": [
+        16,
+        16
+      ],
+      "support": 16,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 2,
+      "sample": "full",
+      "period": [
+        32,
+        32
+      ],
+      "support": 12,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 2,
+      "sample": "checkerboard_same",
+      "period": [
+        32,
+        32
+      ],
+      "support": 12,
+      "sym_cell": [],
+      "sym_vertex": [
+        "my"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 2,
+      "sample": "checkerboard_opposite",
+      "period": [
+        16,
+        16
+      ],
+      "support": 4,
+      "sym_cell": [
+        "my"
       ],
       "sym_vertex": [],
       "sym_legacy": []
@@ -19068,32 +19554,124 @@
     {
       "op": "and",
       "q": 1,
-      "p": 1,
-      "sample": "decimate-00",
+      "p": 2,
+      "sample": "even_even",
+      "period": [
+        8,
+        8
+      ],
+      "support": 4,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 2,
+      "sample": "even_odd",
+      "period": [
+        8,
+        8
+      ],
+      "support": 4,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 2,
+      "sample": "odd_even",
+      "period": [
+        8,
+        8
+      ],
+      "support": 4,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 2,
+      "sample": "odd_odd",
       "period": [
         16,
         16
       ],
       "support": 8,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
-      "sym_vertex": [],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 4,
+      "sample": "full",
+      "period": [
+        32,
+        32
+      ],
+      "support": 10,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 4,
+      "sample": "checkerboard_same",
+      "period": [
+        32,
+        32
+      ],
+      "support": 10,
+      "sym_cell": [],
+      "sym_vertex": [
+        "my"
+      ],
       "sym_legacy": [
-        "mx"
+        "my"
       ]
     },
     {
       "op": "and",
       "q": 1,
-      "p": 1,
-      "sample": "decimate-01",
+      "p": 4,
+      "sample": "checkerboard_opposite",
       "period": [
-        16,
-        16
+        4,
+        4
       ],
-      "support": 16,
-      "sym_cell": [],
+      "support": 2,
+      "sym_cell": [
+        "my"
+      ],
       "sym_vertex": [
         "mx"
       ],
@@ -19102,336 +19680,98 @@
     {
       "op": "and",
       "q": 1,
-      "p": 1,
-      "sample": "decimate-10",
+      "p": 4,
+      "sample": "even_even",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 4,
+      "sample": "even_odd",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 4,
+      "sample": "odd_even",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 1,
+      "p": 4,
+      "sample": "odd_odd",
       "period": [
         16,
         16
       ],
       "support": 8,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 1,
-      "sample": "decimate-11",
-      "period": [
-        16,
-        16
-      ],
-      "support": 16,
-      "sym_cell": [],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 2,
-      "sample": "full",
-      "period": [
-        16,
-        16
-      ],
-      "support": 4,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 2,
-      "sample": "checker-even",
-      "period": [
-        8,
-        8
-      ],
-      "support": 4,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 2,
-      "sample": "checker-odd",
-      "period": [
-        8,
-        8
-      ],
-      "support": 4,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 2,
-      "sample": "decimate-00",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 2,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 4,
-      "sym_cell": [],
       "sym_vertex": [
-        "mx"
+        "diag"
       ],
       "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 2,
-      "sample": "decimate-10",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 2,
-      "sample": "decimate-11",
-      "period": [
-        8,
-        8
-      ],
-      "support": 4,
-      "sym_cell": [],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 4,
-      "sample": "full",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 4,
-      "sample": "checker-even",
-      "period": [
-        2,
-        2
-      ],
-      "support": 2,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180"
-      ],
-      "sym_legacy": [
-        "my"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 4,
-      "sample": "checker-odd",
-      "period": [
-        2,
-        2
-      ],
-      "support": 2,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180"
-      ],
-      "sym_legacy": [
-        "my"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 4,
-      "sample": "decimate-00",
-      "period": [
-        1,
-        1
-      ],
-      "support": 1,
-      "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 4,
-      "sample": "decimate-01",
-      "period": [
-        2,
-        2
-      ],
-      "support": 2,
-      "sym_cell": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_legacy": [
-        "my"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 4,
-      "sample": "decimate-10",
-      "period": [
-        1,
-        1
-      ],
-      "support": 1,
-      "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 1,
-      "p": 4,
-      "sample": "decimate-11",
-      "period": [
-        2,
-        2
-      ],
-      "support": 2,
-      "sym_cell": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_legacy": [
-        "my"
-      ]
     },
     {
       "op": "and",
@@ -19442,12 +19782,70 @@
         16,
         16
       ],
-      "support": 2,
+      "support": 7,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 2,
+      "p": 1,
+      "sample": "checkerboard_same",
+      "period": [
+        16,
+        16
+      ],
+      "support": 7,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 2,
+      "p": 1,
+      "sample": "checkerboard_opposite",
+      "period": [
+        16,
+        16
+      ],
+      "support": 2,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -19457,7 +19855,33 @@
       "op": "and",
       "q": 2,
       "p": 1,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        4,
+        4
+      ],
+      "support": 3,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 2,
+      "p": 1,
+      "sample": "even_odd",
       "period": [
         4,
         8
@@ -19475,7 +19899,7 @@
       "op": "and",
       "q": 2,
       "p": 1,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         8,
         4
@@ -19484,7 +19908,37 @@
       "sym_cell": [
         "mx"
       ],
-      "sym_vertex": [],
+      "sym_vertex": [
+        "my"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 2,
+      "p": 1,
+      "sample": "odd_odd",
+      "period": [
+        8,
+        8
+      ],
+      "support": 4,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
       "sym_legacy": [
         "mx"
       ]
@@ -19492,93 +19946,15 @@
     {
       "op": "and",
       "q": 2,
-      "p": 1,
-      "sample": "decimate-00",
-      "period": [
-        8,
-        8
-      ],
-      "support": 2,
-      "sym_cell": [],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 2,
-      "p": 1,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 2,
-      "sym_cell": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_vertex": [
-        "diag"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 2,
-      "p": 1,
-      "sample": "decimate-10",
-      "period": [
-        8,
-        8
-      ],
-      "support": 2,
-      "sym_cell": [],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 2,
-      "p": 1,
-      "sample": "decimate-11",
-      "period": [
-        8,
-        8
-      ],
-      "support": 2,
-      "sym_cell": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_vertex": [
-        "diag"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 2,
       "p": 2,
       "sample": "full",
       "period": [
-        1,
-        1
+        16,
+        16
       ],
-      "support": 1,
+      "support": 6,
       "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
+        "diag"
       ],
       "sym_vertex": [
         "mx",
@@ -19590,16 +19966,40 @@
         "r270"
       ],
       "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
+        "my"
       ]
     },
     {
       "op": "and",
       "q": 2,
       "p": 2,
-      "sample": "checker-even",
+      "sample": "checkerboard_same",
+      "period": [
+        16,
+        16
+      ],
+      "support": 6,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 2,
+      "p": 2,
+      "sample": "checkerboard_opposite",
       "period": [
         1,
         1
@@ -19633,7 +20033,33 @@
       "op": "and",
       "q": 2,
       "p": 2,
-      "sample": "checker-odd",
+      "sample": "even_even",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 2,
+      "p": 2,
+      "sample": "even_odd",
       "period": [
         1,
         1
@@ -19667,7 +20093,7 @@
       "op": "and",
       "q": 2,
       "p": 2,
-      "sample": "decimate-00",
+      "sample": "odd_even",
       "period": [
         1,
         1
@@ -19701,12 +20127,12 @@
       "op": "and",
       "q": 2,
       "p": 2,
-      "sample": "decimate-01",
+      "sample": "odd_odd",
       "period": [
-        1,
-        1
+        8,
+        8
       ],
-      "support": 1,
+      "support": 4,
       "sym_cell": [
         "mx",
         "my",
@@ -19717,86 +20143,10 @@
         "r270"
       ],
       "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
+        "diag"
       ],
       "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 2,
-      "p": 2,
-      "sample": "decimate-10",
-      "period": [
-        1,
-        1
-      ],
-      "support": 1,
-      "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 2,
-      "p": 2,
-      "sample": "decimate-11",
-      "period": [
-        1,
-        1
-      ],
-      "support": 1,
-      "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
+        "mx"
       ]
     },
     {
@@ -19805,18 +20155,12 @@
       "p": 4,
       "sample": "full",
       "period": [
-        1,
-        1
+        16,
+        16
       ],
-      "support": 1,
+      "support": 5,
       "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
+        "diag"
       ],
       "sym_vertex": [
         "mx",
@@ -19828,16 +20172,40 @@
         "r270"
       ],
       "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
+        "my"
       ]
     },
     {
       "op": "and",
       "q": 2,
       "p": 4,
-      "sample": "checker-even",
+      "sample": "checkerboard_same",
+      "period": [
+        16,
+        16
+      ],
+      "support": 5,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 2,
+      "p": 4,
+      "sample": "checkerboard_opposite",
       "period": [
         1,
         1
@@ -19871,7 +20239,7 @@
       "op": "and",
       "q": 2,
       "p": 4,
-      "sample": "checker-odd",
+      "sample": "even_even",
       "period": [
         1,
         1
@@ -19905,7 +20273,7 @@
       "op": "and",
       "q": 2,
       "p": 4,
-      "sample": "decimate-00",
+      "sample": "even_odd",
       "period": [
         1,
         1
@@ -19939,7 +20307,7 @@
       "op": "and",
       "q": 2,
       "p": 4,
-      "sample": "decimate-01",
+      "sample": "odd_even",
       "period": [
         1,
         1
@@ -19973,12 +20341,12 @@
       "op": "and",
       "q": 2,
       "p": 4,
-      "sample": "decimate-10",
+      "sample": "odd_odd",
       "period": [
-        1,
-        1
+        8,
+        8
       ],
-      "support": 1,
+      "support": 4,
       "sym_cell": [
         "mx",
         "my",
@@ -19989,52 +20357,10 @@
         "r270"
       ],
       "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
+        "diag"
       ],
       "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 2,
-      "p": 4,
-      "sample": "decimate-11",
-      "period": [
-        1,
-        1
-      ],
-      "support": 1,
-      "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
+        "mx"
       ]
     },
     {
@@ -20046,12 +20372,70 @@
         8,
         8
       ],
-      "support": 2,
+      "support": 4,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 4,
+      "p": 1,
+      "sample": "checkerboard_same",
+      "period": [
+        8,
+        8
+      ],
+      "support": 4,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 4,
+      "p": 1,
+      "sample": "checkerboard_opposite",
+      "period": [
+        8,
+        8
+      ],
+      "support": 2,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -20061,7 +20445,33 @@
       "op": "and",
       "q": 4,
       "p": 1,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 4,
+      "p": 1,
+      "sample": "even_odd",
       "period": [
         2,
         4
@@ -20079,7 +20489,7 @@
       "op": "and",
       "q": 4,
       "p": 1,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         4,
         2
@@ -20101,81 +20511,27 @@
       "op": "and",
       "q": 4,
       "p": 1,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
         4,
         4
       ],
       "support": 2,
       "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 4,
-      "p": 1,
-      "sample": "decimate-01",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
+        "mx",
+        "my",
         "r180",
         "diag",
-        "anti"
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
         "diag"
       ],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 4,
-      "p": 1,
-      "sample": "decimate-10",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "and",
-      "q": 4,
-      "p": 1,
-      "sample": "decimate-11",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_vertex": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_legacy": []
+      "sym_legacy": [
+        "mx"
+      ]
     },
     {
       "op": "and",
@@ -20183,18 +20539,12 @@
       "p": 2,
       "sample": "full",
       "period": [
-        1,
-        1
+        8,
+        8
       ],
-      "support": 1,
+      "support": 3,
       "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
+        "diag"
       ],
       "sym_vertex": [
         "mx",
@@ -20206,16 +20556,40 @@
         "r270"
       ],
       "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
+        "my"
       ]
     },
     {
       "op": "and",
       "q": 4,
       "p": 2,
-      "sample": "checker-even",
+      "sample": "checkerboard_same",
+      "period": [
+        8,
+        8
+      ],
+      "support": 3,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 4,
+      "p": 2,
+      "sample": "checkerboard_opposite",
       "period": [
         1,
         1
@@ -20249,7 +20623,7 @@
       "op": "and",
       "q": 4,
       "p": 2,
-      "sample": "checker-odd",
+      "sample": "even_even",
       "period": [
         1,
         1
@@ -20283,7 +20657,7 @@
       "op": "and",
       "q": 4,
       "p": 2,
-      "sample": "decimate-00",
+      "sample": "even_odd",
       "period": [
         1,
         1
@@ -20317,7 +20691,7 @@
       "op": "and",
       "q": 4,
       "p": 2,
-      "sample": "decimate-01",
+      "sample": "odd_even",
       "period": [
         1,
         1
@@ -20351,12 +20725,12 @@
       "op": "and",
       "q": 4,
       "p": 2,
-      "sample": "decimate-10",
+      "sample": "odd_odd",
       "period": [
-        1,
-        1
+        4,
+        4
       ],
-      "support": 1,
+      "support": 2,
       "sym_cell": [
         "mx",
         "my",
@@ -20367,52 +20741,10 @@
         "r270"
       ],
       "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
+        "diag"
       ],
       "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 4,
-      "p": 2,
-      "sample": "decimate-11",
-      "period": [
-        1,
-        1
-      ],
-      "support": 1,
-      "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
+        "mx"
       ]
     },
     {
@@ -20421,18 +20753,12 @@
       "p": 4,
       "sample": "full",
       "period": [
-        1,
-        1
+        8,
+        8
       ],
-      "support": 1,
+      "support": 3,
       "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
+        "diag"
       ],
       "sym_vertex": [
         "mx",
@@ -20444,16 +20770,40 @@
         "r270"
       ],
       "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
+        "my"
       ]
     },
     {
       "op": "and",
       "q": 4,
       "p": 4,
-      "sample": "checker-even",
+      "sample": "checkerboard_same",
+      "period": [
+        8,
+        8
+      ],
+      "support": 3,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "and",
+      "q": 4,
+      "p": 4,
+      "sample": "checkerboard_opposite",
       "period": [
         1,
         1
@@ -20487,7 +20837,7 @@
       "op": "and",
       "q": 4,
       "p": 4,
-      "sample": "checker-odd",
+      "sample": "even_even",
       "period": [
         1,
         1
@@ -20521,7 +20871,7 @@
       "op": "and",
       "q": 4,
       "p": 4,
-      "sample": "decimate-00",
+      "sample": "even_odd",
       "period": [
         1,
         1
@@ -20555,7 +20905,7 @@
       "op": "and",
       "q": 4,
       "p": 4,
-      "sample": "decimate-01",
+      "sample": "odd_even",
       "period": [
         1,
         1
@@ -20589,12 +20939,12 @@
       "op": "and",
       "q": 4,
       "p": 4,
-      "sample": "decimate-10",
+      "sample": "odd_odd",
       "period": [
-        1,
-        1
+        4,
+        4
       ],
-      "support": 1,
+      "support": 2,
       "sym_cell": [
         "mx",
         "my",
@@ -20605,52 +20955,10 @@
         "r270"
       ],
       "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
+        "diag"
       ],
       "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
-      ]
-    },
-    {
-      "op": "and",
-      "q": 4,
-      "p": 4,
-      "sample": "decimate-11",
-      "period": [
-        1,
-        1
-      ],
-      "support": 1,
-      "sym_cell": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_vertex": [
-        "mx",
-        "my",
-        "r180",
-        "diag",
-        "anti",
-        "r90",
-        "r270"
-      ],
-      "sym_legacy": [
-        "mx",
-        "my",
-        "r180"
+        "mx"
       ]
     },
     {
@@ -20662,78 +20970,64 @@
         32,
         32
       ],
-      "support": 16,
+      "support": 32,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "or",
-      "q": 1,
-      "p": 1,
-      "sample": "checker-even",
-      "period": [
-        16,
-        16
+      "sym_vertex": [
+        "diag"
       ],
-      "support": 16,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
       "sym_legacy": []
     },
     {
       "op": "or",
       "q": 1,
       "p": 1,
-      "sample": "checker-odd",
+      "sample": "checkerboard_same",
       "period": [
-        16,
-        16
+        32,
+        32
       ],
-      "support": 16,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 1,
-      "p": 1,
-      "sample": "decimate-00",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "or",
-      "q": 1,
-      "p": 1,
-      "sample": "decimate-01",
-      "period": [
-        16,
-        16
-      ],
-      "support": 16,
+      "support": 32,
       "sym_cell": [],
       "sym_vertex": [
-        "mx"
+        "my"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 1,
+      "p": 1,
+      "sample": "checkerboard_opposite",
+      "period": [
+        32,
+        32
+      ],
+      "support": 16,
+      "sym_cell": [
+        "my"
+      ],
+      "sym_vertex": [],
+      "sym_legacy": []
+    },
+    {
+      "op": "or",
+      "q": 1,
+      "p": 1,
+      "sample": "even_even",
+      "period": [
+        16,
+        16
+      ],
+      "support": 16,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": []
     },
@@ -20741,32 +21035,54 @@
       "op": "or",
       "q": 1,
       "p": 1,
-      "sample": "decimate-10",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "or",
-      "q": 1,
-      "p": 1,
-      "sample": "decimate-11",
+      "sample": "even_odd",
       "period": [
         16,
         16
       ],
       "support": 16,
-      "sym_cell": [],
-      "sym_vertex": [],
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "or",
+      "q": 1,
+      "p": 1,
+      "sample": "odd_even",
+      "period": [
+        16,
+        16
+      ],
+      "support": 16,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "or",
+      "q": 1,
+      "p": 1,
+      "sample": "odd_odd",
+      "period": [
+        16,
+        16
+      ],
+      "support": 16,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
       "sym_legacy": []
     },
     {
@@ -20778,78 +21094,64 @@
         32,
         32
       ],
-      "support": 8,
+      "support": 12,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "or",
-      "q": 1,
-      "p": 2,
-      "sample": "checker-even",
-      "period": [
-        16,
-        16
+      "sym_vertex": [
+        "diag"
       ],
-      "support": 8,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
       "sym_legacy": []
     },
     {
       "op": "or",
       "q": 1,
       "p": 2,
-      "sample": "checker-odd",
+      "sample": "checkerboard_same",
       "period": [
-        16,
-        16
+        32,
+        32
       ],
-      "support": 8,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 1,
-      "p": 2,
-      "sample": "decimate-00",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "or",
-      "q": 1,
-      "p": 2,
-      "sample": "decimate-01",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
+      "support": 12,
       "sym_cell": [],
       "sym_vertex": [
-        "mx"
+        "my"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 1,
+      "p": 2,
+      "sample": "checkerboard_opposite",
+      "period": [
+        32,
+        32
+      ],
+      "support": 8,
+      "sym_cell": [
+        "my"
+      ],
+      "sym_vertex": [],
+      "sym_legacy": []
+    },
+    {
+      "op": "or",
+      "q": 1,
+      "p": 2,
+      "sample": "even_even",
+      "period": [
+        8,
+        8
+      ],
+      "support": 4,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": []
     },
@@ -20857,32 +21159,54 @@
       "op": "or",
       "q": 1,
       "p": 2,
-      "sample": "decimate-10",
+      "sample": "even_odd",
       "period": [
         16,
         16
       ],
       "support": 8,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
     },
     {
       "op": "or",
       "q": 1,
       "p": 2,
-      "sample": "decimate-11",
+      "sample": "odd_even",
       "period": [
         16,
         16
       ],
       "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [],
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
+    },
+    {
+      "op": "or",
+      "q": 1,
+      "p": 2,
+      "sample": "odd_odd",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
       "sym_legacy": []
     },
     {
@@ -20894,78 +21218,90 @@
         32,
         32
       ],
-      "support": 8,
+      "support": 10,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "or",
-      "q": 1,
-      "p": 4,
-      "sample": "checker-even",
-      "period": [
-        16,
-        16
+      "sym_vertex": [
+        "diag"
       ],
-      "support": 8,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
       "sym_legacy": []
     },
     {
       "op": "or",
       "q": 1,
       "p": 4,
-      "sample": "checker-odd",
+      "sample": "checkerboard_same",
       "period": [
-        16,
-        16
+        32,
+        32
       ],
-      "support": 8,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 1,
-      "p": 4,
-      "sample": "decimate-00",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
-      "sym_cell": [
-        "mx"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
-    },
-    {
-      "op": "or",
-      "q": 1,
-      "p": 4,
-      "sample": "decimate-01",
-      "period": [
-        16,
-        16
-      ],
-      "support": 8,
+      "support": 10,
       "sym_cell": [],
       "sym_vertex": [
-        "mx"
+        "my"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 1,
+      "p": 4,
+      "sample": "checkerboard_opposite",
+      "period": [
+        32,
+        32
+      ],
+      "support": 8,
+      "sym_cell": [
+        "my"
+      ],
+      "sym_vertex": [],
+      "sym_legacy": []
+    },
+    {
+      "op": "or",
+      "q": 1,
+      "p": 4,
+      "sample": "even_even",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 1,
+      "p": 4,
+      "sample": "even_odd",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": []
     },
@@ -20973,32 +21309,36 @@
       "op": "or",
       "q": 1,
       "p": 4,
-      "sample": "decimate-10",
+      "sample": "odd_even",
       "period": [
         16,
         16
       ],
       "support": 8,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
-      "sym_vertex": [],
-      "sym_legacy": [
-        "mx"
-      ]
+      "sym_vertex": [
+        "diag"
+      ],
+      "sym_legacy": []
     },
     {
       "op": "or",
       "q": 1,
       "p": 4,
-      "sample": "decimate-11",
+      "sample": "odd_odd",
       "period": [
         16,
         16
       ],
       "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [],
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "diag"
+      ],
       "sym_legacy": []
     },
     {
@@ -21010,12 +21350,70 @@
         16,
         16
       ],
-      "support": 8,
+      "support": 12,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 2,
+      "p": 1,
+      "sample": "checkerboard_same",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 2,
+      "p": 1,
+      "sample": "checkerboard_opposite",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -21025,7 +21423,33 @@
       "op": "or",
       "q": 2,
       "p": 1,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        4,
+        4
+      ],
+      "support": 4,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 2,
+      "p": 1,
+      "sample": "even_odd",
       "period": [
         4,
         8
@@ -21043,7 +21467,7 @@
       "op": "or",
       "q": 2,
       "p": 1,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         8,
         4
@@ -21052,74 +21476,40 @@
       "sym_cell": [
         "mx"
       ],
-      "sym_vertex": [],
+      "sym_vertex": [
+        "my"
+      ],
       "sym_legacy": [
-        "mx"
+        "mx",
+        "my",
+        "r180"
       ]
     },
     {
       "op": "or",
       "q": 2,
       "p": 1,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
         8,
         8
       ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 2,
-      "p": 1,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
+      "support": 4,
       "sym_cell": [
-        "diag"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
         "diag"
       ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 2,
-      "p": 1,
-      "sample": "decimate-10",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 2,
-      "p": 1,
-      "sample": "decimate-11",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
+      "sym_legacy": [
+        "mx"
+      ]
     },
     {
       "op": "or",
@@ -21130,12 +21520,70 @@
         16,
         16
       ],
-      "support": 8,
+      "support": 10,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 2,
+      "p": 2,
+      "sample": "checkerboard_same",
+      "period": [
+        16,
+        16
+      ],
+      "support": 6,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 2,
+      "p": 2,
+      "sample": "checkerboard_opposite",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -21145,7 +21593,33 @@
       "op": "or",
       "q": 2,
       "p": 2,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 2,
+      "p": 2,
+      "sample": "even_odd",
       "period": [
         4,
         8
@@ -21163,7 +21637,7 @@
       "op": "or",
       "q": 2,
       "p": 2,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         8,
         4
@@ -21172,74 +21646,40 @@
       "sym_cell": [
         "mx"
       ],
-      "sym_vertex": [],
+      "sym_vertex": [
+        "my"
+      ],
       "sym_legacy": [
-        "mx"
+        "mx",
+        "my",
+        "r180"
       ]
     },
     {
       "op": "or",
       "q": 2,
       "p": 2,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
         8,
         8
       ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 2,
-      "p": 2,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
+      "support": 4,
       "sym_cell": [
-        "diag"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
         "diag"
       ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 2,
-      "p": 2,
-      "sample": "decimate-10",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 2,
-      "p": 2,
-      "sample": "decimate-11",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
+      "sym_legacy": [
+        "mx"
+      ]
     },
     {
       "op": "or",
@@ -21250,12 +21690,70 @@
         16,
         16
       ],
-      "support": 8,
+      "support": 9,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 2,
+      "p": 4,
+      "sample": "checkerboard_same",
+      "period": [
+        16,
+        16
+      ],
+      "support": 5,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 2,
+      "p": 4,
+      "sample": "checkerboard_opposite",
+      "period": [
+        16,
+        16
+      ],
+      "support": 8,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -21265,7 +21763,41 @@
       "op": "or",
       "q": 2,
       "p": 4,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 2,
+      "p": 4,
+      "sample": "even_odd",
       "period": [
         4,
         8
@@ -21283,7 +21815,7 @@
       "op": "or",
       "q": 2,
       "p": 4,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         8,
         4
@@ -21292,90 +21824,114 @@
       "sym_cell": [
         "mx"
       ],
-      "sym_vertex": [],
+      "sym_vertex": [
+        "my"
+      ],
       "sym_legacy": [
-        "mx"
+        "mx",
+        "my",
+        "r180"
       ]
     },
     {
       "op": "or",
       "q": 2,
       "p": 4,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
         8,
         8
       ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 2,
-      "p": 4,
-      "sample": "decimate-01",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
+      "support": 4,
       "sym_cell": [
-        "diag"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
         "diag"
       ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 2,
-      "p": 4,
-      "sample": "decimate-10",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [],
-      "sym_vertex": [],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 2,
-      "p": 4,
-      "sample": "decimate-11",
-      "period": [
-        8,
-        8
-      ],
-      "support": 8,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [],
-      "sym_legacy": []
+      "sym_legacy": [
+        "mx"
+      ]
     },
     {
       "op": "or",
       "q": 4,
       "p": 1,
       "sample": "full",
+      "period": [
+        8,
+        8
+      ],
+      "support": 4,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 4,
+      "p": 1,
+      "sample": "checkerboard_same",
+      "period": [
+        8,
+        8
+      ],
+      "support": 4,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 4,
+      "p": 1,
+      "sample": "checkerboard_opposite",
       "period": [
         8,
         8
       ],
       "support": 2,
       "sym_cell": [
-        "mx"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
-        "anti"
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -21385,7 +21941,33 @@
       "op": "or",
       "q": 4,
       "p": 1,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        2,
+        2
+      ],
+      "support": 2,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 4,
+      "p": 1,
+      "sample": "even_odd",
       "period": [
         2,
         4
@@ -21403,7 +21985,7 @@
       "op": "or",
       "q": 4,
       "p": 1,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         4,
         2
@@ -21425,81 +22007,27 @@
       "op": "or",
       "q": 4,
       "p": 1,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
         4,
         4
       ],
       "support": 2,
       "sym_cell": [
+        "mx",
+        "my",
         "r180",
         "diag",
-        "anti"
-      ],
-      "sym_vertex": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 4,
-      "p": 1,
-      "sample": "decimate-01",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 4,
-      "p": 1,
-      "sample": "decimate-10",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "r180",
-        "diag",
-        "anti"
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
         "diag"
       ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 4,
-      "p": 1,
-      "sample": "decimate-11",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
+      "sym_legacy": [
+        "mx"
+      ]
     },
     {
       "op": "or",
@@ -21510,12 +22038,70 @@
         8,
         8
       ],
-      "support": 2,
+      "support": 3,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 4,
+      "p": 2,
+      "sample": "checkerboard_same",
+      "period": [
+        8,
+        8
+      ],
+      "support": 3,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 4,
+      "p": 2,
+      "sample": "checkerboard_opposite",
+      "period": [
+        8,
+        8
+      ],
+      "support": 2,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -21525,7 +22111,41 @@
       "op": "or",
       "q": 4,
       "p": 2,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 4,
+      "p": 2,
+      "sample": "even_odd",
       "period": [
         2,
         4
@@ -21543,7 +22163,7 @@
       "op": "or",
       "q": 4,
       "p": 2,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         4,
         2
@@ -21565,81 +22185,27 @@
       "op": "or",
       "q": 4,
       "p": 2,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
         4,
         4
       ],
       "support": 2,
       "sym_cell": [
+        "mx",
+        "my",
         "r180",
         "diag",
-        "anti"
-      ],
-      "sym_vertex": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 4,
-      "p": 2,
-      "sample": "decimate-01",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 4,
-      "p": 2,
-      "sample": "decimate-10",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "r180",
-        "diag",
-        "anti"
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
         "diag"
       ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 4,
-      "p": 2,
-      "sample": "decimate-11",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
+      "sym_legacy": [
+        "mx"
+      ]
     },
     {
       "op": "or",
@@ -21650,12 +22216,70 @@
         8,
         8
       ],
-      "support": 2,
+      "support": 3,
       "sym_cell": [
-        "mx"
+        "diag"
       ],
       "sym_vertex": [
-        "anti"
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 4,
+      "p": 4,
+      "sample": "checkerboard_same",
+      "period": [
+        8,
+        8
+      ],
+      "support": 3,
+      "sym_cell": [
+        "diag"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "my"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 4,
+      "p": 4,
+      "sample": "checkerboard_opposite",
+      "period": [
+        8,
+        8
+      ],
+      "support": 2,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "diag"
       ],
       "sym_legacy": [
         "mx"
@@ -21665,7 +22289,41 @@
       "op": "or",
       "q": 4,
       "p": 4,
-      "sample": "checker-even",
+      "sample": "even_even",
+      "period": [
+        1,
+        1
+      ],
+      "support": 1,
+      "sym_cell": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_vertex": [
+        "mx",
+        "my",
+        "r180",
+        "diag",
+        "anti",
+        "r90",
+        "r270"
+      ],
+      "sym_legacy": [
+        "mx",
+        "my",
+        "r180"
+      ]
+    },
+    {
+      "op": "or",
+      "q": 4,
+      "p": 4,
+      "sample": "even_odd",
       "period": [
         2,
         4
@@ -21683,7 +22341,7 @@
       "op": "or",
       "q": 4,
       "p": 4,
-      "sample": "checker-odd",
+      "sample": "odd_even",
       "period": [
         4,
         2
@@ -21705,81 +22363,27 @@
       "op": "or",
       "q": 4,
       "p": 4,
-      "sample": "decimate-00",
+      "sample": "odd_odd",
       "period": [
         4,
         4
       ],
       "support": 2,
       "sym_cell": [
+        "mx",
+        "my",
         "r180",
         "diag",
-        "anti"
-      ],
-      "sym_vertex": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 4,
-      "p": 4,
-      "sample": "decimate-01",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "diag"
-      ],
-      "sym_vertex": [
-        "r180",
-        "diag",
-        "anti"
-      ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 4,
-      "p": 4,
-      "sample": "decimate-10",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "r180",
-        "diag",
-        "anti"
+        "anti",
+        "r90",
+        "r270"
       ],
       "sym_vertex": [
         "diag"
       ],
-      "sym_legacy": []
-    },
-    {
-      "op": "or",
-      "q": 4,
-      "p": 4,
-      "sample": "decimate-11",
-      "period": [
-        4,
-        4
-      ],
-      "support": 2,
-      "sym_cell": [
-        "anti"
-      ],
-      "sym_vertex": [
-        "anti"
-      ],
-      "sym_legacy": []
+      "sym_legacy": [
+        "mx"
+      ]
     }
   ],
   "fixed_precision_catalogue": [
@@ -22313,7 +22917,7 @@
       "phase_resultant": 1.9778890766513102e-17,
       "equality_x": 0.6669921875,
       "equality_y": 0.03125,
-      "phase_difference_x": 0.7342931848706833,
+      "phase_difference_x": 0.7342931848706832,
       "phase_difference_y": 2.0
     },
     {
@@ -22325,7 +22929,7 @@
       "support": 128,
       "entropy_bits": 7.0,
       "largest_mass": 0.0078125,
-      "phase_resultant": 4.16423974613979e-17,
+      "phase_resultant": 4.5177808171930545e-17,
       "equality_x": 0.66668701171875,
       "equality_y": 0.0078125,
       "phase_difference_x": 0.6859751252120116,
@@ -22415,10 +23019,10 @@
       "support": 32,
       "entropy_bits": 4.622556248918266,
       "largest_mass": 0.0703125,
-      "phase_resultant": 0.23798595345624185,
+      "phase_resultant": 0.2379859534562418,
       "equality_x": 0.0546875,
       "equality_y": 0.0546875,
-      "phase_difference_x": 1.8440195444586698,
+      "phase_difference_x": 1.8440195444586696,
       "phase_difference_y": 1.8440195444586696
     }
   ]

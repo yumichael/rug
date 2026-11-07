@@ -20,22 +20,21 @@ presets = load_presets()
 # %% [markdown]
 # ## November research gallery
 #
-# Each panel is one complete square repeat tile in displayed cells. The gallery covers all seven combiners using even pre-polynomials, larger post-powers, and a balanced XOR post-polynomial. Order coloring spreads the distinct anchored values across each palette so that small numerical gaps are visible.
+# Each panel is one complete square repeat tile in displayed cells. The gallery covers all seven operand-grid selections and all seven combiners. Order coloring spreads the distinct anchored values across each palette so that small numerical gaps are visible.
 #
-# The checkerboard examples use even polynomials chosen to give the two sampled operand branches the same period. The whole-grid XOR example uses the same-valuation post-polynomial rule. See the [November research report](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md), sections 4 and 6.3.
+# The whole grid keeps all operand pairs. Both checkerboards rotate the selected operand pairs into a displayed square grid. The opposite-parity checkerboard keeps pairs with one even operand and one odd operand. See the [November research report](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#4-the-seven-sampling-rules-symmetry-and-erased-variation).
 
 # %%
-# The checkerboard pre-operation is x**q + coefficient * x**degree.
-# input_depth is the smallest 2-adic valuation of a nonzero combined value.
-checkerboard_recipes = (
-    # Combiner, q, degree, coefficient, K/size, post-power, input depth, palette
-    ("and", 2, 6, 3, 8, 17, 2, "cmr.ember"),
-    ("or", 4, 12, 13, 64, 58, 1, "cmr.freeze"),
-    ("add", 2, 10, 1, 8, 77, 1, "cmr.savanna"),
-    ("absdiff", 6, 22, -9, 128, 38, 3, "cmr.amber"),
-    ("mult", 4, 12, 13, 64, 29, 5, "cmr.ocean"),
-    ("clmul", 2, 14, 3, 8, 43, 4, "cmr.guppy"),
-    ("xor", 6, 22, -9, 128, 31, 3, "cmr.fall"),
+# The pre-operation is the sum of the listed (degree, coefficient) terms.
+# Input depth is the smallest 2-adic valuation of a nonzero combined value.
+cartesian_recipes = (
+    # Combiner, sampling, terms, K/size, post-power, input depth, palette
+    ("and", "full", ((6, -1), (12, 2)), 2, 17, 0, "cmr.ember"),
+    ("or", "even_even", ((4, -1), (8, 2)), 64, 21, 4, "cmr.freeze"),
+    ("add", "odd_odd", ((8, -1), (16, 2)), 16, 31, 1, "cmr.savanna"),
+    ("absdiff", "full", ((10, -1), (20, 2)), 2, 37, 0, "cmr.amber"),
+    ("mult", "even_odd", ((4, 1), (12, 13)), 64, 29, 5, "cmr.ocean"),
+    ("clmul", "odd_even", ((2, 1), (14, 3)), 8, 43, 4, "cmr.guppy"),
 )
 
 
@@ -43,17 +42,19 @@ def research_field_specs(size):
     if size not in (256, 512, 1024):
         raise ValueError("Choose a field size of 256, 512, or 1024 cells")
     specs = {}
-    for combiner, q, degree, coefficient, stride, power, input_depth, palette in checkerboard_recipes:
-        coefficients = [0] * (degree // 2 + 1)
-        coefficients[q // 2] = 1
-        coefficients[-1] = coefficient
+    for combiner, sampling, terms, stride, power, input_depth, palette in cartesian_recipes:
+        coefficients = [0] * (terms[-1][0] // 2 + 1)
+        for degree, coefficient in terms:
+            coefficients[degree // 2] = coefficient
         K = stride * size
         # Restore the bits consumed by powering a multiple of 2**input_depth.
         post_depth = input_depth * power + (power & -power).bit_length() - 1
-        label = f"{combiner.upper()} · checkerboard\nPre {q}, {degree} · post {power}"
+        degrees = ", ".join(str(degree) for degree, _ in terms)
+        selection = "whole grid" if sampling == "full" else sampling.replace("_", "/")
+        label = f"{combiner.upper()} · {selection}\nPre {degrees} · post {power}"
         specs[label] = {
             "n": size,
-            "sampling": "checkerboard_same",
+            "sampling": sampling,
             "pre": [["pow", 2], ["poly", coefficients]],
             "combine": combiner,
             "post": [["pow", power]],
@@ -62,9 +63,18 @@ def research_field_specs(size):
             "color": palette,
         }
 
-    specs["XOR · whole grid\nPost 26, 58, 122"] = {
+    specs["XOR · same checkerboard\nPost 19"] = {
         "n": size,
-        "sampling": "full",
+        "sampling": "checkerboard_same",
+        "combine": "xor",
+        "K": 2 * size,
+        "M": size << 19,
+        "post": [["pow", 19]],
+        "color": "cmr.fall",
+    }
+    specs["XOR · opposite checkerboard\nPost 26, 58, 122"] = {
+        "n": size,
+        "sampling": "checkerboard_opposite",
         "combine": "xor",
         "K": 2 * size,
         "M": 4 * size,
@@ -78,12 +88,17 @@ def show_research_fields(size):
     fig, axes = plt.subplots(2, 4, figsize=(13, 7), dpi=160, layout="constrained")
     half = size // 2
     for ax, (label, spec) in zip(axes.flat, research_field_specs(size).items(), strict=True):
-        # The checkerboard operands vary independently along the displayed axes.
-        # Test each parity branch over a complete residue cycle to certify the tile.
-        # The whole-grid XOR tile follows from the balanced post-polynomial rule.
-        if spec["sampling"] == "checkerboard_same":
+        # For identity-pre XOR on either checkerboard, an axis shift by K/2
+        # toggles the top bit of both operands, leaving their XOR unchanged.
+        sampling = spec["sampling"]
+        if not sampling.startswith("checkerboard"):
             residues = steps(np.arange(spec["K"], dtype=object), spec["pre"], modulus=spec["K"])
-            if any(not np.array_equal(branch, np.roll(branch, size)) for branch in (residues[::2], residues[1::2])):
+            branches = (
+                (residues,)
+                if sampling == "full"
+                else [residues[(parity == "odd") :: 2] for parity in sampling.split("_")]
+            )
+            if any(not np.array_equal(branch, np.roll(branch, size)) for branch in branches):
                 raise ValueError(f"{label} does not repeat at {size} cells")
         result = evaluate(spec)
         rgb = np.rint(255 * colorize(result, mode="order")).astype(np.uint8)

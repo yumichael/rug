@@ -107,7 +107,7 @@ The fixed pre-modulus model in [October 25, Section 1.1](../2026-10-25-pattern-s
 
 Restrict the initial study to the seven sampling rules in the proposed prompt. They are the chosen initial search family, rather than an assertion that only seven sampling rules exist.
 
-Checkerboard sampling selects cells whose original grid coordinates have the same parity or opposite parity, then reindexes the selected cells on a square grid. The even/even, even/odd, odd/even, and odd/odd selections retain the specified coordinate parities directly.
+Apply each method directly to the unsampled operand grid. Checkerboard sampling selects operand pairs of the same parity or of opposite parity and reindexes them on a square grid. The four Cartesian selections retain the specified operand parities on their respective axes.
 
 | Method | Absolute selection relative to the original grid |
 | -----: | ------------------------------------------------ |
@@ -119,7 +119,7 @@ Checkerboard sampling selects cells whose original grid coordinates have the sam
 |      6 | Odd/even                                         |
 |      7 | Odd/odd                                          |
 
-The parity pair refers to the first and second original grid coordinates in that order. Fix the original grid's origin and orientation. Give each method an exact selection and displayed-index mapping; specify the orientation of the 45-degree reindexing used for checkerboard sampling. Measure repetition in those displayed indices before stretching. Identify phases that give identical patterns, phases that only move or reorient a pattern, and phases that give distinct outputs.
+The parity pair refers to the first and second operands in that order. Fix the original grid's origin and orientation. Give each method an exact selection and displayed-index mapping; specify the orientation of the 45-degree reindexing used for checkerboard sampling. Measure repetition in those displayed indices before stretching. Identify phases that give identical patterns, phases that only move or reorient a pattern, and phases that give distinct outputs.
 
 Study the locations and proportions of cells whose numerical distinctions are lost at the pre-operation, pre-modulus, symmetric-combination, or post-modulus stage. Separate forced constant regions from parameter-dependent collapse and from similarities introduced only by a palette or quantization. A large post-power is not sufficient evidence of collapse when the arithmetic precision grows with it. The relevant inputs, operation families, and both modulus policies must be included.
 
@@ -143,7 +143,7 @@ The user's observations about odd pre-powers motivate their lower priority. They
 
 The first prompt sought uniform shift-class sampling after choosing the smallest period-preserving modulus for every post-operation. That space can still be infinite.
 
-The concrete obstruction is the existing pre-power-two AND example at coordinate domain $C=64$ and fixed pre-modulus $K=64$, with the construction specified in [October 25, Section 8.5](../2026-10-25-pattern-space/2026-10-25-pattern-space-theory.md). The combined inputs are exactly $0,16,32$. For every positive post-power $p$, the smallest post-modulus retaining axis period 32 is
+The concrete obstruction is the existing pre-power-two AND example at coordinate domain $C=64$ and fixed pre-modulus $K=64$, with the opposite-parity checkerboard as specified in [October 25, Section 8.5](../2026-10-25-pattern-space/2026-10-25-pattern-space-theory.md). The combined inputs are exactly $0,16,32$. For every positive post-power $p$, the smallest post-modulus retaining axis period 32 is
 
 $$
 M_p=2^{5p+1}.

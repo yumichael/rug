@@ -34,8 +34,7 @@ class Result:
 @lru_cache(maxsize=8)
 def _basic(key):
     s = json.loads(key)
-    x, y = coordinates(s["shape"], s["sampling"], s["origin"])
-    a, b = (y - x - 1, y + x) if s["coordinates"] == "historical" else (x, y)
+    a, b = coordinates(s["shape"], s["sampling"], s["origin"])
     width = (s["K"] - 1).bit_length()
     A = steps(a, s["pre"], modulus=s["K"], width=width)
     B = steps(b, s["pre"], modulus=s["K"], width=width)
@@ -50,7 +49,7 @@ def _basic(key):
 
 def evaluate(spec):
     s = resolve(spec)
-    base = {k: s[k] for k in ("shape", "origin", "sampling", "coordinates", "K", "pre", "combine")}
+    base = {k: s[k] for k in ("shape", "origin", "sampling", "K", "pre", "combine")}
     stages = _basic(json.dumps(base, sort_keys=True))
     z = stages["z0"]
     if "expression" in s:

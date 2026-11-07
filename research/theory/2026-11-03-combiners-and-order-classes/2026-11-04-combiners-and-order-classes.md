@@ -8,7 +8,7 @@ The useful conclusions are:
 | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Where should the pre-modulus be tested?                                                           | On the sampled basic-combiner table, or tuple of such tables, before post-processing. Testing the operands alone is insufficient.                                                                             |
 | Can whole families of even pre-polynomials share a minimum pre-modulus?                           | Yes. Section 3 gives an explicit infinite coefficient family. Six combiners have a shared individual minimum; AND has a proved least common sufficient modulus, with possibly smaller member-specific minima. |
-| Is checkerboard sampling always a good replacement for the full grid?                             | No. For even pre-powers it usually exposes different periods in the two operand directions. The seven sampling rules require separate period and phase calculations.                                          |
+| Is checkerboard sampling always a good replacement for the full grid?                             | The two checkerboards and the four Cartesian selections retain different operand pairs. Their periods and erased variation depend on the combiner.                                                            |
 | Does the earlier infinite squared-pre AND example survive the corrected pre-modulus rule?         | Yes. Its minimum pre-modulus is still 64 for target axis periods 32.                                                                                                                                          |
 | Can all post-powers be handled without a precision cap for the even-pre OR/XOR/ADD/ABSDIFF cases? | Yes, at a fixed selected pre-modulus. Their odd-valued basic tables have a proved finite normalized tail and complete finite shift/order catalogues.                                                          |
 | Do the existing balanced XOR results change under order-class equivalence?                        | Single-power results and valid same-valuation polynomial results do not change: their shift classes and order classes coincide. Arbitrary polynomial results can change.                                      |
@@ -23,11 +23,7 @@ The useful conclusions are:
 
 The original coordinate-domain label is $C=2^c$. It determines the requested repetition domain through an explicit style convention; it is not an implicit arithmetic reduction. In the historical XOR convention the requested axis period is $R=C/2$. The results below also allow independently specified dyadic axis periods $R_x,R_y$.
 
-Use unwrapped integer coordinates and the historical operand forms
-
-$$
-a=y-x-1,\qquad b=y+x.
-$$
+Start with the full integer grid of operand pairs $(a,b)$. A sampling rule maps displayed indices $(i,j)$ to this grid exactly once. The whole grid uses $(a,b)=(i,j)$. The opposite-parity checkerboard selects pairs with one even operand and one odd operand. Section 4 specifies the displayed maps for all seven selections.
 
 There is no preliminary reduction modulo $C$. Apply the same pre-function $P$, reduce each result modulo $K=2^k$, and evaluate one or more basic combiners:
 
@@ -45,7 +41,7 @@ Fix the spatial origin, orientation, and a reference cell $t_0$. The anchored no
 
 Fix the pre-function, basic combiner or tuple, sampling, and target periods. Choose the smallest $K$ for which the basic output's least displayed axis periods are **at least** $R_x,R_y$. Then hold $K$ fixed while choosing post-operations. A common family-level $K$ must satisfy this requirement for every admitted member.
 
-This implements “do not shrink the repetition domain.” Requiring the basic table itself to have exactly those periods is a stricter policy, and can fail because its periods skip sizes. For example, with fourth-power pre-operation, AND, and full-grid sampling, its least axis periods are:
+This implements “do not shrink the repetition domain.” Requiring the basic table itself to have exactly those periods is a stricter policy, and can fail because its periods skip sizes. For example, with fourth-power pre-operation, AND, and opposite-parity checkerboard sampling, its least axis periods are:
 
 |         Pre-modulus K |   16 |   32 |   64 |  128 |  256 |  512 |
 | --------------------: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -87,19 +83,19 @@ The valid exponents are exactly the finite integers $m\ge1$ with $\ell\le m\le u
 
 Odd multiplication preserves all these depths and any additive constant cancels. For monomials, the exact lifting formulas in the earlier report's Section 6.2 compute the depths without constructing enormous powers. The accompanying script checks those formulas against direct integer powers.
 
-For example, with squared pre-operation, full-grid sampling, and requested periods 32, all seven basic combiners select minimum $K=64$. Their minimum final moduli differ substantially:
+With squared pre-operation and requested axis periods 32, all seven combiners have minimum pre-modulus $K=64$ on both the whole operand grid and the opposite-parity checkerboard. The least final moduli for post-powers one and two are:
 
-| Basic combiner | Post-power 1 | Post-power 2 |
-| -------------- | -----------: | -----------: |
-| AND            |           64 |        2,048 |
-| OR             |           64 |          128 |
-| XOR            |           64 |          128 |
-| ADD            |           64 |          128 |
-| MULT           |          256 |        2,048 |
-| CLMUL          |          256 |        2,048 |
-| ABSDIFF        |            4 |          128 |
+| Basic combiner | Whole grid, power 1 | Whole grid, power 2 | Opposite checkerboard, power 1 | Opposite checkerboard, power 2 |
+| -------------- | ------------------: | ------------------: | -----------------------------: | -----------------------------: |
+| AND            |                  64 |                 128 |                             64 |                          2,048 |
+| OR             |                  64 |                 128 |                             64 |                            128 |
+| XOR            |                  64 |                 128 |                             64 |                            128 |
+| ADD            |                  64 |                 128 |                             64 |                            128 |
+| MULT           |                  64 |                 128 |                            256 |                          2,048 |
+| CLMUL          |                  64 |                 128 |                            256 |                          2,048 |
+| ABSDIFF        |                   4 |                 128 |                              4 |                            128 |
 
-These entries come from exact difference-depth calculations and literal period checks. The small ABSDIFF modulus retains only two distinct values while still attaining period 32. An economical modulus does not guarantee a rich value distribution.
+The script verifies these minima using the half-period and full-period shifts on the corresponding complete tables.
 
 ### 2.2 A table test for minimum-period precision
 
@@ -147,9 +143,15 @@ $$
 
 Thus applying $f$ changes numerical arrangements without changing the pre-function's periods at any power-of-two modulus. Every member remains functionally even: $P(-x)=P(x)$.
 
-### 3.2 Closed minimum pre-moduli for six combiners
+### 3.2 Common minimum on the whole operand grid
 
-Use the full historical grid, target equal axis periods $R=2^r\ge8$, and put $w=\nu_2(q)$. For the entire family above, the minimum pre-modulus that avoids shrinking the basic-combiner periods is:
+For every combiner and every member of the family in Section 3.1, the exact axis period on the whole grid is the least additive period of the pre-function modulo $K$. Any pre-period is a period of the combined grid. Conversely, if a shift changes a residue from $u$ to $v$, a fixed second operand detects the change. Use the input zero for OR, XOR, ADD, and ABSDIFF, and the input one for MULT and CLMUL. For AND, fix the second input at whichever of the two original inputs has a set bit where $u$ and $v$ differ. This also proves the same statement on an equal-parity Cartesian selection, using the same branch on both axes. On those selections, OR can use a fixed operand with the differing bit clear, AND one with that bit set, and ABSDIFF one of the two inputs being compared. MULT and CLMUL need any nonzero value in the branch, which exists whenever the branch varies.
+
+The family isometry preserves the least additive pre-period of $x^q$ modulo $K$. Thus for a target $R=2^r≥8$ the common minimum on the whole grid is $K=R\,2^{\nu_2(q)}$ for all seven combiners. At this modulus both basic periods equal $R$.
+
+### 3.3 Minimum pre-moduli on the opposite-parity checkerboard
+
+Use the opposite-parity checkerboard (method 3), target equal axis periods $R=2^r\ge8$, and put $w=\nu_2(q)$. For the entire family above, the minimum pre-modulus that avoids shrinking the basic-combiner periods is:
 
 $$
 \boxed{K_{\min}=2^{r+w}\quad\text{for OR, XOR, ADD, and ABSDIFF},}
@@ -169,15 +171,15 @@ MULT and CLMUL vanish if $k\le q$, because the even operand is zero and $f(0)=0$
 
 For scale, at a requested period of 512, squaring and sixth powering both have $w=1$ and use $K=1024$ for all six combiners. Fourth and eighth powering use $K=2048$ and $4096$, respectively. Tenth powering uses $K=1024$ for the first four, but MULT and CLMUL need $K=2048$ because the even operand would otherwise vanish. The unrestricted polynomial $Q$ does not alter any of these guarantees.
 
-### 3.3 A closed rule for pure even-pre-power AND
+### 3.4 Pure even-pre-power AND on the opposite-parity checkerboard
 
-There is also a closed full-grid pre-modulus rule for AND when $P(x)=x^q$ itself. Let $q$ be even and $w=\nu_2(q)$. The bit positions that can survive the AND of an odd and an even pre-powered operand are exactly
+There is also a closed pre-modulus rule on the opposite-parity checkerboard for AND when $P(x)=x^q$ itself. Let $q$ be even and $w=\nu_2(q)$. The bit positions that can survive the AND of an odd and an even pre-powered operand are exactly
 
 $$
 J_q=\begin{cases}\{j:j\ge4\},&q=2,\\\{q\}\cup\{j:j\ge q+w+2\},&q\ge4.\end{cases}
 $$
 
-At $K=2^k$, let $j$ be the largest member of $J_q$ below $k$. If there is no such member, the basic AND table is zero. Otherwise its two exact full-grid axis periods are
+At $K=2^k$, let $j$ be the largest member of $J_q$ below $k$. If there is no such member, the basic AND table is zero. Otherwise its two exact displayed axis periods are
 
 $$
 \boxed{2^{j+1-w}.}
@@ -195,7 +197,7 @@ $$
 
 For example, fourth-power AND has possible positions 4 and every position from 8 upward. The absence of positions 5, 6, and 7 explains the period jump in Section 1. At a target period of 512, the minimum pre-moduli for pure pre-powers 2, 4, 6, 8, and 10 are respectively 1,024; 2,048; 1,024; 16,384; and 2,048. Their basic periods are respectively 512; 512; 512; 2,048; and 1,024. The last two overshoot, so their post-operation target still requires the separate feasibility test.
 
-### 3.4 A least common AND pre-modulus for the polynomial family
+### 3.5 A least common AND pre-modulus on the opposite-parity checkerboard
 
 AND does not reveal the odd operand when the even operand is zero, nor is bitwise AND with a fixed nonzero mask injective. The previous proof therefore supplies no AND guarantee.
 
@@ -211,7 +213,7 @@ At the selected pure-power critical position $j_*$, a half-period shift preserve
 
 This yields a consistent pre-modulus for all seven combiners and this entire pre-polynomial family. To find an individual member's smaller AND minimum, the same table test only needs to search up to this proved family bound. The common AND choice may give some members basic periods larger than the target; post-processing still undergoes its separate exact-period test.
 
-### 3.5 Why unrestricted pre-polynomials have no universal finite K
+### 3.6 Why unrestricted pre-polynomials have no universal finite K
 
 The family $P_s(x)=2^s x^2$ consists entirely of even pre-polynomials. For any proposed fixed $K=2^k$, members with $s\ge k$ are identically zero after the pre-modulus. Every basic output is constant. Consequently no finite $K$ can preserve a nontrivial domain for every integer pre-polynomial with unrestricted coefficients.
 
@@ -221,23 +223,21 @@ Family admissibility is essential. The preceding shared family avoids this obstr
 
 ### 4.1 Exact sample maps
 
-The following maps fix phase, orientation, and displayed axes. The variables $(x,y)$ refer to the original historical grid, while $(i,j)$ are displayed indices before stretch.
+| Method | Selection                    | Operand map from displayed indices $(i,j)$ |
+| -----: | ---------------------------- | ------------------------------------------ |
+|      1 | Whole operand grid           | $a=i,\ b=j$                                |
+|      2 | Same-parity checkerboard     | $a=i+j,\ b=i-j$                            |
+|      3 | Opposite-parity checkerboard | $a=i+j+1,\ b=i-j$                          |
+|      4 | Even/even                    | $a=2i,\ b=2j$                              |
+|      5 | Even/odd                     | $a=2i,\ b=2j+1$                            |
+|      6 | Odd/even                     | $a=2i+1,\ b=2j$                            |
+|      7 | Odd/odd                      | $a=2i+1,\ b=2j+1$                          |
 
-| Method | Absolute selection                    | Map from displayed indices |
-| -----: | ------------------------------------- | -------------------------- |
-|      1 | Whole grid                            | $x=i,\ y=j$                |
-|      2 | Same-parity checkerboard sampling     | $x=i+j,\ y=i-j$            |
-|      3 | Opposite-parity checkerboard sampling | $x=i+j+1,\ y=i-j$          |
-|      4 | Even/even                             | $x=2i,\ y=2j$              |
-|      5 | Even/odd                              | $x=2i,\ y=2j+1$            |
-|      6 | Odd/even                              | $x=2i+1,\ y=2j$            |
-|      7 | Odd/odd                               | $x=2i+1,\ y=2j+1$          |
+The two checkerboards each include two operand parity pairs. In particular, the same-parity checkerboard includes both even/even and odd/odd. Moving one displayed cell in a checkerboard changes the parity of both operands. The four Cartesian selections fix the operand parity independently on each axis.
 
-For a general sample map $t\mapsto Bt+e$, displayed translations are tested by applying $B$ to them. It is sufficient to evaluate the sampled table on the displayed $K\times K$ torus for integer pre-polynomials. All seven methods retain opposite-parity **operand forms** $a,b$; the original-grid parities named in the table are not the parities of $a,b$.
+For a sample map $t\mapsto Bt+e$, a displayed shift $h$ adds $Bh$ to the operands. Every sampled table has periods $K$ on both axes because integer polynomials respect reduction modulo $K$. An exact period test therefore needs just one $K\times K$ torus. In a rectangle of least axis periods, the group of remaining translations projects injectively onto either axis, since a translation with a zero component would contradict that axis's minimal period. If the projection onto the first axis is nonzero, it has a least positive generator $d$ dividing the horizontal period. Find its matching vertical shift $s$ in the torus. A basis is then $(d,s)$ and the full vertical period. With trivial projection the rectangle is primitive.
 
-### 4.2 Checkerboard separates branches with different intrinsic periods
-
-Under method 2 the operand forms are $a=-2j-1$, $b=2i$. Method 3 instead has $a=-2j-2$, $b=2i+1$. Thus checkerboard sampling isolates an odd-input pre-function on one displayed axis and an even-input pre-function on the other.
+### 4.2 Periods on the four Cartesian selections
 
 For $P(x)=x^q$, even $q$, and $w=\nu_2(q)$, let $L_q(h)$ be the least additive period of $x^q\bmod2^h$, taking $L_q(h)=1$ for $h\le0$. Its explicit formula is
 
@@ -253,41 +253,32 @@ $$
 
 The even branch is $2^q i^q\bmod K$, proving the first formula. For the odd branch, a shift of one in its displayed index changes odd inputs by two, with minimum difference depth $w+2$. Displayed shifts $2^h$, $h\ge1$, change them by $2^{h+1}$, with minimum depth $w+h+1$. This proves the second formula. The shared family in Section 3 retains these same branch periods.
 
-For OR, XOR, ADD, and ABSDIFF the basic checkerboard periods are exactly $(E,O)$ in method 2, and $(O,E)$ in method 3. The slices with even pre-input zero recover the odd branch. The odd pre-input one recovers the even branch injectively: OR and XOR give $1+E_i$, ADD gives the same, and $|1-E_i|$ is injective on even-branch values, which are zero or multiples of $2^q\ge4$.
+The even/even and odd/odd periods are $(E,E)$ and $(O,O)$ for all seven combiners by the fixed-operand witnesses of Section 3.2. On even/odd and odd/even, OR, XOR, ADD, and ABSDIFF have periods $(E,O)$ and $(O,E)$. A fixed even pre-value zero exposes the odd branch. A fixed odd pre-value one exposes the even branch injectively, including for ABSDIFF because the even values are multiples of four. MULT and CLMUL have the same periods if the even branch is nonzero, and are constant otherwise. For AND, mask each branch by the bitwise OR of all values of the opposite branch. A shift of that branch preserves every AND output exactly when it preserves the masked branch, since every retained bit has a witness in the opposite branch. These arguments also apply to the shared family in Section 3.1.
 
-For MULT and CLMUL, the same result holds once the even branch is nonzero, using multiplication by a fixed nonzero operand. If it is zero, both tables are constant. AND requires its own mask calculation. In the normal range where both branch formulas take their growing forms, $O/E=2^{q-1}$. It is therefore incorrect to reuse the no-pre-operation XOR square-period rule for these checkerboard styles.
+### 4.3 Exact comparison at pre-modulus 64
 
-### 4.3 A complete small comparison
+The entries are least horizontal and vertical periods before the post-operation. The catalogue also records the basic translation lattice. The checkerboard axes mix the operands, so branch periods alone do not determine these entries.
 
-At $K=64$, the following periods are measured before post-processing. All four parity selections 4–7 have the same axis-period pair in these examples; their actual tables and centers need not coincide.
+| Pre-power and combiner | Whole grid | Same checkerboard | Opposite checkerboard | Even/even | Even/odd | Odd/even | Odd/odd  |
+| ---------------------- | ---------- | ----------------- | --------------------- | --------- | -------- | -------- | -------- |
+| 2, XOR                 | (32, 32)   | (16, 16)          | (32, 32)              | (8, 8)    | (8, 16)  | (16, 8)  | (16, 16) |
+| 2, others              | (32, 32)   | (32, 32)          | (32, 32)              | (8, 8)    | (8, 16)  | (16, 8)  | (16, 16) |
+| 4, AND                 | (16, 16)   | (16, 16)          | (8, 8)                | (2, 2)    | (2, 4)   | (4, 2)   | (8, 8)   |
+| 4, XOR                 | (16, 16)   | (8, 8)            | (16, 16)              | (2, 2)    | (2, 8)   | (8, 2)   | (8, 8)   |
+| 4, others              | (16, 16)   | (16, 16)          | (16, 16)              | (2, 2)    | (2, 8)   | (8, 2)   | (8, 8)   |
+| 6, AND, MULT, CLMUL    | (32, 32)   | (32, 32)          | (1, 1)                | (1, 1)    | (1, 1)   | (1, 1)   | (16, 16) |
+| 6, XOR                 | (32, 32)   | (16, 16)          | (32, 32)              | (1, 1)    | (1, 16)  | (16, 1)  | (16, 16) |
+| 6, OR, ADD, ABSDIFF    | (32, 32)   | (32, 32)          | (32, 32)              | (1, 1)    | (1, 16)  | (16, 1)  | (16, 16) |
 
-| Pre-power and basic combiner  | Whole grid | Same-parity checkerboard | Opposite-parity checkerboard | Each of methods 4–7 |
-| ----------------------------- | ---------- | ------------------------ | ---------------------------- | ------------------- |
-| 2; any of the seven combiners | (32, 32)   | (8, 16)                  | (16, 8)                      | (16, 16)            |
-| 4; AND                        | (8, 8)     | (2, 4)                   | (4, 2)                       | (4, 4)              |
-| 4; each other combiner        | (16, 16)   | (2, 8)                   | (8, 2)                       | (8, 8)              |
-| 6; AND, MULT, CLMUL           | (1, 1)     | (1, 1)                   | (1, 1)                       | (1, 1)              |
-| 6; OR, XOR, ADD, ABSDIFF      | (32, 32)   | (1, 16)                  | (16, 1)                      | (16, 16)            |
+### 4.4 Symmetry and phase
 
-This makes identity sampling a meaningful option. Checkerboard sampling can expose a constant direction rather than remove a collection of isolated dead cells. A one-variable diagonal texture can still have nontrivial periods on both displayed axes under methods 4–7; its additional oblique translations must be recorded too.
-
-### 4.4 Symmetry must preserve the selected phase
-
-For the full grid, set $X=x+1/2$, $Y=y-1/2$. The operand forms are $a=Y-X$, $b=Y+X$. A square symmetry permutes these forms and changes their signs. If $P(-t)\equiv P(t)\pmod K$, every symmetric basic combiner, tuple, and subsequent post-expression has the full square symmetry about $(-1/2,1/2)$.
-
-Sampling can exchange phases under that symmetry. For example, reflection $x\mapsto-1-x$ switches the two checkerboard cosets. A quarter-turn about the same center sends $(x,y)$ to $(-y,x+1)$, also switching those cosets. Thus functionally even pre-operations do not alone give full square symmetry on each fixed checkerboard phase. The four parity selections likewise require phase tests. Arithmetic identities can supply extra symmetries, but they must be checked at the fixed origin.
-
-Odd pre-powers are lower priority because of the stated aesthetic preference. There is no theorem here that they are all asymmetric or unattractive. The identity-pre XOR family is already an exception to any such blanket symmetry claim, as explained in the earlier research.
+If $P$ is functionally even modulo $K$, every signed permutation of the operands preserves a symmetric combined value. The whole grid and both checkerboards are invariant under these transformations about operand origin $(0,0)$. The displayed centers in the maps above are $(0,0)$ for same parity and $(-1/2,-1/2)$ for opposite parity. The equal-parity Cartesian selections also retain square symmetry, about $(-e_x/2,-e_y/2)$ in their displayed indices. For a mixed-parity Cartesian selection the two axial mirrors remain. Swapping the operands exchanges even/odd with odd/even, so a quarter-turn of one displayed phase requires an additional identity.
 
 ### 4.5 Where variation is erased
 
-For even $q$, odd pre-inputs satisfy $x^q\equiv1\pmod{2^{w+2}}$, while even pre-inputs are divisible by $2^q$. OR, XOR, and ADD therefore produce odd basic values with low bits $1\pmod{2^{\min(k,q,w+2)}}$. ABSDIFF is odd but can have either sign of that congruence. AND, MULT, and CLMUL are even; MULT and CLMUL have valuation equal to the even operand's valuation when nonzero.
+For a pure even power $q=2^w u$, odd inputs give $1$ modulo $2^{w+2}$ and even inputs give multiples of $2^q$. When $q\ge k$, an even pre-input reduces to zero. On even/even cells all seven combiners vanish. On mixed-parity cells AND, MULT, and CLMUL vanish, while OR, XOR, ADD, and ABSDIFF return the odd pre-value. On odd/odd cells both inputs remain active. For example, at $K=64$ and pre-power six, opposite-parity AND is zero everywhere, same-parity AND is zero on half the cells, and odd/odd AND has no zeros. On mixed Cartesian selections the surviving single-operand texture is constant along one axis. On the opposite-parity checkerboard the surviving operand changes direction across the two mixed parity pairs.
 
-For pure powers, if $q\ge k$, the even pre-operand is zero everywhere. AND, MULT, and CLMUL then vanish. OR, XOR, ADD, and ABSDIFF coincide with the odd pre-operand. No sampling among the seven rules restores the lost two-operand interaction. This extends the earlier AND/OR/XOR observation to all seven combiners.
-
-After a post-power $p$, a basic value $z$ vanishes modulo $2^m$ exactly when $p\nu_2(z)\ge m$, including zero by the infinite-depth convention. Odd $z$ does not vanish, although different odd values can still merge. For each proposed style, count these cells on its actual sampled torus, and separately test equality of powered values. Increasing the post-modulus can prevent the annihilation, so large powers alone are not a justification for discarding a parity class.
-
-The script records exact zero fractions and period pairs for all seven sampling methods, all seven combiners, $K=16,32,64,128$, and pre-powers 2, 4, 6, 8, 10. These are numerical diagnostics. No claim about perceived attractiveness is inferred from zero fractions alone.
+After a post-power $p$, a basic value $z$ vanishes modulo $2^m$ exactly when $p\nu_2(z)\ge m$, counting zero as having infinite valuation. Compute this occupancy from the selected table. Equality among nonzero powered values is a separate source of lost variation.
 
 ## 5. Finite parameter spaces and uniform shift-class sampling
 
@@ -323,6 +314,8 @@ For order classes, replace the numerical signature by the vector of ranks of the
 
 This is complete at fixed precision. It is not a proof of a finite post-power range when $M$ is selected separately for each unbounded $p$.
 
+The fixed-precision power catalogue compares all seven selections at $K=32$, pre-power two, $M=64$, and requested axis periods 16. AND gives 256 shift classes and 54 order classes on the whole grid and on the same-parity checkerboard. On the opposite-parity checkerboard it gives two shift classes and one order class. All four Cartesian selections have at least one basic axis period below 16 for these parameters.
+
 ### 5.3 Polynomial post-operations at a fixed final modulus
 
 At fixed $K,M$, evaluate the permitted polynomial monomials on the distinct reachable basic inputs or tuples, subtracting the fixed reference value. Their image is a finite additive group. Modular row and column elimination yields independent cyclic generators of orders $2^{e_j}$; independent coefficients $0\le a_j<2^{e_j}$ enumerate anchored shift classes exactly once. The earlier [XOR polynomial implementation](../2026-11-02-xor-polynomial-period/xor_polynomial_period.py) supplies such elimination and retains the polynomial column transformations.
@@ -341,7 +334,7 @@ If minimum-period precision is also imposed, retain only tables satisfying Secti
 
 ### 5.4 An unbounded-power theorem for odd-valued basic tables
 
-The precision cap can be removed for an important class: **every reachable basic value is odd**. This includes pure even pre-powers, and the shared family of Section 3, with OR, XOR, ADD, and ABSDIFF, under all seven sampling rules. Fix their selected pre-modulus and target periods.
+The precision cap can be removed for an important class: **every reachable basic value is odd**. This includes pure even pre-powers, and the shared family of Section 3, with OR, XOR, ADD, and ABSDIFF, on the opposite-parity checkerboard and the two mixed-parity Cartesian selections. On the whole grid and same-parity selections these combiners also encounter even values. Fix the selected pre-modulus and target periods.
 
 For odd post-powers, every shift depth is independent of the power: $\nu_2(a^p-b^p)=\nu_2(a-b)$ for odd $a,b,p$. Thus either all odd powers are inadmissible or all use one minimum exponent $m_0$. Their tables are covered by the finite odd exponent cycle modulo $2^{m_0}$.
 
@@ -377,7 +370,7 @@ A complete parameter catalogue now uses the admissible odd-power cycle, plus $1\
 
 This supplies a complete finite classification procedure for those four even-pre combiner families at fixed $K$, even when their value sets do not fill a grid and order classes can merge shift classes. Its catalogue can still be large; a compact closed count for every pre-function and sample phase is not asserted. Basic tables containing zero or even values require another argument and can have infinite shift families, as AND demonstrates below.
 
-As a complete small example, squared pre-operation with target periods 16 selects $K=32$ on the full grid. Allowing every positive post-power and every odd multiplier, always at minimum-period precision, gives:
+As a complete small example, squared pre-operation with target periods 16 selects $K=32$ on the opposite-parity checkerboard. Allowing every positive post-power and every odd multiplier, always at minimum-period precision, gives:
 
 | Basic combiner | Shift classes | Order classes |
 | -------------- | ------------: | ------------: |
@@ -404,7 +397,7 @@ This condition concerns the set of distinct values, not how often cells attain e
 
 ### 6.2 Single powers, odd multipliers, and offsets
 
-Use the established XOR baseline: operands reduced modulo $C$, full historical grid or its established checkerboard sampling, $p=2^v u$ with odd $u$, $M=C2^v$, and target $R=C/2$. Every odd raw input $1\le z<C$ is reached. Anchor at $z=1$.
+Use the established XOR baseline: operands reduced modulo $C$, the opposite-parity checkerboard or a second checkerboard of the historical displayed indices, $p=2^v u$ with odd $u$, $M=C2^v$, and target $R=C/2$. Every odd raw input $1\le z<C$ is reached. Anchor at $z=1$.
 
 For odd $p$, exponentiation permutes all odd residues modulo $C$. Subtracting one and dividing by two therefore fills the grid with $Q=C/2$. Odd multiplication permutes this same grid.
 
@@ -554,7 +547,7 @@ This is a complete theoretical finiteness criterion for the unrestricted polynom
 
 ## 8. Squared-pre AND at its actual minimum pre-modulus
 
-Use full-grid sampling and target $R=32$, corresponding to the historical domain label $C=64$. At every $K<64$ the squared pre-function already has axis periods below 32. At $K=64$, basic AND has exactly periods 32 and raw values
+Use the opposite-parity checkerboard and target $R=32$, corresponding to the historical domain label $C=64$. At every $K<64$ the squared pre-function already has axis periods below 32. At $K=64$, basic AND has exactly periods 32 and raw values
 
 $$
 0,16,32.
@@ -590,9 +583,9 @@ Run the standard-library checker from the repository root:
 python3 research/theory/2026-11-03-combiners-and-order-classes/combiners_order_classes.py
 ```
 
-It regenerates [results.json](results.json). The accompanying run completed **39,928 exact assertions**. The checks compare pre-period formulas with literal sequences, common family minima with literal grids, difference depths with integer powers, predicted minimum post-moduli with independently scanned axis periods, XOR saturation with complete small-space enumeration, interpolation with direct evaluation, and antipodal compression with explicit finite labels. They also compare the complete odd-valued power catalogues with an independent enumeration through post-power 128. A complete polynomial-image search through the proved bounds recovers all four AND order classes and their canonical minimum moduli. The report's general results rest on the proofs; finite checks validate the implementation and examples within their stated ranges.
+It regenerates [results.json](results.json). The accompanying run completed exact arithmetic assertions recorded in the catalogue. The checks compare pre-period formulas with literal sequences, common family minima with literal grids, difference depths with integer powers, predicted minimum post-moduli with independently scanned axis periods, XOR saturation with complete small-space enumeration, interpolation with direct evaluation, and antipodal compression with explicit finite labels. They also compare the complete odd-valued power catalogues with an independent enumeration through post-power 128. A complete polynomial-image search through the proved bounds recovers all four AND order classes and their canonical minimum moduli. The report's general results rest on the proofs; finite checks validate the implementation and examples within their stated ranges.
 
-The numerical catalogue covers all seven basic combiners and sampling rules at $K=16,32,64,128$, pre-powers 2, 4, 6, 8, 10, and post-powers 1–4. It also records the first pre-modulus found for targets 16 and 32 when one is found through 128, with polynomial target feasibility and post-power feasibility at that modulus. An absent entry means “not found through 128,” not a general impossibility claim. Since displayed periods divide $K$, no smaller $K$ below a given target can have been missed for those found minima.
+The numerical catalogue covers all seven basic combiners and operand-grid sampling rules at $K=16,32,64,128$, pre-powers 2, 4, 6, 8, 10, and post-powers 1–4. It also records the first pre-modulus found for targets 16 and 32 when one is found through 128, with polynomial target feasibility and post-power feasibility at that modulus. An absent entry means “not found through 128,” not a general impossibility claim. Since displayed periods divide $K$, no smaller $K$ below a given target can have been missed for those found minima.
 
 For the generator, the proved workflow is:
 
@@ -603,7 +596,7 @@ For the generator, the proved workflow is:
 1. For unbounded polynomial precision, use the proved order bound as a complete fallback. Use a more structured subfamily or precomputed catalogue when the general search is too large.
 1. Record exact symmetries, zero fractions, and oblique translations for the chosen sample phase. Apply the palette afterward; numerical counts are single-channel counts before color conversion.
 
-Several broad questions remain. This report does not give a complete unbounded-post-power classification for every basic table containing zero or even values, or a scalable uniform order sampler for every unrestricted polynomial style at production sizes. It does not classify the union of all individually minimum-pre-modulus pre-functions, deduplicate every overlap across combiners and pre-families, or optimize visual spread. Those tasks require additional structure beyond the general finite procedures proved here. The shared pre-polynomial family now has common-modulus guarantees for all seven combiners; the odd-valued post-power theorem settles its stated subproblem, and the remaining cases must not be inferred from it.
+Several broad questions remain. This report does not give a complete unbounded-post-power classification for every basic table containing zero or even values, or a scalable uniform order sampler for every unrestricted polynomial style at production sizes. It does not classify the union of all individually minimum-pre-modulus pre-functions, deduplicate every overlap across combiners and pre-families, or optimize visual spread. Those tasks require additional structure beyond the general finite procedures proved here. The shared pre-polynomial family now has common-modulus guarantees for all seven combiners on the whole grid and on the opposite-parity checkerboard; the odd-valued post-power theorem settles its stated subproblem, and the remaining cases must not be inferred from it.
 
 ## Relationship to existing research
 

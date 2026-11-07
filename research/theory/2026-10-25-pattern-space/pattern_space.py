@@ -150,12 +150,13 @@ def pre_power_period(c, q):
     return 2 if c <= min(q, w+2) else 1 << max(2, c-w)
 
 
-def samples():
+def operand_samples():
     return {
         'full': (1,0,0,1,0,0),
-        'checker-even': (1,1,1,-1,0,0),
-        'checker-odd': (1,1,1,-1,1,0),
-        **{f'decimate-{a}{b}':(2,0,0,2,a,b) for a in (0,1) for b in (0,1)},
+        'checkerboard_same': (1,1,1,-1,0,0),
+        'checkerboard_opposite': (1,1,1,-1,1,0),
+        **{f'{a}_{b}':(2,0,0,2,ex,ey)
+           for ex,a in enumerate(('even','odd')) for ey,b in enumerate(('even','odd'))},
     }
 
 
@@ -276,9 +277,9 @@ def run_checks():
         check(len(symmetries(grid,-1,1))==7,'even_pre_centered_D4')
     sample_inventory=[]
     for op,q,p in itertools.product(('xor','and','or'),(1,2,4),(1,2,4)):
-        for name,sample in samples().items():
+        for name,sample in operand_samples().items():
             C=32; M=C << valuation(p)
-            grid=power_grid(raw_grid(C,op,q,'diagonal',sample),p,M)
+            grid=power_grid(raw_grid(C,op,q,'straight',sample),p,M)
             sample_inventory.append({'op':op,'q':q,'p':p,'sample':name,'period':periods(grid),
                                      'support':len(set(flat(grid))),'sym_cell':symmetries(grid,-1,-1),
                                      'sym_vertex':symmetries(grid,0,0),'sym_legacy':symmetries(grid,-1,0)})
@@ -286,8 +287,8 @@ def run_checks():
     for C in (8,16,32,64,128):
         for p in (1,2,3,4,6,8,10,16):
             M=C << valuation(p)
-            grids=[power_grid(raw_grid(C,'xor',1,'diagonal',samples()[name]),p,M)
-                   for name in ('checker-even','checker-odd')]
+            grids=[power_grid(raw_grid(C,'xor',1,'diagonal',operand_samples()[name]),p,M)
+                   for name in ('checkerboard_same','checkerboard_opposite')]
             check(grids[0]==grids[1],'checker_phases_equal')
             if not p&1:
                 check(len(symmetries(grids[0],-1,-1))==7,'checker_even_D4')
@@ -445,19 +446,19 @@ def figures():
     plt.close(fig)
     fig,axes=plt.subplots(1,3,figsize=(11,4),layout='constrained')
     C=64
-    for axis,(name,sample) in zip(axes,[('Full lattice',samples()['full']),('Checkerboard phase 0',samples()['checker-even']),('Checkerboard phase 1',samples()['checker-odd'])]):
-        grid=power_grid(raw_grid(C,'xor',1,'diagonal',sample),2,2*C)
+    for axis,(title,name) in zip(axes,[('Full operand grid','full'),('Same-parity checkerboard','checkerboard_same'),('Opposite-parity checkerboard','checkerboard_opposite')]):
+        grid=power_grid(raw_grid(C,'xor',1,'straight',operand_samples()[name]),2,2*C)
         axis.imshow(np.array(grid)/(2*C),cmap='gray',vmin=0,vmax=1,interpolation='nearest')
-        axis.set_title(name);axis.set_axis_off()
+        axis.set_title(title);axis.set_axis_off()
     fig.suptitle('Sampling changes the displayed lattice, period, and symmetry',fontsize=13)
     fig.savefig(ROOT/'sampling-comparison.png',dpi=160)
     plt.close(fig)
     fig,axes=plt.subplots(1,3,figsize=(12,3.8),layout='constrained')
     lags=[1,2,4,8,16,32,64,128]
     lag_metrics=[]
-    for axis,(title,op,q,sample) in zip(axes,[('XOR, full lattice','xor',1,samples()['full']),
-                                           ('XOR, checkerboard','xor',1,samples()['checker-even']),
-                                           ('OR, pre-power 2','or',2,samples()['full'])]):
+    for axis,(title,op,q,sample) in zip(axes,[('XOR, opposite-parity checkerboard','xor',1,operand_samples()['full']),
+                                           ('XOR, additional checkerboard','xor',1,operand_samples()['checkerboard_same']),
+                                           ('OR, pre-power 2','or',2,operand_samples()['full'])]):
         a=np.array(power_grid(raw_grid(512,op,q,'diagonal',sample),2,1024))
         ex=[float(np.mean(a==np.roll(a,d,axis=1))) for d in lags]
         ey=[float(np.mean(a==np.roll(a,d,axis=0))) for d in lags]

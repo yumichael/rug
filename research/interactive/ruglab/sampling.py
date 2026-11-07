@@ -6,6 +6,7 @@ from .specs import SAMPLINGS
 
 
 def coordinates(shape, sampling="full", origin=(0, 0)):
+    """Map displayed columns and rows to unsampled operand indices."""
     if sampling not in SAMPLINGS:
         raise ValueError(sampling)
     # Rows represent y; columns represent x.

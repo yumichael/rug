@@ -35,7 +35,6 @@ class Sweep:
         s["pre"] = [[name, v] for (name, _), v in zip(s.get("pre", []), choices[:p], strict=True)]
         s["combine"] = choices[p]
         s["post"] = [[name, v] for (name, _), v in zip(s.get("post", []), choices[p + 1 :], strict=True)]
-        s.setdefault("coordinates", "straight")
         return resolve(s)
 
 

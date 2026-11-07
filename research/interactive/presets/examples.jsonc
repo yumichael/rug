@@ -3,7 +3,7 @@
   "xor": {
     "n": 64,
     "shape": [32, 32],
-    "sampling": "checkerboard_same",
+    "sampling": "checkerboard_opposite",
     "K": 64,
     "combine": "xor",
     "post": [["pow", 2]],

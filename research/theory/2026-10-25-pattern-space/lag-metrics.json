@@ -1,6 +1,6 @@
 [
   {
-    "name": "XOR, full lattice",
+    "name": "XOR, opposite-parity checkerboard",
     "lags": [
       1,
       2,
@@ -33,7 +33,7 @@
     ]
   },
   {
-    "name": "XOR, checkerboard",
+    "name": "XOR, additional checkerboard",
     "lags": [
       1,
       2,

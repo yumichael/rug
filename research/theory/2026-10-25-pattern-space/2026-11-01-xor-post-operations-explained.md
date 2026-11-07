@@ -308,15 +308,15 @@ The combined odd/even sampler in Section 4.5 of the theory report provides a cor
 
 Applying an identical color style also requires a consistent canonical numerical representative. Equivalent raw powers can differ by an odd rescaling and common phase. Feeding those raw values directly into the same fixed color mapping can produce different colors.
 
-## 10. Full-grid and checkerboard sampling
+## 10. Opposite-parity checkerboard and an additional sampling pass
 
-The original diagonal coordinate construction and an additional checkerboard selection are separate choices. The existing full-grid XOR pattern already has horizontal and vertical reflection symmetry for both odd and even post-powers. Its historical symmetry center is $(-1/2,0)$: one axis lies between cells and the other passes through cells. That does not supply lattice-preserving quarter-turn symmetry.
+The historical map $a=y-x-1$, $b=y+x$ selects opposite-parity operand pairs. The additional checkerboard selects from its displayed indices $(x,y)$. With the historical map, XOR has horizontal and vertical reflection symmetry for both odd and even post-powers. Its center is $(-1/2,0)$. One axis lies between cells and the other passes through cells, so a quarter-turn about that center does not preserve the display lattice.
 
 The extra checkerboard selection has two standard phases. The theory report proves that both produce the same XOR input at every displayed coordinate, before post-processing. They therefore give exactly the same pattern for both post-power parities, with the same multiplier and offset.
 
 For even powers under the balanced modulus rule, the checkerboard pattern has full square symmetry about $(-1/2,-1/2)$: axial and diagonal reflections and quarter-turns. For odd powers, interchange and half-turn remain exact, while the axial reflections negate the powered value modulo $C$. Odd multiplication and an offset turn that into a corresponding value transformation; it is not generally an exact channel-value symmetry.
 
-The checkerboard version still encounters every odd input and retains exact axis period $C/2$. Consequently, the structural family counts and samplers in this report apply to both the full-grid construction and this checkerboard version. These results do not require making checkerboard selection the default for future algorithms or establish the same counts for arbitrary selection rules.
+The checkerboard version still encounters every odd input and retains exact axis period $C/2$. Consequently, the structural family counts and samplers in this report apply to both the opposite-parity checkerboard and the additional sampling pass. These results do not require making checkerboard selection the default for future algorithms or establish the same counts for arbitrary selection rules.
 
 ## 11. Does an affine family describe visual similarity?
 
@@ -587,7 +587,7 @@ At fixed domain size there are finitely many affine families and finitely many s
 
 ## Sources
 
-- [October 25 theory report](2026-10-25-pattern-space-theory.md), Sections 2–4: equivalence, normalization, exact output counts, family classification, and sampling; Sections 7.2 and 7.5: full-grid and checkerboard symmetries; Section 12: variation and color contracts; Section 13.1: measurement definitions and their limits. The shift-class distributions and size tables above apply these existing counting formulas.
+- [October 25 theory report](2026-10-25-pattern-space-theory.md), Sections 2–4: equivalence, normalization, exact output counts, family classification, and sampling; Sections 7.2 and 7.5: symmetries of the historical map and the additional checkerboard; Section 12: variation and color contracts; Section 13.1: measurement definitions and their limits. The shift-class distributions and size tables above apply these existing counting formulas.
 - [October 13 XOR post-power theory](../2026-10-13-post-power/2026-10-13-xor-post-power-theory.md): balanced period rule, coefficient motifs, and the earlier valuation/odd-part classification.
 - [October 11 post-power investigation](../2026-10-11-post-power/2026-10-11-post-power-range.md): the actual domain versus generation-size distinction, inherited sampling range, and changing common phases.
 - [Current generator source](../../../index.html): `newStyle` samples powers, `channelParameters` selects odd multipliers and offsets, and `colorTable` applies the post-power and modulus. The implementation comparisons describe the source inspected on November 2, 2026.

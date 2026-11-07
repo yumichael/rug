@@ -1,7 +1,6 @@
 *.ipynb
 /rug-research.local.code-workspace
 .ipynb_checkpoints/
-__pycache__/
 .pytest_cache/
 .ruff_cache/
 .venv

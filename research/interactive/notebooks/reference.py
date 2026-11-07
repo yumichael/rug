@@ -26,7 +26,7 @@ presets = load_presets()
 # %% [markdown]
 # ## JSON parameter grid
 #
-# The original sweep shape is retained. K, M, coordinates, and sampling now control evaluation explicitly. Only the requested page is generated.
+# K and M set the moduli. Sampling selects operand pairs. Only the requested page is generated.
 #
 
 # %%
@@ -35,7 +35,6 @@ sweep_spec = {
     "shape": [64, 64],
     "K": 64,
     "M": 128,
-    "coordinates": "historical",
     "sampling": "full",
     "pre": [["pow", [2, 4, 6]]],
     "combine": ["and", "or", "xor", "add", "mult", "clmul", "absdiff"],

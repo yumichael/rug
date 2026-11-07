@@ -85,7 +85,6 @@ from ruglab import evaluate, grid
 spec = {
     "n": 64,
     "shape": [64, 64],
-    "coordinates": "historical",
     "sampling": "full",
     "K": 64,
     "pre": [["pow", 2]],
@@ -97,9 +96,9 @@ result = evaluate(spec)
 grid({"candidate": result})
 ```
 
-`shape` is `[rows, columns]`; native arrays use rows for y and columns for x. `origin` is `[x, y]` in displayed sample indices. Historical coordinates use `a=y-x-1, b=y+x`; straight coordinates use `a=x, b=y`. Both receive the same pre-operations, then reduction modulo K. The basic combiner has full integer output; post-operations are finally reduced modulo M. No implicit coordinate reduction modulo n is inserted.
+`shape` is `[rows, columns]`; native arrays use rows for y and columns for x. `origin` is `[x, y]` in displayed sample indices. `sampling` maps those indices directly to operand pairs. Both operands receive the same pre-operations, then reduction modulo K. The basic combiner has full integer output; post-operations are finally reduced modulo M. No implicit coordinate reduction modulo n is inserted.
 
-Sampling names are `full`, `checkerboard_same`, `checkerboard_opposite`, `even_even`, `even_odd`, `odd_even`, and `odd_odd`. Their exact original-grid maps are in [sampling.py](ruglab/sampling.py). `shape` describes the selected displayed grid, so sampling does not silently halve that shape. Native defaults are full sampling, historical coordinates, and K=M=n; choose moduli explicitly for research claims. The JSON sweep frontend defaults to straight coordinates to match the original operand-grid workflow.
+Sampling names are `full`, `checkerboard_same`, `checkerboard_opposite`, `even_even`, `even_odd`, `odd_even`, and `odd_odd`. Their exact original-grid maps are in [sampling.py](ruglab/sampling.py). `shape` describes the selected displayed grid, so sampling does not silently halve that shape. The default is the full operand grid with K=M=n. `checkerboard_opposite` keeps pairs with one even operand and one odd operand. The DSL’s `diag1` and `diag1m` give two explicit display maps for that same selection.
 
 Operations include `add`, `mult`, `pow`, `expo`, `mod`, `self`, `xor`, `xor0`, `binary`, `gray`, `bitrev`, `rotl`, `inv`, and `poly`. A polynomial's coefficient list is constant-term first. For example, `["poly", [0,0,-1,0,2]]` represents `2*x**4-x**2`. Bit operations use the stage modulus's bit width; inverse maps nonunits to zero as in the original experiment. Use power-of-two stage moduli for these word operations.
 
@@ -145,7 +144,7 @@ The engine uses arbitrary-precision Python integers in NumPy object arrays. Modu
 
 `summary` and `symmetries` describe the supplied window. `periods(result, certified_torus=True)` requires the caller to supply a known complete periodic torus; it does not infer a global repetition guarantee from a crop. Historical and sampled phase centers need not coincide with the window center.
 
-[research.py](ruglab/research.py) exposes `family_pre_modulus`, the proved full-grid family rules for all seven combiners; `minimum_post_modulus`, a complete-torus difference-depth check for a single post-power; and `uniform_xor`, the proved uniform shift/order-class sampler for the balanced XOR family. The latter uses a local seed and the established odd/even weights, and covers full-grid and checkerboard sampling. General polynomial evaluation is available, but this workbench does not claim a general efficient uniform polynomial order sampler. The research adapters load only repository-local proof helpers and do not run their experiments on import.
+[research.py](ruglab/research.py) exposes `family_pre_modulus`, the common family minima on the whole operand grid and the opposite-parity checkerboard; `minimum_post_modulus`, a complete-torus difference-depth check for a single post-power; and `uniform_xor`, the proved uniform shift/order-class sampler for the balanced XOR family. The latter uses a local seed and the established odd/even weights on the opposite-parity operand checkerboard. General polynomial evaluation is available, but this workbench does not claim a general efficient uniform polynomial order sampler. The research adapters load only repository-local proof helpers and do not run their experiments on import.
 
 ## Validation
 

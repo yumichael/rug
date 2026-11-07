@@ -8,19 +8,19 @@ The generator should separate **rug construction**, **pattern style**, **pattern
 
 The main mathematical conclusions are:
 
-| Question                                                                      | Result                                                                                                                                                   |
-| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Does trivial post-mult/post-add identify all distinct pattern families?       | No. Different post-powers can belong to the same odd-affine output family.                                                                               |
-| What changes for the established diagonal XOR family?                         | At coordinate domain C ≥ 32, there are 5C/32 odd-affine classes, including C/32 even-power classes. The old count (c − 3)C/8 counts a finer equivalence. |
-| Is there a particularly simple even-XOR sampler?                              | Yes: one integer k modulo C/32 indexes every even-power affine class.                                                                                    |
-| Can that index remain coherent as periods change?                             | Yes. Doubling C doubles the index range; reduction of k gives the natural smaller-domain class.                                                          |
-| Can sampling remove XOR's directional texture?                                | Checkerboard reindexing gives full square symmetry for even post-powers, with the same exact axis period C/2. Its two standard phases are identical.     |
-| Does even pre-power help symmetry?                                            | Every shared even pre-polynomial gives full square symmetry in a centered straight or diagonal construction, before any post-operation.                  |
-| Does the XOR modulus rule extend directly to AND?                             | No. AND's even inputs can be annihilated by post-power. A shift-difference valuation theorem supplies the exact replacement.                             |
-| Does every monomial family have finitely many affine classes at fixed period? | No. Squared-pre AND already has infinitely many, even at the smallest valid modulus.                                                                     |
-| Can arbitrary pre-powers be classified finitely?                              | Yes, at fixed coordinate modulus. Their complete functions have a finite transient and a finite exponent cycle.                                          |
-| Can arbitrary polynomials be classified finitely?                             | Yes, at fixed arithmetic precision. Canonical polynomial functions and finite image modules give exact classifications.                                  |
-| Is a finite precision limit optional for unrestricted post-polynomials?       | No. Fixed period and minimal modulus alone still permit infinitely many affine classes.                                                                  |
+| Question                                                                      | Result                                                                                                                                                                    |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Does trivial post-mult/post-add identify all distinct pattern families?       | No. Different post-powers can belong to the same odd-affine output family.                                                                                                |
+| What changes for the established diagonal XOR family?                         | At coordinate domain C ≥ 32, there are 5C/32 odd-affine classes, including C/32 even-power classes. The old count (c − 3)C/8 counts a finer equivalence.                  |
+| Is there a particularly simple even-XOR sampler?                              | Yes: one integer k modulo C/32 indexes every even-power affine class.                                                                                                     |
+| Can that index remain coherent as periods change?                             | Yes. Doubling C doubles the index range; reduction of k gives the natural smaller-domain class.                                                                           |
+| Can sampling remove XOR's directional texture?                                | An additional checkerboard on the historical opposite-parity display grid gives full square symmetry for even post-powers. Its two phases agree and keep axis period C/2. |
+| Does even pre-power help symmetry?                                            | Every shared even pre-polynomial gives full square symmetry in a centered straight or diagonal construction, before any post-operation.                                   |
+| Does the XOR modulus rule extend directly to AND?                             | No. AND's even inputs can be annihilated by post-power. A shift-difference valuation theorem supplies the exact replacement.                                              |
+| Does every monomial family have finitely many affine classes at fixed period? | No. Squared-pre AND already has infinitely many, even at the smallest valid modulus.                                                                                      |
+| Can arbitrary pre-powers be classified finitely?                              | Yes, at fixed coordinate modulus. Their complete functions have a finite transient and a finite exponent cycle.                                                           |
+| Can arbitrary polynomials be classified finitely?                             | Yes, at fixed arithmetic precision. Canonical polynomial functions and finite image modules give exact classifications.                                                   |
+| Is a finite precision limit optional for unrestricted post-polynomials?       | No. Fixed period and minimal modulus alone still permit infinitely many affine classes.                                                                                   |
 
 Closed formulas below are proved for the families to which they apply. The general polynomial solution is an exact finite procedure after specifying precision and coordinate-domain bounds; it is not a claim that every large catalogue has been enumerated. The accompanying [script](pattern_space.py), [results](results.json), and figures make the finite experiments reproducible.
 
@@ -72,7 +72,7 @@ $$
 a=y-x-1,\qquad b=y+x.
 $$
 
-These forms always have opposite parity. The coordinate map modulo $C$ covers every opposite-parity operand pair, with two preimages per pair: its determinant is $-2$, its kernel has two elements, and its image has $C^2/2$ elements.
+These forms select operand pairs of opposite parity. The coordinate map modulo $C$ covers every opposite-parity operand pair, with two preimages per pair: its determinant is $-2$, its kernel has two elements, and its image has $C^2/2$ elements.
 
 The centered forms for an even pre-polynomial are more transparent. With physical material coordinates
 
@@ -660,9 +660,9 @@ A spatial symmetry survives on a particular sample phase only if it preserves th
 
 The period control refers to the displayed coordinates $(i,j)$ before stretch. If the checkerboard is displayed as a rotated physical lattice with a different metric, that orientation and scale must be explicit.
 
-### 7.5 Checkerboard identity-pre XOR has a closed form
+### 7.5 An additional checkerboard on the historical display grid
 
-Take phase zero
+Here $(x,y)$ are the displayed indices of the opposite-parity checkerboard in Section 1.2. Take phase zero
 
 $$
 x=i+j,\qquad y=i-j.
@@ -700,15 +700,13 @@ For odd post-powers, the axial reflections instead send the output to its negati
 
 The exact displayed axis period remains $L=C/2$ for the nondegenerate balanced family. A shift by $L$ is a period. At a half-period shift one can choose $w$ so the odd inputs differ by $C/2$, whose post-powers differ by $M/2$, ruling out a smaller period. Every odd input occurs, so the exponent-class counts of Section 4 also apply to this sampled style.
 
-![Full and checkerboard sampled XOR motifs](sampling-comparison.png)
+### 7.6 Seven selections on the operand grid
 
-The figure uses $C=64$, $p=2$, and $M=128$. Its two checkerboard panels are exactly identical. The full-lattice panel has the historical mixed-parity mirror center; the checkerboard panels have a center between cells in both directions.
+Apply the lattice map in Section 7.4 directly to the operand pair $(a,b)$. Use $(i,j)$ for the full grid, $(i+j,i-j)$ and $(i+j+1,i-j)$ for the same- and opposite-parity checkerboards, and $(2i+e_x,2j+e_y)$ for the four Cartesian parity selections. Section 7.5 applies a second sampling to the displayed grid defined in Section 1.2.
 
-### 7.6 Alternate-row-and-column sampling
+![XOR on the full operand grid and the two operand checkerboards](sampling-comparison.png)
 
-For $x=2i+e_x$, $y=2j+e_y$, the four phases must be retained until tested. At $C=32$, identity-pre XOR, and even balanced post-powers, each has least displayed axis period eight. The phase can move the reflection centers to different lattice parities; the symmetry inventories in the JSON show the differences.
-
-This restriction does not supply the checkerboard family's general square-symmetry result. It is also not equivalent to enlarging cells: it discards source samples, whereas stretch repeats material cells.
+The figure uses $C=64$, $p=2$, and $M=128$. The least axis periods for the full grid, same-parity checkerboard, and opposite-parity checkerboard are 64, 16, and 32 respectively. The full-grid tile also repeats under $(32,32)$, while the two checkerboard tiles are primitive axis-aligned squares for this example. At $C=32$ with the corresponding balanced modulus, the four Cartesian parity selections have least axis periods 8, 16, 16, and 8 in even/even, even/odd, odd/even, odd/odd order. The inventory in the JSON compares all seven operand selections. The equality of the two phases in Section 7.5 concerns the additional checkerboard on the historical display grid.
 
 ### 7.7 Sample symmetric classes directly
 
@@ -1186,7 +1184,7 @@ The following values use historical diagonal coordinates, post-power two, trivia
 
 XOR's uniform occupancy is exact, not just an empirical trend. Its persistent nearest-neighbor anisotropy is visible in the equality rates: roughly two thirds of horizontal neighbors coincide at these settings, while the vertical coincidence rate decreases with domain size. Odd affine coloring cannot remove that equality geometry. A noninjective color style can hide distinctions, but cannot reconstruct a missing directional balance.
 
-The checkerboard construction changes the lattice geometry and provably supplies equal horizontal and vertical behavior. At $C=512$, both of its nearest-neighbor equality rates are $0.0078125$, and their equality curves agree at every lag, as required by interchange symmetry.
+The additional checkerboard on the historical display grid changes the lattice geometry and provably supplies equal horizontal and vertical behavior. At $C=512$, both of its nearest-neighbor equality rates are $0.0078125$, and their equality curves agree at every lag, as required by interchange symmetry.
 
 ![Directional equality at successively doubled lags](directional-equality.png)
 
@@ -1277,7 +1275,7 @@ Use **rug construction**, **pattern style**, **pattern variation**, and **color 
 
 Use primitive odd-affine numerical classes as the default definition of structural variation. Record exact tables and equality partitions as additional mathematical objects. Keep global numerical phase and odd affine output tuning in the color mapping, and apply a fixed canonical gauge before that mapping.
 
-For identity-pre XOR, retain the full-lattice style and add a checkerboard style. The latter gives full square symmetry for even post-powers. Its two phases are the same arithmetic pattern and should not be counted twice.
+For identity-pre XOR on the historical opposite-parity checkerboard, an additional checkerboard of the displayed grid gives full square symmetry for even post-powers. The two phases of that additional selection count as one arithmetic pattern.
 
 For the balanced XOR family at period R ≥ 16, the even-power structural space has R/16 classes, indexed by one integer. The all-parity space has 5R/16 classes, with a four-to-one odd/even class count. These indices support coherent reduction as the period changes.
 
