@@ -59,6 +59,7 @@ def symmetries(result):
         "horizontal": np.array_equal(a, a[:, ::-1]),
         "vertical": np.array_equal(a, a[::-1, :]),
         "transpose": np.array_equal(a, a.T),
+        "anti_transpose": np.array_equal(a, a[::-1, ::-1].T),
         "quarter_turn": np.array_equal(a, np.rot90(a)),
     }
 
