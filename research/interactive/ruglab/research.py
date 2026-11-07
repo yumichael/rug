@@ -1,12 +1,10 @@
-"""Adapters for proved modulus rules; no automatic execution of research reports."""
+"""Exact period rules and samplers for the workbench."""
 
-import importlib.util
+import math
 import random
-import sys
-from functools import lru_cache
-from pathlib import Path
 
 from .engine import evaluate
+from .specs import resolve
 
 
 def family_pre_modulus(q, R, combiner):
@@ -27,24 +25,36 @@ def family_pre_modulus(q, R, combiner):
     return 1 << k
 
 
-@lru_cache(maxsize=1)
-def _theory():
-    theory_dir = Path(__file__).resolve().parents[2] / "theory"
-    path = theory_dir / "2026-11-03-combiners-and-order-classes/combiners_order_classes.py"
-    spec = importlib.util.spec_from_file_location("_rug_theory", path)
-    module = importlib.util.module_from_spec(spec)
-    old = sys.dont_write_bytecode
-    sys.dont_write_bytecode = True
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        sys.dont_write_bytecode = old
-    return module
+def _valuation(n):
+    return (abs(n) & -abs(n)).bit_length() - 1 if n else math.inf
+
+
+def _power_depth(a, b, p):
+    """Return the 2-adic valuation of a**p - b**p without building either power."""
+    if a == b:
+        return math.inf
+    if not a or not b:
+        return p * _valuation(a or b)
+    ta, tb = _valuation(a), _valuation(b)
+    if ta != tb:
+        return p * min(ta, tb)
+    a0, b0 = a >> ta, b >> tb
+    depth = p * ta + _valuation(a0 - b0)
+    if p % 2 == 0:
+        depth += _valuation(a0 + b0) + _valuation(p) - 1
+    return depth
+
+
+def _shift_depth(table, shift, axis, power):
+    size = len(table)
+    if axis == 0:
+        pairs = {(table[i][j], table[(i + shift) % size][j]) for i in range(size) for j in range(size)}
+    else:
+        pairs = {(table[i][j], table[i][(j + shift) % size]) for i in range(size) for j in range(size)}
+    return min(_power_depth(a, b, power) for a, b in pairs)
 
 
 def minimum_post_modulus(spec, target, power=1, max_cells=262144):
-    from .specs import resolve
-
     s = resolve(spec)
     K = s["K"]
     if max_cells < K * K:
@@ -57,10 +67,15 @@ def minimum_post_modulus(spec, target, power=1, max_cells=262144):
     if any(R < 1 or R & (R - 1) for R in targets):
         raise ValueError("Targets must be positive powers of two")
     r = evaluate({**s, "shape": [K, K], "post": [], "M": 1})
-    # The research helper indexes x first; native arrays index rows/y first.
+    # Targets are in x, y order. Transpose the row-major grid to match.
     table = r.stages["z0"].T.tolist()
-    m = _theory().minimum_post_exponent(table, targets, power)
-    return None if m is None else 1 << m
+    lower, upper = 1, math.inf
+    for axis, period in enumerate(targets):
+        # The target shift must vanish, while its half-shift must stay visible.
+        upper = min(upper, _shift_depth(table, period, axis, power))
+        if period > 1:
+            lower = max(lower, 1 + _shift_depth(table, period // 2, axis, power))
+    return 1 << lower if lower <= upper and lower != math.inf else None
 
 
 def uniform_xor(C=64, seed=0, parity="both", sampling="checkerboard_same"):

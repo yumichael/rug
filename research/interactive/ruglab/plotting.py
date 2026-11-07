@@ -1,7 +1,6 @@
 """Fixed-scale previews and color tools, with no display-time arithmetic changes."""
 
 import colorsys
-from importlib import import_module
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -26,7 +25,7 @@ def colorize(result, mode="values", cmap=None):
     from .diagnostics import ranks
 
     if (cmap or result.colors).startswith("cmr."):
-        import_module("cmasher")
+        import cmasher  # noqa: F401 - Registers the cmr colormaps.
 
     if mode == "order":
         a = ranks(result)

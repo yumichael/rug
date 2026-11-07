@@ -62,7 +62,10 @@ Ruff configuration lives in [ruff.toml](ruff.toml). Its rules cover correctness,
 ```sh
 uv run --project research/interactive ruff check .
 uv run --project research/interactive ruff format --check .
+uv run --project research/interactive python scripts/lint_staged_python.py --imports
 ```
+
+Reusable workbench Python lives in `research/interactive/ruglab/`. The notebook and tests call into the package, and the dated theory scripts serve as standalone verification. Imports in `ruglab` must resolve to the package, the standard library, or a declared dependency approved by the boundary check. Use static imports so the hook and CI can check them.
 
 The pre-commit gate checks indexed Python and indexed Ruff configuration without stashing, formatting, or modifying working-tree files. A Ruff configuration change checks all maintained indexed Python. App and documentation commits run the whitespace and Markdown checks without invoking uv or installing Python. The Python gate runs when maintained Python files or Ruff configuration are staged.
 

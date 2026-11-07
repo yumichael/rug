@@ -34,6 +34,7 @@ jobs:
       - run: uv sync --locked --project research/interactive
       - run: uv run --locked --project research/interactive ruff format --check .
       - run: uv run --locked --project research/interactive ruff check .
+      - run: uv run --locked --project research/interactive python scripts/lint_staged_python.py --imports
 
   python-test:
     name: Python tests and fresh-kernel notebook
