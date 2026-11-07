@@ -2,10 +2,10 @@
 line-length = 120
 target-version = "py315"
 force-exclude = true
-# VS Code formats the local notebook before Jupytext updates the Python source.
+# VS Code formats the local notebooks before Jupytext updates their Python sources.
 include = [
   "research/interactive/**/*.py",
-  "research/interactive/explore.ipynb",
+  "research/interactive/{explore,reference}.ipynb",
   "scripts/lint_staged_python.py"
 ]
 
@@ -183,8 +183,8 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-# The notebook uses studio's wildcard import, cell-scoped displays, and exploratory variables.
-"research/interactive/explore.{ipynb,py}" = ["F401", "F403", "F405", "F841", "E402", "I001", "B018", "F811", "RUF059"]
+# Notebooks use studio's wildcard import, cell-scoped displays, and exploratory variables.
+"research/interactive/{explore,reference}.{ipynb,py}" = ["F401", "F403", "F405", "F841", "E402", "I001", "B018", "F811", "RUF059"]
 
 [lint.flake8-comprehensions]
 allow-dict-calls-with-keyword-arguments = true

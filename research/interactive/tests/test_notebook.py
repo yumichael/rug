@@ -10,8 +10,9 @@ from nbclient import NotebookClient
 from nbformat.v4 import new_code_cell
 
 
-def test_text_notebook_roundtrip():
-    book = jupytext.read("explore.py")
+@pytest.mark.parametrize("source", ["explore.py", "reference.py"])
+def test_text_notebook_roundtrip(source):
+    book = jupytext.read(source)
     text = jupytext.writes(book, fmt="py:percent")
     again = jupytext.reads(text, fmt="py:percent")
     assert [c.source for c in book.cells] == [c.source for c in again.cells]
@@ -32,7 +33,7 @@ def test_fresh_kernel(tmp_path):
         )
     )
     manager = KernelManager(kernel_name='rug-test', kernel_spec_manager=KernelSpecManager(kernel_dirs=[str(kernels)]))
-    book = jupytext.read('explore.py')
+    book = jupytext.read('reference.py')
     pager = next(cell for cell in book.cells if 'back_button = widgets.Button' in cell.source)
     navigate = new_code_cell(
         """

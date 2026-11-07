@@ -1,6 +1,6 @@
 # Interactive rug research
 
-Open `explore.ipynb` with the **Rug research (Python 3.15)** kernel, or open [explore.py](explore.py) as a percent-format notebook. The Python notebook is the versioned source; the local `.ipynb` retains outputs and is ignored. The notebook supplies editable examples and page controls; numerical and display logic lives in [ruglab](ruglab/).
+Open `explore.ipynb` with the **Rug research (Python 3.15)** kernel to start experimenting. Open `reference.ipynb` for the worked examples and page controls. The versioned sources are [explore.py](explore.py) and [reference.py](reference.py), and their local `.ipynb` partners retain outputs and are ignored. Numerical and display logic lives in [ruglab](ruglab/).
 
 ## Setup and launch
 
@@ -11,10 +11,11 @@ Run these commands from this directory:
 ```sh
 sh setup.sh
 uv run jupytext --sync explore.py
+uv run jupytext --sync reference.py
 uv run jupyter lab explore.ipynb
 ```
 
-Setup installs the locked dependencies in a local `.venv` and registers the notebook kernel. It performs no Git operations. After external Python edits, synchronize before reopening the notebook. After notebook edits in JupyterLab, save and run `uv run jupytext --sync explore.ipynb` before reviewing the Python source.
+Setup installs the locked dependencies in a local `.venv` and registers the notebook kernel. It performs no Git operations. After external Python edits, synchronize the corresponding pair before reopening the notebook. After notebook edits in JupyterLab, save and run `uv run jupytext --sync explore.ipynb` or `uv run jupytext --sync reference.ipynb` before reviewing the Python source.
 
 An external environment is optional, using uv's standard project setting:
 
@@ -28,10 +29,10 @@ The Python pin is in [.python-version](.python-version). Use a current uv releas
 
 ### VS Code
 
-1. Run `sh setup.sh` and `uv run jupytext --sync explore.py` from this directory.
+1. Run `sh setup.sh` and synchronize the notebook pair you want to open using the commands above.
 1. Open [rug-research.code-workspace](rug-research.code-workspace) using **File → Open Workspace from File** and install its recommended extensions. The workspace opens the repository root with research-specific settings.
-1. If the status bar shows a different interpreter in a Python file, run **Python: Select Interpreter** and choose `research/interactive/.venv/bin/python`. In `explore.ipynb`, select the **Rug research (Python 3.15)** kernel.
-1. Save `explore.ipynb` and review the synced `explore.py` before staging it. After editing `explore.py` directly, run `uv run jupytext --sync explore.py` before reopening the notebook.
+1. If the status bar shows a different interpreter in a Python file, run **Python: Select Interpreter** and choose `research/interactive/.venv/bin/python`. In the notebook, select the **Rug research (Python 3.15)** kernel.
+1. Save the notebook and review its synced `.py` source before staging it. After editing a notebook's `.py` source directly, synchronize the pair before reopening it.
 
 The workspace uses the locked Ruff from the research environment for both Python and notebook format on save. The notebook is formatted before Jupytext Sync updates the tracked Python source. The editor, pre-commit hook, and CI use the same [Ruff configuration](../../ruff.toml).
 

@@ -8,6 +8,7 @@ from pathlib import Path
 
 INTERACTIVE = Path('research/interactive')
 RUGLAB = INTERACTIVE / 'ruglab'
+NOTEBOOK_SOURCES = {INTERACTIVE / 'explore.py', INTERACTIVE / 'reference.py'}
 PYTHON_SUFFIXES = {'.py', '.pyi'}
 DEPENDENCY_IMPORTS = {'IPython', 'PIL', 'cmasher', 'ipywidgets', 'json5', 'matplotlib', 'numpy'}
 DYNAMIC_LOADERS = {'importlib', 'runpy'}
@@ -63,7 +64,7 @@ def check_imports(*, staged):
     for path in sorted(paths):
         if not path.is_relative_to(INTERACTIVE):
             continue
-        if path == INTERACTIVE / 'explore.py' or path.is_relative_to(INTERACTIVE / 'tests'):
+        if path in NOTEBOOK_SOURCES or path.is_relative_to(INTERACTIVE / 'tests'):
             continue
         if not path.is_relative_to(RUGLAB):
             print(f'{path}: place workbench Python source inside ruglab', file=sys.stderr)
