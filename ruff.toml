@@ -5,7 +5,7 @@ force-exclude = true
 # VS Code formats the local notebooks before Jupytext updates their Python sources.
 include = [
   "research/interactive/**/*.py",
-  "research/interactive/{explore,reference}.ipynb",
+  "research/interactive/notebooks/**/*.ipynb",
   "scripts/lint_staged_python.py"
 ]
 
@@ -184,7 +184,7 @@ ignore = [
 
 [lint.per-file-ignores]
 # Notebooks use studio's wildcard import, cell-scoped displays, and exploratory variables.
-"research/interactive/{explore,reference}.{ipynb,py}" = ["F401", "F403", "F405", "F841", "E402", "I001", "B018", "F811", "RUF059"]
+"research/interactive/notebooks/**/*.{ipynb,py}" = ["F401", "F403", "F405", "F841", "E402", "I001", "B018", "F811", "RUF059"]
 
 [lint.flake8-comprehensions]
 allow-dict-calls-with-keyword-arguments = true

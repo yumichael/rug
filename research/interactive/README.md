@@ -1,6 +1,6 @@
 # Interactive rug research
 
-Open `explore.ipynb` with the **Rug research (Python 3.15)** kernel to start experimenting. Open `reference.ipynb` for the worked examples and page controls. The versioned sources are [explore.py](explore.py) and [reference.py](reference.py), and their local `.ipynb` partners retain outputs and are ignored. Numerical and display logic lives in [ruglab](ruglab/).
+Open `notebooks/explore.ipynb` with the **Rug research (Python 3.15)** kernel to start experimenting. Open `notebooks/reference.ipynb` for the worked examples and page controls. The versioned sources are [explore.py](notebooks/explore.py) and [reference.py](notebooks/reference.py), and their local `.ipynb` partners retain outputs and are ignored. Numerical and display logic lives in [ruglab](ruglab/).
 
 ## Setup and launch
 
@@ -10,12 +10,12 @@ Run these commands from this directory:
 
 ```sh
 sh setup.sh
-uv run jupytext --sync explore.py
-uv run jupytext --sync reference.py
-uv run jupyter lab explore.ipynb
+uv run jupytext --sync notebooks/explore.py
+uv run jupytext --sync notebooks/reference.py
+uv run jupyter lab notebooks/explore.ipynb
 ```
 
-Setup installs the locked dependencies in a local `.venv` and registers the notebook kernel. It performs no Git operations. After external Python edits, synchronize the corresponding pair before reopening the notebook. After notebook edits in JupyterLab, save and run `uv run jupytext --sync explore.ipynb` or `uv run jupytext --sync reference.ipynb` before reviewing the Python source.
+Setup installs the locked dependencies and editable `ruglab` package in a local `.venv`, then registers the notebook kernel. This lets kernels started in `notebooks/` import the working copy. After external Python edits, synchronize the corresponding pair before reopening the notebook. After notebook edits in JupyterLab, save and run `uv run jupytext --sync notebooks/explore.ipynb` or `uv run jupytext --sync notebooks/reference.ipynb` before reviewing the Python source.
 
 An external environment is optional, using uv's standard project setting:
 
@@ -52,7 +52,7 @@ Your terminal can then use `python`, `pytest`, and `ruff` directly. VS Code uses
 
 ### Notebook imports
 
-Use this as the first cell of an exploratory notebook in this directory.
+Use this as the first cell of an exploratory notebook under `notebooks/`. Ruff applies the notebook rules to Python and Jupyter files throughout that directory.
 
 ```python
 from ruglab.studio import *

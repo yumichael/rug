@@ -47,7 +47,7 @@ def test_nonresearch_commit_needs_no_uv(tmp_path):
 @pytest.mark.parametrize(
     'path',
     [
-        'research/interactive/explore.py',
+        'research/interactive/notebooks/explore.py',
         'research/interactive/ruglab/a.py',
         'research/interactive/a.pyi',
         'scripts/lint_staged_python.py',

@@ -71,7 +71,8 @@ def test_gate_uses_indexed_configuration(tmp_path):
 
 @pytest.mark.integration
 def test_gate_preserves_notebook_allowances(tmp_path):
-    result = run_gate(tmp_path, 'print(1)\nimport os\n', 'print(1)\nimport os\n', filename='explore.py')
+    source = 'from ruglab.studio import *\n\npresets = load_presets()\n'
+    result = run_gate(tmp_path, source, source, filename='notebooks/nested/new.py')
     assert result.returncode == 0, result.stdout + result.stderr
 
 
