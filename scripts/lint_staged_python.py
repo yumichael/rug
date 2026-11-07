@@ -9,7 +9,7 @@ from pathlib import Path
 INTERACTIVE = Path('research/interactive')
 RUGLAB = INTERACTIVE / 'ruglab'
 PYTHON_SUFFIXES = {'.py', '.pyi'}
-DEPENDENCY_IMPORTS = {'PIL', 'cmasher', 'matplotlib', 'numpy'}
+DEPENDENCY_IMPORTS = {'IPython', 'PIL', 'cmasher', 'ipywidgets', 'json5', 'matplotlib', 'numpy'}
 DYNAMIC_LOADERS = {'importlib', 'runpy'}
 DYNAMIC_BUILTINS = {'__import__', 'exec', 'eval'}
 

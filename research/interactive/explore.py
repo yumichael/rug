@@ -19,34 +19,9 @@
 #
 
 # %%
-from IPython import get_ipython
+from ruglab.studio import *
 
-get_ipython().run_line_magic("load_ext", "autoreload")
-get_ipython().run_line_magic("autoreload", "2")
-get_ipython().run_line_magic("matplotlib", "inline")
-from io import BytesIO
-from pathlib import Path
-
-import ipywidgets as widgets
-import json5
-import matplotlib.pyplot as plt
-from IPython.display import display
-
-from ruglab import (
-    Sweep,
-    duplicates,
-    evaluate,
-    grid,
-    paired,
-    periods,
-    sampling_gallery,
-    stages,
-    summary,
-    symmetries,
-)
-from ruglab.research import family_pre_modulus, minimum_post_modulus, uniform_xor
-
-presets = json5.loads(Path("presets/examples.jsonc").read_text(encoding="utf-8"))
+presets = load_presets()
 
 # %% [markdown]
 # ## JSON parameter grid

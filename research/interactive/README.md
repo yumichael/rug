@@ -49,6 +49,21 @@ direnv allow .
 
 Your terminal can then use `python`, `pytest`, and `ruff` directly. VS Code uses the interpreter and kernel selected in the research workspace.
 
+### Notebook imports
+
+Use this as the first cell of an exploratory notebook in this directory.
+
+```python
+from ruglab.studio import *
+```
+
+The import enables inline plots and automatic reloading of edited Python modules. It provides the workbench tools, plotting and widget imports, and the example presets. Use `presets = load_presets()` to read a fresh copy after editing the preset file.
+
+```python
+grid({"XOR": presets["xor"]})
+plt.show()
+```
+
 ## Exploration loop
 
 1. Edit the JSON sweep or DSL examples and rerun their cell.

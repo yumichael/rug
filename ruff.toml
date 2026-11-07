@@ -183,12 +183,8 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-# Cell-scoped imports, displays, and exploratory variables are intentional.
-"research/interactive/explore.{ipynb,py}" = ["F401", "F841", "E402", "I001", "B018", "F811", "RUF059"]
-
-[lint.extend-per-file-ignores]
-# The notebook explicitly imports IPython names that its kernel also injects.
-"research/interactive/explore.ipynb" = ["A004"]
+# The notebook uses studio's wildcard import, cell-scoped displays, and exploratory variables.
+"research/interactive/explore.{ipynb,py}" = ["F401", "F403", "F405", "F841", "E402", "I001", "B018", "F811", "RUF059"]
 
 [lint.flake8-comprehensions]
 allow-dict-calls-with-keyword-arguments = true
