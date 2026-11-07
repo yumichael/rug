@@ -28,6 +28,7 @@ from . import (
     summary,
     symmetries,
 )
+from .exploration import exploration_recipes, select_field
 from .operations import steps
 from .plotting import colorize
 from .research import family_pre_modulus, minimum_post_modulus, uniform_xor
@@ -43,6 +44,7 @@ __all__ = [
     "dsl",
     "duplicates",
     "evaluate",
+    "exploration_recipes",
     "export",
     "family_pre_modulus",
     "gallery",
@@ -54,6 +56,7 @@ __all__ = [
     "periods",
     "plt",
     "sampling_gallery",
+    "select_field",
     "signature",
     "stages",
     "steps",

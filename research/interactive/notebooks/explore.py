@@ -15,114 +15,128 @@
 # %%
 from ruglab.studio import *
 
-presets = load_presets()
-
 # %% [markdown]
-# ## November research gallery
+# ## Explore repeating fields
 #
-# Each panel is one complete square repeat tile in displayed cells. The gallery covers all seven operand-grid selections and all seven combiners. Order coloring spreads the distinct anchored values across each palette so that small numerical gaps are visible.
+# Run the cells to activate the pager. By default it shows six recipes across the available width. Use **Per page** to change the density. Pick a field size, filter by combiner, and use the arrows or enter a page number. Straight views compare the full grid and odd/odd sampling. The 45° views compare the two operand checkerboards. When both views qualify, they use the same pre-polynomial and post-power. The moduli can differ to match the displayed size and preserve value groups.
 #
-# The whole grid keeps all operand pairs. Both checkerboards rotate the selected operand pairs into a displayed square grid. The opposite-parity checkerboard keeps pairs with one even operand and one odd operand. See the [November research report](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#4-the-seven-sampling-rules-symmetry-and-erased-variation).
+# The search prefers fewer zero cells, then a smaller largest value group, then more distinct values. A view needs at least eight values and at most half its cells may be zero. The post-modulus is the smallest power of two that keeps every distinct combined value separate and preserves every nonzero value. Titles report the raw zero share and the fundamental repeat. A diamond has half the area of the displayed square.
+#
+# The catalogue varies the combiner, even pre-power, post-power, and twist coefficient $c$. The pre-polynomial uses $t=x^q$ and evaluates $t+2c t(t-1)$. See the [November research report](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#3-a-shared-pre-modulus-for-useful-even-pre-polynomial-families).
+#
 
 # %%
-# The pre-operation is the sum of the listed (degree, coefficient) terms.
-# Input depth is the smallest 2-adic valuation of a nonzero combined value.
-cartesian_recipes = (
-    # Combiner, sampling, terms, K/size, post-power, input depth, palette
-    ("and", "full", ((6, -1), (12, 2)), 2, 17, 0, "cmr.ember"),
-    ("or", "even_even", ((4, -1), (8, 2)), 64, 21, 4, "cmr.freeze"),
-    ("add", "odd_odd", ((8, -1), (16, 2)), 16, 31, 1, "cmr.savanna"),
-    ("absdiff", "full", ((10, -1), (20, 2)), 2, 37, 0, "cmr.amber"),
-    ("mult", "even_odd", ((4, 1), (12, 13)), 64, 29, 5, "cmr.ocean"),
-    ("clmul", "odd_even", ((2, 1), (14, 3)), 8, 43, 4, "cmr.guppy"),
+research_recipes = list(enumerate(exploration_recipes(), 1))
+displayed_specs = {}
+
+size_control = widgets.Dropdown(options=(256, 512, 1024), description="Field size")
+combiner_control = widgets.Dropdown(
+    options=["All", *sorted({recipe.combiner.upper() for _, recipe in research_recipes})],
+    description="Combiner",
 )
+view_control = widgets.ToggleButtons(options=("Both", "Straight", "45°"), description="View")
+density_control = widgets.Dropdown(options=(2, 4, 6, 8), value=6, description="Per page")
+page_control = widgets.BoundedIntText(min=1, max=len(research_recipes), value=1, description="Page")
+back_button = widgets.Button(description="Back", layout=widgets.Layout(width="auto"))
+next_button = widgets.Button(description="Next", layout=widgets.Layout(width="auto"))
+page_status = widgets.HTML()
+page_preview = widgets.Image(format="png", layout=widgets.Layout(width="100%"))
 
 
-def research_field_specs(size):
-    if size not in (256, 512, 1024):
-        raise ValueError("Choose a field size of 256, 512, or 1024 cells")
-    specs = {}
-    for combiner, sampling, terms, stride, power, input_depth, palette in cartesian_recipes:
-        coefficients = [0] * (terms[-1][0] // 2 + 1)
-        for degree, coefficient in terms:
-            coefficients[degree // 2] = coefficient
-        K = stride * size
-        # Restore the bits consumed by powering a multiple of 2**input_depth.
-        post_depth = input_depth * power + (power & -power).bit_length() - 1
-        degrees = ", ".join(str(degree) for degree, _ in terms)
-        selection = "whole grid" if sampling == "full" else sampling.replace("_", "/")
-        label = f"{combiner.upper()} · {selection}\nPre {degrees} · post {power}"
-        specs[label] = {
-            "n": size,
-            "sampling": sampling,
-            "pre": [["pow", 2], ["poly", coefficients]],
-            "combine": combiner,
-            "post": [["pow", power]],
-            "K": K,
-            "M": K << post_depth,
-            "color": palette,
-        }
-
-    specs["XOR · same checkerboard\nPost 19"] = {
-        "n": size,
-        "sampling": "checkerboard_same",
-        "combine": "xor",
-        "K": 2 * size,
-        "M": size << 19,
-        "post": [["pow", 19]],
-        "color": "cmr.fall",
-    }
-    specs["XOR · opposite checkerboard\nPost 26, 58, 122"] = {
-        "n": size,
-        "sampling": "checkerboard_opposite",
-        "combine": "xor",
-        "K": 2 * size,
-        "M": 4 * size,
-        "expression": "z**26 - 3*z**58 + 5*z**122",
-        "color": "cmr.infinity",
-    }
-    return specs
-
-
-def show_research_fields(size):
-    fig, axes = plt.subplots(2, 4, figsize=(13, 7), dpi=160, layout="constrained")
-    half = size // 2
-    for ax, (label, spec) in zip(axes.flat, research_field_specs(size).items(), strict=True):
-        # For identity-pre XOR on either checkerboard, an axis shift by K/2
-        # toggles the top bit of both operands, leaving their XOR unchanged.
-        sampling = spec["sampling"]
-        if not sampling.startswith("checkerboard"):
-            residues = steps(np.arange(spec["K"], dtype=object), spec["pre"], modulus=spec["K"])
-            branches = (
-                (residues,)
-                if sampling == "full"
-                else [residues[(parity == "odd") :: 2] for parity in sampling.split("_")]
-            )
-            if any(not np.array_equal(branch, np.roll(branch, size)) for branch in branches):
-                raise ValueError(f"{label} does not repeat at {size} cells")
-        result = evaluate(spec)
-        rgb = np.rint(255 * colorize(result, mode="order")).astype(np.uint8)
-        # Any smaller translation subgroup of this dyadic torus contains a
-        # half-axis or half-diagonal translation. Check the displayed colors too.
-        for shift in ((half, 0), (0, half), (half, half)):
-            if np.array_equal(rgb, np.roll(rgb, shift, axis=(0, 1))):
-                raise ValueError(f"{label} has a smaller repeat at {size} cells")
-        ax.imshow(rgb, interpolation="nearest")
-        ax.set_title(f"{label}\nK = 2^{spec['K'].bit_length() - 1} · M = 2^{spec['M'].bit_length() - 1}", fontsize=9)
-        ax.set_axis_off()
-        clear_cache()
-    fig.suptitle(f"{size} by {size} cells")
-    plt.show()
+def redraw(change=None):
+    size = size_control.value
+    recipes_per_page = density_control.value
+    if not isinstance(size, int) or not isinstance(recipes_per_page, int):
+        return
+    if change and change["owner"] is combiner_control and page_control.value != 1:
+        page_control.value = 1
+        return
+    entries = [
+        (number, recipe)
+        for number, recipe in research_recipes
+        if combiner_control.value in ("All", recipe.combiner.upper())
+    ]
+    page_count = (len(entries) + recipes_per_page - 1) // recipes_per_page
+    if change and change["owner"] is density_control:
+        first_recipe = (page_control.value - 1) * change["old"]
+        page = first_recipe // recipes_per_page + 1
+        if page != page_control.value:
+            page_control.max = max(page_control.max, page_count)
+            page_control.value = page
+            return
+    page_control.max = page_count
+    back_button.disabled = page_control.value == 1
+    next_button.disabled = page_control.value == page_control.max
+    first = (page_control.value - 1) * recipes_per_page
+    page_status.value = f"Page {page_control.value} of {page_control.max} · {len(entries)} recipes"
+    views = [
+        (name, rotated)
+        for name, rotated in (("Straight", False), ("45°", True))
+        if view_control.value in ("Both", name)
+    ]
+    displayed_specs.clear()
+    with plt.ioff(), BytesIO() as buffer:
+        fig, axes = plt.subplots(
+            len(views),
+            recipes_per_page,
+            figsize=(3.2 * recipes_per_page, 4.1 * len(views)),
+            dpi=125,
+            squeeze=False,
+            layout="constrained",
+        )
+        try:
+            for ax in axes.flat:
+                ax.set_axis_off()
+            for col, (number, recipe) in enumerate(entries[first : first + recipes_per_page]):
+                for row, (name, rotated) in enumerate(views):
+                    ax = axes[row, col]
+                    field = select_field(recipe, size, rotated)
+                    heading = f"#{number} {recipe.combiner.upper()} · {name}"
+                    parameters = f"Pre {recipe.pre_power} · twist {recipe.twist} · post {recipe.post_power}"
+                    if field is None:
+                        ax.set_title(f"{heading}\n{parameters}", fontsize=9)
+                        ax.text(0.5, 0.5, "No qualifying repeat", ha="center", va="center", transform=ax.transAxes)
+                        continue
+                    spec = field.result.spec
+                    displayed_specs[number, name] = spec
+                    sampling = spec["sampling"].replace("_", " ")
+                    ax.imshow(colorize(field.result, mode="order"), interpolation="antialiased")
+                    ax.set_title(
+                        f"{heading}\n{parameters}\n{sampling} · {field.repeat_shape}"
+                        f"\n{field.zero_fraction:.1%} zero · {field.distinct_values:,} values",
+                        fontsize=9,
+                    )
+            fig.savefig(buffer, format="png", bbox_inches="tight")
+            page_preview.value = buffer.getvalue()
+        finally:
+            plt.close(fig)
 
 
-# %%
-show_research_fields(256)
+def previous_page(button):
+    page_control.value -= 1
 
-# %%
-show_research_fields(512)
 
-# %%
-show_research_fields(1024)
+def next_page(button):
+    page_control.value += 1
+
+
+back_button.on_click(previous_page)
+next_button.on_click(next_page)
+for control in (size_control, combiner_control, view_control, density_control, page_control):
+    control.observe(redraw, names="value")
+controls = widgets.VBox(
+    [
+        widgets.HBox([size_control, combiner_control, view_control], layout=widgets.Layout(flex_flow="row wrap")),
+        widgets.HBox(
+            [back_button, next_button, page_control, density_control, page_status],
+            layout=widgets.Layout(flex_flow="row wrap"),
+        ),
+    ]
+)
+redraw()
+gallery_view = widgets.VBox([controls, page_preview], layout=widgets.Layout(width="100%"))
+display(gallery_view)
 
 # %% [markdown]
-# For an individual field, pick a specification from `research_field_specs(1024)` and use `grid({name: spec}, cols=1, mode="order")` for a larger view or `export(evaluate(spec), "../output/field.png", mode="order")` for a PNG at one pixel per cell.
+# For a closer look, retrieve a specification from `displayed_specs` using its recipe number and view, such as `displayed_specs[1, "Straight"]`. Use `export(evaluate(spec), "../output/field.png", mode="order")` to see it at one pixel per cell.
+#

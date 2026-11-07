@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 from ruglab import Sweep, dsl, evaluate, gallery, paired
 from ruglab.diagnostics import periods, signature
+from ruglab.exploration import PatternRecipe, select_field
 from ruglab.operations import clmul
 from ruglab.research import family_pre_modulus, minimum_post_modulus, uniform_xor
 from ruglab.sampling import coordinates
@@ -165,6 +166,27 @@ def test_seed_is_local_and_repeatable():
     assert uniform_xor(64, 3)["sampling"] == "checkerboard_opposite"
     with pytest.raises(ValueError, match="opposite-parity operand checkerboard"):
         uniform_xor(64, sampling="checkerboard_same")
+
+
+def test_exploration_preserves_a_diamond_without_power_aliases():
+    recipe = PatternRecipe("and", pre_power=2, twist=1, post_power=14)
+    straight = select_field(recipe, 256)
+    rotated = select_field(recipe, 256, rotated=True)
+    assert straight is not None
+    assert rotated is not None
+    assert straight.result.spec["sampling"] == "odd_odd"
+    assert straight.zero_fraction == 0
+    assert rotated.result.spec["sampling"] == "checkerboard_same"
+    assert rotated.repeat_shape == "diamond"
+
+    result = evaluate(rotated.result.spec)
+    assert np.array_equal(result.values, rotated.result.values)
+    assert periods(result, certified_torus=True) == (256, 256)
+    assert np.array_equal(result.values, np.roll(result.values, (128, 128), axis=(0, 1)))
+    assert result.modulus is not None
+    inputs = set(result.stages["z0"].flat) | {0}
+    assert len(set(result.values.flat) | {0}) == len(inputs)
+    assert len({pow(z, recipe.post_power, result.modulus // 2) for z in inputs}) < len(inputs)
 
 
 def test_presets_render():
