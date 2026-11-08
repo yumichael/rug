@@ -1,11 +1,14 @@
 """Build views of even-pre-power patterns on a certified display torus."""
 
 from dataclasses import dataclass
+from functools import lru_cache
 from itertools import product
 
 import numpy as np
 
-from .engine import Result, clear_cache, evaluate
+from .engine import Result
+from .indexed import IndexedValues, combination_table
+from .sampling import CARTESIAN_PHASES, checkerboard_indices
 from .specs import SAMPLINGS
 
 COMBINER_COLORS = {
@@ -39,9 +42,11 @@ def exploration_recipes():
 def _repeat_shape(values):
     """Recognize square and diamond tiles on a known dyadic square torus."""
     half = values.shape[0] // 2
-    if np.array_equal(values, np.roll(values, half, axis=0)) or np.array_equal(values, np.roll(values, half, axis=1)):
+    upper_left, upper_right = values[:half, :half], values[:half, half:]
+    lower_left, lower_right = values[half:, :half], values[half:, half:]
+    if np.array_equal(values[:half], values[half:]) or np.array_equal(values[:, :half], values[:, half:]):
         return None
-    if not np.array_equal(values, np.roll(values, (half, half), axis=(0, 1))):
+    if not (np.array_equal(upper_left, lower_right) and np.array_equal(upper_right, lower_left)):
         return "square"
     quarter = half // 2
     # A larger subgroup would contain an order-four shift whose double is
@@ -53,32 +58,140 @@ def _repeat_shape(values):
 
 def _distinct_powers(inputs, power):
     """Return powered residues at the least modulus preserving inputs and zero."""
-    atoms = [int(z) for z in inputs]
-    if atoms == [0]:
+    if inputs[-1] == 0:
         return np.array([0], dtype=object), 1
-    max_depth = max((z & -z).bit_length() - 1 for z in atoms if z)
+    common = int(np.bitwise_or.reduce(inputs))
+    shift = (common & -common).bit_length() - 1
+    reduced = inputs >> shift if shift else inputs
+    nonzero = reduced[1:] if reduced[0] == 0 else reduced
+    max_depth = int(np.bitwise_count((nonzero & -nonzero) - 1).max())
     low = max_depth * power + 1
     # Bound the difference depth using the input width, the greatest input
     # valuation and the valuation of the power.
-    high = atoms[-1].bit_length() + (power - 1) * max_depth + (power & -power).bit_length()
-    residues = [pow(z, power, 1 << high) for z in atoms]
+    high = int(reduced[-1]).bit_length() + (power - 1) * max_depth + (power & -power).bit_length()
+    if high <= 64:
+        # Unsigned wraparound computes exactly the low 64 bits of the power.
+        residues = _power_uint64(reduced, power)
+    else:
+        modulus = 1 << high
+        residues = np.asarray([pow(z, power, modulus) for z in reduced.tolist()], dtype=object)
     while low < high:
         middle = (low + high) // 2
         mask = (1 << middle) - 1
-        if len({r & mask for r in residues}) == len(atoms):
+        masked = residues & mask
+        if residues.dtype == np.uint64:
+            distinct = np.unique(masked).size
+        else:
+            distinct = len(set(masked))
+        if distinct == residues.size:
             high = middle
         else:
             low = middle + 1
-    modulus = 1 << low
-    return np.array([r % modulus for r in residues], dtype=object), modulus
+    mask = (1 << low) - 1
+    offset = shift * power
+    dtype = np.uint64 if low + offset <= 64 else object
+    residues = (residues & mask).astype(dtype, copy=False)
+    return residues << offset, 1 << (low + offset)
 
 
-@dataclass
+def _power_uint64(values, power):
+    base = values.astype(np.uint64)
+    result = np.ones_like(base)
+    while power:
+        if power & 1:
+            result *= base
+        power >>= 1
+        if power:
+            base *= base
+    return result
+
+
+@dataclass(frozen=True)
 class SampledField:
-    result: Result
+    values: IndexedValues
+    spec: dict
     repeat_shape: str
     zero_fraction: float
-    distinct_values: int
+
+    @property
+    def distinct_values(self):
+        return len(self.values.labels)
+
+    @property
+    def result(self):
+        """Materialize exact cell values for analysis or export."""
+        return Result(
+            self.values.expand().astype(object, copy=False), self.spec["M"], self.spec, colors=self.spec["color"]
+        )
+
+
+@lru_cache(maxsize=64)
+def _operand_table(q, twist, K, coordinates):
+    mask = K - 1
+    pre = [pow(i, q, K) for i in coordinates]
+    if twist:
+        pre = [(t + 2 * twist * t * (t - 1)) & mask for t in pre]
+    return np.unique(np.asarray(pre, dtype=np.int64), return_inverse=True)
+
+
+@lru_cache(maxsize=32)
+def _indexed_pairs(q, twist, K, combiner, x_coords, y_coords):
+    x_values, x_index = _operand_table(q, twist, K, x_coords)
+    y_values, y_index = _operand_table(q, twist, K, y_coords)
+    return combination_table(y_values, x_values, combiner), x_index, y_index
+
+
+@lru_cache(maxsize=4)
+def _checker_positions(size, period, sampling):
+    axis = np.arange(size)
+    x, y = checkerboard_indices(axis[None, :], axis[:, None], sampling)
+    return x % period, y % period
+
+
+@lru_cache(maxsize=32)
+def _base_field(q, twist, K, combiner, size, sampling):
+    if sampling == "odd_even":
+        # Every catalogue combiner is symmetric.
+        base, repeat, zeros = _base_field(q, twist, K, combiner, size, "even_odd")
+        return IndexedValues(base.labels, base.indices.T), repeat, zeros
+    if sampling.startswith("checkerboard"):
+        # Same-parity XOR can have a combined period half the operand period.
+        period = size * (2 if sampling == "checkerboard_same" and combiner == "xor" else 1)
+        pairs, x_index, y_index = _indexed_pairs(q, twist, K, combiner, range(period), range(period))
+        x, y = _checker_positions(size, period, sampling)
+        indices = pairs.indices[y_index[y], x_index[x]]
+    else:
+        phases = CARTESIAN_PHASES.get(sampling)
+        x_coords, y_coords = (
+            (range(size), range(size))
+            if phases is None
+            else (
+                range(phases[0], 2 * size, 2),
+                range(phases[1], 2 * size, 2),
+            )
+        )
+        pairs, x_index, y_index = _indexed_pairs(q, twist, K, combiner, x_coords, y_coords)
+        indices = pairs.indices[y_index[:, None], x_index[None, :]]
+
+    labels = pairs.labels
+    counts = np.bincount(indices.ravel(), minlength=len(labels))
+    zeros = int(counts[0]) if labels[0] == 0 else 0
+    present = counts != 0
+    if not present.all():
+        labels = labels[present]
+        remap = (np.cumsum(present) - 1).astype(np.min_scalar_type(len(labels) - 1))
+        indices = remap[indices]
+    repeat = "constant" if len(labels) == 1 else (_repeat_shape(indices) or "smaller tile")
+    labels.flags.writeable = indices.flags.writeable = False
+    return IndexedValues(labels, indices), repeat, zeros / indices.size
+
+
+@lru_cache(maxsize=16)
+def _powered_labels(q, twist, K, combiner, size, sampling, power):
+    base, _, _ = _base_field(q, twist, K, combiner, size, sampling)
+    powers, modulus = _distinct_powers(base.labels, power)
+    powers.flags.writeable = False
+    return powers, modulus
 
 
 def sample_field(recipe: PatternRecipe, size: int, sampling: str) -> SampledField:
@@ -98,7 +211,7 @@ def sample_field(recipe: PatternRecipe, size: int, sampling: str) -> SampledFiel
     if sampling == "even_even":
         # (2i)^q leaves q low zero bits, so i^q sees a modulus of K >> q.
         K <<= q
-    elif sampling in ("even_odd", "odd_even", "odd_odd"):
+    elif sampling in CARTESIAN_PHASES:
         # The odd branch advances by two. A mixed view uses the same K on
         # both operands, and the even branch can repeat sooner.
         K <<= 1
@@ -117,13 +230,8 @@ def sample_field(recipe: PatternRecipe, size: int, sampling: str) -> SampledFiel
         "combine": recipe.combiner,
         "color": COMBINER_COLORS[recipe.combiner],
     }
-    # Even full products fit in int64 at the bounded pre-modulus.
-    values = evaluate(spec).stages["z0"].astype(np.int64)
-    clear_cache()
-    inputs, inverse, counts = np.unique(values, return_inverse=True, return_counts=True)
-    zeros = int(counts[0]) if inputs[0] == 0 else 0
-    repeat = "constant" if len(inputs) == 1 else (_repeat_shape(values) or "smaller tile")
-    powers, modulus = _distinct_powers(inputs, recipe.post_power)
+    base, repeat, zeros = _base_field(q, recipe.twist, K, recipe.combiner, size, sampling)
+    label_sampling = "even_odd" if sampling == "odd_even" else sampling
+    powers, modulus = _powered_labels(q, recipe.twist, K, recipe.combiner, size, label_sampling, recipe.post_power)
     spec.update(M=modulus, post=[["pow", recipe.post_power]])
-    result = Result(powers[inverse.reshape(values.shape)], modulus, spec, colors=spec["color"])
-    return SampledField(result, repeat, zeros / values.size, len(inputs))
+    return SampledField(IndexedValues(powers, base.indices), spec, repeat, zeros)

@@ -1,5 +1,7 @@
 """Convenience imports and display setup for interactive research notebooks."""
 
+from copy import deepcopy
+from functools import lru_cache
 from io import BytesIO
 from pathlib import Path
 
@@ -31,6 +33,7 @@ from . import (
 from .exploration import exploration_recipes, sample_field
 from .operations import steps
 from .plotting import colorize
+from .previews import PreviewPanel, indexed_preview, preview_grid
 from .research import family_pre_modulus, minimum_post_modulus, uniform_xor
 from .specs import SAMPLINGS
 
@@ -38,10 +41,12 @@ __all__ = [
     "SAMPLINGS",
     "BytesIO",
     "Path",
+    "PreviewPanel",
     "Result",
     "Sweep",
     "clear_cache",
     "colorize",
+    "deepcopy",
     "display",
     "dsl",
     "duplicates",
@@ -51,12 +56,15 @@ __all__ = [
     "family_pre_modulus",
     "gallery",
     "grid",
+    "indexed_preview",
     "load_presets",
+    "lru_cache",
     "minimum_post_modulus",
     "np",
     "paired",
     "periods",
     "plt",
+    "preview_grid",
     "sample_field",
     "sampling_gallery",
     "signature",

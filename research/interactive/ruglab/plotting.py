@@ -21,18 +21,35 @@ def convert_color(a, space):
     raise ValueError("Color space must be RGB, HSV, or HSL")
 
 
+def _colormap(name):
+    if name.startswith("cmr."):
+        import cmasher  # noqa: F401 - Registers the cmr colormaps.
+
+    return plt.get_cmap(name)
+
+
 def colorize(result, mode="values", cmap=None):
     from .diagnostics import ranks
-
-    if (cmap or result.colors).startswith("cmr."):
-        import cmasher  # noqa: F401 - Registers the cmr colormaps.
 
     if mode == "order":
         a = ranks(result)
         a = a / max(1, int(a.max()))
     else:
         a = result.normalized(anchored=mode == "anchored")
-    return plt.get_cmap(cmap or result.colors)(np.clip(a, 0, 1))[..., :3]
+    return _colormap(cmap or result.colors)(np.clip(a, 0, 1))[..., :3]
+
+
+def indexed_order_palette(values, cmap):
+    """Map distinct residues to RGBA bytes in the same order as export."""
+    count = len(values.labels)
+    ranks = np.empty(count, dtype=np.intp)
+    labels = values.labels
+    order = sorted(range(count), key=labels.tolist().__getitem__) if labels.dtype == object else labels.argsort()
+    ranks[order] = np.arange(count)
+    # Anchoring rotates the sorted residues around the first cell.
+    ranks = (ranks - ranks[values.indices[0, 0]]) % count
+    colors = _colormap(cmap)(ranks / max(1, count - 1))
+    return np.rint(colors * 255).astype(np.uint8)
 
 
 def grid(items, cols=4, width=12, mode="values", cmap=None):

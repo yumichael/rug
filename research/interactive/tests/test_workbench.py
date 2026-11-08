@@ -7,6 +7,8 @@ from ruglab import Sweep, dsl, evaluate, gallery, paired
 from ruglab.diagnostics import periods, signature
 from ruglab.exploration import PatternRecipe, sample_field
 from ruglab.operations import clmul
+from ruglab.plotting import colorize
+from ruglab.previews import indexed_preview
 from ruglab.research import family_pre_modulus, minimum_post_modulus, uniform_xor
 from ruglab.sampling import coordinates
 
@@ -208,6 +210,24 @@ def test_exploration_parameters_follow_sampling():
     assert constant.zero_fraction == 1
     assert constant.result.modulus == 1
     assert not constant.result.values.any()
+
+
+@pytest.mark.parametrize(
+    "recipe,sampling,wide",
+    [
+        (PatternRecipe("clmul", 2, 1, 3), "odd_even", False),
+        (PatternRecipe("clmul", 16, -3, 27), "even_even", True),
+    ],
+)
+def test_indexed_preview_matches_exact_order_colors(recipe, sampling, wide):
+    field = sample_field(recipe, 256, sampling)
+    exact = evaluate(field.spec)
+    assert exact.modulus is not None
+    assert (exact.modulus > 2**64) == wide
+    assert np.array_equal(field.result.values, exact.values)
+    expected_rgb = np.rint(colorize(exact, mode="order") * 255).astype(np.uint8)
+    preview = indexed_preview(field.values, exact.colors, 256)
+    assert np.array_equal(np.asarray(preview), expected_rgb)
 
 
 def test_presets_render():

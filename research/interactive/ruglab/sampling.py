@@ -4,6 +4,12 @@ import numpy as np
 
 from .specs import SAMPLINGS
 
+CARTESIAN_PHASES = {"even_even": (0, 0), "even_odd": (0, 1), "odd_even": (1, 0), "odd_odd": (1, 1)}
+
+
+def checkerboard_indices(x, y, sampling):
+    return x + y + (sampling == "checkerboard_opposite"), x - y
+
 
 def coordinates(shape, sampling="full", origin=(0, 0)):
     """Map displayed columns and rows to unsampled operand indices."""
@@ -15,8 +21,8 @@ def coordinates(shape, sampling="full", origin=(0, 0)):
     if sampling == "full":
         return i, j
     if sampling.startswith("checkerboard"):
-        return i + j + (sampling == "checkerboard_opposite"), i - j
-    ex, ey = {"even_even": (0, 0), "even_odd": (0, 1), "odd_even": (1, 0), "odd_odd": (1, 1)}[sampling]
+        return checkerboard_indices(i, j, sampling)
+    ex, ey = CARTESIAN_PHASES[sampling]
     return 2 * i + ex, 2 * j + ey
 
 

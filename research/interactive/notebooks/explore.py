@@ -22,11 +22,14 @@ from ruglab.studio import *
 #
 # Each panel uses a pre-modulus chosen for its sampling and a post-modulus computed from its own combined values. The post-modulus is the smallest power of two that keeps distinct values separate and preserves every nonzero value. Titles report both moduli, the zero share, and the repeat. A diamond has half the area of the displayed square. A smaller tile can occur when one operand branch repeats sooner, or when the combiner erases variation. Constant fields are shown too.
 #
+# `PREVIEW_PIXELS` sets the thumbnail width in pixels. The field size control sets the actual grid used for the calculations and export.
+#
 # The catalogue varies the combiner, even pre-power, post-power, and twist coefficient $c$. The pre-polynomial uses $t=x^q$ and evaluates $t+2c t(t-1)$. See the [November research report](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#3-a-shared-pre-modulus-for-useful-even-pre-polynomial-families).
 #
 
 # %%
 ROWS_PER_PAGE = 2
+PREVIEW_PIXELS = 384
 
 research_recipes = list(enumerate(exploration_recipes(), 1))
 displayed_specs = {}
@@ -49,6 +52,39 @@ back_button = widgets.Button(description="Back", layout=widgets.Layout(width="au
 next_button = widgets.Button(description="Next", layout=widgets.Layout(width="auto"))
 page_status = widgets.HTML()
 page_preview = widgets.Image(format="png", layout=widgets.Layout(width="100%"))
+
+
+@lru_cache(maxsize=84)
+def recipe_panel(recipe, size, sampling, pixels):
+    field = sample_field(recipe, size, sampling)
+    spec = field.spec
+    k, m = (spec[key].bit_length() - 1 for key in ("K", "M"))
+    name = sampling.replace("_", " ")
+    caption = (
+        f"{name} · {field.repeat_shape}\n"
+        f"{field.zero_fraction:.1%} zero · {field.distinct_values:,} values\n"
+        f"K=2^{k} · M=2^{m}"
+    )
+    return PreviewPanel(indexed_preview(field.values, spec["color"], pixels), caption), spec
+
+
+def render_page(entries, size, pixels):
+    rows = []
+    specs = {}
+    for number, recipe in entries:
+        heading = (
+            f"#{number} {recipe.combiner.upper()} · Pre {recipe.pre_power} · "
+            f"twist {recipe.twist} · post {recipe.post_power}"
+        )
+        panels = []
+        for sampling in SAMPLINGS:
+            panel, specs[number, sampling] = recipe_panel(recipe, size, sampling, pixels)
+            panels.append(panel)
+        rows.append((heading, panels))
+    return preview_grid(rows, pixels), specs
+
+
+cached_page = lru_cache(maxsize=8)(render_page)
 
 
 def redraw(change=None):
@@ -77,40 +113,13 @@ def redraw(change=None):
     next_button.disabled = page_control.value == page_control.max
     first = (page_control.value - 1) * rows_per_page
     page_status.value = f"Page {page_control.value} of {page_control.max} · {len(entries)} recipes"
-    page_entries = entries[first : first + rows_per_page]
+    page_entries = tuple(entries[first : first + rows_per_page])
+    # Cache complete small pages for instant revisits. Larger pages reuse panels.
+    render = cached_page if len(page_entries) <= 3 else render_page
+    png, specs = render(page_entries, size, PREVIEW_PIXELS)
     displayed_specs.clear()
-    with plt.ioff(), BytesIO() as buffer:
-        fig = plt.figure(
-            figsize=(3.2 * len(SAMPLINGS), 4.1 * len(page_entries)),
-            dpi=125,
-            layout="constrained",
-        )
-        try:
-            rows = fig.subfigures(len(page_entries), 1, squeeze=False)
-            for (number, recipe), row in zip(page_entries, rows.flat, strict=True):
-                row.suptitle(
-                    f"#{number} {recipe.combiner.upper()} · Pre {recipe.pre_power} · "
-                    f"twist {recipe.twist} · post {recipe.post_power}",
-                    fontsize=12,
-                )
-                for sampling, ax in zip(SAMPLINGS, row.subplots(1, len(SAMPLINGS)), strict=True):
-                    field = sample_field(recipe, size, sampling)
-                    spec = field.result.spec
-                    displayed_specs[number, sampling] = spec
-                    name = sampling.replace("_", " ")
-                    k, m = (spec[key].bit_length() - 1 for key in ("K", "M"))
-                    ax.set_axis_off()
-                    ax.imshow(colorize(field.result, mode="order"), interpolation="antialiased")
-                    ax.set_title(
-                        f"{name} · {field.repeat_shape}\n"
-                        f"{field.zero_fraction:.1%} zero · {field.distinct_values:,} values\n"
-                        f"$K=2^{{{k}}}$ · $M=2^{{{m}}}$",
-                        fontsize=10,
-                    )
-            fig.savefig(buffer, format="png", bbox_inches="tight")
-            page_preview.value = buffer.getvalue()
-        finally:
-            plt.close(fig)
+    displayed_specs.update(deepcopy(specs))
+    page_preview.value = png
 
 
 def previous_page(button):
