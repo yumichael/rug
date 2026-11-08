@@ -1,4 +1,4 @@
-"""Select views of even-pre-power patterns on a certified display torus."""
+"""Build views of even-pre-power patterns on a certified display torus."""
 
 from dataclasses import dataclass
 from itertools import product
@@ -6,6 +6,7 @@ from itertools import product
 import numpy as np
 
 from .engine import Result, clear_cache, evaluate
+from .specs import SAMPLINGS
 
 COMBINER_COLORS = {
     "and": "cmr.ember",
@@ -53,6 +54,8 @@ def _repeat_shape(values):
 def _distinct_powers(inputs, power):
     """Return powered residues at the least modulus preserving inputs and zero."""
     atoms = [int(z) for z in inputs]
+    if atoms == [0]:
+        return np.array([0], dtype=object), 1
     max_depth = max((z & -z).bit_length() - 1 for z in atoms if z)
     low = max_depth * power + 1
     # Bound the difference depth using the input width, the greatest input
@@ -78,10 +81,12 @@ class SampledField:
     distinct_values: int
 
 
-def select_field(recipe: PatternRecipe, size: int, rotated: bool = False) -> SampledField | None:
-    """Select the least zero-heavy usable view of a recipe at this size."""
+def sample_field(recipe: PatternRecipe, size: int, sampling: str) -> SampledField:
+    """Build one sampled field with its own pre- and post-moduli."""
     if size not in (256, 512, 1024):
         raise ValueError("Choose a field size of 256, 512, or 1024 cells")
+    if sampling not in SAMPLINGS:
+        raise ValueError("Unknown sampling: " + sampling)
     q = recipe.pre_power
     if q < 2 or q % 2 or recipe.post_power < 1:
         raise ValueError("Use a positive even pre-power and a positive post-power")
@@ -90,40 +95,35 @@ def select_field(recipe: PatternRecipe, size: int, rotated: bool = False) -> Sam
         # f(t) = t + 2c*t*(t-1) preserves the pre-power's periods.
         pre.append(["poly", [0, 1 - 2 * recipe.twist, 2 * recipe.twist]])
     K = size * (q & -q)
-    if 2 * K > 1 << 31:
+    if sampling == "even_even":
+        # (2i)^q leaves q low zero bits, so i^q sees a modulus of K >> q.
+        K <<= q
+    elif sampling in ("even_odd", "odd_even", "odd_odd"):
+        # The odd branch advances by two. A mixed view uses the same K on
+        # both operands, and the even branch can repeat sooner.
+        K <<= 1
+    elif sampling == "checkerboard_same" and recipe.combiner == "xor":
+        # A size-cell shift toggles the top bit of both odd operands and
+        # preserves both even operands. XOR cancels the paired toggles.
+        K <<= 1
+    if K > 1 << 31:
         raise ValueError("Pre-modulus too large for the catalogue's integer tables")
-    methods = ("checkerboard_same", "checkerboard_opposite") if rotated else ("full", "odd_odd")
-    best = None
-    for sampling in methods:
-        # At K both operand branches have period dividing size. Odd/odd
-        # advances by two, so its pre-modulus can be twice as large.
-        spec = {
-            "n": size,
-            "K": 2 * K if sampling == "odd_odd" else K,
-            "M": 1,
-            "pre": pre,
-            "sampling": sampling,
-            "combine": recipe.combiner,
-            "color": COMBINER_COLORS[recipe.combiner],
-        }
-        # Even full products fit in int64 at the bounded pre-modulus.
-        values = evaluate(spec).stages["z0"].astype(np.int64)
-        clear_cache()
-        repeat = _repeat_shape(values)
-        if repeat is None:
-            continue
-        inputs, inverse, counts = np.unique(values, return_inverse=True, return_counts=True)
-        zeros = int(counts[0]) if inputs[0] == 0 else 0
-        if zeros > values.size // 2 or len(inputs) < 8:
-            continue
-        score = (zeros, int(counts.max()), -len(inputs))
-        if best is None or score < best[0]:
-            best = (score, repeat, spec, inputs, inverse.reshape(values.shape))
-    if best is None:
-        return None
-
-    score, repeat, spec, inputs, inverse = best
+    spec = {
+        "n": size,
+        "K": K,
+        "M": 1,
+        "pre": pre,
+        "sampling": sampling,
+        "combine": recipe.combiner,
+        "color": COMBINER_COLORS[recipe.combiner],
+    }
+    # Even full products fit in int64 at the bounded pre-modulus.
+    values = evaluate(spec).stages["z0"].astype(np.int64)
+    clear_cache()
+    inputs, inverse, counts = np.unique(values, return_inverse=True, return_counts=True)
+    zeros = int(counts[0]) if inputs[0] == 0 else 0
+    repeat = "constant" if len(inputs) == 1 else (_repeat_shape(values) or "smaller tile")
     powers, modulus = _distinct_powers(inputs, recipe.post_power)
     spec.update(M=modulus, post=[["pow", recipe.post_power]])
-    result = Result(powers[inverse], modulus, spec, colors=spec["color"])
-    return SampledField(result, repeat, score[0] / inverse.size, len(inputs))
+    result = Result(powers[inverse.reshape(values.shape)], modulus, spec, colors=spec["color"])
+    return SampledField(result, repeat, zeros / values.size, len(inputs))

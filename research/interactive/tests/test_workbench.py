@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from ruglab import Sweep, dsl, evaluate, gallery, paired
 from ruglab.diagnostics import periods, signature
-from ruglab.exploration import PatternRecipe, select_field
+from ruglab.exploration import PatternRecipe, sample_field
 from ruglab.operations import clmul
 from ruglab.research import family_pre_modulus, minimum_post_modulus, uniform_xor
 from ruglab.sampling import coordinates
@@ -170,13 +170,9 @@ def test_seed_is_local_and_repeatable():
 
 def test_exploration_preserves_a_diamond_without_power_aliases():
     recipe = PatternRecipe("and", pre_power=2, twist=1, post_power=14)
-    straight = select_field(recipe, 256)
-    rotated = select_field(recipe, 256, rotated=True)
-    assert straight is not None
-    assert rotated is not None
-    assert straight.result.spec["sampling"] == "odd_odd"
+    straight = sample_field(recipe, 256, "odd_odd")
+    rotated = sample_field(recipe, 256, "checkerboard_same")
     assert straight.zero_fraction == 0
-    assert rotated.result.spec["sampling"] == "checkerboard_same"
     assert rotated.repeat_shape == "diamond"
 
     result = evaluate(rotated.result.spec)
@@ -187,6 +183,31 @@ def test_exploration_preserves_a_diamond_without_power_aliases():
     inputs = set(result.stages["z0"].flat) | {0}
     assert len(set(result.values.flat) | {0}) == len(inputs)
     assert len({pow(z, recipe.post_power, result.modulus // 2) for z in inputs}) < len(inputs)
+
+
+def test_exploration_parameters_follow_sampling():
+    recipe = PatternRecipe("xor", pre_power=2, twist=1, post_power=7)
+    for sampling, K, expected_periods in (
+        ("full", 512, (256, 256)),
+        ("checkerboard_same", 1024, (256, 256)),
+        ("checkerboard_opposite", 512, (256, 256)),
+        ("even_even", 2048, (256, 256)),
+        ("even_odd", 1024, (128, 256)),
+        ("odd_even", 1024, (256, 128)),
+        ("odd_odd", 1024, (256, 256)),
+    ):
+        field = sample_field(recipe, 256, sampling)
+        assert field.result.spec["K"] == K
+        assert periods(field.result, certified_torus=True) == expected_periods
+        exact = evaluate(field.result.spec)
+        assert np.array_equal(field.result.values, exact.values)
+        assert field.distinct_values == len(set(exact.stages["z0"].flat))
+
+    constant = sample_field(PatternRecipe("and", pre_power=16, twist=0, post_power=7), 256, "even_odd")
+    assert constant.repeat_shape == "constant"
+    assert constant.zero_fraction == 1
+    assert constant.result.modulus == 1
+    assert not constant.result.values.any()
 
 
 def test_presets_render():

@@ -28,12 +28,14 @@ from . import (
     summary,
     symmetries,
 )
-from .exploration import exploration_recipes, select_field
+from .exploration import exploration_recipes, sample_field
 from .operations import steps
 from .plotting import colorize
 from .research import family_pre_modulus, minimum_post_modulus, uniform_xor
+from .specs import SAMPLINGS
 
 __all__ = [
+    "SAMPLINGS",
     "BytesIO",
     "Path",
     "Result",
@@ -55,8 +57,8 @@ __all__ = [
     "paired",
     "periods",
     "plt",
+    "sample_field",
     "sampling_gallery",
-    "select_field",
     "signature",
     "stages",
     "steps",
