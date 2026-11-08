@@ -68,6 +68,8 @@ POST_SEED = 0
 post_gallery_view, post_specs = recipe_gallery(
     post_polynomial_recipes(draws=POST_DRAWS_PER_STRATUM, seed=POST_SEED),
     selected_combiners=("xor",),
-    page_size=4,
+    field_sizes=(256,),
+    page_size=2,
+    preview_pixels=512,
 )
 display(post_gallery_view)
