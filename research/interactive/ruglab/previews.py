@@ -47,20 +47,44 @@ def _font(size):
     return ImageFont.load_default(size)
 
 
-def preview_grid(rows, pixels=384):
-    """Encode rows of (heading, panels) as one PNG. Panels have square images."""
+def _heading_lines(heading, width, font):
+    lines = []
+    line = ""
+    for word in heading.split():
+        joined = f"{line} {word}".lstrip()
+        if line and font.getlength(joined) > width:
+            lines.append(line)
+            line = word
+        else:
+            line = joined
+    return [*lines, line]
+
+
+def preview_grid(rows, pixels=384, *, transpose=False):
+    """Encode (heading, panels) rows as a PNG. Transpose requires equal row lengths."""
     padding = 8
-    heading_height = 30
+    heading_font = _font(20)
+    heading_height = 0 if transpose else 30
+    column_headings = []
+    if transpose:
+        column_headings = [_heading_lines(heading, pixels, heading_font) for heading, _ in rows]
+        rows = [("", panels) for panels in zip(*(panels for _, panels in rows), strict=True)]
+    column_heading_height = 22 * max(map(len, column_headings), default=0)
     line_height = 18
     caption_height = line_height * max(panel.caption.count("\n") + 1 for _, panels in rows for panel in panels) + 6
     row_height = heading_height + caption_height + pixels + 2 * padding
     columns = max(len(panels) for _, panels in rows)
     width = columns * (pixels + padding) + padding
-    image = Image.new("RGB", (width, len(rows) * row_height), "white")
+    image = Image.new("RGB", (width, column_heading_height + len(rows) * row_height), "white")
     draw = ImageDraw.Draw(image)
+    for col_index, lines in enumerate(column_headings):
+        center = padding + col_index * (pixels + padding) + pixels // 2
+        for line, text in enumerate(lines):
+            draw.text((center, padding + line * 22), text, anchor="mt", font=heading_font, fill="black")
     for row_index, (heading, panels) in enumerate(rows):
-        top = row_index * row_height + padding
-        draw.text((width // 2, top), heading, anchor="mt", font=_font(20), fill="black")
+        top = column_heading_height + row_index * row_height + padding
+        if heading:
+            draw.text((width // 2, top), heading, anchor="mt", font=heading_font, fill="black")
         for col_index, panel in enumerate(panels):
             left = padding + col_index * (pixels + padding)
             for line, text in enumerate(panel.caption.split("\n")):
