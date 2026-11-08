@@ -6,7 +6,7 @@ import pytest
 from PIL import Image
 from ruglab import Sweep, dsl, evaluate, gallery, paired
 from ruglab.diagnostics import periods, signature
-from ruglab.exploration import PatternRecipe, sample_field
+from ruglab.exploration import PatternRecipe, PostRecipe, sample_field
 from ruglab.indexed import IndexedValues, combination_table
 from ruglab.operations import clmul
 from ruglab.plotting import colorize, indexed_order_palette
@@ -220,6 +220,20 @@ def test_exploration_classifies_two_cell_fields():
     assert diamond.repeat_shape == "diamond"
     assert np.array_equal(diamond.result.values, [[0, 1], [1, 0]])
     assert sample_field(recipe, 2, "odd_odd").repeat_shape == "constant"
+
+
+@pytest.mark.parametrize(
+    "family,valuation",
+    [("odd power", 0), ("even power", 1), ("odd sum", 0), ("even sum tail", 5), ("even only", 2), ("any powers", 4)],
+)
+def test_post_polynomial_draw_keeps_the_reference_period(family, valuation):
+    recipe = PostRecipe("xor", family, valuation, seed=2, draw=1)
+    field = sample_field(recipe, 16, "checkerboard_opposite")
+    assert field.spec["pre"] == []
+    assert np.array_equal(field.result.values, evaluate(field.spec).values)
+    assert periods(field.result, certified_torus=True) == (16, 16)
+    bigger = evaluate({**field.spec, "shape": [32, 32]})
+    assert np.array_equal(bigger.values, np.tile(field.result.values, (2, 2)))
 
 
 def test_indexed_combination_preserves_unsigned_products():

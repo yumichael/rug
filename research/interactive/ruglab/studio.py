@@ -30,8 +30,9 @@ from . import (
     summary,
     symmetries,
 )
-from .exploration import FIELD_SIZES, exploration_recipes, sample_field
+from .exploration import FIELD_SIZES, exploration_recipes, post_polynomial_recipes, sample_field
 from .operations import steps
+from .pager import recipe_gallery
 from .plotting import colorize
 from .previews import PreviewPanel, indexed_preview, preview_grid
 from .research import family_pre_modulus, minimum_post_modulus, uniform_xor
@@ -65,7 +66,9 @@ __all__ = [
     "paired",
     "periods",
     "plt",
+    "post_polynomial_recipes",
     "preview_grid",
+    "recipe_gallery",
     "sample_field",
     "sampling_gallery",
     "signature",

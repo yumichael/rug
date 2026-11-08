@@ -1,14 +1,16 @@
-"""Build views of even-pre-power patterns on a certified display torus."""
+"""Build views of pre-power and post-polynomial patterns."""
 
 from dataclasses import dataclass
 from functools import lru_cache
 from itertools import product
+from math import gcd
 from sys import getsizeof
 
 import numpy as np
 
 from .engine import Result
 from .indexed import IndexedValues, byte_lru, combination_table
+from .post_polynomials import POST_STRATA, draw_post_polynomial
 from .sampling import CARTESIAN_PHASES, checkerboard_indices
 from .specs import SAMPLINGS
 
@@ -32,6 +34,36 @@ class PatternRecipe:
     pre_power: int
     twist: int
     post_power: int
+
+
+@dataclass(frozen=True)
+class PostRecipe:
+    combiner: str
+    family: str
+    valuation: int
+    seed: int
+    draw: int
+
+    def polynomial(self, size):
+        return draw_post_polynomial(max(8, 2 * size), self.family, self.valuation, self.seed, self.draw)
+
+
+def post_polynomial_recipes(draws=24, seed=0):
+    """Cycle through the strata on each pass through the catalogue."""
+    return [
+        PostRecipe(combiner, family, valuation, seed, draw)
+        for draw, (family, valuation), combiner in product(range(draws), POST_STRATA, COMBINER_COLORS)
+    ]
+
+
+def recipe_description(recipe, size):
+    if isinstance(recipe, PatternRecipe):
+        return f"Pre {recipe.pre_power} · twist {recipe.twist} · post {recipe.post_power}"
+    coefficients, modulus = recipe.polynomial(size)
+    if recipe.family in ("odd power", "even power"):
+        return f"{recipe.family} · p={len(coefficients) - 1} · a={coefficients[-1]}"
+    valuation = (modulus // max(8, 2 * size)).bit_length() - 1
+    return f"{recipe.family} · v={valuation} · degree {len(coefficients) - 1}"
 
 
 def exploration_recipes():
@@ -168,12 +200,34 @@ def _checker_block(size, period, sampling, start, stop):
     return x % period, y % period
 
 
-@byte_lru(32, 96 << 20, lambda result: result[0].nbytes)
-def _base_field(q, twist, K, combiner, size, sampling):
+def _identity_xor(size, sampling):
+    dtype = np.min_scalar_type(size - 1)
     if sampling.startswith("checkerboard"):
+        period = 2 * size
+        phase = int(sampling == "checkerboard_opposite")
+        indices = np.empty((size, size), dtype=dtype)
+        for start in range(0, size, _BLOCK_ROWS):
+            stop = min(start + _BLOCK_ROWS, size)
+            x, y = _checker_block(size, period, sampling, start, stop)
+            indices[start:stop] = (x ^ y) >> 1
+        return np.arange(phase, period, 2), indices
+    axis = np.arange(size, dtype=dtype)
+    indices = axis[:, None] ^ axis[None, :]
+    if sampling in CARTESIAN_PHASES:
+        x, y = CARTESIAN_PHASES[sampling]
+        return np.arange(x ^ y, 2 * size, 2), indices
+    return np.arange(size), indices
+
+
+@byte_lru(32, 96 << 20, lambda result: result[0].nbytes + result[2].nbytes)
+def _base_field(q, twist, K, combiner, size, sampling):
+    if q == 1 and combiner == "xor":
+        labels, indices = _identity_xor(size, sampling)
+    elif sampling.startswith("checkerboard"):
         # Same-parity XOR can have a combined period half the operand period.
         period = size * (2 if sampling == "checkerboard_same" and combiner == "xor" else 1)
         pairs, x_index, y_index = _indexed_pairs(q, twist, K, combiner, range(period), range(period))
+        labels = pairs.labels
         if size <= _DENSE_CACHE_LIMIT:
             x, y = _checker_positions(size, period, sampling)
             indices = pairs.indices[y_index[y], x_index[x]]
@@ -194,9 +248,9 @@ def _base_field(q, twist, K, combiner, size, sampling):
             )
         )
         pairs, x_index, y_index = _indexed_pairs(q, twist, K, combiner, x_coords, y_coords)
+        labels = pairs.labels
         indices = pairs.indices[y_index[:, None], x_index[None, :]]
 
-    labels = pairs.labels
     if size <= _DENSE_CACHE_LIMIT:
         counts = np.bincount(indices.ravel(), minlength=len(labels))
     else:
@@ -204,10 +258,10 @@ def _base_field(q, twist, K, combiner, size, sampling):
         for start in range(0, size, _BLOCK_ROWS):
             block_counts = np.bincount(indices[start : start + _BLOCK_ROWS].ravel())
             counts[: block_counts.size] += block_counts
-    zeros = int(counts[0]) if labels[0] == 0 else 0
     present = counts != 0
     if not present.all():
         labels = labels[present]
+        counts = counts[present]
         remap = (np.cumsum(present) - 1).astype(np.min_scalar_type(len(labels) - 1))
         if size <= _DENSE_CACHE_LIMIT:
             indices = remap[indices]
@@ -218,8 +272,8 @@ def _base_field(q, twist, K, combiner, size, sampling):
                 compact[block] = remap[indices[block]]
             indices = compact
     repeat = "constant" if len(labels) == 1 else (_repeat_shape(indices) or "smaller tile")
-    labels.flags.writeable = indices.flags.writeable = False
-    return IndexedValues(labels, indices), repeat, zeros / indices.size
+    labels.flags.writeable = indices.flags.writeable = counts.flags.writeable = False
+    return IndexedValues(labels, indices), repeat, counts
 
 
 def _power_bytes(result):
@@ -236,12 +290,55 @@ def _powered_labels(q, twist, K, combiner, size, sampling, power):
     return powers, modulus
 
 
-def sample_field(recipe: PatternRecipe, size: int, sampling: str) -> SampledField:
+def _sample_post_field(recipe, size, sampling):
+    coefficients, modulus = recipe.polynomial(size)
+    combiner = recipe.combiner
+    K = (
+        2 * size
+        if sampling in CARTESIAN_PHASES or (combiner == "xor" and sampling.startswith("checkerboard"))
+        else size
+    )
+    label_sampling = "even_odd" if sampling == "odd_even" else sampling
+    base, repeat, counts = _base_field(1, 0, K, combiner, size, label_sampling)
+    inputs = base.labels.astype(np.uint64)
+    mask = modulus - 1
+    stride = gcd(*(i for i, coefficient in enumerate(coefficients) if coefficient))
+    if stride > 1:
+        inputs = _power_uint64(inputs, stride) & mask
+    outputs = np.zeros_like(inputs)
+    for coefficient in reversed(coefficients[::stride]):
+        outputs = (outputs * inputs + (coefficient & mask)) & mask
+    zeros = int(counts[outputs == 0].sum())
+    labels, inverse = np.unique(outputs, return_inverse=True)
+    indices = base.indices
+    if len(labels) == len(outputs):
+        labels = outputs
+    else:
+        indices = inverse.astype(np.min_scalar_type(len(labels) - 1))[indices]
+        repeat = "constant" if len(labels) == 1 else (_repeat_shape(indices) or "smaller tile")
+    if sampling == "odd_even":
+        indices = indices.T
+    spec = {
+        "n": size,
+        "K": K,
+        "M": modulus,
+        "pre": [],
+        "sampling": sampling,
+        "combine": combiner,
+        "post": [["poly", list(coefficients)]],
+        "color": COMBINER_COLORS[combiner],
+    }
+    return SampledField(IndexedValues(labels, indices), spec, repeat, zeros / indices.size)
+
+
+def sample_field(recipe: PatternRecipe | PostRecipe, size: int, sampling: str) -> SampledField:
     """Build one sampled field with its own pre- and post-moduli."""
     if size not in FIELD_SIZES:
         raise ValueError("Choose a power-of-two field size from 2 to 4096 cells")
     if sampling not in SAMPLINGS:
         raise ValueError("Unknown sampling: " + sampling)
+    if isinstance(recipe, PostRecipe):
+        return _sample_post_field(recipe, size, sampling)
     q = recipe.pre_power
     if q < 2 or q % 2 or recipe.post_power < 1:
         raise ValueError("Use a positive even pre-power and a positive post-power")
@@ -274,8 +371,9 @@ def sample_field(recipe: PatternRecipe, size: int, sampling: str) -> SampledFiel
     }
     # The mixed samplings are transposes because the catalogue combiners are symmetric.
     label_sampling = "even_odd" if sampling == "odd_even" else sampling
-    base, repeat, zeros = _base_field(q, recipe.twist, K, recipe.combiner, size, label_sampling)
+    base, repeat, counts = _base_field(q, recipe.twist, K, recipe.combiner, size, label_sampling)
     powers, modulus = _powered_labels(q, recipe.twist, K, recipe.combiner, size, label_sampling, recipe.post_power)
     spec.update(M=modulus, post=[["pow", recipe.post_power]])
     indices = base.indices.T if sampling == "odd_even" else base.indices
-    return SampledField(IndexedValues(powers, indices), spec, repeat, zeros)
+    zeros = int(counts[0]) if base.labels[0] == 0 else 0
+    return SampledField(IndexedValues(powers, indices), spec, repeat, zeros / indices.size)
