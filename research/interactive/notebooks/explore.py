@@ -22,7 +22,7 @@ from ruglab.studio import *
 #
 # Each panel uses a pre-modulus chosen for its sampling and a post-modulus computed from its own combined values. The post-modulus is the smallest power of two that keeps distinct values separate and preserves every nonzero value. Titles report both moduli, the zero share, and the repeat. A diamond has half the area of the displayed square. A smaller tile can occur when one operand branch repeats sooner, or when the combiner erases variation. Constant fields are shown too.
 #
-# `PREVIEW_PIXELS` sets the thumbnail width in pixels. The field size control sets the actual grid used for the calculations and export.
+# `PREVIEW_PIXELS` sets the thumbnail width in pixels. The field size control sets the actual grid used for the calculations and export, with power-of-two side lengths from 2 to 4096.
 #
 # The catalogue varies the combiner, even pre-power, post-power, and twist coefficient $c$. The pre-polynomial uses $t=x^q$ and evaluates $t+2c t(t-1)$. See the [November research report](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#3-a-shared-pre-modulus-for-useful-even-pre-polynomial-families).
 #
@@ -34,7 +34,7 @@ PREVIEW_PIXELS = 384
 research_recipes = list(enumerate(exploration_recipes(), 1))
 displayed_specs = {}
 
-size_control = widgets.Dropdown(options=(256, 512, 1024), description="Field size")
+size_control = widgets.Dropdown(options=FIELD_SIZES, value=8, description="Field size")
 combiner_control = widgets.Dropdown(
     options=["All", *sorted({recipe.combiner.upper() for _, recipe in research_recipes})],
     description="Combiner",

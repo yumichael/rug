@@ -3,11 +3,13 @@ from pathlib import Path
 import json5
 import numpy as np
 import pytest
+from PIL import Image
 from ruglab import Sweep, dsl, evaluate, gallery, paired
 from ruglab.diagnostics import periods, signature
 from ruglab.exploration import PatternRecipe, sample_field
+from ruglab.indexed import IndexedValues, combination_table
 from ruglab.operations import clmul
-from ruglab.plotting import colorize
+from ruglab.plotting import colorize, indexed_order_palette
 from ruglab.previews import indexed_preview
 from ruglab.research import family_pre_modulus, minimum_post_modulus, uniform_xor
 from ruglab.sampling import coordinates
@@ -210,6 +212,30 @@ def test_exploration_parameters_follow_sampling():
     assert constant.zero_fraction == 1
     assert constant.result.modulus == 1
     assert not constant.result.values.any()
+
+
+def test_exploration_classifies_two_cell_fields():
+    recipe = PatternRecipe("xor", 2, 0, 3)
+    diamond = sample_field(recipe, 2, "full")
+    assert diamond.repeat_shape == "diamond"
+    assert np.array_equal(diamond.result.values, [[0, 1], [1, 0]])
+    assert sample_field(recipe, 2, "odd_odd").repeat_shape == "constant"
+
+
+def test_indexed_combination_preserves_unsigned_products():
+    operand = 2**32 - 2**16
+    table = combination_table(np.array([0, operand]), np.array([operand]), "mult")
+    assert table.labels.tolist() == [0, operand**2]
+    assert table.expand().tolist() == [[0], [operand**2]]
+
+
+def test_strip_preview_matches_full_bilinear_resize():
+    rng = np.random.default_rng(1)
+    values = IndexedValues(np.arange(32), rng.integers(32, size=(257, 1025), dtype=np.uint8))
+    palette = indexed_order_palette(values, "gray")
+    rgb = Image.fromarray(palette[values.indices][..., :3])
+    expected = rgb.resize((37, 37), Image.Resampling.BILINEAR)
+    assert np.array_equal(np.asarray(indexed_preview(values, "gray", 37)), np.asarray(expected))
 
 
 @pytest.mark.parametrize(

@@ -16,14 +16,29 @@ class PreviewPanel:
     caption: str
 
 
+def _packed_image(indices, palette):
+    height, width = indices.shape
+    packed = np.ascontiguousarray(palette[indices])
+    return Image.frombuffer("RGBX", (width, height), packed, "raw", "RGBX", 0, 1)
+
+
 def indexed_preview(values, cmap, pixels):
     """Render an order-color thumbnail while preserving exact values for export."""
     palette = indexed_order_palette(values, cmap).view(np.uint32).ravel()
     height, width = values.indices.shape
-    packed = np.ascontiguousarray(palette[values.indices])
-    image = Image.frombuffer("RGBX", (width, height), packed, "raw", "RGBX", 0, 1)
+    if width > 1024 and pixels < width:
+        # Bilinear resize is separable. Color and shrink horizontally by
+        # strips, then resize vertically without a full-size RGB raster.
+        image = Image.new("RGBX", (pixels, height))
+        for start in range(0, height, 128):
+            block = values.indices[start : start + 128]
+            strip = _packed_image(block, palette).resize((pixels, len(block)), Image.Resampling.BILINEAR)
+            image.paste(strip, (0, start))
+    else:
+        image = _packed_image(values.indices, palette)
     if image.size != (pixels, pixels):
-        image = image.resize((pixels, pixels), Image.Resampling.BILINEAR)
+        resampling = Image.Resampling.NEAREST if max(width, height) <= 128 else Image.Resampling.BILINEAR
+        image = image.resize((pixels, pixels), resampling)
     return image.convert("RGB")
 
 

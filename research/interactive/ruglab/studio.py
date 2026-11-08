@@ -30,7 +30,7 @@ from . import (
     summary,
     symmetries,
 )
-from .exploration import exploration_recipes, sample_field
+from .exploration import FIELD_SIZES, exploration_recipes, sample_field
 from .operations import steps
 from .plotting import colorize
 from .previews import PreviewPanel, indexed_preview, preview_grid
@@ -38,6 +38,7 @@ from .research import family_pre_modulus, minimum_post_modulus, uniform_xor
 from .specs import SAMPLINGS
 
 __all__ = [
+    "FIELD_SIZES",
     "SAMPLINGS",
     "BytesIO",
     "Path",
