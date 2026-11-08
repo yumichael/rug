@@ -30,11 +30,12 @@ from ruglab.studio import *
 #
 
 # %%
-ROWS_PER_PAGE = 2
+ROWS_PER_PAGE = 8
 PREVIEW_PIXELS = 384
-DEFAULT_FIELD_SIZES = (8,)
-DEFAULT_COMBINERS = None  # All combiners, or a tuple of names such as ("xor", "clmul").
-DEFAULT_SAMPLINGS = None  # All samplings, or a tuple such as ("full", "checkerboard_opposite").
+DEFAULT_FIELD_SIZES = (128,)
+DEFAULT_COMBINERS = ("or",)
+DEFAULT_SAMPLINGS = ("full", "checkerboard_opposite", "odd_odd")
+DEFAULT_TRANSPOSE = True
 
 research_recipes = list(enumerate(exploration_recipes(), 1))
 displayed_specs = {}
@@ -66,7 +67,9 @@ density_control = widgets.BoundedIntText(
     style={"description_width": "initial"},
     layout=widgets.Layout(width="170px"),
 )
-transpose_control = widgets.Checkbox(description="Transpose grid", indent=False, layout=widgets.Layout(width="135px"))
+transpose_control = widgets.Checkbox(
+    value=DEFAULT_TRANSPOSE, description="Transpose grid", indent=False, layout=widgets.Layout(width="135px")
+)
 page_control = widgets.BoundedIntText(min=1, max=len(research_recipes) * len(FIELD_SIZES), value=1, description="Page")
 back_button = widgets.Button(description="Back", layout=widgets.Layout(width="auto"))
 next_button = widgets.Button(description="Next", layout=widgets.Layout(width="auto"))
