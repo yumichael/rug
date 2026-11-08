@@ -38,7 +38,7 @@ ROWS_PER_PAGE = 8
 PREVIEW_PIXELS = 384
 DEFAULT_FIELD_SIZES = (128,)
 DEFAULT_COMBINERS = ("or",)
-DEFAULT_SAMPLINGS = ("full", "checkerboard_opposite", "odd_odd")
+DEFAULT_SAMPLINGS = ("full", "checkerboard_same", "checkerboard_opposite", "odd_odd")
 DEFAULT_TRANSPOSE = True
 
 gallery_view, displayed_specs = recipe_gallery(
