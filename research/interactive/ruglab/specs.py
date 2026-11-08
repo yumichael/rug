@@ -40,6 +40,8 @@ def resolve(spec):
     s.setdefault("combine", "xor")
     if s["sampling"] not in SAMPLINGS:
         raise ValueError("Unknown sampling: " + s["sampling"])
+    if s.get("checkerboard_axis", "horizontal") not in ("horizontal", "vertical"):
+        raise ValueError("Checkerboard axis must be horizontal or vertical")
     if len(s["shape"]) != 2 or any(not isinstance(v, int) or v < 1 for v in s["shape"]):
         raise ValueError("shape must contain two positive integers")
     for key in ("K", "M"):

@@ -34,7 +34,7 @@ class Result:
 @lru_cache(maxsize=8)
 def _basic(key):
     s = json.loads(key)
-    a, b = coordinates(s["shape"], s["sampling"], s["origin"])
+    a, b = coordinates(s["shape"], s["sampling"], s["origin"], checkerboard_axis=s["checkerboard_axis"])
     width = (s["K"] - 1).bit_length()
     A = steps(a, s["pre"], modulus=s["K"], width=width)
     B = steps(b, s["pre"], modulus=s["K"], width=width)
@@ -50,6 +50,7 @@ def _basic(key):
 def evaluate(spec):
     s = resolve(spec)
     base = {k: s[k] for k in ("shape", "origin", "sampling", "K", "pre", "combine")}
+    base["checkerboard_axis"] = s.get("checkerboard_axis", "horizontal")
     stages = _basic(json.dumps(base, sort_keys=True))
     z = stages["z0"]
     if "expression" in s:

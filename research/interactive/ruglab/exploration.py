@@ -195,7 +195,10 @@ def _checker_positions(size, period, sampling):
 
 def _checker_block(size, period, sampling, start, stop):
     x, y = checkerboard_indices(
-        np.arange(size, dtype=np.int16)[None, :], np.arange(start, stop, dtype=np.int16)[:, None], sampling
+        np.arange(size, dtype=np.int16)[None, :],
+        np.arange(start, stop, dtype=np.int16)[:, None],
+        sampling,
+        axis="vertical",
     )
     return x % period, y % period
 
@@ -328,6 +331,8 @@ def _sample_post_field(recipe, size, sampling):
         "post": [["poly", list(coefficients)]],
         "color": COMBINER_COLORS[combiner],
     }
+    if sampling.startswith("checkerboard"):
+        spec["checkerboard_axis"] = "vertical"
     return SampledField(IndexedValues(labels, indices), spec, repeat, zeros / indices.size)
 
 
@@ -369,6 +374,8 @@ def sample_field(recipe: PatternRecipe | PostRecipe, size: int, sampling: str) -
         "combine": recipe.combiner,
         "color": COMBINER_COLORS[recipe.combiner],
     }
+    if sampling.startswith("checkerboard"):
+        spec["checkerboard_axis"] = "vertical"
     # The mixed samplings are transposes because the catalogue combiners are symmetric.
     label_sampling = "even_odd" if sampling == "odd_even" else sampling
     base, repeat, counts = _base_field(q, recipe.twist, K, recipe.combiner, size, label_sampling)

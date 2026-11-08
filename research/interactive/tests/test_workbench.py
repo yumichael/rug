@@ -222,6 +222,25 @@ def test_exploration_classifies_two_cell_fields():
     assert sample_field(recipe, 2, "odd_odd").repeat_shape == "constant"
 
 
+@pytest.mark.parametrize("sampling,phase", [("checkerboard_same", 0), ("checkerboard_opposite", 1)])
+@pytest.mark.parametrize("recipe", [PatternRecipe("or", 2, 1, 3), PostRecipe("xor", "any powers", 2, 2, 1)])
+def test_explore_checkerboards_reflect_before_the_combiner(recipe, sampling, phase):
+    size = 16
+    field = sample_field(recipe, size, sampling)
+    result = evaluate(field.spec)
+    reflected = (-np.arange(size) - phase) % size
+    assert field.spec["checkerboard_axis"] == "vertical"
+    a, b = coordinates((size, size), sampling, checkerboard_axis="vertical")
+    mirror_a, mirror_b = coordinates((size, size), sampling, (1 - size - phase, 0), checkerboard_axis="vertical")
+    assert np.array_equal(mirror_a[:, ::-1], b)
+    assert np.array_equal(mirror_b[:, ::-1], a)
+    assert np.array_equal(result.values[:, reflected], result.values)
+    assert np.array_equal(result.values, field.result.values)
+    horizontal = evaluate({**field.spec, "checkerboard_axis": "horizontal"})
+    assert result.values.shape == (size, size)
+    assert np.array_equal(result.values, np.roll(horizontal.values.T, phase, axis=0))
+
+
 @pytest.mark.parametrize(
     "family,valuation",
     [("odd power", 0), ("even power", 1), ("odd sum", 0), ("even sum tail", 5), ("even only", 2), ("any powers", 4)],

@@ -18,7 +18,9 @@ from ruglab.studio import *
 # %% [markdown]
 # ## Explore repeating fields
 #
-# Each row shows one recipe at one field size across the selected samplings. **Transpose grid** puts those entries in columns and samplings in rows. Check any combination of field sizes, combiners, and sampling methods. The pager groups the selected sizes together for each recipe. Edit `ROWS_PER_PAGE` in the next cell to set the default, or adjust **Rows per page** or **Columns per page** in the pager. Use the arrows or enter a page number. The two checkerboard views use axes rotated 45° from the operand grid.
+# Each row shows one recipe at one field size across the selected samplings. **Transpose grid** puts those entries in columns and samplings in rows. Check any combination of field sizes, combiners, and sampling methods. The pager groups the selected sizes together for each recipe. Edit `ROWS_PER_PAGE` in the next cell to set the default, or adjust **Rows per page** or **Columns per page** in the pager. Use the arrows or enter a page number.
+#
+# The checkerboard views run vertically along the operand grid's $x=y$ diagonal. Left-right reflection exchanges the two operands. The same-parity tile starts with its cell-centered mirror column at the left edge. The opposite-parity tile starts with the preceding row of its vertical period.
 #
 # The pager remembers the first row of the last page you navigated to. Filters and row-count changes keep that row as the anchor. If a filter hides it, the pager shows the next matching row or the last available page.
 #
@@ -68,8 +70,11 @@ POST_SEED = 0
 post_gallery_view, post_specs = recipe_gallery(
     post_polynomial_recipes(draws=POST_DRAWS_PER_STRATUM, seed=POST_SEED),
     selected_combiners=("xor",),
-    field_sizes=(256,),
-    page_size=2,
+    field_sizes=(1024,),
+    selected_samplings=("checkerboard_opposite",),
+    transposed=True,
+    page_size=15,
+    initial_page=24,
     preview_pixels=512,
 )
 display(post_gallery_view)

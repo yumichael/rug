@@ -18,6 +18,7 @@ def recipe_gallery(
     selected_samplings=None,
     transposed=False,
     page_size=2,
+    initial_page=1,
     preview_pixels=384,
 ):
     """Return a gallery widget and its live dictionary of displayed specifications."""
@@ -53,7 +54,7 @@ def recipe_gallery(
         value=transposed, description="Transpose grid", indent=False, layout=widgets.Layout(width="135px")
     )
     page_control = widgets.BoundedIntText(
-        min=1, max=len(research_recipes) * len(FIELD_SIZES), value=1, description="Page"
+        min=1, max=max(1, len(research_recipes) * len(FIELD_SIZES)), value=initial_page, description="Page"
     )
     back_button = widgets.Button(description="Back", layout=widgets.Layout(width="auto"))
     next_button = widgets.Button(description="Next", layout=widgets.Layout(width="auto"))
@@ -71,7 +72,8 @@ def recipe_gallery(
             f"{field.zero_fraction:.1%} zero · {field.distinct_values:,} values\n"
             f"K=2^{k} · M=2^{m}"
         )
-        return PreviewPanel(indexed_preview(field.values, spec["color"], pixels), caption), spec
+        preview = indexed_preview(field.values, spec["color"], pixels)
+        return PreviewPanel(preview, caption), spec
 
     def render_page(entries, samplings, pixels, transpose):
         rows = []
@@ -104,7 +106,7 @@ def recipe_gallery(
         ]
         page_count = max(1, (len(entries) + rows_per_page - 1) // rows_per_page)
         if entries and (page_anchor is None or (change and change["owner"] is page_control)):
-            number, _, size = entries[(page_control.value - 1) * rows_per_page]
+            number, _, size = entries[(min(page_control.value, page_count) - 1) * rows_per_page]
             page_anchor = (number, size)
         index = next(
             (

@@ -100,6 +100,8 @@ grid({"candidate": result})
 
 Sampling names are `full`, `checkerboard_same`, `checkerboard_opposite`, `even_even`, `even_odd`, `odd_even`, and `odd_odd`. Their exact original-grid maps are in [sampling.py](ruglab/sampling.py). `shape` describes the selected displayed grid, so sampling does not silently halve that shape. The default is the full operand grid with K=M=n. `checkerboard_opposite` keeps pairs with one even operand and one odd operand. The DSL’s `diag1` and `diag1m` give two explicit display maps for that same selection.
 
+For checkerboard samplings, `checkerboard_axis` sets the displayed direction parallel to the operand grid's $x=y$ diagonal. The default is `"horizontal"`. Explore uses `"vertical"`, so a left-right reflection exchanges the operands. With the vertical orientation, the opposite-parity map starts one displayed row earlier.
+
 Operations include `add`, `mult`, `pow`, `expo`, `mod`, `self`, `xor`, `xor0`, `binary`, `gray`, `bitrev`, `rotl`, `inv`, and `poly`. A polynomial's coefficient list is constant-term first. For example, `["poly", [0,0,-1,0,2]]` represents `2*x**4-x**2`. Bit operations use the stage modulus's bit width; inverse maps nonunits to zero as in the original experiment. Use power-of-two stage moduli for these word operations.
 
 The seven research combiners are AND, OR, XOR, ADD, MULT, CLMUL, and ABSDIFF. GCD, MIN, MAX, SUBTRACT, and XOR0 are also available with lowercase names. CLMUL is the full standard binary-polynomial product. An explicitly truncated old-style variant is specified as `{"name":"clmul_low", "width":6}`; it masks both operands and the product. Full MULT and CLMUL do not silently truncate to K bits.

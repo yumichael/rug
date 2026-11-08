@@ -7,11 +7,17 @@ from .specs import SAMPLINGS
 CARTESIAN_PHASES = {"even_even": (0, 0), "even_odd": (0, 1), "odd_even": (1, 0), "odd_odd": (1, 1)}
 
 
-def checkerboard_indices(x, y, sampling):
-    return x + y + (sampling == "checkerboard_opposite"), x - y
+def checkerboard_indices(x, y, sampling, *, axis="horizontal"):
+    phase = int(sampling == "checkerboard_opposite")
+    if axis == "vertical":
+        # The opposite-parity tile starts with the preceding row of its period.
+        x, y = y - phase, x
+    elif axis != "horizontal":
+        raise ValueError("Checkerboard axis must be horizontal or vertical")
+    return x + y + phase, x - y
 
 
-def coordinates(shape, sampling="full", origin=(0, 0)):
+def coordinates(shape, sampling="full", origin=(0, 0), *, checkerboard_axis="horizontal"):
     """Map displayed columns and rows to unsampled operand indices."""
     if sampling not in SAMPLINGS:
         raise ValueError(sampling)
@@ -21,7 +27,7 @@ def coordinates(shape, sampling="full", origin=(0, 0)):
     if sampling == "full":
         return i, j
     if sampling.startswith("checkerboard"):
-        return checkerboard_indices(i, j, sampling)
+        return checkerboard_indices(i, j, sampling, axis=checkerboard_axis)
     ex, ey = CARTESIAN_PHASES[sampling]
     return 2 * i + ex, 2 * j + ey
 
