@@ -20,6 +20,7 @@ def recipe_gallery(
     page_size=2,
     initial_page=1,
     preview_pixels=384,
+    wrap_after=0,
 ):
     """Return a gallery widget and its live dictionary of displayed specifications."""
     research_recipes = list(enumerate(recipes, 1))
@@ -53,6 +54,13 @@ def recipe_gallery(
     transpose_control = widgets.Checkbox(
         value=transposed, description="Transpose grid", indent=False, layout=widgets.Layout(width="135px")
     )
+    wrap_control = widgets.BoundedIntText(
+        min=0,
+        max=max(16, page_size, wrap_after),
+        value=wrap_after,
+        style={"description_width": "initial"},
+        layout=widgets.Layout(width="155px"),
+    )
     page_control = widgets.BoundedIntText(
         min=1, max=max(1, len(research_recipes) * len(FIELD_SIZES)), value=initial_page, description="Page"
     )
@@ -75,7 +83,7 @@ def recipe_gallery(
         preview = indexed_preview(field.values, spec["color"], pixels)
         return PreviewPanel(preview, caption), spec
 
-    def render_page(entries, samplings, pixels, transpose):
+    def render_page(entries, samplings, pixels, transpose, wrap_after):
         rows = []
         specs = {}
         for number, recipe, size in entries:
@@ -85,7 +93,7 @@ def recipe_gallery(
                 panel, specs[number, size, sampling] = recipe_panel(recipe, size, sampling, pixels)
                 panels.append(panel)
             rows.append((heading, panels))
-        return preview_grid(rows, pixels, transpose=transpose), specs
+        return preview_grid(rows, pixels, transpose=transpose, wrap_after=wrap_after), specs
 
     cached_page = lru_cache(maxsize=8)(render_page)
 
@@ -95,6 +103,7 @@ def recipe_gallery(
         rows_per_page = density_control.value
         transpose = transpose_control.value
         density_control.description = "Columns per page" if transpose else "Rows per page"
+        wrap_control.description = "Wrap columns at" if transpose else "Wrap rows at"
         sizes = [size for size, box in size_controls.items() if box.value]
         selected_combiners = {name for name, box in combiner_controls.items() if box.value}
         samplings = tuple(name for name, box in sampling_controls.items() if box.value)
@@ -138,7 +147,7 @@ def recipe_gallery(
         page_entries = tuple(entries[first : first + rows_per_page])
         # Cache complete small pages for instant revisits. Larger pages reuse panels.
         render = cached_page if len(page_entries) <= 3 else render_page
-        png, specs = render(page_entries, samplings, preview_pixels, transpose)
+        png, specs = render(page_entries, samplings, preview_pixels, transpose, wrap_control.value)
         displayed_specs.clear()
         displayed_specs.update(deepcopy(specs))
         page_preview.value = png
@@ -158,7 +167,7 @@ def recipe_gallery(
 
     back_button.on_click(previous_page)
     next_button.on_click(next_page)
-    for control in (*filter_controls, density_control, page_control, transpose_control):
+    for control in (*filter_controls, density_control, page_control, transpose_control, wrap_control):
         control.observe(redraw, names="value")
     controls = widgets.VBox(
         [
@@ -166,7 +175,7 @@ def recipe_gallery(
             choice_row("Combiners", combiner_controls),
             choice_row("Samplings", sampling_controls),
             widgets.HBox(
-                [back_button, next_button, page_control, density_control, transpose_control, page_status],
+                [back_button, next_button, page_control, density_control, transpose_control, wrap_control, page_status],
                 layout=widgets.Layout(flex_flow="row wrap"),
             ),
         ]

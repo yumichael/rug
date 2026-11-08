@@ -24,6 +24,8 @@ from ruglab.studio import *
 #
 # The pager remembers the first row of the last page you navigated to. Filters and row-count changes keep that row as the anchor. If a filter hides it, the pager shows the next matching row or the last available page.
 #
+# Use **Wrap columns at** to stack groups of columns, or **Wrap rows at** to put groups of rows side by side. Set the wrap limit to 0 for a single block. The wrap limit applies to each page.
+#
 # Each panel uses a pre-modulus chosen for its sampling and a post-modulus computed from its own combined values. The post-modulus is the smallest power of two that keeps distinct values separate and preserves every nonzero value. Titles report both moduli, the zero share, and the repeat. A diamond has half the area of the displayed square. A smaller tile can occur when one operand branch repeats sooner, or when the combiner erases variation. Constant fields are shown too.
 #
 # `PREVIEW_PIXELS` sets the thumbnail width in pixels. The field size control sets the actual grid used for the calculations and export, with power-of-two side lengths from 2 to 4096.
@@ -76,5 +78,6 @@ post_gallery_view, post_specs = recipe_gallery(
     page_size=15,
     initial_page=24,
     preview_pixels=512,
+    wrap_after=5,
 )
 display(post_gallery_view)
