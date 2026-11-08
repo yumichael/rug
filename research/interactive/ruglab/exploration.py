@@ -5,11 +5,13 @@ from functools import lru_cache
 from itertools import product
 from math import gcd
 from sys import getsizeof
+from typing import ClassVar
 
 import numpy as np
 
 from .engine import Result
 from .indexed import IndexedValues, byte_lru, combination_table
+from .operations import operation
 from .post_polynomials import POST_STRATA, draw_post_polynomial
 from .sampling import CARTESIAN_PHASES, checkerboard_indices
 from .specs import SAMPLINGS
@@ -26,6 +28,39 @@ COMBINER_COLORS = {
 FIELD_SIZES = tuple(1 << exponent for exponent in range(1, 13))
 _DENSE_CACHE_LIMIT = 1024
 _BLOCK_ROWS = 128
+PRE_POWER_STUDY_EXPONENTS = tuple(range(2, 65, 2))
+
+# Q(t) in t + 2t(t - 1)Q(t), with coefficients in ascending order.
+_STUDY_TWISTS = (
+    (),
+    (1,),
+    (-3,),
+    (0, 1),
+    (1, 1),
+    (3, -2, 1),
+    (0, 0, 1),
+    (1, -3, 3, -1),
+    (5, 1, 0, 2),
+    (0, 0, 0, 0, 1),
+    (-1, 4, -2, 0, 0, 1),
+    (1, -1, 1, -1, 1, -1, 1),
+    (0, 0, 0, 0, 0, 0, 0, 1),
+    (7, -5, 0, 3, 0, -2, 0, 1),
+    (19, 0, 0, -7, 1),
+    (0, -3, 5, 0, -1, 0, 2),
+)
+_STUDY_POSTS = (
+    (0, 1),
+    (0, 1, 1),
+    (0, 0, 0, 1),
+    (0, 1, 0, 3),
+    (0, 0, 1, 1),
+    (0, 3, 0, 0, 1),
+    (0, 0, 1, 0, 0, 3),
+    (0, 1, 0, 1, 0, 0, 0, 1),
+    (0,) * 7 + (1,),
+    (0,) * 14 + (1,),
+)
 
 
 @dataclass(frozen=True)
@@ -34,6 +69,22 @@ class PatternRecipe:
     pre_power: int
     twist: int
     post_power: int
+
+
+@dataclass(frozen=True)
+class PrePowerStudyRecipe:
+    pre_power: int
+    twist_index: int
+    post_index: int
+    combiner: ClassVar[str] = "or"
+
+
+def pre_power_study_recipes():
+    """Return one ordered sweep of even exponents for each twist and post pair."""
+    return [
+        PrePowerStudyRecipe(q, twist, post)
+        for twist, post, q in product(range(len(_STUDY_TWISTS)), range(len(_STUDY_POSTS)), PRE_POWER_STUDY_EXPONENTS)
+    ]
 
 
 @dataclass(frozen=True)
@@ -59,6 +110,8 @@ def post_polynomial_recipes(draws=24, seed=0):
 def recipe_description(recipe, size):
     if isinstance(recipe, PatternRecipe):
         return f"Pre {recipe.pre_power} · twist {recipe.twist} · post {recipe.post_power}"
+    if isinstance(recipe, PrePowerStudyRecipe):
+        return f"Pre {recipe.pre_power} · twist {recipe.twist_index} · post {recipe.post_index}"
     coefficients, modulus = recipe.polynomial(size)
     if recipe.family in ("odd power", "even power"):
         return f"{recipe.family} · p={len(coefficients) - 1} · a={coefficients[-1]}"
@@ -177,7 +230,10 @@ def _operand_table(q, twist, K, coordinates):
     mask = K - 1
     pre = [pow(i, q, K) for i in coordinates]
     if twist:
-        pre = [(t + 2 * twist * t * (t - 1)) & mask for t in pre]
+        if isinstance(twist, tuple):
+            pre = operation(np.array(pre, dtype=object), "poly", twist, modulus=K)
+        else:
+            pre = [(t + 2 * twist * t * (t - 1)) & mask for t in pre]
     return np.unique(np.asarray(pre, dtype=np.int64), return_inverse=True)
 
 
@@ -336,7 +392,80 @@ def _sample_post_field(recipe, size, sampling):
     return SampledField(IndexedValues(labels, indices), spec, repeat, zeros / indices.size)
 
 
-def sample_field(recipe: PatternRecipe | PostRecipe, size: int, sampling: str) -> SampledField:
+def _pre_modulus(q, size, sampling, combiner):
+    K = size * (q & -q)
+    if sampling == "even_even":
+        # (2i)^q leaves q low zero bits, so i^q sees a modulus of K >> q.
+        return K << q
+    if sampling in CARTESIAN_PHASES or (sampling == "checkerboard_same" and combiner == "xor"):
+        # Cartesian samples advance by two. In same-parity XOR a size-cell
+        # shift toggles both odd operands' top bits, which cancel.
+        return K << 1
+    return K
+
+
+def _study_twist(coefficients):
+    if not coefficients:
+        return ()
+    twist = [0, 1, *([0] * len(coefficients))]
+    for i, coefficient in enumerate(coefficients, 1):
+        twist[i] -= 2 * coefficient
+        twist[i + 1] += 2 * coefficient
+    return tuple(twist)
+
+
+def _distinct_polynomial(inputs, coefficients):
+    # The catalogue uses nonnegative coefficients and no constant, so the
+    # integer polynomial is strictly increasing on these nonnegative inputs.
+    outputs = operation(inputs, "poly", coefficients)
+    values = {*outputs, 0}
+    low, high = 0, int(outputs[-1]).bit_length()
+    while low < high:
+        middle = (low + high) // 2
+        mask = (1 << middle) - 1
+        if len({value & mask for value in values}) == len(values):
+            high = middle
+        else:
+            low = middle + 1
+    modulus = 1 << low
+    return outputs % modulus, modulus
+
+
+def _sample_pre_power_study(recipe, size, sampling):
+    q = recipe.pre_power
+    K = _pre_modulus(q, size, sampling, recipe.combiner)
+    twist = _study_twist(_STUDY_TWISTS[recipe.twist_index])
+    post = _STUDY_POSTS[recipe.post_index]
+    label_sampling = "even_odd" if sampling == "odd_even" else sampling
+    table_K, table_twist = K, twist
+    shift = 0
+    if sampling == "even_even":
+        # The operands have a common 2**q factor, which OR commutes with.
+        # Evaluate f(2**q * t) / 2**q on the unscaled i**q table.
+        shift = q
+        table_K = K >> shift
+        table_twist = (0, *((a << (shift * i)) % table_K for i, a in enumerate(twist[1:]))) if twist else ()
+        label_sampling = "full"
+    base, repeat, counts = _base_field(q, table_twist, table_K, recipe.combiner, size, label_sampling)
+    labels, modulus = _distinct_polynomial(base.labels.astype(object) << shift, post)
+    indices = base.indices.T if sampling == "odd_even" else base.indices
+    spec = {
+        "n": size,
+        "K": K,
+        "M": modulus,
+        "pre": [["pow", q], ["poly", list(twist)]] if twist else [["pow", q]],
+        "sampling": sampling,
+        "combine": recipe.combiner,
+        "post": [["poly", list(post)]],
+        "color": COMBINER_COLORS[recipe.combiner],
+    }
+    if sampling.startswith("checkerboard"):
+        spec["checkerboard_axis"] = "vertical"
+    zeros = int(counts[0]) if base.labels[0] == 0 else 0
+    return SampledField(IndexedValues(labels, indices), spec, repeat, zeros / indices.size)
+
+
+def sample_field(recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe, size: int, sampling: str) -> SampledField:
     """Build one sampled field with its own pre- and post-moduli."""
     if size not in FIELD_SIZES:
         raise ValueError("Choose a power-of-two field size from 2 to 4096 cells")
@@ -344,6 +473,8 @@ def sample_field(recipe: PatternRecipe | PostRecipe, size: int, sampling: str) -
         raise ValueError("Unknown sampling: " + sampling)
     if isinstance(recipe, PostRecipe):
         return _sample_post_field(recipe, size, sampling)
+    if isinstance(recipe, PrePowerStudyRecipe):
+        return _sample_pre_power_study(recipe, size, sampling)
     q = recipe.pre_power
     if q < 2 or q % 2 or recipe.post_power < 1:
         raise ValueError("Use a positive even pre-power and a positive post-power")
@@ -351,18 +482,7 @@ def sample_field(recipe: PatternRecipe | PostRecipe, size: int, sampling: str) -
     if recipe.twist:
         # f(t) = t + 2c*t*(t-1) preserves the pre-power's periods.
         pre.append(["poly", [0, 1 - 2 * recipe.twist, 2 * recipe.twist]])
-    K = size * (q & -q)
-    if sampling == "even_even":
-        # (2i)^q leaves q low zero bits, so i^q sees a modulus of K >> q.
-        K <<= q
-    elif sampling in CARTESIAN_PHASES:
-        # The odd branch advances by two. A mixed view uses the same K on
-        # both operands, and the even branch can repeat sooner.
-        K <<= 1
-    elif sampling == "checkerboard_same" and recipe.combiner == "xor":
-        # A size-cell shift toggles the top bit of both odd operands and
-        # preserves both even operands. XOR cancels the paired toggles.
-        K <<= 1
+    K = _pre_modulus(q, size, sampling, recipe.combiner)
     if K > 1 << 32:
         raise ValueError("Pre-modulus too large for the catalogue's integer tables")
     spec = {

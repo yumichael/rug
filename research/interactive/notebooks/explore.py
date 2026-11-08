@@ -81,3 +81,21 @@ post_gallery_view, post_specs = recipe_gallery(
     wrap_after=5,
 )
 display(post_gallery_view)
+
+# %% [markdown]
+# ## Compare OR pre-powers
+#
+# Each page runs through the even pre-powers 2 through 64 in the same positions. Read across the first row, then continue on the next row. The defaults show one field size and one sampling in four rows of eight. Keep **Columns per page** at 32 to keep each sweep together.
+#
+# Pages change the post-polynomial first, then the twist. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. The post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling]`.
+#
+# %%
+pre_power_gallery_view, pre_power_specs = recipe_gallery(
+    pre_power_study_recipes(),
+    field_sizes=(128,),
+    selected_samplings=("checkerboard_opposite",),
+    transposed=True,
+    page_size=32,
+    wrap_after=8,
+)
+display(pre_power_gallery_view)

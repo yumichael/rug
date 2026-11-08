@@ -6,7 +6,7 @@ import pytest
 from PIL import Image
 from ruglab import Sweep, dsl, evaluate, gallery, paired
 from ruglab.diagnostics import periods, signature
-from ruglab.exploration import PatternRecipe, PostRecipe, sample_field
+from ruglab.exploration import PatternRecipe, PostRecipe, PrePowerStudyRecipe, sample_field
 from ruglab.indexed import IndexedValues, combination_table
 from ruglab.operations import clmul
 from ruglab.plotting import colorize, indexed_order_palette
@@ -220,6 +220,19 @@ def test_exploration_classifies_two_cell_fields():
     assert diamond.repeat_shape == "diamond"
     assert np.array_equal(diamond.result.values, [[0, 1], [1, 0]])
     assert sample_field(recipe, 2, "odd_odd").repeat_shape == "constant"
+
+
+@pytest.mark.parametrize("twist,post", [(0, 0), (13, 7)])
+def test_pre_power_study_preserves_wide_even_even_values(twist, post):
+    field = sample_field(PrePowerStudyRecipe(64, twist, post), 16, "even_even")
+    exact = evaluate(field.spec)
+    assert field.spec["K"] > 2**64
+    if twist:
+        assert len(field.spec["pre"][1][1]) == 10
+    assert np.array_equal(field.result.values, exact.values)
+    assert field.distinct_values == len(set(exact.stages["z0"].flat))
+    values = set(exact.values.flat) | {0}
+    assert len({value % (field.spec["M"] // 2) for value in values}) < len(values)
 
 
 @pytest.mark.parametrize("sampling,phase", [("checkerboard_same", 0), ("checkerboard_opposite", 1)])

@@ -30,7 +30,13 @@ from . import (
     summary,
     symmetries,
 )
-from .exploration import FIELD_SIZES, exploration_recipes, post_polynomial_recipes, sample_field
+from .exploration import (
+    FIELD_SIZES,
+    exploration_recipes,
+    post_polynomial_recipes,
+    pre_power_study_recipes,
+    sample_field,
+)
 from .operations import steps
 from .pager import recipe_gallery
 from .plotting import colorize
@@ -67,6 +73,7 @@ __all__ = [
     "periods",
     "plt",
     "post_polynomial_recipes",
+    "pre_power_study_recipes",
     "preview_grid",
     "recipe_gallery",
     "sample_field",
