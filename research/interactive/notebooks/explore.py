@@ -18,11 +18,13 @@ from ruglab.studio import *
 # %% [markdown]
 # ## Explore repeating fields
 #
-# Each row shows one recipe at one field size across the selected samplings. **Transpose grid** puts those entries in columns and samplings in rows. Check any combination of field sizes, combiners, and sampling methods. The pager groups the selected sizes together for each recipe. Edit `ROWS_PER_PAGE` in the next cell to set the default, or adjust **Rows per page** or **Columns per page** in the pager. Use the arrows or enter a page number.
+# Each plot comes from one combination of the selected parameter values. The dimension order runs from slowest to fastest. Choose a dimension and click **Slower** or **Faster** to move it. Use **More parameter filters** to choose recipe values such as pre-powers or twists.
+#
+# **Group fastest** keeps that many dimensions together within each row. It starts at 1 with Sampling as the fastest dimension, so each row shows one recipe and field size across the selected samplings. Set it to 0 for one plot per entry. **Transpose grid** puts entries in columns. **Rows per page** or **Columns per page** sets how many entries to show.
 #
 # The checkerboard views run vertically along the operand grid's $x=y$ diagonal. Left-right reflection exchanges the two operands. The same-parity tile starts with its cell-centered mirror column at the left edge. The opposite-parity tile starts with the preceding row of its vertical period.
 #
-# The pager remembers the first row of the last page you navigated to. Filters and row-count changes keep that row as the anchor. If a filter hides it, the pager shows the next matching row or the last available page.
+# The pager remembers the first plot of the last page you navigated to. Filters, dimension order, and layout changes keep that plot as the anchor. If a filter hides it, the pager shows the next matching entry or the last available page.
 #
 # Use **Wrap columns at** to stack groups of columns, or **Wrap rows at** to put groups of rows side by side. Set the wrap limit to 0 for a single block. The wrap limit applies to each page.
 #
@@ -42,7 +44,7 @@ DEFAULT_SAMPLINGS = ("full", "checkerboard_same", "checkerboard_opposite", "odd_
 DEFAULT_TRANSPOSE = True
 
 gallery_view, displayed_specs = recipe_gallery(
-    exploration_recipes(),
+    exploration_catalogue(),
     field_sizes=DEFAULT_FIELD_SIZES,
     selected_combiners=DEFAULT_COMBINERS,
     selected_samplings=DEFAULT_SAMPLINGS,
@@ -53,7 +55,7 @@ gallery_view, displayed_specs = recipe_gallery(
 display(gallery_view)
 
 # %% [markdown]
-# For a closer look, retrieve a specification from `displayed_specs` using its recipe number, field size, and sampling, such as `displayed_specs[1, 8, "even_odd"]`. Use `export(evaluate(spec), "../output/field.png", mode="order")` to see it at one pixel per cell.
+# For a closer look, retrieve a specification from `displayed_specs` using its recipe number, field size, and sampling, such as `displayed_specs[1, 8, "even_odd"]`. Recipe numbers stay fixed when you reorder dimensions. Use `export(evaluate(spec), "../output/field.png", mode="order")` to see it at one pixel per cell.
 #
 
 # %% [markdown]
@@ -70,7 +72,7 @@ POST_DRAWS_PER_STRATUM = 24
 POST_SEED = 0
 
 post_gallery_view, post_specs = recipe_gallery(
-    post_polynomial_recipes(draws=POST_DRAWS_PER_STRATUM, seed=POST_SEED),
+    post_polynomial_catalogue(draws=POST_DRAWS_PER_STRATUM, seed=POST_SEED),
     selected_combiners=("xor",),
     field_sizes=(1024,),
     selected_samplings=("checkerboard_opposite",),
@@ -85,13 +87,13 @@ display(post_gallery_view)
 # %% [markdown]
 # ## Compare OR pre-powers
 #
-# Each page runs through the even pre-powers 2 through 64 in the same positions. Read across the first row, then continue on the next row. The defaults show one field size and one sampling in four rows of eight. Keep **Columns per page** at 32 to keep each sweep together.
+# With the default dimension order, each page runs through the even pre-powers 2 through 64 in the same positions. Read across the first row, then continue on the next row. The defaults show one field size and one sampling in four rows of eight. Keep **Columns per page** at 32 to keep each sweep together.
 #
-# Pages change the post-polynomial first, then the twist. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. The post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling]`.
+# By default, pages change the post-polynomial first, then the twist. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. The post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling]`.
 #
 # %%
 pre_power_gallery_view, pre_power_specs = recipe_gallery(
-    pre_power_study_recipes(),
+    pre_power_study_catalogue(),
     field_sizes=(128,),
     selected_samplings=("checkerboard_opposite",),
     transposed=True,

@@ -1,5 +1,6 @@
 import json
 import sys
+from io import BytesIO
 from pathlib import Path
 
 import jupytext
@@ -8,6 +9,9 @@ from jupyter_client.kernelspec import KernelSpecManager
 from jupyter_client.manager import KernelManager
 from nbclient import NotebookClient
 from nbformat.v4 import new_code_cell
+from PIL import Image
+from ruglab.exploration import PatternRecipe, RecipeCatalogue
+from ruglab.pager import recipe_gallery
 
 NOTEBOOKS = Path("notebooks")
 
@@ -18,6 +22,47 @@ def test_text_notebook_roundtrip(source):
     text = jupytext.writes(book, fmt="py:percent")
     again = jupytext.reads(text, fmt="py:percent")
     assert [c.source for c in book.cells] == [c.source for c in again.cells]
+
+
+def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
+    catalogue = RecipeCatalogue(
+        {"twist": (0, 1), "pre_power": (2, 4)},
+        lambda twist, pre_power: PatternRecipe("or", pre_power, twist, 3),
+    )
+    gallery, specs = recipe_gallery(
+        catalogue, field_sizes=(2,), selected_samplings=("full", "odd_odd"), grouped_dimensions=0, preview_pixels=128
+    )
+    controls, preview = gallery.children
+    dimension, slower, faster, grouped, _ = controls.children[-2].children
+    _, _, page, density, transpose, wrap, status = controls.children[-1].children
+    assert "8 plots" in status.value
+    assert density.description == "Plots per page"
+    assert wrap.description == "Plots per row"
+    with Image.open(BytesIO(preview.value)) as image:
+        assert image.width > image.height
+    transpose.value = True
+    assert wrap.description == "Plots per column"
+    assert list(specs) == [(1, 2, "full"), (1, 2, "odd_odd")]
+    with Image.open(BytesIO(preview.value)) as image:
+        assert image.height > image.width
+    transpose.value = False
+    page.value = 2
+    original = list(specs)
+    assert original == [(2, 2, "full"), (2, 2, "odd_odd")]
+
+    dimension.value = dict(dimension.options)["Sampling"]
+    slower.click()
+    slower.click()
+    assert page.value == 1
+    assert list(specs) == [(1, 2, "full"), (2, 2, "full")]
+
+    faster.click()
+    faster.click()
+    assert page.value == 2
+    assert list(specs) == original
+    grouped.value = 1
+    assert page.value == 1
+    assert list(specs) == [(n, 2, sampling) for n in (1, 2) for sampling in ("full", "odd_odd")]
 
 
 @pytest.mark.integration

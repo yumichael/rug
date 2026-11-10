@@ -1,5 +1,6 @@
 """Build views of pre-power and post-polynomial patterns."""
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from functools import lru_cache
 from itertools import product
@@ -79,14 +80,6 @@ class PrePowerStudyRecipe:
     combiner: ClassVar[str] = "or"
 
 
-def pre_power_study_recipes():
-    """Return one ordered sweep of even exponents for each twist and post pair."""
-    return [
-        PrePowerStudyRecipe(q, twist, post)
-        for twist, post, q in product(range(len(_STUDY_TWISTS)), range(len(_STUDY_POSTS)), PRE_POWER_STUDY_EXPONENTS)
-    ]
-
-
 @dataclass(frozen=True)
 class PostRecipe:
     combiner: str
@@ -99,12 +92,51 @@ class PostRecipe:
         return draw_post_polynomial(max(8, 2 * size), self.family, self.valuation, self.seed, self.draw)
 
 
+@dataclass(frozen=True)
+class RecipeCatalogue:
+    """Ordered recipe dimensions and a factory accepting their named values."""
+
+    dimensions: dict[str, tuple]
+    build: Callable[..., PatternRecipe | PostRecipe | PrePowerStudyRecipe]
+
+    def recipes(self):
+        return [
+            self.build(**dict(zip(self.dimensions, values, strict=True)))
+            for values in product(*self.dimensions.values())
+        ]
+
+
+def pre_power_study_catalogue():
+    return RecipeCatalogue(
+        {
+            "twist_index": tuple(range(len(_STUDY_TWISTS))),
+            "post_index": tuple(range(len(_STUDY_POSTS))),
+            "pre_power": PRE_POWER_STUDY_EXPONENTS,
+            "combiner": ("or",),
+        },
+        lambda pre_power, twist_index, post_index, combiner: PrePowerStudyRecipe(pre_power, twist_index, post_index),
+    )
+
+
+def pre_power_study_recipes():
+    """Return one ordered sweep of even exponents for each twist and post pair."""
+    return pre_power_study_catalogue().recipes()
+
+
+def post_polynomial_catalogue(draws=24, seed=0):
+    def build(draw, stratum, combiner):
+        family, valuation = stratum
+        return PostRecipe(combiner, family, valuation, seed, draw)
+
+    return RecipeCatalogue(
+        {"draw": tuple(range(draws)), "stratum": POST_STRATA, "combiner": tuple(COMBINER_COLORS)},
+        build,
+    )
+
+
 def post_polynomial_recipes(draws=24, seed=0):
     """Cycle through the strata on each pass through the catalogue."""
-    return [
-        PostRecipe(combiner, family, valuation, seed, draw)
-        for draw, (family, valuation), combiner in product(range(draws), POST_STRATA, COMBINER_COLORS)
-    ]
+    return post_polynomial_catalogue(draws, seed).recipes()
 
 
 def recipe_description(recipe, size):
@@ -119,13 +151,20 @@ def recipe_description(recipe, size):
     return f"{recipe.family} · v={valuation} · degree {len(coefficients) - 1}"
 
 
+def exploration_catalogue():
+    return RecipeCatalogue(
+        {
+            "twist": (0, 1, -3),
+            "post_power": (3, 7, 14, 27),
+            "pre_power": (2, 4, 6, 8, 10, 12, 14, 16),
+            "combiner": tuple(COMBINER_COLORS),
+        },
+        PatternRecipe,
+    )
+
+
 def exploration_recipes():
-    return [
-        PatternRecipe(combiner, pre_power, twist, post_power)
-        for twist, post_power, pre_power, combiner in product(
-            (0, 1, -3), (3, 7, 14, 27), (2, 4, 6, 8, 10, 12, 14, 16), COMBINER_COLORS
-        )
-    ]
+    return exploration_catalogue().recipes()
 
 
 def _repeat_shape(values):
