@@ -8,6 +8,7 @@ from matplotlib import colors
 from PIL import Image
 
 from .engine import Result, evaluate
+from .sampling import resample_view
 
 
 def convert_color(a, space):
@@ -92,8 +93,10 @@ def stages(result):
     return grid(items)
 
 
-def export(result, path, scale=1, mode="values"):
-    image = Image.fromarray(np.rint(colorize(result, mode) * 255).astype("uint8"))
+def export(result, path, scale=1, mode="values", *, additional_sampling="full"):
+    """Export exact cell colors, optionally selecting a subset of the finished view."""
+    colors = resample_view(colorize(result, mode), additional_sampling)
+    image = Image.fromarray(np.rint(colors * 255).astype("uint8"))
     if scale != 1:
         image = image.resize((image.width * scale, image.height * scale), Image.Resampling.NEAREST)
     from pathlib import Path

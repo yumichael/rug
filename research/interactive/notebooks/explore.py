@@ -20,13 +20,15 @@ from ruglab.studio import *
 #
 # Each plot comes from one combination of the selected parameter values. The dimension order runs from slowest to fastest. Choose a dimension and click **Slower** or **Faster** to move it. Use **More parameter filters** to choose recipe values such as pre-powers or twists.
 #
-# **Group fastest** keeps that many dimensions together within each row. It starts at 1 with Sampling as the fastest dimension, so each row shows one recipe and field size across the selected samplings. Set it to 0 for one plot per entry. **Transpose grid** puts entries in columns. **Rows per page** or **Columns per page** sets how many entries to show.
+# **Group fastest** keeps the selected values of the fastest dimensions together when paging. It starts at 1 with Sampling as the fastest dimension. Set it to 0 to page by individual plots. With grouping off, plots fill across rows, or down columns with **Transpose grid** on.
 #
 # The checkerboard views run vertically along the operand grid's $x=y$ diagonal. Left-right reflection exchanges the two operands. The same-parity tile starts with its cell-centered mirror column at the left edge. The opposite-parity tile starts with the preceding row of its vertical period.
 #
+# **Additional sampling** selects cells from the finished field, using its top-left cell as the parity origin and keeping the original cell colors. **Full** keeps every cell. Both checkerboard options use the inscribed diamond and show it as a square with half the original side length. The moduli, repeat, zero share, and value count describe the original field. Move Additional sampling to the fastest position to compare its variants side by side with grouping on.
+#
 # The pager remembers the first plot of the last page you navigated to. Filters, dimension order, and layout changes keep that plot as the anchor. If a filter hides it, the pager shows the next matching entry or the last available page.
 #
-# Use **Wrap columns at** to stack groups of columns, or **Wrap rows at** to put groups of rows side by side. Set the wrap limit to 0 for a single block. The wrap limit applies to each page.
+# Use the wrap control to set how many entries fit per row or column. Set it to 0 for a single block.
 #
 # Each panel uses a pre-modulus chosen for its sampling and a post-modulus computed from its own combined values. The post-modulus is the smallest power of two that keeps distinct values separate and preserves every nonzero value. Titles report both moduli, the zero share, and the repeat. A diamond has half the area of the displayed square. A smaller tile can occur when one operand branch repeats sooner, or when the combiner erases variation. Constant fields are shown too.
 #
@@ -55,7 +57,7 @@ gallery_view, displayed_specs = recipe_gallery(
 display(gallery_view)
 
 # %% [markdown]
-# For a closer look, retrieve a specification from `displayed_specs` using its recipe number, field size, and sampling, such as `displayed_specs[1, 8, "even_odd"]`. Recipe numbers stay fixed when you reorder dimensions. Use `export(evaluate(spec), "../output/field.png", mode="order")` to see it at one pixel per cell.
+# For a closer look, retrieve the base specification using its recipe number, field size, sampling, and additional sampling, such as `displayed_specs[1, 8, "even_odd", "checkerboard_same"]`. Recipe numbers stay fixed when you reorder dimensions. Use `export(evaluate(spec), "../output/field.png", mode="order", additional_sampling="checkerboard_same")` to export that view at one pixel per cell.
 #
 
 # %% [markdown]
@@ -65,7 +67,7 @@ display(gallery_view)
 #
 # The draw is uniform within each sampled family and precision on the odd XOR inputs. Each round gives those strata equal space in the gallery. Single powers and stabilized even sums cycle through their finite classes before repeating. Other families draw with replacement. Overlaps can occur across strata and under other samplings. The opposite-parity checkerboard is the reference for the full-period test at sizes of four cells and up. Other samplings and combiners show what the same polynomial does to their inputs.
 #
-# See the [polynomial period and sampling theory](../../theory/2026-11-02-xor-polynomial-period/2026-11-02-xor-polynomial-period.md) and the [order-class analysis](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#6-no-pre-operation-xor-when-order-and-shift-classes-coincide). The gallery colors cells by rank. The research proves uniform order draws for the same-valuation families at a fixed precision. The unrestricted and even-only draws cover numerical shift classes and may repeat an ordering. Use `post_specs[number, size, sampling]["post"]` to inspect the exact polynomial in ascending coefficient order.
+# See the [polynomial period and sampling theory](../../theory/2026-11-02-xor-polynomial-period/2026-11-02-xor-polynomial-period.md) and the [order-class analysis](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#6-no-pre-operation-xor-when-order-and-shift-classes-coincide). The gallery colors cells by rank. The research proves uniform order draws for the same-valuation families at a fixed precision. The unrestricted and even-only draws cover numerical shift classes and may repeat an ordering. Use `post_specs[number, size, sampling, additional_sampling]["post"]` to inspect the exact polynomial in ascending coefficient order.
 #
 # %%
 POST_DRAWS_PER_STRATUM = 24
@@ -89,7 +91,7 @@ display(post_gallery_view)
 #
 # With the default dimension order, each page runs through the even pre-powers 2 through 64 in the same positions. Read across the first row, then continue on the next row. The defaults show one field size and one sampling in four rows of eight. Keep **Columns per page** at 32 to keep each sweep together.
 #
-# By default, pages change the post-polynomial first, then the twist. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. The post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling]`.
+# By default, pages change the post-polynomial first, then the twist. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. The post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling, additional_sampling]`.
 #
 # %%
 pre_power_gallery_view, pre_power_specs = recipe_gallery(

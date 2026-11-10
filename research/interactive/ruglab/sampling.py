@@ -32,6 +32,28 @@ def coordinates(shape, sampling="full", origin=(0, 0), *, checkerboard_axis="hor
     return 2 * i + ex, 2 * j + ey
 
 
+def resample_view(values, sampling="full"):
+    """Select cells of a finished view, using its top left as the parity origin."""
+    if sampling == "full":
+        return values
+    if sampling in CARTESIAN_PHASES:
+        x, y = CARTESIAN_PHASES[sampling]
+        return values[y::2, x::2]
+    if sampling not in SAMPLINGS:
+        raise ValueError("Unknown sampling: " + sampling)
+    n = values.shape[0]
+    if values.shape[1] != n or n < 2 or n % 2:
+        raise ValueError("Additional checkerboard sampling requires an even square")
+    # Walk down the x=y direction and across the other diagonal. A half-size
+    # grid fits inside the source; offset one cell to select the other parity.
+    half = n // 2
+    row = np.arange(half)[:, None]
+    col = np.arange(half)[None, :]
+    phase = int(sampling == "checkerboard_opposite")
+    offset = half - 1 + (phase ^ ((half - 1) % 2))
+    return values[row - col + offset, row + col]
+
+
 def legacy_sample(z, name):
     n = z.shape[0]
     if z.shape != (n, n) or n % 2:

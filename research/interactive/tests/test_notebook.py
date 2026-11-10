@@ -2,6 +2,7 @@ import json
 import sys
 from io import BytesIO
 from pathlib import Path
+from unittest.mock import patch
 
 import jupytext
 import pytest
@@ -10,7 +11,7 @@ from jupyter_client.manager import KernelManager
 from nbclient import NotebookClient
 from nbformat.v4 import new_code_cell
 from PIL import Image
-from ruglab.exploration import PatternRecipe, RecipeCatalogue
+from ruglab.exploration import PatternRecipe, RecipeCatalogue, sample_field
 from ruglab.pager import recipe_gallery
 
 NOTEBOOKS = Path("notebooks")
@@ -42,27 +43,48 @@ def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
         assert image.width > image.height
     transpose.value = True
     assert wrap.description == "Plots per column"
-    assert list(specs) == [(1, 2, "full"), (1, 2, "odd_odd")]
+    assert list(specs) == [(1, 2, "full", "full"), (1, 2, "odd_odd", "full")]
     with Image.open(BytesIO(preview.value)) as image:
         assert image.height > image.width
     transpose.value = False
     page.value = 2
     original = list(specs)
-    assert original == [(2, 2, "full"), (2, 2, "odd_odd")]
+    assert original == [(2, 2, "full", "full"), (2, 2, "odd_odd", "full")]
 
     dimension.value = dict(dimension.options)["Sampling"]
     slower.click()
     slower.click()
+    slower.click()
     assert page.value == 1
-    assert list(specs) == [(1, 2, "full"), (2, 2, "full")]
+    assert list(specs) == [(1, 2, "full", "full"), (2, 2, "full", "full")]
 
+    faster.click()
     faster.click()
     faster.click()
     assert page.value == 2
     assert list(specs) == original
     grouped.value = 1
     assert page.value == 1
-    assert list(specs) == [(n, 2, sampling) for n in (1, 2) for sampling in ("full", "odd_odd")]
+    assert list(specs) == [(n, 2, sampling, "full") for n in (1, 2) for sampling in ("full", "odd_odd")]
+
+
+def test_gallery_reuses_the_computed_field_for_additional_sampling():
+    catalogue = RecipeCatalogue({}, lambda: PatternRecipe("or", 2, 0, 3))
+    with patch("ruglab.pager.sample_field", wraps=sample_field) as calculate:
+        gallery, specs = recipe_gallery(
+            catalogue, field_sizes=(8,), selected_samplings=("checkerboard_same",), preview_pixels=128
+        )
+        controls, preview = gallery.children
+        additional = next(row for row in controls.children if row.children[0].value == "Additional sampling")
+        next(box for box in additional.children[1:] if box.description == "checkerboard opposite").value = True
+        dimension, _, faster, _, _ = controls.children[-2].children
+        dimension.value = dict(dimension.options)["Additional sampling"]
+        faster.click()
+        assert calculate.call_count == 1
+        assert list(specs) == [(1, 8, "checkerboard_same", phase) for phase in ("full", "checkerboard_opposite")]
+        assert specs[1, 8, "checkerboard_same", "full"] == specs[1, 8, "checkerboard_same", "checkerboard_opposite"]
+        with Image.open(BytesIO(preview.value)) as image:
+            assert image.width > image.height
 
 
 @pytest.mark.integration

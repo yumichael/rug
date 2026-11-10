@@ -5,11 +5,15 @@ from copy import deepcopy
 from functools import lru_cache
 from itertools import product
 from math import prod
+from sys import getsizeof
 
 import ipywidgets as widgets
 
 from .exploration import FIELD_SIZES, RecipeCatalogue, recipe_description, sample_field
-from .previews import PreviewPanel, indexed_preview, preview_grid
+from .indexed import byte_lru
+from .plotting import indexed_order_palette
+from .previews import PreviewPanel, palette_preview, preview_grid
+from .sampling import resample_view
 from .specs import SAMPLINGS
 
 
@@ -42,12 +46,20 @@ def _option_label(name, value):
     return str(value).replace("_", " ")
 
 
+def _prepared_field_bytes(result):
+    field, palette = result
+    labels = field.values.labels
+    integers = labels.size * getsizeof(field.spec["M"]) if labels.dtype == object else 0
+    return field.values.nbytes + integers + palette.nbytes
+
+
 def recipe_gallery(
     catalogue: RecipeCatalogue,
     *,
     field_sizes=(128,),
     selected_combiners=None,
     selected_samplings=None,
+    selected_additional_samplings=("full",),
     transposed=False,
     page_size=2,
     initial_page=1,
@@ -55,10 +67,11 @@ def recipe_gallery(
     wrap_after=0,
     grouped_dimensions=1,
 ):
-    """Browse a recipe catalogue with field size and sampling as additional dimensions."""
-    if {"size", "sampling"} & catalogue.dimensions.keys():
-        raise ValueError("Size and sampling are supplied by the gallery")
-    dimensions = {**catalogue.dimensions, "size": FIELD_SIZES, "sampling": SAMPLINGS}
+    """Browse a recipe catalogue with field size and two sampling dimensions."""
+    view_dimensions = {"size": FIELD_SIZES, "additional_sampling": SAMPLINGS, "sampling": SAMPLINGS}
+    if view_dimensions.keys() & catalogue.dimensions.keys():
+        raise ValueError("Size and sampling dimensions are supplied by the gallery")
+    dimensions = {**catalogue.dimensions, **view_dimensions}
     names = tuple(dimensions)
     axis_labels = tuple("Field size" if name == "size" else name.replace("_", " ").capitalize() for name in names)
     axis_indices = tuple(range(len(names)))
@@ -68,7 +81,12 @@ def recipe_gallery(
     displayed_specs = {}
     page_anchor = None
 
-    selections = {"size": field_sizes, "combiner": selected_combiners, "sampling": selected_samplings}
+    selections = {
+        "size": field_sizes,
+        "combiner": selected_combiners,
+        "sampling": selected_samplings,
+        "additional_sampling": selected_additional_samplings,
+    }
     boxes = []
     for name, values in dimensions.items():
         selected = selections.get(name)
@@ -139,9 +157,15 @@ def recipe_gallery(
         }
         return catalogue.build(**parameters)
 
-    @lru_cache(maxsize=84)
-    def recipe_panel(recipe, size, sampling):
+    @byte_lru(84, 128 << 20, _prepared_field_bytes)
+    def prepared_field(recipe, size, sampling):
         field = sample_field(recipe, size, sampling)
+        return field, indexed_order_palette(field.values, field.spec["color"])
+
+    @lru_cache(maxsize=84)
+    def recipe_panel(recipe, size, sampling, additional_sampling):
+        field, palette = prepared_field(recipe, size, sampling)
+        indices = resample_view(field.values.indices, additional_sampling)
         spec = field.spec
         k, m = (spec[key].bit_length() - 1 for key in ("K", "M"))
         name = sampling.replace("_", " ")
@@ -150,7 +174,11 @@ def recipe_gallery(
             f"{field.zero_fraction:.1%} zero · {field.distinct_values:,} values\n"
             f"K=2^{k} · M=2^{m}"
         )
-        return PreviewPanel(indexed_preview(field.values, spec["color"], preview_pixels), caption), spec
+        if additional_sampling != "full":
+            height, width = indices.shape
+            additional_name = additional_sampling.replace("_", " ")
+            caption += f"\n↳ {additional_name} · {width}x{height}"
+        return PreviewPanel(palette_preview(indices, palette, preview_pixels), caption), spec
 
     def render_page(entries, transpose, wrap):
         rows = []
@@ -159,13 +187,18 @@ def recipe_gallery(
             headings = []
             panels = []
             for case in cases:
-                number = _product_rank(recipe_options, case[:-2]) + 1
-                recipe = recipe_at(case[:-2])
-                size = FIELD_SIZES[case[-2]]
-                sampling = SAMPLINGS[case[-1]]
+                recipe_position = case[: len(recipe_options)]
+                number = _product_rank(recipe_options, recipe_position) + 1
+                recipe = recipe_at(recipe_position)
+                size_index, additional_index, sampling_index = case[len(recipe_options) :]
+                size = FIELD_SIZES[size_index]
+                sampling = SAMPLINGS[sampling_index]
+                additional_sampling = SAMPLINGS[additional_index]
                 heading = f"#{number} {recipe.combiner.upper()} · {size}x{size}"
                 description = recipe_description(recipe, size)
-                panel, specs[number, size, sampling] = recipe_panel(recipe, size, sampling)
+                panel, specs[number, size, sampling, additional_sampling] = recipe_panel(
+                    recipe, size, sampling, additional_sampling
+                )
                 headings.append((heading, description))
                 panels.append(panel)
             if all(heading == headings[0] for heading in headings):
@@ -288,11 +321,11 @@ def recipe_gallery(
 
     def choice_row(axis):
         return widgets.HBox(
-            [widgets.Label(axis_labels[axis], layout=widgets.Layout(width="90px")), *boxes[axis]],
+            [widgets.Label(axis_labels[axis], layout=widgets.Layout(width="140px")), *boxes[axis]],
             layout=widgets.Layout(flex_flow="row wrap"),
         )
 
-    quick_names = ("size", "combiner", "sampling")
+    quick_names = ("size", "combiner", "sampling", "additional_sampling")
     quick_filters: list[widgets.HBox | widgets.Accordion] = [
         choice_row(names.index(name)) for name in quick_names if name in names
     ]

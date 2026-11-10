@@ -9,10 +9,10 @@ from ruglab.diagnostics import periods, signature
 from ruglab.exploration import PatternRecipe, PostRecipe, PrePowerStudyRecipe, sample_field
 from ruglab.indexed import IndexedValues, combination_table
 from ruglab.operations import clmul
-from ruglab.plotting import colorize, indexed_order_palette
+from ruglab.plotting import colorize, export, indexed_order_palette
 from ruglab.previews import indexed_preview
 from ruglab.research import family_pre_modulus, minimum_post_modulus, uniform_xor
-from ruglab.sampling import coordinates
+from ruglab.sampling import coordinates, resample_view
 
 
 @pytest.mark.parametrize(
@@ -282,6 +282,30 @@ def test_strip_preview_matches_full_bilinear_resize():
     rgb = Image.fromarray(palette[values.indices][..., :3])
     expected = rgb.resize((37, 37), Image.Resampling.BILINEAR)
     assert np.array_equal(np.asarray(indexed_preview(values, "gray", 37)), np.asarray(expected))
+
+
+@pytest.mark.parametrize(
+    "sampling,expected",
+    [
+        ("checkerboard_same", [[8, 5], [13, 10]]),
+        ("checkerboard_opposite", [[4, 1], [9, 6]]),
+        ("even_odd", [[4, 6], [12, 14]]),
+        ("odd_even", [[1, 3], [9, 11]]),
+    ],
+)
+def test_additional_sampling_selects_finished_cells(sampling, expected):
+    values = np.arange(16).reshape(4, 4)
+    assert resample_view(values, sampling).tolist() == expected
+
+
+def test_additional_sampling_export_preserves_base_colors(tmp_path):
+    field = sample_field(PatternRecipe("or", 2, 1, 3), 4, "checkerboard_opposite")
+    path = tmp_path / "diamond.png"
+    export(field.result, path, mode="order", additional_sampling="checkerboard_same")
+    colors = np.asarray(indexed_preview(field.values, field.spec["color"], 4))
+    expected = colors[[[2, 1], [3, 2]], [[0, 1], [1, 2]]]
+    with Image.open(path) as image:
+        assert np.array_equal(np.asarray(image), expected)
 
 
 @pytest.mark.parametrize(
