@@ -20,11 +20,11 @@ from ruglab.studio import *
 #
 # Each plot comes from one combination of the selected parameter values. The dimension order runs from slowest to fastest. Choose a dimension and click **Slower** or **Faster** to move it. Use **More parameter filters** to choose recipe values such as pre-powers or twists.
 #
-# **Group fastest** keeps the selected values of the fastest dimensions together when paging. It starts at 1 with Sampling as the fastest dimension. Set it to 0 to page by individual plots. With grouping off, plots fill across rows, or down columns with **Transpose grid** on.
+# **Group fastest** keeps the selected values of the fastest dimensions together when paging. It defaults to 0, so each plot counts individually. Plots fill across rows, or down columns with **Transpose grid** on.
 #
 # The checkerboard views run vertically along the operand grid's $x=y$ diagonal. Left-right reflection exchanges the two operands. The same-parity tile starts with its cell-centered mirror column at the left edge. The opposite-parity tile starts with the preceding row of its vertical period.
 #
-# **Additional sampling** selects cells from the finished field, using its top-left cell as the parity origin and keeping the original cell colors. **Full** keeps every cell. Both checkerboard options use the inscribed diamond and show it as a square with half the original side length. The moduli, repeat, zero share, and value count describe the original field. Move Additional sampling to the fastest position to compare its variants side by side with grouping on.
+# **Additional sampling** selects cells from the finished field, using its top-left cell as the parity origin and keeping the original cell colors. **Full** keeps every cell. Both checkerboard options use the inscribed diamond and show it as a square with half the original side length. The moduli, repeat, zero share, and value count describe the original field. Additional sampling is the fastest dimension by default.
 #
 # The pager remembers the first plot of the last page you navigated to. Filters, dimension order, and layout changes keep that plot as the anchor. If a filter hides it, the pager shows the next matching entry or the last available page.
 #
@@ -38,7 +38,7 @@ from ruglab.studio import *
 #
 
 # %%
-ROWS_PER_PAGE = 8
+PLOTS_PER_PAGE = 32
 PREVIEW_PIXELS = 384
 DEFAULT_FIELD_SIZES = (128,)
 DEFAULT_COMBINERS = ("or",)
@@ -51,8 +51,9 @@ gallery_view, displayed_specs = recipe_gallery(
     selected_combiners=DEFAULT_COMBINERS,
     selected_samplings=DEFAULT_SAMPLINGS,
     transposed=DEFAULT_TRANSPOSE,
-    page_size=ROWS_PER_PAGE,
+    page_size=PLOTS_PER_PAGE,
     preview_pixels=PREVIEW_PIXELS,
+    wrap_after=len(DEFAULT_SAMPLINGS),
 )
 display(gallery_view)
 
@@ -78,7 +79,7 @@ post_gallery_view, post_specs = recipe_gallery(
     selected_combiners=("xor",),
     field_sizes=(1024,),
     selected_samplings=("checkerboard_opposite",),
-    transposed=True,
+    transposed=False,
     page_size=15,
     initial_page=24,
     preview_pixels=512,
@@ -89,7 +90,7 @@ display(post_gallery_view)
 # %% [markdown]
 # ## Compare OR pre-powers
 #
-# With the default dimension order, each page runs through the even pre-powers 2 through 64 in the same positions. Read across the first row, then continue on the next row. The defaults show one field size and one sampling in four rows of eight. Keep **Columns per page** at 32 to keep each sweep together.
+# With the default dimension order, each page runs through the even pre-powers 2 through 64 in the same positions. Read across the first row, then continue on the next row. The defaults show one field size and one sampling in four rows of eight. Keep **Plots per page** at 32 to keep each sweep together.
 #
 # By default, pages change the post-polynomial first, then the twist. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. The post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling, additional_sampling]`.
 #
@@ -98,7 +99,7 @@ pre_power_gallery_view, pre_power_specs = recipe_gallery(
     pre_power_study_catalogue(),
     field_sizes=(128,),
     selected_samplings=("checkerboard_opposite",),
-    transposed=True,
+    transposed=False,
     page_size=32,
     wrap_after=8,
 )

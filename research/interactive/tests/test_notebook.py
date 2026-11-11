@@ -31,12 +31,14 @@ def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
         lambda twist, pre_power: PatternRecipe("or", pre_power, twist, 3),
     )
     gallery, specs = recipe_gallery(
-        catalogue, field_sizes=(2,), selected_samplings=("full", "odd_odd"), grouped_dimensions=0, preview_pixels=128
+        catalogue, field_sizes=(2,), selected_samplings=("full", "odd_odd"), preview_pixels=128
     )
     controls, preview = gallery.children
     dimension, slower, faster, grouped, _ = controls.children[-2].children
     _, _, page, density, transpose, wrap, status = controls.children[-1].children
     assert "8 plots" in status.value
+    assert grouped.value == 0
+    assert dimension.options[-1][0] == "Additional sampling"
     assert density.description == "Plots per page"
     assert wrap.description == "Plots per row"
     with Image.open(BytesIO(preview.value)) as image:
@@ -54,16 +56,14 @@ def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
     dimension.value = dict(dimension.options)["Sampling"]
     slower.click()
     slower.click()
-    slower.click()
     assert page.value == 1
     assert list(specs) == [(1, 2, "full", "full"), (2, 2, "full", "full")]
 
     faster.click()
     faster.click()
-    faster.click()
     assert page.value == 2
     assert list(specs) == original
-    grouped.value = 1
+    grouped.value = 2
     assert page.value == 1
     assert list(specs) == [(n, 2, sampling, "full") for n in (1, 2) for sampling in ("full", "odd_odd")]
 
@@ -79,12 +79,12 @@ def test_gallery_reuses_the_computed_field_for_additional_sampling():
         next(box for box in additional.children[1:] if box.description == "checkerboard opposite").value = True
         dimension, _, faster, _, _ = controls.children[-2].children
         dimension.value = dict(dimension.options)["Additional sampling"]
-        faster.click()
+        assert faster.disabled
         assert calculate.call_count == 1
         assert list(specs) == [(1, 8, "checkerboard_same", phase) for phase in ("full", "checkerboard_opposite")]
         assert specs[1, 8, "checkerboard_same", "full"] == specs[1, 8, "checkerboard_same", "checkerboard_opposite"]
         with Image.open(BytesIO(preview.value)) as image:
-            assert image.width > image.height
+            assert image.width > 2 * 128
 
 
 @pytest.mark.integration

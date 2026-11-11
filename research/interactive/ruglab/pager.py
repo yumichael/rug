@@ -65,10 +65,10 @@ def recipe_gallery(
     initial_page=1,
     preview_pixels=384,
     wrap_after=0,
-    grouped_dimensions=1,
+    grouped_dimensions=0,
 ):
     """Browse a recipe catalogue with field size and two sampling dimensions."""
-    view_dimensions = {"size": FIELD_SIZES, "additional_sampling": SAMPLINGS, "sampling": SAMPLINGS}
+    view_dimensions = {"size": FIELD_SIZES, "sampling": SAMPLINGS, "additional_sampling": SAMPLINGS}
     if view_dimensions.keys() & catalogue.dimensions.keys():
         raise ValueError("Size and sampling dimensions are supplied by the gallery")
     dimensions = {**catalogue.dimensions, **view_dimensions}
@@ -190,7 +190,7 @@ def recipe_gallery(
                 recipe_position = case[: len(recipe_options)]
                 number = _product_rank(recipe_options, recipe_position) + 1
                 recipe = recipe_at(recipe_position)
-                size_index, additional_index, sampling_index = case[len(recipe_options) :]
+                size_index, sampling_index, additional_index = case[len(recipe_options) :]
                 size = FIELD_SIZES[size_index]
                 sampling = SAMPLINGS[sampling_index]
                 additional_sampling = SAMPLINGS[additional_index]
