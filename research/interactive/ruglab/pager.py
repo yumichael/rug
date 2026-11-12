@@ -10,6 +10,9 @@ from sys import getsizeof
 from time import perf_counter
 
 import ipywidgets as widgets
+from IPython import get_ipython
+from IPython.display import HTML, DisplayHandle, display
+from IPython.display import Image as NotebookImage
 from ipywidgets.widgets.widget_bool import CheckboxStyle
 from PIL import Image
 
@@ -20,6 +23,87 @@ from .plotting import indexed_order_palette
 from .previews import PreviewPanel, palette_preview, preview_grid
 from .sampling import resample_view
 from .specs import SAMPLINGS
+
+
+def _schedule_stage(callback):
+    shell = get_ipython()
+    kernel = getattr(shell, "kernel", None)
+    loop = getattr(kernel, "io_loop", None)
+    if loop is None:
+        callback()
+    else:
+        loop.add_callback(callback)
+
+
+class _GalleryView(widgets.VBox):
+    """Display the preview independently of the widget frontend's startup."""
+
+    def __init__(self, controls, preview, load_hidden):
+        super().__init__([controls, preview], layout=widgets.Layout(width="100%"))
+        self._preview_displays: list[DisplayHandle] = []
+        self._load_hidden = load_hidden
+        self._hidden_loaded = False
+        self._visible_controls = widgets.VBox(controls.children[:-1], layout=controls.layout, _view_count=0)
+        self._hidden_view = None
+        self._status_displays: list[DisplayHandle] = []
+        self._status = controls.children[-1]
+        self._track_frontend = getattr(get_ipython(), "kernel", None) is not None
+        self._visible_controls.observe(self._update_loading, names="_view_count")
+        self._status.observe(self._update_loading, names="value")
+        preview.observe(self._update_preview, names="value")
+
+    def _native_preview(self):
+        data = bytes(self.children[1].value)
+        return NotebookImage(data=data) if data else HTML("")
+
+    def _loading_html(self):
+        visible_ready = (self._visible_controls._view_count or 0) > 0
+        hidden_ready = self._hidden_loaded and (self._hidden_view is None or (self._hidden_view._view_count or 0) > 0)
+        if not self._track_frontend or (visible_ready and hidden_ready):
+            return self._status.value
+        label = "Loading parameter filters…" if visible_ready else "Loading controls…"
+        return (
+            '<div role="status" aria-live="polite" style="box-sizing:border-box;height:30px;'
+            'display:flex;align-items:center;gap:10px;overflow:hidden;white-space:nowrap;'
+            'background:#fff3cd;color:#a66a00;border-left:4px solid #a66a00;'
+            'border-radius:4px;padding:4px 8px;font-size:13px">'
+            f'<strong>⏳ {label}</strong><progress aria-label="{label}" '
+            'style="width:80px;height:8px;margin:0"></progress></div>'
+        )
+
+    def _update_loading(self, change=None):
+        for handle in self._status_displays:
+            handle.update(HTML(self._loading_html()))
+
+    def _ipython_display_(self):  # noqa: PLW3201 - IPython rich-display protocol.
+        controls_slot = display(HTML(""), display_id=True)
+        status_slot = display(HTML(self._loading_html()), display_id=True)
+        if status_slot is not None:
+            self._status_displays.append(status_slot)
+        handle = display(self._native_preview(), display_id=True)
+        if handle is not None:
+            self._preview_displays.append(handle)
+
+        def load_hidden():
+            if not self._hidden_loaded:
+                self._hidden_view = self._load_hidden()
+                self._hidden_loaded = True
+                if self._hidden_view is not None:
+                    self._hidden_view.observe(self._update_loading, names="_view_count")
+                self._update_loading()
+
+        def show_controls():
+            if controls_slot is None:
+                display(self._visible_controls)
+            else:
+                controls_slot.update(self._visible_controls)
+            _schedule_stage(load_hidden)
+
+        _schedule_stage(show_controls)
+
+    def _update_preview(self, change):
+        for handle in self._preview_displays:
+            handle.update(self._native_preview())
 
 
 def _product_position(options, index):
@@ -133,21 +217,11 @@ def recipe_gallery(
         "sampling": selected_samplings,
         "additional_sampling": selected_additional_samplings,
     }
-    boxes = []
-    for name, values in dimensions.items():
-        selected = selections.get(name)
-        boxes.append(
-            tuple(
-                widgets.Checkbox(
-                    value=selected is None or value in selected,
-                    description=_option_label(name, value),
-                    indent=False,
-                    layout=checkbox_layout,
-                    style=checkbox_style,
-                )
-                for value in values
-            )
-        )
+    initial_choices = tuple(
+        tuple(i for i, value in enumerate(values) if selections.get(name) is None or value in selections[name])
+        for name, values in dimensions.items()
+    )
+    boxes = {}
 
     density_control = widgets.BoundedIntText(
         min=1,
@@ -287,7 +361,10 @@ def recipe_gallery(
         else:
             density_control.description = "Plots per page"
             wrap_control.description = "Plots per column" if transpose else "Plots per row"
-        selected = tuple(tuple(i for i, box in enumerate(axis) if box.value) for axis in boxes)
+        selected = tuple(
+            tuple(i for i, box in enumerate(boxes[axis]) if box.value) if axis in boxes else initial_choices[axis]
+            for axis in axis_indices
+        )
         split = len(order) - grouped
         entry_options = tuple(selected[i] for i in order[:split])
         panel_options = tuple(selected[i] for i in order[split:])
@@ -401,6 +478,18 @@ def recipe_gallery(
         redraw()
 
     def choice_row(axis):
+        boxes[axis] = tuple(
+            widgets.Checkbox(
+                value=i in initial_choices[axis],
+                description=_option_label(names[axis], value),
+                indent=False,
+                layout=checkbox_layout,
+                style=checkbox_style,
+            )
+            for i, value in enumerate(dimensions[names[axis]])
+        )
+        for box in boxes[axis]:
+            box.observe(redraw, names="value")
         return widgets.HBox(
             [widgets.Label(axis_labels[axis], layout=filter_label_layout), *boxes[axis]],
             layout=row_layout,
@@ -410,13 +499,22 @@ def recipe_gallery(
     quick_filters: list[widgets.HBox | widgets.Accordion] = [
         choice_row(names.index(name)) for name in quick_names if name in names
     ]
-    other_filters = [choice_row(i) for i, name in enumerate(names) if name not in quick_names]
-    if other_filters:
-        quick_filters.append(
-            widgets.Accordion(
-                children=[widgets.VBox(other_filters)], titles=["More parameter filters"], selected_index=None
-            )
+    other_axes = [i for i, name in enumerate(names) if name not in quick_names]
+    hidden_filters = widgets.VBox()
+    more_filters = None
+    if other_axes:
+        more_filters = widgets.Accordion(
+            children=[hidden_filters], titles=["More parameter filters · loading…"], selected_index=None
         )
+        quick_filters.append(more_filters)
+
+    def load_hidden():
+        if more_filters is None:
+            return None
+        body = widgets.VBox([choice_row(i) for i in other_axes], _view_count=0)
+        more_filters.children = (body,)
+        more_filters.set_title(0, "More parameter filters")
+        return body
 
     back_button.on_click(lambda button: setattr(page_control, "value", page_control.value - 1))
     next_button.on_click(lambda button: setattr(page_control, "value", page_control.value + 1))
@@ -425,7 +523,6 @@ def recipe_gallery(
     dimension_control.observe(update_order_controls, names="value")
     grouped_control.observe(change_grouping, names="value")
     for control in (
-        *[box for axis in boxes for box in axis],
         density_control,
         page_control,
         transpose_control,
@@ -450,5 +547,5 @@ def recipe_gallery(
     )
     update_order_controls()
     redraw()
-    gallery_view = widgets.VBox([controls, page_preview], layout=widgets.Layout(width="100%"))
+    gallery_view = _GalleryView(controls, page_preview, load_hidden)
     return gallery_view, displayed_specs

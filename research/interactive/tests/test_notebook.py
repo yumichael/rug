@@ -10,6 +10,9 @@ from unittest.mock import patch
 import ipywidgets as widgets
 import jupytext
 import pytest
+from IPython.core.formatters import DisplayFormatter
+from IPython.display import HTML
+from IPython.display import Image as NotebookImage
 from IPython.extensions.autoreload import AutoreloadMagics
 from jupyter_client.kernelspec import KernelSpecManager
 from jupyter_client.manager import KernelManager
@@ -21,6 +24,95 @@ from ruglab.exploration import PatternRecipe, PrePowerStudyRecipe, RecipeCatalog
 from ruglab.pager import recipe_gallery
 
 NOTEBOOKS = Path("notebooks")
+
+
+def _filter_rows(gallery):
+    return gallery.children[0].children
+
+
+def test_gallery_displays_native_png_and_updates_it_when_paging_or_filtering():
+    catalogue = RecipeCatalogue({"pre_power": (2, 4)}, lambda pre_power: PatternRecipe("or", pre_power, 0, 1))
+    gallery, _ = recipe_gallery(
+        catalogue, field_sizes=(8,), selected_samplings=("full",), page_size=1, preview_pixels=64
+    )
+    controls, preview = gallery.children
+    assert isinstance(controls.children[0], widgets.HBox)
+    more = next(control for control in controls.children if isinstance(control, widgets.Accordion))
+    assert not more.children[0].children
+    updates = []
+    handle = SimpleNamespace(update=updates.append)
+    controls_handle = SimpleNamespace(update=lambda value: None)
+    with patch(
+        "ruglab.pager.display", side_effect=[controls_handle, SimpleNamespace(update=lambda value: None), handle]
+    ) as publish:
+        assert DisplayFormatter().format(gallery) == ({}, {})
+        assert isinstance(publish.call_args_list[0].args[0], HTML)
+        assert more.children[0].children
+        native = publish.call_args_list[2].args[0]
+        assert isinstance(native, NotebookImage)
+        assert native.data == bytes(preview.value)
+        assert publish.call_args_list[2].kwargs == {"display_id": True}
+    controls.children[-2].children[2].value = 2
+    assert len(updates) == 1
+    assert isinstance(updates[-1], NotebookImage)
+    assert updates[-1].data == bytes(preview.value) != native.data
+    sizes = _filter_rows(gallery)[0].children[1:]
+    selected = next(box for box in sizes if box.value)
+    selected.value = False
+    assert isinstance(updates[-1], HTML) and updates[-1].data == ""
+    selected.value = True
+    assert isinstance(updates[-1], NotebookImage)
+    assert updates[-1].data == bytes(preview.value)
+
+
+def test_gallery_loads_preview_then_visible_controls_then_hidden_filters_automatically():
+    catalogue = RecipeCatalogue({"pre_power": (2, 4)}, lambda pre_power: PatternRecipe("or", pre_power, 0, 1))
+    gallery, specs = recipe_gallery(
+        catalogue, field_sizes=(8,), selected_samplings=("full",), page_size=1, preview_pixels=64
+    )
+    controls, preview = gallery.children
+    more = next(control for control in controls.children if isinstance(control, widgets.Accordion))
+    queued, visible, statuses = [], [], []
+    gallery._track_frontend = True
+    handles = [
+        SimpleNamespace(update=visible.append),
+        SimpleNamespace(update=statuses.append),
+        SimpleNamespace(update=lambda value: None),
+    ]
+    with (
+        patch("ruglab.pager._schedule_stage", side_effect=queued.append),
+        patch("ruglab.pager.display", side_effect=handles) as publish,
+    ):
+        DisplayFormatter().format(gallery)
+        assert isinstance(publish.call_args_list[2].args[0], NotebookImage)
+        loading = publish.call_args_list[1].args[0].data
+        assert "Loading controls…" in loading and "<progress " in loading
+        assert "height:30px" in loading
+        assert not visible and not more.children[0].children
+        assert len(queued) == 1
+        queued.pop(0)()
+        assert visible == [gallery._visible_controls]
+        assert gallery._visible_controls.children == controls.children[:-1]
+        assert "Loading controls…" in gallery._loading_html()
+        gallery._visible_controls._view_count = 1
+        assert "Loading parameter filters…" in statuses[-1].data
+        assert not more.children[0].children and len(queued) == 1
+        # Visible controls are usable while hidden filters are still pending.
+        controls.children[-2].children[2].value = 2
+        before_specs, before_preview = dict(specs), bytes(preview.value)
+        queued.pop(0)()
+        assert not queued and more.selected_index is None
+        assert more.get_title(0) == "More parameter filters"
+        assert "Loading parameter filters…" in statuses[-1].data
+        more.children[0]._view_count = 1
+        assert statuses[-1].data == controls.children[-1].value
+        assert "<progress " not in statuses[-1].data
+        powers = more.children[0].children[0].children[1:]
+        assert all(box.value for box in powers)
+        assert specs == before_specs and bytes(preview.value) == before_preview
+        powers[0].value = False
+        assert specs == before_specs
+        assert controls.children[-2].children[2].value == 1
 
 
 @pytest.mark.parametrize("source", ["explore.py", "reference.py"])
@@ -83,7 +175,7 @@ def test_gallery_reuses_the_computed_field_for_additional_sampling():
         controls, preview = gallery.children
         additional = next(
             row
-            for row in controls.children
+            for row in _filter_rows(gallery)
             if isinstance(row, widgets.HBox) and row.children[0].value == "Additional sampling"
         )
         next(box for box in additional.children[1:] if box.description == "checkerboard opposite").value = True
@@ -201,7 +293,7 @@ def test_gallery_status_for_empty_and_oversized_pages():
     controls, preview = gallery.children
     activity = controls.children[-1]
     sizes = next(
-        row for row in controls.children if isinstance(row, widgets.HBox) and row.children[0].value == "Field size"
+        row for row in _filter_rows(gallery) if isinstance(row, widgets.HBox) and row.children[0].value == "Field size"
     )
     selected_size = next(box for box in sizes.children[1:] if box.value)
     selected_size.value = False

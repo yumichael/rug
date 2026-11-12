@@ -81,6 +81,8 @@ The recipe galleries have a **Minimum M (displayed period)** checkbox. It choose
 
 The XOR polynomial gallery draws at its original stratum precision before applying this option. Minimizing can map several draws to the same pattern, so uniformity of the original draws does not imply uniformity over the minimized patterns. The option does not change which polynomial was drawn.
 
+Recipe galleries load automatically in stages: the native preview is published first, visible controls are shown on the next kernel event-loop turn, and hidden recipe filters are constructed on a subsequent turn. No expansion is needed to trigger loading. The fixed-height status row shows **Loading controls…**, then **Loading parameter filters…**, until the widget frontend reports those views ready. Page and filter changes update the same native image.
+
 Each recipe gallery has a compact status bar below its paging controls, immediately above the preview. Its height stays fixed during updates; long details are available on hover. Amber **Calculating and rendering…** with an animated progress bar means an update is running; the previous preview can remain visible during that time. Green **Ready** shows the update number and elapsed time, and reports **Preview unchanged** when the resulting image is identical. Empty selections, oversized pages, failures, and interruptions show their own status.
 
 ## Native numerical specifications
