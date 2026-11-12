@@ -6,7 +6,7 @@ import pytest
 from PIL import Image
 from ruglab import Sweep, dsl, evaluate, gallery, paired
 from ruglab.diagnostics import periods, signature
-from ruglab.exploration import PatternRecipe, PostRecipe, PrePowerStudyRecipe, sample_field
+from ruglab.exploration import PatternRecipe, PeriodTargetError, PostRecipe, PrePowerStudyRecipe, sample_field
 from ruglab.indexed import IndexedValues, combination_table
 from ruglab.operations import clmul
 from ruglab.plotting import colorize, export, indexed_order_palette
@@ -266,6 +266,43 @@ def test_post_polynomial_draw_keeps_the_reference_period(family, valuation):
     assert periods(field.result, certified_torus=True) == (16, 16)
     bigger = evaluate({**field.spec, "shape": [32, 32]})
     assert np.array_equal(bigger.values, np.tile(field.result.values, (2, 2)))
+
+
+@pytest.mark.parametrize(
+    "recipe,size,sampling,expected_modulus",
+    [
+        (PatternRecipe("or", 2, 0, 3), 8, "full", 16),
+        (PrePowerStudyRecipe(2, 0, 2), 8, "full", 16),
+        (PrePowerStudyRecipe(2, 0, 5), 8, "checkerboard_opposite", 16),
+        (PostRecipe("xor", "even only", 4, 0, 0), 16, "checkerboard_opposite", 64),
+        (PostRecipe("xor", "even only", 60, 0, 0), 8, "checkerboard_opposite", 32),
+        (PostRecipe("xor", "even power", 1, 0, 0), 8, "checkerboard_same", 64),
+        (PrePowerStudyRecipe(64, 13, 7), 16, "even_even", 2**74),
+    ],
+)
+def test_gallery_minimum_modulus_matches_native_periods(recipe, size, sampling, expected_modulus):
+    original = sample_field(recipe, size, sampling)
+    field = sample_field(recipe, size, sampling, minimum_post_modulus=True)
+    assert field.spec["K"] == original.spec["K"]
+    assert field.spec["M"] == expected_modulus
+    exact = evaluate(field.spec)
+    assert np.array_equal(field.result.values, exact.values)
+    assert field.distinct_values == len(set(exact.values.flat))
+    assert field.zero_fraction == np.count_nonzero(exact.values == 0) / exact.values.size
+    assert periods(exact, certified_torus=True) == (size, size)
+    smaller = evaluate({**field.spec, "M": expected_modulus // 2})
+    assert periods(smaller, certified_torus=True) != (size, size)
+    larger_window = evaluate({**field.spec, "shape": [2 * size, 2 * size]})
+    assert np.array_equal(larger_window.values, np.tile(exact.values, (2, 2)))
+
+
+@pytest.mark.parametrize(
+    "recipe,sampling",
+    [(PatternRecipe("and", 16, 0, 7), "even_odd"), (PrePowerStudyRecipe(2, 0, 0), "odd_even")],
+)
+def test_gallery_minimum_modulus_rejects_unattainable_periods(recipe, sampling):
+    with pytest.raises(PeriodTargetError, match="No M gives 16x16 axis periods"):
+        sample_field(recipe, 16, sampling, minimum_post_modulus=True)
 
 
 def test_indexed_combination_preserves_unsigned_products():

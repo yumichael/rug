@@ -264,6 +264,109 @@ class SampledField:
         )
 
 
+class PeriodTargetError(ValueError):
+    """The fixed recipe cannot attain the displayed axis periods."""
+
+
+def _has_full_axis_periods(indices, outputs=None):
+    """Exclude both half-periods on the catalogue's known dyadic torus."""
+    if outputs is None:
+        remap = None
+    else:
+        _, remap = np.unique(outputs, return_inverse=True)
+    half = indices.shape[0] // 2
+    for left, right in ((indices[:half], indices[half:]), (indices[:, :half], indices[:, half:])):
+        for start in range(0, len(left), _BLOCK_ROWS):
+            a, b = left[start : start + _BLOCK_ROWS], right[start : start + _BLOCK_ROWS]
+            if not np.array_equal(a if remap is None else remap[a], b if remap is None else remap[b]):
+                break
+        else:
+            return False
+    return True
+
+
+def _post_residues(inputs, post, modulus):
+    """Evaluate a catalogue post-operation without constructing large powers."""
+    name, arg = post[0]
+    if name == "pow":
+        stride, coefficients = arg, (0, 1)
+    else:
+        coefficients = arg
+        stride = gcd(*(i for i, coefficient in enumerate(coefficients) if coefficient)) or 1
+        coefficients = coefficients[::stride]
+    mask = modulus - 1
+    if modulus <= 1 << 64:
+        values = (
+            np.asarray(inputs & mask, dtype=np.uint64)
+            if inputs.dtype == object
+            else inputs.astype(np.uint64, copy=False) & np.uint64(mask)
+        )
+        if stride > 1:
+            values = _power_uint64(values, stride) & mask
+        outputs = np.zeros_like(values)
+        for coefficient in reversed(coefficients):
+            outputs = (outputs * values + (coefficient & mask)) & mask
+        return outputs
+    values = inputs.astype(object)
+    if stride > 1:
+        values = operation(values, "pow", stride, modulus=modulus)
+    return operation(values, "poly", coefficients, modulus=modulus) % modulus
+
+
+def _post_difference_bound(inputs, post):
+    """Bound the bit length of every nonzero integer output difference."""
+    name, arg = post[0]
+    width = max(1, int(inputs[-1]).bit_length())
+    if name == "pow":
+        return width * arg + 2
+    return width * (len(arg) - 1) + max(abs(c).bit_length() for c in arg) + len(arg).bit_length() + 2
+
+
+def _minimum_period_values(base, outputs, spec):
+    size = base.indices.shape[0]
+    message = f"No M gives {size}x{size} axis periods at K={spec['K']}."
+    if not _has_full_axis_periods(base.indices):
+        raise PeriodTargetError(message)
+    high = spec["M"].bit_length() - 1
+    if not _has_full_axis_periods(base.indices, outputs):
+        bound = _post_difference_bound(base.labels, spec["post"])
+        while high < bound:
+            high = min(bound, max(high + 1, 2 * high))
+            outputs = _post_residues(base.labels, spec["post"], 1 << high)
+            if _has_full_axis_periods(base.indices, outputs):
+                break
+        else:
+            raise PeriodTargetError(message)
+    low = 0
+    # Reducing a polynomial result only adds periods. The upper residues
+    # therefore suffice for every smaller candidate modulus.
+    while high - low > 1:
+        middle = (low + high) // 2
+        if _has_full_axis_periods(base.indices, outputs & ((1 << middle) - 1)):
+            high = middle
+        else:
+            low = middle
+    modulus = 1 << high
+    return outputs & (modulus - 1), modulus
+
+
+def _finish_field(base, outputs, counts, spec, repeat, minimum_post_modulus):
+    if minimum_post_modulus:
+        outputs, modulus = _minimum_period_values(base, outputs, spec)
+        spec = {**spec, "M": modulus}
+    zeros = int(counts[outputs == 0].sum())
+    labels, inverse = np.unique(outputs, return_inverse=True)
+    indices = base.indices
+    if len(labels) == len(outputs):
+        labels = outputs
+    else:
+        indices = inverse.astype(np.min_scalar_type(len(labels) - 1))[indices]
+        repeat = "constant" if len(labels) == 1 else (_repeat_shape(indices) or "smaller tile")
+    if spec["sampling"] == "odd_even":
+        indices = indices.T
+    return SampledField(IndexedValues(labels, indices), spec, repeat, zeros / indices.size)
+
+
 @lru_cache(maxsize=64)
 def _operand_table(q, twist, K, coordinates):
     mask = K - 1
@@ -388,7 +491,7 @@ def _powered_labels(q, twist, K, combiner, size, sampling, power):
     return powers, modulus
 
 
-def _sample_post_field(recipe, size, sampling):
+def _sample_post_field(recipe, size, sampling, minimum_post_modulus):
     coefficients, modulus = recipe.polynomial(size)
     combiner = recipe.combiner
     K = (
@@ -398,24 +501,8 @@ def _sample_post_field(recipe, size, sampling):
     )
     label_sampling = "even_odd" if sampling == "odd_even" else sampling
     base, repeat, counts = _base_field(1, 0, K, combiner, size, label_sampling)
-    inputs = base.labels.astype(np.uint64)
-    mask = modulus - 1
-    stride = gcd(*(i for i, coefficient in enumerate(coefficients) if coefficient))
-    if stride > 1:
-        inputs = _power_uint64(inputs, stride) & mask
-    outputs = np.zeros_like(inputs)
-    for coefficient in reversed(coefficients[::stride]):
-        outputs = (outputs * inputs + (coefficient & mask)) & mask
-    zeros = int(counts[outputs == 0].sum())
-    labels, inverse = np.unique(outputs, return_inverse=True)
-    indices = base.indices
-    if len(labels) == len(outputs):
-        labels = outputs
-    else:
-        indices = inverse.astype(np.min_scalar_type(len(labels) - 1))[indices]
-        repeat = "constant" if len(labels) == 1 else (_repeat_shape(indices) or "smaller tile")
-    if sampling == "odd_even":
-        indices = indices.T
+    post = [["poly", list(coefficients)]]
+    outputs = _post_residues(base.labels, post, modulus)
     spec = {
         "n": size,
         "K": K,
@@ -423,12 +510,12 @@ def _sample_post_field(recipe, size, sampling):
         "pre": [],
         "sampling": sampling,
         "combine": combiner,
-        "post": [["poly", list(coefficients)]],
+        "post": post,
         "color": COMBINER_COLORS[combiner],
     }
     if sampling.startswith("checkerboard"):
         spec["checkerboard_axis"] = "vertical"
-    return SampledField(IndexedValues(labels, indices), spec, repeat, zeros / indices.size)
+    return _finish_field(base, outputs, counts, spec, repeat, minimum_post_modulus)
 
 
 def _pre_modulus(q, size, sampling, combiner):
@@ -470,7 +557,7 @@ def _distinct_polynomial(inputs, coefficients):
     return outputs % modulus, modulus
 
 
-def _sample_pre_power_study(recipe, size, sampling):
+def _sample_pre_power_study(recipe, size, sampling, minimum_post_modulus):
     q = recipe.pre_power
     K = _pre_modulus(q, size, sampling, recipe.combiner)
     twist = _study_twist(_STUDY_TWISTS[recipe.twist_index])
@@ -486,8 +573,8 @@ def _sample_pre_power_study(recipe, size, sampling):
         table_twist = (0, *((a << (shift * i)) % table_K for i, a in enumerate(twist[1:]))) if twist else ()
         label_sampling = "full"
     base, repeat, counts = _base_field(q, table_twist, table_K, recipe.combiner, size, label_sampling)
-    labels, modulus = _distinct_polynomial(base.labels.astype(object) << shift, post)
-    indices = base.indices.T if sampling == "odd_even" else base.indices
+    base = IndexedValues(base.labels.astype(object) << shift, base.indices)
+    labels, modulus = _distinct_polynomial(base.labels, post)
     spec = {
         "n": size,
         "K": K,
@@ -500,20 +587,29 @@ def _sample_pre_power_study(recipe, size, sampling):
     }
     if sampling.startswith("checkerboard"):
         spec["checkerboard_axis"] = "vertical"
-    zeros = int(counts[0]) if base.labels[0] == 0 else 0
-    return SampledField(IndexedValues(labels, indices), spec, repeat, zeros / indices.size)
+    return _finish_field(base, labels, counts, spec, repeat, minimum_post_modulus)
 
 
-def sample_field(recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe, size: int, sampling: str) -> SampledField:
-    """Build one sampled field with its own pre- and post-moduli."""
+def sample_field(
+    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe,
+    size: int,
+    sampling: str,
+    *,
+    minimum_post_modulus=False,
+) -> SampledField:
+    """Build a field, optionally minimizing M for exact size-by-size axis periods.
+
+    Minimum mode keeps K fixed and raises PeriodTargetError if the recipe
+    cannot attain both displayed periods.
+    """
     if size not in FIELD_SIZES:
         raise ValueError("Choose a power-of-two field size from 2 to 4096 cells")
     if sampling not in SAMPLINGS:
         raise ValueError("Unknown sampling: " + sampling)
     if isinstance(recipe, PostRecipe):
-        return _sample_post_field(recipe, size, sampling)
+        return _sample_post_field(recipe, size, sampling, minimum_post_modulus)
     if isinstance(recipe, PrePowerStudyRecipe):
-        return _sample_pre_power_study(recipe, size, sampling)
+        return _sample_pre_power_study(recipe, size, sampling, minimum_post_modulus)
     q = recipe.pre_power
     if q < 2 or q % 2 or recipe.post_power < 1:
         raise ValueError("Use a positive even pre-power and a positive post-power")
@@ -540,6 +636,4 @@ def sample_field(recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe, size:
     base, repeat, counts = _base_field(q, recipe.twist, K, recipe.combiner, size, label_sampling)
     powers, modulus = _powered_labels(q, recipe.twist, K, recipe.combiner, size, label_sampling, recipe.post_power)
     spec.update(M=modulus, post=[["pow", recipe.post_power]])
-    indices = base.indices.T if sampling == "odd_even" else base.indices
-    zeros = int(counts[0]) if base.labels[0] == 0 else 0
-    return SampledField(IndexedValues(powers, indices), spec, repeat, zeros / indices.size)
+    return _finish_field(base, powers, counts, spec, repeat, minimum_post_modulus)

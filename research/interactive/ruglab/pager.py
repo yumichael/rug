@@ -8,8 +8,9 @@ from math import prod
 from sys import getsizeof
 
 import ipywidgets as widgets
+from PIL import Image
 
-from .exploration import FIELD_SIZES, RecipeCatalogue, recipe_description, sample_field
+from .exploration import FIELD_SIZES, PeriodTargetError, RecipeCatalogue, recipe_description, sample_field
 from .indexed import byte_lru
 from .plotting import indexed_order_palette
 from .previews import PreviewPanel, palette_preview, preview_grid
@@ -66,6 +67,7 @@ def recipe_gallery(
     preview_pixels=384,
     wrap_after=0,
     grouped_dimensions=0,
+    minimum_post_modulus=False,
 ):
     """Browse a recipe catalogue with field size and two sampling dimensions."""
     view_dimensions = {"size": FIELD_SIZES, "sampling": SAMPLINGS, "additional_sampling": SAMPLINGS}
@@ -116,6 +118,13 @@ def recipe_gallery(
         indent=False,
         layout=widgets.Layout(width="135px"),
     )
+    minimum_control = widgets.Checkbox(
+        value=minimum_post_modulus,
+        description="Minimum M (displayed period)",
+        tooltip="Use the smallest power of two giving the field size as both least axis periods, with K fixed.",
+        indent=False,
+        layout=widgets.Layout(width="auto"),
+    )
     wrap_control = widgets.BoundedIntText(
         min=0,
         max=max(16, page_size, wrap_after),
@@ -158,13 +167,18 @@ def recipe_gallery(
         return catalogue.build(**parameters)
 
     @byte_lru(84, 128 << 20, _prepared_field_bytes)
-    def prepared_field(recipe, size, sampling):
-        field = sample_field(recipe, size, sampling)
+    def prepared_field(recipe, size, sampling, minimum_m):
+        field = sample_field(recipe, size, sampling, minimum_post_modulus=minimum_m)
         return field, indexed_order_palette(field.values, field.spec["color"])
 
     @lru_cache(maxsize=84)
-    def recipe_panel(recipe, size, sampling, additional_sampling):
-        field, palette = prepared_field(recipe, size, sampling)
+    def recipe_panel(recipe, size, sampling, additional_sampling, minimum_m):
+        try:
+            field, palette = prepared_field(recipe, size, sampling, minimum_m)
+        except PeriodTargetError as error:
+            detail = str(error).replace(" at K=", "\nat K=")
+            caption = f"{sampling.replace('_', ' ')} · unavailable\n{detail}"
+            return PreviewPanel(Image.new("RGB", (preview_pixels, preview_pixels), "#f4f4f4"), caption), None
         indices = resample_view(field.values.indices, additional_sampling)
         spec = field.spec
         k, m = (spec[key].bit_length() - 1 for key in ("K", "M"))
@@ -180,7 +194,7 @@ def recipe_gallery(
             caption += f"\n↳ {additional_name} · {width}x{height}"
         return PreviewPanel(palette_preview(indices, palette, preview_pixels), caption), spec
 
-    def render_page(entries, transpose, wrap):
+    def render_page(entries, transpose, wrap, minimum_m):
         rows = []
         specs = {}
         for cases in entries:
@@ -196,9 +210,9 @@ def recipe_gallery(
                 additional_sampling = SAMPLINGS[additional_index]
                 heading = f"#{number} {recipe.combiner.upper()} · {size}x{size}"
                 description = recipe_description(recipe, size)
-                panel, specs[number, size, sampling, additional_sampling] = recipe_panel(
-                    recipe, size, sampling, additional_sampling
-                )
+                panel, spec = recipe_panel(recipe, size, sampling, additional_sampling, minimum_m)
+                if spec is not None:
+                    specs[number, size, sampling, additional_sampling] = spec
                 headings.append((heading, description))
                 panels.append(panel)
             if all(heading == headings[0] for heading in headings):
@@ -284,7 +298,9 @@ def recipe_gallery(
         render = cached_page if page_panels <= 21 else render_page
         # The renderer puts entries in columns to fill a flat page across rows.
         entries_as_columns = transpose if grouped else not transpose
-        png, specs = render(tuple(page_entries), entries_as_columns, wrap_control.value)
+        png, specs = render(tuple(page_entries), entries_as_columns, wrap_control.value, minimum_control.value)
+        if minimum_control.value and len(specs) < page_panels:
+            page_status.value += f" · {page_panels - len(specs)} unavailable"
         displayed_specs.clear()
         displayed_specs.update(deepcopy(specs))
         page_preview.value = png
@@ -349,11 +365,13 @@ def recipe_gallery(
         page_control,
         transpose_control,
         wrap_control,
+        minimum_control,
     ):
         control.observe(redraw, names="value")
     controls = widgets.VBox(
         [
             *quick_filters,
+            minimum_control,
             widgets.HBox(
                 [dimension_control, slower_button, faster_button, grouped_control, order_label],
                 layout=widgets.Layout(flex_flow="row wrap"),

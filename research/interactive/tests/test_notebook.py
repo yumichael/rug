@@ -4,6 +4,7 @@ from io import BytesIO
 from pathlib import Path
 from unittest.mock import patch
 
+import ipywidgets as widgets
 import jupytext
 import pytest
 from jupyter_client.kernelspec import KernelSpecManager
@@ -11,7 +12,7 @@ from jupyter_client.manager import KernelManager
 from nbclient import NotebookClient
 from nbformat.v4 import new_code_cell
 from PIL import Image
-from ruglab.exploration import PatternRecipe, RecipeCatalogue, sample_field
+from ruglab.exploration import PatternRecipe, PrePowerStudyRecipe, RecipeCatalogue, sample_field
 from ruglab.pager import recipe_gallery
 
 NOTEBOOKS = Path("notebooks")
@@ -85,6 +86,55 @@ def test_gallery_reuses_the_computed_field_for_additional_sampling():
         assert specs[1, 8, "checkerboard_same", "full"] == specs[1, 8, "checkerboard_same", "checkerboard_opposite"]
         with Image.open(BytesIO(preview.value)) as image:
             assert image.width > 2 * 128
+
+
+def test_gallery_minimum_modulus_toggle_preserves_page_and_additional_sampling():
+    catalogue = RecipeCatalogue({"pre_power": (2, 4)}, lambda pre_power: PrePowerStudyRecipe(pre_power, 0, 2))
+    gallery, specs = recipe_gallery(
+        catalogue,
+        field_sizes=(8,),
+        selected_samplings=("full",),
+        selected_additional_samplings=("full", "checkerboard_same"),
+        page_size=2,
+        preview_pixels=64,
+    )
+    controls, preview = gallery.children
+    minimum = next(c for c in controls.children if isinstance(c, widgets.Checkbox))
+    page = controls.children[-1].children[2]
+    original = dict(specs)
+    original_preview = bytes(preview.value)
+    assert {s["M"] for s in specs.values()} == {128}
+    minimum.value = True
+    assert list(specs) == list(original)
+    assert {s["M"] for s in specs.values()} == {16}
+    assert bytes(preview.value) != original_preview
+    minimum.value = False
+    assert specs == original
+    assert bytes(preview.value) == original_preview
+    page.value = 2
+    second_page = list(specs)
+    minimum.value = True
+    assert page.value == 2
+    assert list(specs) == second_page
+    assert {s["M"] for s in specs.values()} == {32}
+
+
+def test_gallery_marks_unattainable_minimum_modulus_panels():
+    catalogue = RecipeCatalogue({}, lambda: PatternRecipe("and", 16, 0, 7))
+    gallery, specs = recipe_gallery(
+        catalogue,
+        field_sizes=(16,),
+        selected_samplings=("even_odd",),
+        minimum_post_modulus=True,
+        preview_pixels=64,
+    )
+    controls, preview = gallery.children
+    assert not specs
+    assert "1 unavailable" in controls.children[-1].children[-1].value
+    assert bytes(preview.value).startswith(b"\x89PNG")
+    minimum = next(c for c in controls.children if isinstance(c, widgets.Checkbox))
+    minimum.value = False
+    assert len(specs) == 1
 
 
 @pytest.mark.integration

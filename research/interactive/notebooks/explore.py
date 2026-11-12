@@ -30,7 +30,9 @@ from ruglab.studio import *
 #
 # Use the wrap control to set how many entries fit per row or column. Set it to 0 for a single block.
 #
-# Each panel uses a pre-modulus chosen for its sampling and a post-modulus computed from its own combined values. The post-modulus is the smallest power of two that keeps distinct values separate and preserves every nonzero value. Titles report both moduli, the zero share, and the repeat. A diamond has half the area of the displayed square. A smaller tile can occur when one operand branch repeats sooner, or when the combiner erases variation. Constant fields are shown too.
+# By default, each panel uses a pre-modulus chosen for its sampling and a post-modulus computed from its own combined values. The post-modulus is the smallest power of two that keeps distinct values separate and preserves every nonzero value. Titles report both moduli, the zero share, and the repeat. A diamond has half the area of the displayed square. A smaller tile can occur when one operand branch repeats sooner, or when the combiner erases variation. Constant fields are shown too.
+#
+# **Minimum M (displayed period)** uses the smallest power of two giving the field size as both least axis periods, with the pre-modulus and operations fixed. It can merge value groups or create zeros. Recipes that cannot attain those periods show an unavailable panel. Additional sampling keeps the resulting field's modulus and colors. The option is off by default in each recipe gallery; pass `minimum_post_modulus=True` to start with it enabled.
 #
 # `PREVIEW_PIXELS` sets the thumbnail width in pixels. The field size control sets the actual grid used for the calculations and export, with power-of-two side lengths from 2 to 4096.
 #
@@ -69,6 +71,8 @@ display(gallery_view)
 # The draw is uniform within each sampled family and precision on the odd XOR inputs. Each round gives those strata equal space in the gallery. Single powers and stabilized even sums cycle through their finite classes before repeating. Other families draw with replacement. Overlaps can occur across strata and under other samplings. The opposite-parity checkerboard is the reference for the full-period test at sizes of four cells and up. Other samplings and combiners show what the same polynomial does to their inputs.
 #
 # See the [polynomial period and sampling theory](../../theory/2026-11-02-xor-polynomial-period/2026-11-02-xor-polynomial-period.md) and the [order-class analysis](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#6-no-pre-operation-xor-when-order-and-shift-classes-coincide). The gallery colors cells by rank. The research proves uniform order draws for the same-valuation families at a fixed precision. The unrestricted and even-only draws cover numerical shift classes and may repeat an ordering. Use `post_specs[number, size, sampling, additional_sampling]["post"]` to inspect the exact polynomial in ascending coefficient order.
+#
+# **Minimum M** is applied after drawing the polynomial, using the selected sampling's periods. The stratum label still describes the original draw precision; the panel reports the evaluated $M$. Different draws can become identical after minimizing, so the resulting minimum-modulus patterns need not be sampled uniformly.
 #
 # %%
 POST_DRAWS_PER_STRATUM = 24
@@ -135,7 +139,7 @@ plt.show()
 #
 # With the default dimension order, each page runs through the even pre-powers 2 through 64 in the same positions. Read across the first row, then continue on the next row. The defaults show one field size and one sampling in four rows of eight. Keep **Plots per page** at 32 to keep each sweep together.
 #
-# By default, pages change the post-polynomial first, then the twist. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. The post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling, additional_sampling]`.
+# By default, pages change the post-polynomial first, then the twist. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. With **Minimum M** off, the post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling, additional_sampling]`.
 #
 # %%
 pre_power_gallery_view, pre_power_specs = recipe_gallery(

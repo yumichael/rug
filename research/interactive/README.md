@@ -77,6 +77,10 @@ Preset files use JSONC, which allows `//` and `/* ... */` comments and trailing 
 
 The examples are adaptations of the existing JSON parameter-grid viewer and the five-section DSL experiments, inspected November 4, 2026. Their dependencies and useful numerical operations have been extracted into this repository. The workbench does not import the original notebooks, their common imports module, or their output directories.
 
+The recipe galleries have a **Minimum M (displayed period)** checkbox. It chooses the smallest power-of-two post-modulus giving the displayed side length as both least axis periods, with the recipe's pre-modulus and operations fixed. Value groups may merge and nonzero values may become zero. A recipe that cannot attain those periods shows an unavailable panel and has no entry in the returned specifications. Additional sampling retains the base field's chosen modulus and colors. Set `minimum_post_modulus=True` in `recipe_gallery(...)` or `sample_field(...)` to enable the policy initially; `sample_field` raises `ValueError` when the target is unattainable. The default keeps each catalogue's existing modulus rule.
+
+The XOR polynomial gallery draws at its original stratum precision before applying this option. Minimizing can map several draws to the same pattern, so uniformity of the original draws does not imply uniformity over the minimized patterns. The option does not change which polynomial was drawn.
+
 ## Native numerical specifications
 
 ```python
