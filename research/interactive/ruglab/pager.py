@@ -10,6 +10,7 @@ from sys import getsizeof
 from time import perf_counter
 
 import ipywidgets as widgets
+from ipywidgets.widgets.widget_bool import CheckboxStyle
 from PIL import Image
 
 from . import exploration
@@ -84,6 +85,11 @@ def recipe_gallery(
     options = tuple(tuple(range(len(values))) for values in dimensions.values())
     recipe_options = options[: len(catalogue.dimensions)]
     displayed_specs = {}
+    # Static presentation models are shared; each checkbox keeps its own value.
+    checkbox_layout = widgets.Layout(width="auto")
+    checkbox_style = CheckboxStyle()
+    filter_label_layout = widgets.Layout(width="140px")
+    row_layout = widgets.Layout(flex_flow="row wrap")
     page_anchor = None
     update_number = 0
     activity_status = widgets.HTML(
@@ -136,7 +142,8 @@ def recipe_gallery(
                     value=selected is None or value in selected,
                     description=_option_label(name, value),
                     indent=False,
-                    layout=widgets.Layout(width="auto"),
+                    layout=checkbox_layout,
+                    style=checkbox_style,
                 )
                 for value in values
             )
@@ -154,6 +161,7 @@ def recipe_gallery(
         description="Transpose grid",
         tooltip="Fill down columns when ungrouped, or turn each group into a column.",
         indent=False,
+        style=checkbox_style,
         layout=widgets.Layout(width="135px"),
     )
     minimum_control = widgets.Checkbox(
@@ -161,7 +169,8 @@ def recipe_gallery(
         description="Minimum M (displayed period)",
         tooltip="Use the smallest power of two giving the field size as both least axis periods, with K fixed.",
         indent=False,
-        layout=widgets.Layout(width="auto"),
+        layout=checkbox_layout,
+        style=checkbox_style,
     )
     wrap_control = widgets.BoundedIntText(
         min=0,
@@ -393,8 +402,8 @@ def recipe_gallery(
 
     def choice_row(axis):
         return widgets.HBox(
-            [widgets.Label(axis_labels[axis], layout=widgets.Layout(width="140px")), *boxes[axis]],
-            layout=widgets.Layout(flex_flow="row wrap"),
+            [widgets.Label(axis_labels[axis], layout=filter_label_layout), *boxes[axis]],
+            layout=row_layout,
         )
 
     quick_names = ("size", "combiner", "sampling", "additional_sampling")
@@ -430,11 +439,11 @@ def recipe_gallery(
             minimum_control,
             widgets.HBox(
                 [dimension_control, slower_button, faster_button, grouped_control, order_label],
-                layout=widgets.Layout(flex_flow="row wrap"),
+                layout=row_layout,
             ),
             widgets.HBox(
                 [back_button, next_button, page_control, density_control, transpose_control, wrap_control, page_status],
-                layout=widgets.Layout(flex_flow="row wrap"),
+                layout=row_layout,
             ),
             activity_status,
         ]
