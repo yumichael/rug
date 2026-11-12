@@ -22,7 +22,7 @@ from .indexed import byte_lru
 from .plotting import indexed_order_palette
 from .previews import PreviewPanel, palette_preview, preview_grid
 from .sampling import resample_view
-from .specs import SAMPLINGS
+from .specs import ADDITIONAL_SAMPLINGS, SAMPLINGS
 
 
 def _schedule_stage(callback):
@@ -158,7 +158,7 @@ def recipe_gallery(
     minimum_post_modulus=False,
 ):
     """Browse a recipe catalogue with field size and two sampling dimensions."""
-    view_dimensions = {"size": FIELD_SIZES, "sampling": SAMPLINGS, "additional_sampling": SAMPLINGS}
+    view_dimensions = {"size": FIELD_SIZES, "sampling": SAMPLINGS, "additional_sampling": ADDITIONAL_SAMPLINGS}
     if view_dimensions.keys() & catalogue.dimensions.keys():
         raise ValueError("Size and sampling dimensions are supplied by the gallery")
     dimensions = {**catalogue.dimensions, **view_dimensions}
@@ -328,7 +328,7 @@ def recipe_gallery(
                 size_index, sampling_index, additional_index = case[len(recipe_options) :]
                 size = FIELD_SIZES[size_index]
                 sampling = SAMPLINGS[sampling_index]
-                additional_sampling = SAMPLINGS[additional_index]
+                additional_sampling = ADDITIONAL_SAMPLINGS[additional_index]
                 heading = f"#{number} {recipe.combiner.upper()} · {size}x{size}"
                 description = recipe_description(recipe, size)
                 panel, spec = recipe_panel(recipe, size, sampling, additional_sampling, minimum_m)

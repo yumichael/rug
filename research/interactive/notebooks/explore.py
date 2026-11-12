@@ -24,7 +24,9 @@ from ruglab.studio import *
 #
 # The checkerboard views run vertically along the operand grid's $x=y$ diagonal. Left-right reflection exchanges the two operands. The same-parity tile starts with its cell-centered mirror column at the left edge. The opposite-parity tile starts with the preceding row of its vertical period.
 #
-# **Additional sampling** selects cells from the finished field, using its top-left cell as the parity origin and keeping the original cell colors. **Full** keeps every cell. Both checkerboard options use the inscribed diamond and show it as a square with half the original side length. The moduli, repeat, zero share, and value count describe the original field. Additional sampling is the fastest dimension by default.
+# **Sampling** includes **doubled checkerboard opposite** immediately before **checkerboard opposite**. It uses the full grid's pre-modulus rule and duplicates the opposite-parity values one cell left before choosing the post-modulus. **Minimum M** targets the doubled field's periods.
+#
+# **Additional sampling** resamples cells from the finished field, using its top-left cell as the parity origin and keeping the original cell colors. **Full** keeps every cell. **Checkerboard same** and **checkerboard opposite** use the inscribed diamond and show it as a square with half the original side length. **Doubled checkerboard opposite** keeps the full size: it keeps opposite-parity cells and copies their values one cell left onto same-parity cells, wrapping at the right edge. The moduli, repeat, zero share, and value count describe the original field. Additional sampling is the fastest dimension by default.
 #
 # The pager remembers the first plot of the last page you navigated to. Filters, dimension order, and layout changes keep that plot as the anchor. If a filter hides it, the pager shows the next matching entry or the last available page.
 #

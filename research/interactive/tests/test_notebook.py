@@ -170,7 +170,7 @@ def test_gallery_reuses_the_computed_field_for_additional_sampling():
     catalogue = RecipeCatalogue({}, lambda: PatternRecipe("or", 2, 0, 3))
     with patch("ruglab.pager.sample_field", wraps=sample_field) as calculate:
         gallery, specs = recipe_gallery(
-            catalogue, field_sizes=(8,), selected_samplings=("checkerboard_same",), preview_pixels=128
+            catalogue, field_sizes=(8,), selected_samplings=("checkerboard_same",), preview_pixels=128, page_size=3
         )
         controls, preview = gallery.children
         additional = next(
@@ -179,14 +179,38 @@ def test_gallery_reuses_the_computed_field_for_additional_sampling():
             if isinstance(row, widgets.HBox) and row.children[0].value == "Additional sampling"
         )
         next(box for box in additional.children[1:] if box.description == "checkerboard opposite").value = True
+        names = [box.description for box in additional.children[1:]]
+        assert names[names.index("checkerboard opposite") - 1] == "doubled checkerboard opposite"
+        next(box for box in additional.children[1:] if box.description == "doubled checkerboard opposite").value = True
         dimension, _, faster, _, _ = controls.children[-3].children
         dimension.value = dict(dimension.options)["Additional sampling"]
         assert faster.disabled
         assert calculate.call_count == 1
-        assert list(specs) == [(1, 8, "checkerboard_same", phase) for phase in ("full", "checkerboard_opposite")]
+        assert list(specs) == [
+            (1, 8, "checkerboard_same", phase)
+            for phase in ("full", "doubled_checkerboard_opposite", "checkerboard_opposite")
+        ]
         assert specs[1, 8, "checkerboard_same", "full"] == specs[1, 8, "checkerboard_same", "checkerboard_opposite"]
+        assert (
+            specs[1, 8, "checkerboard_same", "full"]
+            == specs[1, 8, "checkerboard_same", "doubled_checkerboard_opposite"]
+        )
         with Image.open(BytesIO(preview.value)) as image:
             assert image.width > 2 * 128
+
+
+def test_gallery_main_doubled_sampling():
+    catalogue = RecipeCatalogue({}, lambda: PatternRecipe("or", 2, 0, 3))
+    gallery, specs = recipe_gallery(
+        catalogue, field_sizes=(8,), selected_samplings=("doubled_checkerboard_opposite",), preview_pixels=64
+    )
+    sampling = next(
+        row for row in _filter_rows(gallery) if isinstance(row, widgets.HBox) and row.children[0].value == "Sampling"
+    )
+    names = [box.description for box in sampling.children[1:]]
+    assert names[names.index("checkerboard opposite") - 1] == "doubled checkerboard opposite"
+    assert list(specs) == [(1, 8, "doubled_checkerboard_opposite", "full")]
+    assert specs[1, 8, "doubled_checkerboard_opposite", "full"]["sampling"] == "doubled_checkerboard_opposite"
 
 
 def test_gallery_minimum_modulus_toggle_preserves_page_and_additional_sampling():

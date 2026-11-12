@@ -5,12 +5,14 @@ from copy import deepcopy
 SAMPLINGS = (
     "full",
     "checkerboard_same",
+    "doubled_checkerboard_opposite",
     "checkerboard_opposite",
     "even_even",
     "even_odd",
     "odd_even",
     "odd_odd",
 )
+ADDITIONAL_SAMPLINGS = SAMPLINGS
 COMBINERS = (
     "and",
     "or",

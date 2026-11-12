@@ -14,7 +14,7 @@ from .engine import Result
 from .indexed import IndexedValues, byte_lru, combination_table
 from .operations import operation
 from .post_polynomials import POST_STRATA, draw_post_polynomial
-from .sampling import CARTESIAN_PHASES, checkerboard_indices
+from .sampling import CARTESIAN_PHASES, checkerboard_indices, resample_view
 from .specs import SAMPLINGS
 
 COMBINER_COLORS = {
@@ -422,7 +422,11 @@ def _identity_xor(size, sampling):
 
 @byte_lru(32, 96 << 20, lambda result: result[0].nbytes + result[2].nbytes)
 def _base_field(q, twist, K, combiner, size, sampling):
-    if q == 1 and combiner == "xor":
+    if sampling == "doubled_checkerboard_opposite":
+        full, _, _ = _base_field(q, twist, K, combiner, size, "full")
+        labels = full.labels
+        indices = resample_view(full.indices, sampling)
+    elif q == 1 and combiner == "xor":
         labels, indices = _identity_xor(size, sampling)
     elif sampling.startswith("checkerboard"):
         # Same-parity XOR can have a combined period half the operand period.

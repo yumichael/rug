@@ -46,9 +46,10 @@ from .pager import recipe_gallery
 from .plotting import colorize
 from .previews import PreviewPanel, indexed_preview, preview_grid
 from .research import family_pre_modulus, minimum_post_modulus, uniform_xor
-from .specs import SAMPLINGS
+from .specs import ADDITIONAL_SAMPLINGS, SAMPLINGS
 
 __all__ = [
+    "ADDITIONAL_SAMPLINGS",
     "FIELD_SIZES",
     "SAMPLINGS",
     "BytesIO",

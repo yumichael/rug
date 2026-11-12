@@ -326,6 +326,7 @@ def test_strip_preview_matches_full_bilinear_resize():
     [
         ("checkerboard_same", [[8, 5], [13, 10]]),
         ("checkerboard_opposite", [[4, 1], [9, 6]]),
+        ("doubled_checkerboard_opposite", [[1, 1, 3, 3], [4, 6, 6, 4], [9, 9, 11, 11], [12, 14, 14, 12]]),
         ("even_odd", [[4, 6], [12, 14]]),
         ("odd_even", [[1, 3], [9, 11]]),
     ],
@@ -333,6 +334,62 @@ def test_strip_preview_matches_full_bilinear_resize():
 def test_additional_sampling_selects_finished_cells(sampling, expected):
     values = np.arange(16).reshape(4, 4)
     assert resample_view(values, sampling).tolist() == expected
+
+
+@pytest.mark.parametrize("n", [8, 16, 32])
+def test_doubled_checkerboard_matches_xor_mirror_axes(n):
+    field = evaluate(
+        {
+            "n": n,
+            "K": 2 * n,
+            "M": 4 * n,
+            "pre": [],
+            "combine": "xor",
+            "sampling": "checkerboard_opposite",
+            "checkerboard_axis": "vertical",
+            "post": [["pow", 2]],
+        }
+    ).values
+    doubled = resample_view(field, "doubled_checkerboard_opposite")
+    rows = (-np.arange(n)) % n
+    for view in (field, doubled):
+        assert np.array_equal(view, view[rows])
+        assert np.array_equal(view, view[:, ::-1])
+
+
+@pytest.mark.parametrize("minimum", [False, True])
+@pytest.mark.parametrize(
+    "recipe",
+    [
+        PatternRecipe("or", 2, 1, 3),
+        PatternRecipe("xor", 4, 0, 2),
+        PostRecipe("xor", "even power", 1, 0, 0),
+        PrePowerStudyRecipe(2, 1, 2),
+    ],
+)
+def test_doubled_main_sampling_matches_exact_evaluation(recipe, minimum):
+    field = sample_field(recipe, 16, "doubled_checkerboard_opposite", minimum_post_modulus=minimum)
+    assert np.array_equal(field.result.values, evaluate(field.spec).values)
+    full = evaluate({**field.spec, "sampling": "full"}).values
+    assert np.array_equal(field.result.values, resample_view(full, "doubled_checkerboard_opposite"))
+    bigger = evaluate({**field.spec, "shape": [32, 32]})
+    assert np.array_equal(bigger.values, np.tile(field.result.values, (2, 2)))
+    if minimum:
+        assert periods(field.result, certified_torus=True) == (16, 16)
+
+
+def test_doubled_checkerboard_export_preserves_colors_and_dimensions(tmp_path):
+    field = sample_field(PatternRecipe("or", 2, 1, 3), 4, "checkerboard_opposite")
+    original = field.result.values.copy()
+    path = tmp_path / "doubled.png"
+    export(field.result, path, mode="order", additional_sampling="doubled_checkerboard_opposite")
+    colors = np.asarray(indexed_preview(field.values, field.spec["color"], 4))
+    row, column = np.indices((4, 4))
+    expected = np.where(((row + column) % 2 == 0)[..., None], np.roll(colors, -1, axis=1), colors)
+    with Image.open(path) as image:
+        assert image.size == (4, 4)
+        assert np.array_equal(np.asarray(image), expected)
+    assert np.array_equal(field.result.values, original)
 
 
 def test_additional_sampling_export_preserves_base_colors(tmp_path):
