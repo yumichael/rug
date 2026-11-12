@@ -213,6 +213,25 @@ def test_gallery_main_doubled_sampling():
     assert specs[1, 8, "doubled_checkerboard_opposite", "full"]["sampling"] == "doubled_checkerboard_opposite"
 
 
+def test_pre_power_gallery_selects_other_combiners():
+    catalogue = exploration.pre_power_study_catalogue()
+    gallery, specs = recipe_gallery(
+        catalogue,
+        field_sizes=(8,),
+        selected_combiners=("clmul",),
+        selected_samplings=("even_even",),
+        page_size=1,
+        preview_pixels=64,
+    )
+    combiners = next(
+        row for row in _filter_rows(gallery) if isinstance(row, widgets.HBox) and row.children[0].value == "Combiner"
+    )
+    assert len(combiners.children[1:]) == 7
+    assert len(specs) == 1
+    assert next(iter(specs.values()))["combine"] == "clmul"
+    assert "Ready" in gallery.children[0].children[-1].value
+
+
 def test_gallery_minimum_modulus_toggle_preserves_page_and_additional_sampling():
     catalogue = RecipeCatalogue({"pre_power": (2, 4)}, lambda pre_power: PrePowerStudyRecipe(pre_power, 0, 2))
     gallery, specs = recipe_gallery(

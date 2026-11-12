@@ -6,13 +6,22 @@ import pytest
 from PIL import Image
 from ruglab import Sweep, dsl, evaluate, gallery, paired
 from ruglab.diagnostics import periods, signature
-from ruglab.exploration import PatternRecipe, PeriodTargetError, PostRecipe, PrePowerStudyRecipe, sample_field
+from ruglab.exploration import (
+    COMBINER_COLORS,
+    PatternRecipe,
+    PeriodTargetError,
+    PostRecipe,
+    PrePowerStudyRecipe,
+    pre_power_study_catalogue,
+    sample_field,
+)
 from ruglab.indexed import IndexedValues, combination_table
 from ruglab.operations import clmul
 from ruglab.plotting import colorize, export, indexed_order_palette
 from ruglab.previews import indexed_preview
 from ruglab.research import family_pre_modulus, minimum_post_modulus, uniform_xor
 from ruglab.sampling import coordinates, resample_view
+from ruglab.specs import SAMPLINGS
 
 
 @pytest.mark.parametrize(
@@ -223,8 +232,9 @@ def test_exploration_classifies_two_cell_fields():
 
 
 @pytest.mark.parametrize("twist,post", [(0, 0), (13, 7)])
-def test_pre_power_study_preserves_wide_even_even_values(twist, post):
-    field = sample_field(PrePowerStudyRecipe(64, twist, post), 16, "even_even")
+@pytest.mark.parametrize("combiner", COMBINER_COLORS)
+def test_pre_power_study_preserves_wide_even_even_values(twist, post, combiner):
+    field = sample_field(PrePowerStudyRecipe(64, twist, post, combiner), 16, "even_even")
     exact = evaluate(field.spec)
     assert field.spec["K"] > 2**64
     if twist:
@@ -233,6 +243,48 @@ def test_pre_power_study_preserves_wide_even_even_values(twist, post):
     assert field.distinct_values == len(set(exact.stages["z0"].flat))
     values = set(exact.values.flat) | {0}
     assert len({value % (field.spec["M"] // 2) for value in values}) < len(values)
+
+
+@pytest.mark.parametrize("combiner", COMBINER_COLORS)
+@pytest.mark.parametrize("sampling", SAMPLINGS)
+def test_pre_power_study_combiners_match_exact_evaluation(combiner, sampling):
+    recipe = PrePowerStudyRecipe(4, 13, 7, combiner)
+    field = sample_field(recipe, 8, sampling)
+    exact = evaluate(field.spec)
+    assert field.spec["combine"] == combiner
+    assert np.array_equal(field.result.values, exact.values)
+    assert field.distinct_values == len(set(exact.values.flat))
+    assert field.zero_fraction == np.count_nonzero(exact.values == 0) / exact.values.size
+    larger = evaluate({**field.spec, "shape": [16, 16]})
+    assert np.array_equal(larger.values, np.tile(exact.values, (2, 2)))
+
+
+def test_pre_power_catalogue_keeps_or_sweeps_then_adds_other_combiners():
+    catalogue = pre_power_study_catalogue()
+    assert set(catalogue.dimensions["combiner"]) == set(COMBINER_COLORS)
+    recipes = catalogue.recipes()
+    for recipe, power in zip(recipes[:32], range(2, 65, 2), strict=True):
+        assert isinstance(recipe, PrePowerStudyRecipe)
+        assert recipe.pre_power == power
+    assert all(recipe.combiner == "or" for recipe in recipes[:5120])
+    assert {recipe.combiner for recipe in recipes[5120:]} == set(COMBINER_COLORS) - {"or"}
+
+
+@pytest.mark.parametrize("combiner", COMBINER_COLORS)
+@pytest.mark.parametrize("sampling", SAMPLINGS)
+def test_pre_power_combiners_minimum_modulus(combiner, sampling):
+    recipe = PrePowerStudyRecipe(4, 13, 7, combiner)
+    original = sample_field(recipe, 8, sampling)
+    try:
+        field = sample_field(recipe, 8, sampling, minimum_post_modulus=True)
+    except PeriodTargetError:
+        assert periods(original.result, certified_torus=True) != (8, 8)
+        return
+    exact = evaluate(field.spec)
+    assert np.array_equal(field.result.values, exact.values)
+    assert periods(exact, certified_torus=True) == (8, 8)
+    smaller = evaluate({**field.spec, "M": field.spec["M"] // 2})
+    assert periods(smaller, certified_torus=True) != (8, 8)
 
 
 @pytest.mark.parametrize("sampling,phase", [("checkerboard_same", 0), ("checkerboard_opposite", 1)])

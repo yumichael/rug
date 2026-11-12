@@ -140,15 +140,16 @@ grid(xor_square_examples, cols=2, width=12, mode="order")
 plt.show()
 
 # %% [markdown]
-# ## Compare OR pre-powers
+# ## Compare pre-powers across combiners
 #
 # With the default dimension order, each page runs through the even pre-powers 2 through 64 in the same positions. Read across the first row, then continue on the next row. The defaults show one field size and one sampling in four rows of eight. Keep **Plots per page** at 32 to keep each sweep together.
 #
-# By default, pages change the post-polynomial first, then the twist. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. With **Minimum M** off, the post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling, additional_sampling]`.
+# Use **Combiner** to compare OR, AND, XOR, addition, absolute difference, multiplication, and carryless multiplication. OR is selected initially. By default, pages change the post-polynomial first, then the twist, then the combiner. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. With **Minimum M** off, the post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling, additional_sampling]`.
 #
 # %%
 pre_power_gallery_view, pre_power_specs = recipe_gallery(
     pre_power_study_catalogue(),
+    selected_combiners=("or",),
     field_sizes=(128,),
     selected_samplings=("checkerboard_opposite",),
     transposed=False,

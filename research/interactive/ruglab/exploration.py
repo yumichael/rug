@@ -6,7 +6,6 @@ from functools import lru_cache
 from itertools import product
 from math import gcd
 from sys import getsizeof
-from typing import ClassVar
 
 import numpy as np
 
@@ -77,7 +76,7 @@ class PrePowerStudyRecipe:
     pre_power: int
     twist_index: int
     post_index: int
-    combiner: ClassVar[str] = "or"
+    combiner: str = "or"
 
 
 @dataclass(frozen=True)
@@ -109,12 +108,14 @@ class RecipeCatalogue:
 def pre_power_study_catalogue():
     return RecipeCatalogue(
         {
+            "combiner": ("or", *(name for name in COMBINER_COLORS if name != "or")),
             "twist_index": tuple(range(len(_STUDY_TWISTS))),
             "post_index": tuple(range(len(_STUDY_POSTS))),
             "pre_power": PRE_POWER_STUDY_EXPONENTS,
-            "combiner": ("or",),
         },
-        lambda pre_power, twist_index, post_index, combiner: PrePowerStudyRecipe(pre_power, twist_index, post_index),
+        lambda pre_power, twist_index, post_index, combiner: PrePowerStudyRecipe(
+            pre_power, twist_index, post_index, combiner
+        ),
     )
 
 
@@ -570,11 +571,11 @@ def _sample_pre_power_study(recipe, size, sampling, minimum_post_modulus):
     table_K, table_twist = K, twist
     shift = 0
     if sampling == "even_even":
-        # The operands have a common 2**q factor, which OR commutes with.
-        # Evaluate f(2**q * t) / 2**q on the unscaled i**q table.
-        shift = q
-        table_K = K >> shift
-        table_twist = (0, *((a << (shift * i)) % table_K for i, a in enumerate(twist[1:]))) if twist else ()
+        # Factor 2**q out of each operand before building machine-integer
+        # tables. Products carry both factors; the other combiners carry one.
+        shift = 2 * q if recipe.combiner in ("mult", "clmul") else q
+        table_K = K >> q
+        table_twist = (0, *((a << (q * i)) % table_K for i, a in enumerate(twist[1:]))) if twist else ()
         label_sampling = "full"
     base, repeat, counts = _base_field(q, table_twist, table_K, recipe.combiner, size, label_sampling)
     base = IndexedValues(base.labels.astype(object) << shift, base.indices)
