@@ -16,7 +16,7 @@ from jupyter_client.manager import KernelManager
 from nbclient import NotebookClient
 from nbformat.v4 import new_code_cell
 from PIL import Image
-from ruglab import exploration, studio
+from ruglab import exploration, pager, studio
 from ruglab.exploration import PatternRecipe, PrePowerStudyRecipe, RecipeCatalogue, sample_field
 from ruglab.pager import recipe_gallery
 
@@ -40,8 +40,8 @@ def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
         catalogue, field_sizes=(2,), selected_samplings=("full", "odd_odd"), preview_pixels=128
     )
     controls, preview = gallery.children
-    dimension, slower, faster, grouped, _ = controls.children[-2].children
-    _, _, page, density, transpose, wrap, status = controls.children[-1].children
+    dimension, slower, faster, grouped, _ = controls.children[-3].children
+    _, _, page, density, transpose, wrap, status = controls.children[-2].children
     assert "8 plots" in status.value
     assert grouped.value == 0
     assert dimension.options[-1][0] == "Additional sampling"
@@ -81,9 +81,13 @@ def test_gallery_reuses_the_computed_field_for_additional_sampling():
             catalogue, field_sizes=(8,), selected_samplings=("checkerboard_same",), preview_pixels=128
         )
         controls, preview = gallery.children
-        additional = next(row for row in controls.children if row.children[0].value == "Additional sampling")
+        additional = next(
+            row
+            for row in controls.children
+            if isinstance(row, widgets.HBox) and row.children[0].value == "Additional sampling"
+        )
         next(box for box in additional.children[1:] if box.description == "checkerboard opposite").value = True
-        dimension, _, faster, _, _ = controls.children[-2].children
+        dimension, _, faster, _, _ = controls.children[-3].children
         dimension.value = dict(dimension.options)["Additional sampling"]
         assert faster.disabled
         assert calculate.call_count == 1
@@ -105,7 +109,7 @@ def test_gallery_minimum_modulus_toggle_preserves_page_and_additional_sampling()
     )
     controls, preview = gallery.children
     minimum = next(c for c in controls.children if isinstance(c, widgets.Checkbox))
-    page = controls.children[-1].children[2]
+    page = controls.children[-2].children[2]
     original = dict(specs)
     original_preview = bytes(preview.value)
     assert {s["M"] for s in specs.values()} == {128}
@@ -135,11 +139,107 @@ def test_gallery_marks_unattainable_minimum_modulus_panels():
     )
     controls, preview = gallery.children
     assert not specs
-    assert "1 unavailable" in controls.children[-1].children[-1].value
+    assert "1 unavailable" in controls.children[-2].children[-1].value
     assert bytes(preview.value).startswith(b"\x89PNG")
     minimum = next(c for c in controls.children if isinstance(c, widgets.Checkbox))
     minimum.value = False
     assert len(specs) == 1
+
+
+def test_gallery_reports_busy_through_calculation_and_rendering_even_when_preview_is_unchanged():
+    catalogue = RecipeCatalogue({}, lambda: PatternRecipe("or", 2, 0, 1))
+    gallery, specs = recipe_gallery(
+        catalogue, field_sizes=(8,), selected_samplings=("checkerboard_opposite",), preview_pixels=64
+    )
+    controls, preview = gallery.children
+    activity = controls.children[-1]
+    minimum = next(c for c in controls.children if isinstance(c, widgets.Checkbox))
+    original_preview = bytes(preview.value)
+    original_specs = dict(specs)
+    assert "✓ Ready · Update #1" in activity.value
+    transitions = []
+    activity.observe(lambda change: transitions.append(change["new"]), names="value")
+
+    def check_busy(function):
+        def checked(*args, **kwargs):
+            assert "Calculating and rendering… · Update #2" in activity.value
+            assert "<progress " in activity.value
+            assert bytes(preview.value) == original_preview
+            return function(*args, **kwargs)
+
+        return checked
+
+    with (
+        patch("ruglab.pager.sample_field", side_effect=check_busy(sample_field)) as calculate,
+        patch("ruglab.pager.preview_grid", side_effect=check_busy(pager.preview_grid)) as render,
+    ):
+        minimum.value = True
+        assert calculate.call_count == render.call_count == 1
+    assert specs == original_specs
+    assert bytes(preview.value) == original_preview
+    assert "✓ Ready · Update #2" in activity.value
+    assert "Preview unchanged." in activity.value
+    assert " s</span>" in activity.value
+    assert activity.layout.height == activity.layout.min_height == activity.layout.max_height == "30px"
+    assert len(transitions) == 2
+    assert "<progress " in transitions[0]
+    assert "<progress " not in transitions[1]
+
+    # A cached page still acknowledges that the control change was processed.
+    with patch("ruglab.pager.sample_field") as calculate, patch("ruglab.pager.preview_grid") as render:
+        minimum.value = False
+        calculate.assert_not_called()
+        render.assert_not_called()
+    assert "✓ Ready · Update #3" in activity.value
+    assert "Preview unchanged." in activity.value
+    assert len(transitions) == 4
+
+
+def test_gallery_status_for_empty_and_oversized_pages():
+    catalogue = RecipeCatalogue({}, lambda: PatternRecipe("or", 2, 0, 1))
+    gallery, specs = recipe_gallery(catalogue, field_sizes=(8,), selected_samplings=("full",), preview_pixels=64)
+    controls, preview = gallery.children
+    activity = controls.children[-1]
+    sizes = next(
+        row for row in controls.children if isinstance(row, widgets.HBox) and row.children[0].value == "Field size"
+    )
+    selected_size = next(box for box in sizes.children[1:] if box.value)
+    selected_size.value = False
+    assert "Choose a selection · Update #2" in activity.value
+    assert "<progress " not in activity.value
+    assert not specs and not preview.value
+    assert preview.layout.display == "none"
+    selected_size.value = True
+    assert "✓ Ready · Update #3" in activity.value
+    assert specs and preview.value
+
+    catalogue = RecipeCatalogue({"pre_power": (2, 4, 6, 8)}, lambda pre_power: PatternRecipe("or", pre_power, 0, 1))
+    gallery, specs = recipe_gallery(
+        catalogue, field_sizes=(8,), selected_samplings=("full",), page_size=4, preview_pixels=4096
+    )
+    assert "Page too large" in gallery.children[0].children[-1].value
+    assert "<progress " not in gallery.children[0].children[-1].value
+    assert not specs and not gallery.children[1].value
+
+
+@pytest.mark.parametrize("failure", [RuntimeError("<bad>"), KeyboardInterrupt()])
+def test_gallery_status_for_failed_or_interrupted_updates_and_recovery(failure):
+    catalogue = RecipeCatalogue({}, lambda: PatternRecipe("or", 2, 0, 1))
+    gallery, _ = recipe_gallery(catalogue, field_sizes=(8,), selected_samplings=("full",), preview_pixels=64)
+    controls, preview = gallery.children
+    activity = controls.children[-1]
+    minimum = next(c for c in controls.children if isinstance(c, widgets.Checkbox))
+    original_preview = bytes(preview.value)
+    with patch("ruglab.pager.sample_field", side_effect=failure), pytest.raises(type(failure)):
+        minimum.value = True
+    assert ("Update interrupted" if isinstance(failure, KeyboardInterrupt) else "Update failed") in activity.value
+    assert "<progress " not in activity.value
+    assert "✓ Ready" not in activity.value
+    assert bytes(preview.value) == original_preview
+    if isinstance(failure, RuntimeError):
+        assert "RuntimeError: &lt;bad&gt;" in activity.value
+    minimum.value = False
+    assert "✓ Ready · Update #3" in activity.value
 
 
 def test_notebook_autoreload_resolves_new_helper_exception(tmp_path, monkeypatch):
@@ -204,7 +304,7 @@ def test_gallery_catches_reloaded_period_exception(monkeypatch):
         preview_pixels=64,
     )
     assert not specs
-    assert '1 unavailable' in gallery.children[0].children[-1].children[-1].value
+    assert '1 unavailable' in gallery.children[0].children[-2].children[-1].value
 
 
 @pytest.mark.integration

@@ -28,6 +28,8 @@ from ruglab.studio import *
 #
 # The pager remembers the first plot of the last page you navigated to. Filters, dimension order, and layout changes keep that plot as the anchor. If a filter hides it, the pager shows the next matching entry or the last available page.
 #
+# The compact status bar below the paging controls and immediately above the preview keeps the same height during updates. Hover to read any clipped details. It turns amber with **Calculating and rendering…** and an animated progress bar while updating. The previous preview can remain visible until it finishes. Green **Ready** shows the update number and elapsed time; **Preview unchanged** confirms that the update finished with the same picture. Empty selections, oversized pages, failures, and interruptions show their own status.
+#
 # Use the wrap control to set how many entries fit per row or column. Set it to 0 for a single block.
 #
 # By default, each panel uses a pre-modulus chosen for its sampling and a post-modulus computed from its own combined values. The post-modulus is the smallest power of two that keeps distinct values separate and preserves every nonzero value. Titles report both moduli, the zero share, and the repeat. A diamond has half the area of the displayed square. A smaller tile can occur when one operand branch repeats sooner, or when the combiner erases variation. Constant fields are shown too.

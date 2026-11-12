@@ -3,9 +3,11 @@
 from bisect import bisect_left
 from copy import deepcopy
 from functools import lru_cache
+from html import escape
 from itertools import product
 from math import prod
 from sys import getsizeof
+from time import perf_counter
 
 import ipywidgets as widgets
 from PIL import Image
@@ -83,6 +85,41 @@ def recipe_gallery(
     recipe_options = options[: len(catalogue.dimensions)]
     displayed_specs = {}
     page_anchor = None
+    update_number = 0
+    activity_status = widgets.HTML(
+        layout=widgets.Layout(
+            width="100%", height="30px", min_height="30px", max_height="30px", margin="0", overflow="hidden"
+        )
+    )
+
+    def set_activity(state, detail, elapsed=None):
+        colors = {
+            "busy": ("#fff3cd", "#a66a00", "⏳ Calculating and rendering…"),
+            "ready": ("#e8f5e9", "#176b35", "✓ Ready"),
+            "waiting": ("#eef2f6", "#475569", "Choose a selection"),
+            "warning": ("#fff3cd", "#a66a00", "Page too large"),
+            "error": ("#fee2e2", "#a61b1b", "Update failed"),
+            "interrupted": ("#fff3cd", "#a66a00", "Update interrupted"),
+        }
+        background, accent, label = colors[state]
+        heading = f"{label} · Update #{update_number}"
+        if elapsed is not None:
+            heading += f" · {elapsed:.2f} s"
+        progress = (
+            '<progress aria-label="Gallery update in progress" '
+            'style="width:80px;height:8px;flex:0 0 80px;margin:0"></progress>'
+            if state == "busy"
+            else ""
+        )
+        activity_status.value = (
+            '<div role="status" aria-live="polite" '
+            f'title="{escape(heading + ": " + detail, quote=True)}" '
+            f'style="background:{background};color:{accent};border-left:4px solid {accent};'
+            'display:flex;align-items:center;gap:10px;box-sizing:border-box;height:30px;'
+            'padding:4px 8px;border-radius:4px;font-size:13px;white-space:nowrap;overflow:hidden">'
+            f'<span style="font-weight:700;flex-shrink:0">{escape(heading)}</span>'
+            f'{progress}<span style="overflow:hidden;text-overflow:ellipsis">{escape(detail)}</span></div>'
+        )
 
     selections = {
         "size": field_sizes,
@@ -229,7 +266,7 @@ def recipe_gallery(
 
     cached_page = lru_cache(maxsize=8)(render_page)
 
-    def redraw(change=None):
+    def update_page(change=None):
         nonlocal page_anchor
 
         page_size = density_control.value
@@ -287,7 +324,7 @@ def recipe_gallery(
             page_status.value += f" · {message}"
             page_preview.layout.display = "none"
             page_preview.value = b""
-            return
+            return ("waiting" if not entry_count else "warning"), message
 
         panel_positions = tuple(product(*panel_options))
         page_entries = []
@@ -300,12 +337,30 @@ def recipe_gallery(
         # The renderer puts entries in columns to fill a flat page across rows.
         entries_as_columns = transpose if grouped else not transpose
         png, specs = render(tuple(page_entries), entries_as_columns, wrap_control.value, minimum_control.value)
+        unchanged = page_preview.layout.display != "none" and page_preview.value == png
         if minimum_control.value and len(specs) < page_panels:
             page_status.value += f" · {page_panels - len(specs)} unavailable"
         displayed_specs.clear()
         displayed_specs.update(deepcopy(specs))
         page_preview.value = png
         page_preview.layout.display = ""
+        return "ready", "Preview unchanged." if unchanged else "Preview updated."
+
+    def redraw(change=None):
+        nonlocal update_number
+        update_number += 1
+        started = perf_counter()
+        set_activity("busy", "The previous preview may remain visible below until this update finishes.")
+        try:
+            state, detail = update_page(change)
+        except KeyboardInterrupt:
+            set_activity("interrupted", "The requested update did not finish.", perf_counter() - started)
+            raise
+        except Exception as error:
+            set_activity("error", f"{type(error).__name__}: {error}", perf_counter() - started)
+            raise
+        else:
+            set_activity(state, detail, perf_counter() - started)
 
     def update_order_controls(change=None):
         selected_axis = dimension_control.value
@@ -381,6 +436,7 @@ def recipe_gallery(
                 [back_button, next_button, page_control, density_control, transpose_control, wrap_control, page_status],
                 layout=widgets.Layout(flex_flow="row wrap"),
             ),
+            activity_status,
         ]
     )
     update_order_controls()
