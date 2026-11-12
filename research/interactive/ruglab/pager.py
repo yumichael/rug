@@ -10,7 +10,8 @@ from sys import getsizeof
 import ipywidgets as widgets
 from PIL import Image
 
-from .exploration import FIELD_SIZES, PeriodTargetError, RecipeCatalogue, recipe_description, sample_field
+from . import exploration
+from .exploration import FIELD_SIZES, RecipeCatalogue, recipe_description, sample_field
 from .indexed import byte_lru
 from .plotting import indexed_order_palette
 from .previews import PreviewPanel, palette_preview, preview_grid
@@ -175,7 +176,7 @@ def recipe_gallery(
     def recipe_panel(recipe, size, sampling, additional_sampling, minimum_m):
         try:
             field, palette = prepared_field(recipe, size, sampling, minimum_m)
-        except PeriodTargetError as error:
+        except exploration.PeriodTargetError as error:
             detail = str(error).replace(" at K=", "\nat K=")
             caption = f"{sampling.replace('_', ' ')} · unavailable\n{detail}"
             return PreviewPanel(Image.new("RGB", (preview_pixels, preview_pixels), "#f4f4f4"), caption), None

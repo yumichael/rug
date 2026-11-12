@@ -56,6 +56,7 @@ gallery_view, displayed_specs = recipe_gallery(
     page_size=PLOTS_PER_PAGE,
     preview_pixels=PREVIEW_PIXELS,
     wrap_after=len(DEFAULT_SAMPLINGS),
+    minimum_post_modulus=True,
 )
 display(gallery_view)
 

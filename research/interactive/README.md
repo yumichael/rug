@@ -58,7 +58,7 @@ Use this as the first cell of an exploratory notebook under `notebooks/`. Ruff a
 from ruglab.studio import *
 ```
 
-The import enables inline plots and automatic reloading of edited Python modules. It provides the workbench tools, plotting and widget imports, and the example presets. Use `presets = load_presets()` to read a fresh copy after editing the preset file.
+The import enables inline plots and full-module automatic reloading of edited Python modules, so newly added helpers share the module's current globals. It provides the workbench tools, plotting and widget imports, and the example presets. Use `presets = load_presets()` to read a fresh copy after editing the preset file.
 
 ```python
 grid({"XOR": presets["xor"]})

@@ -105,5 +105,6 @@ def load_presets():
 _shell = get_ipython()
 if _shell is not None:
     _shell.extension_manager.load_extension("autoreload")
-    _shell.run_line_magic("autoreload", "2")
+    # Newly added helpers must share the live module namespace.
+    _shell.run_line_magic("autoreload", "2 --full")
     _shell.run_line_magic("matplotlib", "inline")
