@@ -1,0 +1,2304 @@
+{
+  "recorded_date": "2026-11-12",
+  "seed": 0,
+  "status": "tentative exploration",
+  "source_sha256": {
+    "research/interactive/ruglab/exploration.py": "f4dffb91fbe1a9cec996b97d0d9f87e5901864e0c4206db713d6494f236439a5",
+    "research/interactive/ruglab/post_polynomials.py": "642e951178d2d19929f0c042fb6f7eaf481d4306761980d0165973e52c19f3eb",
+    "research/interactive/ruglab/sampling.py": "baa62e52922a47b7ed49e5d2d61a0795c5375644688a729cfda07941dba68c1f",
+    "research/interactive/ruglab/engine.py": "ac268363d667bf38f3c51294c2869a71df0e7df3526635c2144ec6c794827101"
+  },
+  "xor_theorems": {
+    "polynomials": 2400,
+    "low_precision_cases": 2230,
+    "nonsymmetric_minima": 11,
+    "equivalent_representatives": 2389
+  },
+  "xor_gallery": {
+    "odd power:v=0": {
+      "draws": 24,
+      "excess_precision": 0,
+      "rank_changes": 0,
+      "symmetric_before": 0,
+      "symmetric_after": 0,
+      "modulus_ratios": {
+        "1": 24
+      }
+    },
+    "even power:v=1": {
+      "draws": 24,
+      "excess_precision": 0,
+      "rank_changes": 0,
+      "symmetric_before": 24,
+      "symmetric_after": 24,
+      "modulus_ratios": {
+        "1": 24
+      }
+    },
+    "odd sum:v=0": {
+      "draws": 24,
+      "excess_precision": 0,
+      "rank_changes": 0,
+      "symmetric_before": 0,
+      "symmetric_after": 0,
+      "modulus_ratios": {
+        "1": 24
+      }
+    },
+    "even sum:v=1": {
+      "draws": 24,
+      "excess_precision": 0,
+      "rank_changes": 0,
+      "symmetric_before": 24,
+      "symmetric_after": 24,
+      "modulus_ratios": {
+        "1": 24
+      }
+    },
+    "even only:v=1": {
+      "draws": 24,
+      "excess_precision": 0,
+      "rank_changes": 0,
+      "symmetric_before": 24,
+      "symmetric_after": 24,
+      "modulus_ratios": {
+        "1": 24
+      }
+    },
+    "any powers:v=0": {
+      "draws": 24,
+      "excess_precision": 0,
+      "rank_changes": 0,
+      "symmetric_before": 0,
+      "symmetric_after": 0,
+      "modulus_ratios": {
+        "1": 24
+      }
+    },
+    "even sum:v=2": {
+      "draws": 24,
+      "excess_precision": 0,
+      "rank_changes": 0,
+      "symmetric_before": 24,
+      "symmetric_after": 24,
+      "modulus_ratios": {
+        "1": 24
+      }
+    },
+    "even only:v=2": {
+      "draws": 24,
+      "excess_precision": 16,
+      "rank_changes": 16,
+      "symmetric_before": 8,
+      "symmetric_after": 24,
+      "modulus_ratios": {
+        "1": 8,
+        "2": 16
+      }
+    },
+    "any powers:v=1": {
+      "draws": 24,
+      "excess_precision": 19,
+      "rank_changes": 19,
+      "symmetric_before": 0,
+      "symmetric_after": 0,
+      "modulus_ratios": {
+        "1": 5,
+        "2": 19
+      }
+    },
+    "even sum:v=3": {
+      "draws": 24,
+      "excess_precision": 0,
+      "rank_changes": 0,
+      "symmetric_before": 24,
+      "symmetric_after": 24,
+      "modulus_ratios": {
+        "1": 24
+      }
+    },
+    "any powers:v=2": {
+      "draws": 24,
+      "excess_precision": 21,
+      "rank_changes": 21,
+      "symmetric_before": 0,
+      "symmetric_after": 0,
+      "modulus_ratios": {
+        "4": 17,
+        "2": 4,
+        "1": 3
+      }
+    },
+    "even sum:v=4": {
+      "draws": 24,
+      "excess_precision": 0,
+      "rank_changes": 0,
+      "symmetric_before": 24,
+      "symmetric_after": 24,
+      "modulus_ratios": {
+        "1": 24
+      }
+    },
+    "even only:v=4": {
+      "draws": 24,
+      "excess_precision": 23,
+      "rank_changes": 23,
+      "symmetric_before": 1,
+      "symmetric_after": 24,
+      "modulus_ratios": {
+        "2": 2,
+        "4": 7,
+        "8": 14,
+        "1": 1
+      }
+    },
+    "any powers:v=4": {
+      "draws": 24,
+      "excess_precision": 24,
+      "rank_changes": 24,
+      "symmetric_before": 0,
+      "symmetric_after": 0,
+      "modulus_ratios": {
+        "8": 3,
+        "16": 14,
+        "4": 6,
+        "2": 1
+      }
+    },
+    "even sum tail:v=5": {
+      "draws": 24,
+      "excess_precision": 0,
+      "rank_changes": 0,
+      "symmetric_before": 24,
+      "symmetric_after": 24,
+      "modulus_ratios": {
+        "1": 24
+      }
+    }
+  },
+  "modulus_examples": {
+    "full:post=2": {
+      "catalogue_M": 128,
+      "minimum_M": 16,
+      "distinct_before": 6,
+      "distinct_at_minimum": 5
+    },
+    "checkerboard_same:post=2": {
+      "catalogue_M": 128,
+      "minimum_M": 16,
+      "distinct_before": 4,
+      "distinct_at_minimum": 3
+    },
+    "checkerboard_opposite:post=2": {
+      "catalogue_M": 16,
+      "minimum_M": 16,
+      "distinct_before": 4,
+      "distinct_at_minimum": 4
+    },
+    "checkerboard_opposite:post=5": {
+      "catalogue_M": 256,
+      "minimum_M": 16,
+      "distinct_before": 4,
+      "distinct_at_minimum": 4
+    },
+    "pseudo_square_shift_order_collision": true,
+    "full_even_even_comparison": {
+      "twist=0:post=0": {
+        "same_geometry": true,
+        "same_order": true
+      },
+      "twist=0:post=1": {
+        "same_geometry": true,
+        "same_order": false
+      },
+      "twist=0:post=2": {
+        "same_geometry": true,
+        "same_order": true
+      },
+      "twist=1:post=0": {
+        "same_geometry": false,
+        "same_order": false
+      }
+    },
+    "post_square_precision_example": {
+      "256": {
+        "periods": [
+          64,
+          64
+        ],
+        "complement_symmetric": true
+      },
+      "512": {
+        "periods": [
+          128,
+          128
+        ],
+        "complement_symmetric": true
+      },
+      "1024": {
+        "periods": [
+          128,
+          128
+        ],
+        "complement_symmetric": false
+      }
+    }
+  },
+  "fixed_modulus_sampling": {
+    "32": {
+      "coefficient_tables": 4,
+      "minimum_period_shift_classes": 2,
+      "order_classes": 2,
+      "order_multiplicities": {
+        "1": 2
+      }
+    },
+    "256": {
+      "coefficient_tables": 64,
+      "minimum_period_shift_classes": 4,
+      "order_classes": 4,
+      "order_multiplicities": {
+        "1": 4
+      }
+    },
+    "512": {
+      "coefficient_tables": 256,
+      "minimum_period_shift_classes": 12,
+      "order_classes": 8,
+      "order_multiplicities": {
+        "1": 4,
+        "2": 4
+      }
+    },
+    "1024": {
+      "coefficient_tables": 1024,
+      "minimum_period_shift_classes": 12,
+      "order_classes": 8,
+      "order_multiplicities": {
+        "1": 4,
+        "2": 4
+      }
+    },
+    "2048": {
+      "coefficient_tables": 8192,
+      "minimum_period_shift_classes": 24,
+      "order_classes": 12,
+      "order_multiplicities": {
+        "1": 6,
+        "3": 6
+      }
+    },
+    "4096": {
+      "coefficient_tables": 65536,
+      "minimum_period_shift_classes": 48,
+      "order_classes": 12,
+      "order_multiplicities": {
+        "1": 6,
+        "7": 6
+      }
+    },
+    "N1024_M4096": {
+      "shift_and_order_classes": 32768,
+      "draws_checked": 100
+    }
+  },
+  "pre_power_families": {
+    "opposite": {
+      "8": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6,
+            8,
+            10,
+            12,
+            14,
+            16,
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50,
+            52,
+            54,
+            56,
+            58,
+            60,
+            62,
+            64
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6,
+            8,
+            10,
+            12,
+            14,
+            16,
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50,
+            52,
+            54,
+            56,
+            58,
+            60,
+            62,
+            64
+          ]
+        ]
+      },
+      "16": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6,
+            8,
+            10,
+            12,
+            14,
+            16,
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50,
+            52,
+            54,
+            56,
+            58,
+            60,
+            62,
+            64
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6,
+            12,
+            14,
+            22,
+            24,
+            28,
+            30,
+            38,
+            44,
+            46,
+            48,
+            54,
+            56,
+            60,
+            62
+          ],
+          [
+            8,
+            10,
+            16,
+            18,
+            20,
+            26,
+            32,
+            34,
+            36,
+            40,
+            42,
+            50,
+            52,
+            58,
+            64
+          ]
+        ]
+      },
+      "32": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6,
+            8,
+            10,
+            12,
+            14,
+            16,
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50,
+            52,
+            54,
+            56,
+            58,
+            60,
+            62,
+            64
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6,
+            22,
+            28,
+            38,
+            54,
+            56,
+            60
+          ],
+          [
+            8,
+            10,
+            16,
+            26,
+            32,
+            36,
+            42,
+            58,
+            64
+          ],
+          [
+            12,
+            14,
+            24,
+            30,
+            44,
+            46,
+            48,
+            62
+          ],
+          [
+            18,
+            20,
+            34,
+            40,
+            50,
+            52
+          ]
+        ]
+      },
+      "64": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10,
+            12,
+            14,
+            16,
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50,
+            52,
+            54,
+            56,
+            58,
+            60,
+            62,
+            64
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10,
+            42
+          ],
+          [
+            12
+          ],
+          [
+            14,
+            46
+          ],
+          [
+            16,
+            32,
+            36,
+            64
+          ],
+          [
+            18,
+            50
+          ],
+          [
+            20
+          ],
+          [
+            22,
+            54
+          ],
+          [
+            24,
+            44,
+            48
+          ],
+          [
+            26,
+            58
+          ],
+          [
+            28
+          ],
+          [
+            30,
+            62
+          ],
+          [
+            34
+          ],
+          [
+            38
+          ],
+          [
+            40,
+            52
+          ],
+          [
+            56,
+            60
+          ]
+        ]
+      },
+      "128": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10,
+            12,
+            14,
+            16,
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50,
+            52,
+            54,
+            56,
+            58,
+            60,
+            62,
+            64
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ],
+          [
+            16,
+            32,
+            64
+          ],
+          [
+            18
+          ],
+          [
+            20
+          ],
+          [
+            22
+          ],
+          [
+            24
+          ],
+          [
+            26
+          ],
+          [
+            28
+          ],
+          [
+            30
+          ],
+          [
+            34
+          ],
+          [
+            36
+          ],
+          [
+            38
+          ],
+          [
+            40
+          ],
+          [
+            42
+          ],
+          [
+            44
+          ],
+          [
+            46
+          ],
+          [
+            48
+          ],
+          [
+            50
+          ],
+          [
+            52
+          ],
+          [
+            54
+          ],
+          [
+            56
+          ],
+          [
+            58
+          ],
+          [
+            60
+          ],
+          [
+            62
+          ]
+        ]
+      },
+      "256": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10,
+            12,
+            14,
+            16,
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50,
+            52,
+            54,
+            56,
+            58,
+            60,
+            62,
+            64
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ],
+          [
+            16
+          ],
+          [
+            18
+          ],
+          [
+            20
+          ],
+          [
+            22
+          ],
+          [
+            24
+          ],
+          [
+            26
+          ],
+          [
+            28
+          ],
+          [
+            30
+          ],
+          [
+            32,
+            64
+          ],
+          [
+            34
+          ],
+          [
+            36
+          ],
+          [
+            38
+          ],
+          [
+            40
+          ],
+          [
+            42
+          ],
+          [
+            44
+          ],
+          [
+            46
+          ],
+          [
+            48
+          ],
+          [
+            50
+          ],
+          [
+            52
+          ],
+          [
+            54
+          ],
+          [
+            56
+          ],
+          [
+            58
+          ],
+          [
+            60
+          ],
+          [
+            62
+          ]
+        ]
+      },
+      "512": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10,
+            12,
+            14,
+            16,
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50,
+            52,
+            54,
+            56,
+            58,
+            60,
+            62,
+            64
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ],
+          [
+            16
+          ],
+          [
+            18
+          ],
+          [
+            20
+          ],
+          [
+            22
+          ],
+          [
+            24
+          ],
+          [
+            26
+          ],
+          [
+            28
+          ],
+          [
+            30
+          ],
+          [
+            32
+          ],
+          [
+            34
+          ],
+          [
+            36
+          ],
+          [
+            38
+          ],
+          [
+            40
+          ],
+          [
+            42
+          ],
+          [
+            44
+          ],
+          [
+            46
+          ],
+          [
+            48
+          ],
+          [
+            50
+          ],
+          [
+            52
+          ],
+          [
+            54
+          ],
+          [
+            56
+          ],
+          [
+            58
+          ],
+          [
+            60
+          ],
+          [
+            62
+          ],
+          [
+            64
+          ]
+        ]
+      },
+      "1024": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12,
+            14,
+            16,
+            18,
+            20,
+            22,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50,
+            52,
+            54,
+            56,
+            58,
+            60,
+            62,
+            64
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ],
+          [
+            16
+          ],
+          [
+            18
+          ],
+          [
+            20
+          ],
+          [
+            22
+          ],
+          [
+            24
+          ],
+          [
+            26
+          ],
+          [
+            28
+          ],
+          [
+            30
+          ],
+          [
+            32
+          ],
+          [
+            34
+          ],
+          [
+            36
+          ],
+          [
+            38
+          ],
+          [
+            40
+          ],
+          [
+            42
+          ],
+          [
+            44
+          ],
+          [
+            46
+          ],
+          [
+            48
+          ],
+          [
+            50
+          ],
+          [
+            52
+          ],
+          [
+            54
+          ],
+          [
+            56
+          ],
+          [
+            58
+          ],
+          [
+            60
+          ],
+          [
+            62
+          ],
+          [
+            64
+          ]
+        ]
+      }
+    },
+    "odd_odd": {
+      "8": {
+        "partition_groups": [
+          [
+            2,
+            4,
+            8,
+            10,
+            16,
+            18,
+            20,
+            26,
+            32,
+            34,
+            36,
+            40,
+            42,
+            50,
+            52,
+            58,
+            64
+          ],
+          [
+            6,
+            12,
+            14,
+            22,
+            24,
+            28,
+            30,
+            38,
+            44,
+            46,
+            48,
+            54,
+            56,
+            60,
+            62
+          ]
+        ],
+        "order_groups": [
+          [
+            2,
+            4,
+            8,
+            10,
+            16,
+            18,
+            20,
+            26,
+            32,
+            34,
+            36,
+            40,
+            42,
+            50,
+            52,
+            58,
+            64
+          ],
+          [
+            6,
+            12,
+            14,
+            22,
+            24,
+            28,
+            30,
+            38,
+            44,
+            46,
+            48,
+            54,
+            56,
+            60,
+            62
+          ]
+        ]
+      },
+      "16": {
+        "partition_groups": [
+          [
+            2,
+            18,
+            20,
+            34,
+            40,
+            50,
+            52
+          ],
+          [
+            4,
+            8,
+            10,
+            16,
+            26,
+            32,
+            36,
+            42,
+            58,
+            64
+          ],
+          [
+            6,
+            22,
+            28,
+            38,
+            54,
+            56,
+            60
+          ],
+          [
+            12,
+            14,
+            24,
+            30,
+            44,
+            46,
+            48,
+            62
+          ]
+        ],
+        "order_groups": [
+          [
+            2,
+            18,
+            20,
+            34,
+            40,
+            50,
+            52
+          ],
+          [
+            4,
+            8,
+            10,
+            16,
+            26,
+            32,
+            36,
+            42,
+            58,
+            64
+          ],
+          [
+            6,
+            22,
+            28,
+            38,
+            54,
+            56,
+            60
+          ],
+          [
+            12,
+            14,
+            24,
+            30,
+            44,
+            46,
+            48,
+            62
+          ]
+        ]
+      },
+      "32": {
+        "partition_groups": [
+          [
+            2,
+            34
+          ],
+          [
+            4
+          ],
+          [
+            6,
+            38
+          ],
+          [
+            8,
+            16,
+            32,
+            36,
+            64
+          ],
+          [
+            10,
+            42
+          ],
+          [
+            12
+          ],
+          [
+            14,
+            46
+          ],
+          [
+            18,
+            50
+          ],
+          [
+            20
+          ],
+          [
+            22,
+            54
+          ],
+          [
+            24,
+            44,
+            48
+          ],
+          [
+            26,
+            58
+          ],
+          [
+            28
+          ],
+          [
+            30,
+            62
+          ],
+          [
+            40,
+            52
+          ],
+          [
+            56,
+            60
+          ]
+        ],
+        "order_groups": [
+          [
+            2,
+            34
+          ],
+          [
+            4
+          ],
+          [
+            6,
+            38
+          ],
+          [
+            8,
+            16,
+            32,
+            36,
+            64
+          ],
+          [
+            10,
+            42
+          ],
+          [
+            12
+          ],
+          [
+            14,
+            46
+          ],
+          [
+            18,
+            50
+          ],
+          [
+            20
+          ],
+          [
+            22,
+            54
+          ],
+          [
+            24,
+            44,
+            48
+          ],
+          [
+            26,
+            58
+          ],
+          [
+            28
+          ],
+          [
+            30,
+            62
+          ],
+          [
+            40,
+            52
+          ],
+          [
+            56,
+            60
+          ]
+        ]
+      },
+      "64": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ],
+          [
+            16,
+            32,
+            64
+          ],
+          [
+            18
+          ],
+          [
+            20
+          ],
+          [
+            22
+          ],
+          [
+            24
+          ],
+          [
+            26
+          ],
+          [
+            28
+          ],
+          [
+            30
+          ],
+          [
+            34
+          ],
+          [
+            36
+          ],
+          [
+            38
+          ],
+          [
+            40
+          ],
+          [
+            42
+          ],
+          [
+            44
+          ],
+          [
+            46
+          ],
+          [
+            48
+          ],
+          [
+            50
+          ],
+          [
+            52
+          ],
+          [
+            54
+          ],
+          [
+            56
+          ],
+          [
+            58
+          ],
+          [
+            60
+          ],
+          [
+            62
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ],
+          [
+            16,
+            32,
+            64
+          ],
+          [
+            18
+          ],
+          [
+            20
+          ],
+          [
+            22
+          ],
+          [
+            24
+          ],
+          [
+            26
+          ],
+          [
+            28
+          ],
+          [
+            30
+          ],
+          [
+            34
+          ],
+          [
+            36
+          ],
+          [
+            38
+          ],
+          [
+            40
+          ],
+          [
+            42
+          ],
+          [
+            44
+          ],
+          [
+            46
+          ],
+          [
+            48
+          ],
+          [
+            50
+          ],
+          [
+            52
+          ],
+          [
+            54
+          ],
+          [
+            56
+          ],
+          [
+            58
+          ],
+          [
+            60
+          ],
+          [
+            62
+          ]
+        ]
+      },
+      "128": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ],
+          [
+            16
+          ],
+          [
+            18
+          ],
+          [
+            20
+          ],
+          [
+            22
+          ],
+          [
+            24
+          ],
+          [
+            26
+          ],
+          [
+            28
+          ],
+          [
+            30
+          ],
+          [
+            32,
+            64
+          ],
+          [
+            34
+          ],
+          [
+            36
+          ],
+          [
+            38
+          ],
+          [
+            40
+          ],
+          [
+            42
+          ],
+          [
+            44
+          ],
+          [
+            46
+          ],
+          [
+            48
+          ],
+          [
+            50
+          ],
+          [
+            52
+          ],
+          [
+            54
+          ],
+          [
+            56
+          ],
+          [
+            58
+          ],
+          [
+            60
+          ],
+          [
+            62
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ],
+          [
+            16
+          ],
+          [
+            18
+          ],
+          [
+            20
+          ],
+          [
+            22
+          ],
+          [
+            24
+          ],
+          [
+            26
+          ],
+          [
+            28
+          ],
+          [
+            30
+          ],
+          [
+            32,
+            64
+          ],
+          [
+            34
+          ],
+          [
+            36
+          ],
+          [
+            38
+          ],
+          [
+            40
+          ],
+          [
+            42
+          ],
+          [
+            44
+          ],
+          [
+            46
+          ],
+          [
+            48
+          ],
+          [
+            50
+          ],
+          [
+            52
+          ],
+          [
+            54
+          ],
+          [
+            56
+          ],
+          [
+            58
+          ],
+          [
+            60
+          ],
+          [
+            62
+          ]
+        ]
+      },
+      "256": {
+        "partition_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ],
+          [
+            16
+          ],
+          [
+            18
+          ],
+          [
+            20
+          ],
+          [
+            22
+          ],
+          [
+            24
+          ],
+          [
+            26
+          ],
+          [
+            28
+          ],
+          [
+            30
+          ],
+          [
+            32
+          ],
+          [
+            34
+          ],
+          [
+            36
+          ],
+          [
+            38
+          ],
+          [
+            40
+          ],
+          [
+            42
+          ],
+          [
+            44
+          ],
+          [
+            46
+          ],
+          [
+            48
+          ],
+          [
+            50
+          ],
+          [
+            52
+          ],
+          [
+            54
+          ],
+          [
+            56
+          ],
+          [
+            58
+          ],
+          [
+            60
+          ],
+          [
+            62
+          ],
+          [
+            64
+          ]
+        ],
+        "order_groups": [
+          [
+            2
+          ],
+          [
+            4
+          ],
+          [
+            6
+          ],
+          [
+            8
+          ],
+          [
+            10
+          ],
+          [
+            12
+          ],
+          [
+            14
+          ],
+          [
+            16
+          ],
+          [
+            18
+          ],
+          [
+            20
+          ],
+          [
+            22
+          ],
+          [
+            24
+          ],
+          [
+            26
+          ],
+          [
+            28
+          ],
+          [
+            30
+          ],
+          [
+            32
+          ],
+          [
+            34
+          ],
+          [
+            36
+          ],
+          [
+            38
+          ],
+          [
+            40
+          ],
+          [
+            42
+          ],
+          [
+            44
+          ],
+          [
+            46
+          ],
+          [
+            48
+          ],
+          [
+            50
+          ],
+          [
+            52
+          ],
+          [
+            54
+          ],
+          [
+            56
+          ],
+          [
+            58
+          ],
+          [
+            60
+          ],
+          [
+            62
+          ],
+          [
+            64
+          ]
+        ]
+      }
+    },
+    "tail_cutoffs": {
+      "8": 6,
+      "16": 6,
+      "32": 6,
+      "64": 10,
+      "128": 10,
+      "256": 10,
+      "512": 10,
+      "1024": 12,
+      "2048": 14,
+      "4096": 14
+    },
+    "checks": {
+      "zero_occupancy": 280,
+      "odd_odd_frequency_tables": 336,
+      "odd_odd_derivative_formula": 1920,
+      "four_combiner_matches": 84
+    },
+    "odd_odd_power_two_tail_thresholds": {
+      "8": {
+        "1": 160
+      },
+      "16": {
+        "2": 160
+      },
+      "32": {
+        "3": 160
+      },
+      "64": {
+        "4": 160
+      },
+      "128": {
+        "5": 160
+      },
+      "256": {
+        "6": 160
+      }
+    },
+    "delayed_tail_H_62z_plus_z2": [
+      {
+        "w": 3,
+        "catalogue_M": 262144,
+        "minimum_M": 32768,
+        "catalogue_order": "803b4fbabb1376b166020b56d5299f8eec2cd7c45f31f1f332eb8a15e425063a",
+        "minimum_order": "c4ac4048d47fc2c52a2453e19dedf602d51cdfac91a0e12d92acf63c3e214060"
+      },
+      {
+        "w": 4,
+        "catalogue_M": 131072,
+        "minimum_M": 65536,
+        "catalogue_order": "65da8d1df9a2efb57dba91a0e77d5469ac49a14e6944ed3155028dff964ee693",
+        "minimum_order": "4aafaf067108cebb54ba39657ad8f8a8141d69159df005199f536873cf78516c"
+      },
+      {
+        "w": 5,
+        "catalogue_M": 131072,
+        "minimum_M": 131072,
+        "catalogue_order": "052955caf5dadb113b512ac232924a7b47ab63bbf2507e20310ac74735cef4f9",
+        "minimum_order": "052955caf5dadb113b512ac232924a7b47ab63bbf2507e20310ac74735cef4f9"
+      },
+      {
+        "w": 6,
+        "catalogue_M": 262144,
+        "minimum_M": 262144,
+        "catalogue_order": "5cfcecdce53087e4f1e6d1f0c6c374960972ab673b671f7993e89c4968db16bc",
+        "minimum_order": "5cfcecdce53087e4f1e6d1f0c6c374960972ab673b671f7993e89c4968db16bc"
+      },
+      {
+        "w": 7,
+        "catalogue_M": 524288,
+        "minimum_M": 524288,
+        "catalogue_order": "acbe18db936f2ae7dba7777eb48124524db4bff2c2db2247625e8056aeebc6e0",
+        "minimum_order": "acbe18db936f2ae7dba7777eb48124524db4bff2c2db2247625e8056aeebc6e0"
+      },
+      {
+        "w": 8,
+        "catalogue_M": 1048576,
+        "minimum_M": 1048576,
+        "catalogue_order": "803b4fbabb1376b166020b56d5299f8eec2cd7c45f31f1f332eb8a15e425063a",
+        "minimum_order": "803b4fbabb1376b166020b56d5299f8eec2cd7c45f31f1f332eb8a15e425063a"
+      },
+      {
+        "w": 9,
+        "catalogue_M": 2097152,
+        "minimum_M": 2097152,
+        "catalogue_order": "803b4fbabb1376b166020b56d5299f8eec2cd7c45f31f1f332eb8a15e425063a",
+        "minimum_order": "803b4fbabb1376b166020b56d5299f8eec2cd7c45f31f1f332eb8a15e425063a"
+      },
+      {
+        "w": 10,
+        "catalogue_M": 4194304,
+        "minimum_M": 4194304,
+        "catalogue_order": "803b4fbabb1376b166020b56d5299f8eec2cd7c45f31f1f332eb8a15e425063a",
+        "minimum_order": "803b4fbabb1376b166020b56d5299f8eec2cd7c45f31f1f332eb8a15e425063a"
+      }
+    ]
+  },
+  "exhaustive_order_counts": {
+    "1": {
+      "order_classes": 1,
+      "by_antipodal_pairs": {
+        "1": 1
+      },
+      "Rug_side": 4
+    },
+    "2": {
+      "order_classes": 12,
+      "by_antipodal_pairs": {
+        "1": 10,
+        "2": 2
+      },
+      "Rug_side": 8
+    },
+    "3": {
+      "order_classes": 156,
+      "by_antipodal_pairs": {
+        "1": 88,
+        "2": 60,
+        "3": 8
+      },
+      "Rug_side": null
+    },
+    "4": {
+      "order_classes": 2640,
+      "by_antipodal_pairs": {
+        "1": 808,
+        "2": 1304,
+        "3": 480,
+        "4": 48
+      },
+      "Rug_side": 16
+    }
+  },
+  "order_realizations": {
+    "4": {
+      "native_polynomial_checks": 25,
+      "minimum_modulus_exponent_range": [
+        4,
+        4
+      ]
+    },
+    "8": {
+      "native_polynomial_checks": 25,
+      "minimum_modulus_exponent_range": [
+        11,
+        12
+      ]
+    },
+    "16": {
+      "native_polynomial_checks": 25,
+      "minimum_modulus_exponent_range": [
+        26,
+        28
+      ]
+    },
+    "32": {
+      "native_polynomial_checks": 25,
+      "minimum_modulus_exponent_range": [
+        59,
+        60
+      ]
+    }
+  },
+  "benchmark_N1024": {
+    "setup_seconds": 2.334799834061414,
+    "median_draw_seconds": 0.00785981205990538,
+    "draws": 10,
+    "class_count_bits": 2302,
+    "excludes": "polynomial realization and rendering"
+  }
+}
