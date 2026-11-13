@@ -17,13 +17,13 @@ from .sampling import CARTESIAN_PHASES, checkerboard_indices, resample_view
 from .specs import SAMPLINGS
 
 COMBINER_COLORS = {
-    "and": "cmr.ember",
-    "or": "cmr.freeze",
-    "xor": "cmr.fall",
-    "add": "cmr.savanna",
-    "absdiff": "cmr.amber",
-    "mult": "cmr.ocean",
-    "clmul": "cmr.guppy",
+    "and": "cmr.emergency",
+    "or": "cmr.emergency",
+    "xor": "cmr.emergency",
+    "add": "cmr.emergency",
+    "absdiff": "cmr.emergency",
+    "mult": "cmr.emergency",
+    "clmul": "cmr.emergency",
 }
 M_SELECTIONS = ("catalogue", "distinct_outputs", "minimum_period")
 FIELD_SIZES = tuple(1 << exponent for exponent in range(1, 13))
