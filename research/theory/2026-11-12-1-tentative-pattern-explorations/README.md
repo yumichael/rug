@@ -38,7 +38,7 @@ The new conclusions use background from the [November 2 polynomial-period report
 Use the existing optional research environment from [development setup](../../../README.md#optional-python-research-tools). From the repository root:
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 research/interactive/.venv/bin/python research/theory/2026-11-12-tentative-pattern-explorations/verify.py
+PYTHONDONTWRITEBYTECODE=1 research/interactive/.venv/bin/python research/theory/2026-11-12-1-tentative-pattern-explorations/verify.py
 ```
 
 Add `--benchmark` to time $N = 1024$ order sampling on the current machine. The command writes [results.json](results.json) in this folder, or a path supplied with `--output`. It does not require a Jupyter kernel or modify app settings or Git state. NumPy and ruglab are used for the native cross-checks; the combinatorial sampler itself uses only the standard library.
@@ -67,6 +67,10 @@ rank, structure = sampler.draw(Random(0))
 ```
 
 The rank tuple indexes the $N/2$ reduced scalar input classes, not the $N\times N$ rendered grid. The paired-node convention and complete uniformity argument are in [the sampler report](uniform-orders.md). The [post-square comparison image](xor-even-power-example.png) preserves the notebook example at two precisions.
+
+## Continuation
+
+The [numbered head-and-tail investigation](../2026-11-12-2-checkerboard-head-tail/README.md) extends this work to arbitrary post-polynomials and shared-family twists over general dyadic domains, with exact modulus criteria and uniform component-order samplers.
 
 ## Open directions
 
