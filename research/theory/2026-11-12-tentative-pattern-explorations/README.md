@@ -4,13 +4,13 @@ Tentative research collected from the November 10–12, 2026 chat: XOR pseudo-sq
 
 ## Scope and terminology
 
-The displayed side is N = 2^r. Requested repetition means least horizontal and vertical periods N; extra oblique translations are separate information. XOR without pre-operations uses operand modulus K = 2N. Even-pre families write q = 2^w u with u odd and use a sampling-dependent K. The post-modulus is M = 2^m. These three quantities have different roles.
+The displayed side is $N = 2^r$. Requested repetition means least horizontal and vertical periods $N$; extra oblique translations are separate information. XOR without pre-operations uses operand modulus $K = 2N$. Even-pre families write $q = 2^w u$ with $u$ odd and use a sampling-dependent $K$. The post-modulus is $M = 2^m$. These three quantities have different roles.
 
-Pseudo-square symmetry here is the numerical condition H(2N−z) = H(z) modulo M on odd XOR inputs. It gives square symmetry of the two mixed Cartesian parity components. Their centers are staggered when interlaced into the current vertical opposite-checkerboard display. The term does not assert a literal quarter-turn symmetry of the entire pixel array or characterize aesthetic resemblance.
+Pseudo-square symmetry here is the numerical condition $H(2N-z) \equiv H(z)\pmod M$ on odd XOR inputs. It gives square symmetry of the two mixed Cartesian parity components. Their centers are staggered when interlaced into the current vertical opposite-checkerboard display. The term does not assert a literal quarter-turn symmetry of the entire pixel array or characterize aesthetic resemblance.
 
 A shift class identifies normalized numerical tables differing by a common circular color offset. An order class identifies their anchored rank tables. Equality geometry retains only the partition into equal-valued cell groups. Spatial translations, rotations, and reflections are not quotiented by these class definitions.
 
-Minimum-period precision chooses the smallest M attaining the requested axis periods for a fixed formula and K. A globally smallest modulus among all formulas representing one order class is an additional canonicalization problem. A value-preserving modulus instead retains a specified equality partition, sometimes with a further requirement to keep nonzero outputs nonzero.
+Minimum-period precision chooses the smallest $M$ attaining the requested axis periods for a fixed formula and $K$. A globally smallest modulus among all formulas representing one order class is an additional canonicalization problem. A value-preserving modulus instead retains a specified equality partition, sometimes with a further requirement to keep nonzero outputs nonzero.
 
 ## Reports and result inventory
 
@@ -41,7 +41,7 @@ Use the existing optional research environment from [development setup](../../..
 PYTHONDONTWRITEBYTECODE=1 research/interactive/.venv/bin/python research/theory/2026-11-12-tentative-pattern-explorations/verify.py
 ```
 
-Add `--benchmark` to time N = 1024 order sampling on the current machine. The command writes [results.json](results.json) in this folder, or a path supplied with `--output`. It does not require a Jupyter kernel or modify app settings or Git state. NumPy and ruglab are used for the native cross-checks; the combinatorial sampler itself uses only the standard library.
+Add `--benchmark` to time $N = 1024$ order sampling on the current machine. The command writes [results.json](results.json) in this folder, or a path supplied with `--output`. It does not require a Jupyter kernel or modify app settings or Git state. NumPy and ruglab are used for the native cross-checks; the combinatorial sampler itself uses only the standard library.
 
 The saved rerun covers 2,400 XOR symmetry examples, the 360-draw precision comparison, finite Newton-coordinate enumeration, pre-power partitions and derivative formulas, independent order enumeration through side 16, and 100 native polynomial realizations through side 32. The proof statements are not inferred solely from those checks. Coverage counts, source hashes, and optional machine timings are recorded in the JSON.
 
@@ -66,7 +66,7 @@ sampler = Sampler(N // 4)
 rank, structure = sampler.draw(Random(0))
 ```
 
-The rank tuple indexes the N/2 reduced scalar input classes, not the N×N rendered grid. The paired-node convention and complete uniformity argument are in [the sampler report](uniform-orders.md). The [post-square comparison image](xor-even-power-example.png) preserves the notebook example at two precisions.
+The rank tuple indexes the $N/2$ reduced scalar input classes, not the $N\times N$ rendered grid. The paired-node convention and complete uniformity argument are in [the sampler report](uniform-orders.md). The [post-square comparison image](xor-even-power-example.png) preserves the notebook example at two precisions.
 
 ## Open directions
 
