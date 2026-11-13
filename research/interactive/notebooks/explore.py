@@ -24,7 +24,7 @@ from ruglab.studio import *
 #
 # The checkerboard views run vertically along the operand grid's $x=y$ diagonal. Left-right reflection exchanges the two operands. The same-parity tile starts with its cell-centered mirror column at the left edge. The opposite-parity tile starts with the preceding row of its vertical period.
 #
-# **Sampling** includes **doubled checkerboard opposite** immediately before **checkerboard opposite**. It uses the full grid's pre-modulus rule and duplicates the opposite-parity values one cell left before choosing the post-modulus. **Minimum M** targets the doubled field's periods.
+# **Sampling** includes **doubled checkerboard opposite** immediately before **checkerboard opposite**. It uses the full grid's pre-modulus rule and duplicates the opposite-parity values one cell left before choosing the post-modulus. **Minimum period** targets the doubled field's periods.
 #
 # **Additional sampling** resamples cells from the finished field, using its top-left cell as the parity origin and keeping the original cell colors. **Full** keeps every cell. **Checkerboard same** and **checkerboard opposite** use the inscribed diamond and show it as a square with half the original side length. **Doubled checkerboard opposite** keeps the full size: it keeps opposite-parity cells and copies their values one cell left onto same-parity cells, wrapping at the right edge. The moduli, repeat, zero share, and value count describe the original field. Additional sampling is the fastest dimension by default.
 #
@@ -36,7 +36,7 @@ from ruglab.studio import *
 #
 # By default, each panel uses a pre-modulus chosen for its sampling and a post-modulus computed from its own combined values. The post-modulus is the smallest power of two that keeps distinct values separate and preserves every nonzero value. Titles report both moduli, the zero share, and the repeat. A diamond has half the area of the displayed square. A smaller tile can occur when one operand branch repeats sooner, or when the combiner erases variation. Constant fields are shown too.
 #
-# **Minimum M (displayed period)** uses the smallest power of two giving the field size as both least axis periods, with the pre-modulus and operations fixed. It can merge value groups or create zeros. Recipes that cannot attain those periods show an unavailable panel. Additional sampling keeps the resulting field's modulus and colors. The option is off by default in each recipe gallery; pass `minimum_post_modulus=True` to start with it enabled.
+# **M-selection** is a parameter dimension immediately before **Sampling**. **Catalogue** keeps the original modulus rule. **Distinct outputs** chooses the smallest power-of-two modulus preserving the distinct output groups in the catalogue field; zero needs its own group only when it is already an output. A lone output uses $M=1$. **Minimum period** chooses the smallest power-of-two modulus giving the field size as both least axis periods, with the pre-modulus and operations fixed; it may merge groups, and unattainable periods show an unavailable panel. Select several policies to compare them. Additional sampling keeps the chosen modulus and colors. Set `selected_m_selections=("catalogue", "distinct_outputs", "minimum_period")` to start with all three selected.
 #
 # `PREVIEW_PIXELS` sets the thumbnail width in pixels. The field size control sets the actual grid used for the calculations and export, with power-of-two side lengths from 2 to 4096.
 #
@@ -60,12 +60,12 @@ gallery_view, displayed_specs = recipe_gallery(
     page_size=PLOTS_PER_PAGE,
     preview_pixels=PREVIEW_PIXELS,
     wrap_after=len(DEFAULT_SAMPLINGS),
-    minimum_post_modulus=True,
+    selected_m_selections=("minimum_period",),
 )
 display(gallery_view)
 
 # %% [markdown]
-# For a closer look, retrieve the base specification using its recipe number, field size, sampling, and additional sampling, such as `displayed_specs[1, 8, "even_odd", "checkerboard_same"]`. Recipe numbers stay fixed when you reorder dimensions. Use `export(evaluate(spec), "../output/field.png", mode="order", additional_sampling="checkerboard_same")` to export that view at one pixel per cell.
+# For a closer look, retrieve the base specification using its recipe number, field size, M-selection, sampling, and additional sampling, such as `displayed_specs[1, 8, "minimum_period", "even_odd", "checkerboard_same"]`. Recipe numbers stay fixed when you reorder dimensions. Use `export(evaluate(spec), "../output/field.png", mode="order", additional_sampling="checkerboard_same")` to export that view at one pixel per cell.
 #
 
 # %% [markdown]
@@ -75,9 +75,9 @@ display(gallery_view)
 #
 # The draw is uniform within each sampled family and precision on the odd XOR inputs. Each round gives those strata equal space in the gallery. Single powers and stabilized even sums cycle through their finite classes before repeating. Other families draw with replacement. Overlaps can occur across strata and under other samplings. The opposite-parity checkerboard is the reference for the full-period test at sizes of four cells and up. Other samplings and combiners show what the same polynomial does to their inputs.
 #
-# See the [polynomial period and sampling theory](../../theory/2026-11-02-xor-polynomial-period/2026-11-02-xor-polynomial-period.md) and the [order-class analysis](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#6-no-pre-operation-xor-when-order-and-shift-classes-coincide). The gallery colors cells by rank. The research proves uniform order draws for the same-valuation families at a fixed precision. The unrestricted and even-only draws cover numerical shift classes and may repeat an ordering. Use `post_specs[number, size, sampling, additional_sampling]["post"]` to inspect the exact polynomial in ascending coefficient order.
+# See the [polynomial period and sampling theory](../../theory/2026-11-02-xor-polynomial-period/2026-11-02-xor-polynomial-period.md) and the [order-class analysis](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#6-no-pre-operation-xor-when-order-and-shift-classes-coincide). The gallery colors cells by rank. The research proves uniform order draws for the same-valuation families at a fixed precision. The unrestricted and even-only draws cover numerical shift classes and may repeat an ordering. Use `post_specs[number, size, m_selection, sampling, additional_sampling]["post"]` to inspect the exact polynomial in ascending coefficient order.
 #
-# **Minimum M** is applied after drawing the polynomial, using the selected sampling's periods. The stratum label still describes the original draw precision; the panel reports the evaluated $M$. Different draws can become identical after minimizing, so the resulting minimum-modulus patterns need not be sampled uniformly.
+# **Minimum period** is applied after drawing the polynomial, using the selected sampling's periods. The stratum label still describes the original draw precision; the panel reports the evaluated $M$. Different draws can become identical after minimizing, so the resulting minimum-modulus patterns need not be sampled uniformly.
 #
 # %%
 POST_DRAWS_PER_STRATUM = 24
@@ -144,7 +144,7 @@ plt.show()
 #
 # With the default dimension order, each page runs through the even pre-powers 2 through 64 in the same positions. Read across the first row, then continue on the next row. The defaults show one field size and one sampling in four rows of eight. Keep **Plots per page** at 32 to keep each sweep together.
 #
-# Use **Combiner** to compare OR, AND, XOR, addition, absolute difference, multiplication, and carryless multiplication. OR is selected initially. By default, pages change the post-polynomial first, then the twist, then the combiner. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. With **Minimum M** off, the post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, sampling, additional_sampling]`.
+# Use **Combiner** to compare OR, AND, XOR, addition, absolute difference, multiplication, and carryless multiplication. OR is selected initially. By default, pages change the post-polynomial first, then the twist, then the combiner. The headings give their catalogue indices. Twist 0 and post 0 give the pre-power alone. The scan crosses 16 twists, through degree nine in the powered input, with 10 post-polynomials, including mixed degrees. With **Catalogue** selected, the post-modulus preserves the combined value groups, so the post-polynomials can change their color order. Inspect the exact operations in `pre_power_specs[number, size, m_selection, sampling, additional_sampling]`.
 #
 # %%
 pre_power_gallery_view, pre_power_specs = recipe_gallery(

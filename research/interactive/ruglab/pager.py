@@ -17,7 +17,7 @@ from ipywidgets.widgets.widget_bool import CheckboxStyle
 from PIL import Image
 
 from . import exploration
-from .exploration import FIELD_SIZES, RecipeCatalogue, recipe_description, sample_field
+from .exploration import FIELD_SIZES, M_SELECTIONS, RecipeCatalogue, recipe_description, sample_field
 from .indexed import byte_lru
 from .plotting import indexed_order_palette
 from .previews import PreviewPanel, palette_preview, preview_grid
@@ -127,6 +127,10 @@ def _product_rank(options, position):
 
 
 def _option_label(name, value):
+    if name == "m_selection":
+        return {"catalogue": "Catalogue", "distinct_outputs": "Distinct outputs", "minimum_period": "Minimum period"}[
+            value
+        ]
     if name == "combiner":
         return value.upper()
     if name == "stratum":
@@ -156,14 +160,23 @@ def recipe_gallery(
     wrap_after=0,
     grouped_dimensions=0,
     minimum_post_modulus=False,
+    selected_m_selections=None,
 ):
     """Browse a recipe catalogue with field size and two sampling dimensions."""
-    view_dimensions = {"size": FIELD_SIZES, "sampling": SAMPLINGS, "additional_sampling": ADDITIONAL_SAMPLINGS}
+    view_dimensions = {
+        "size": FIELD_SIZES,
+        "m_selection": M_SELECTIONS,
+        "sampling": SAMPLINGS,
+        "additional_sampling": ADDITIONAL_SAMPLINGS,
+    }
     if view_dimensions.keys() & catalogue.dimensions.keys():
         raise ValueError("Size and sampling dimensions are supplied by the gallery")
     dimensions = {**catalogue.dimensions, **view_dimensions}
     names = tuple(dimensions)
-    axis_labels = tuple("Field size" if name == "size" else name.replace("_", " ").capitalize() for name in names)
+    axis_labels = tuple(
+        {"size": "Field size", "m_selection": "M-selection"}.get(name, name.replace("_", " ").capitalize())
+        for name in names
+    )
     axis_indices = tuple(range(len(names)))
     size_axis = names.index("size")
     order = [size_axis, *(i for i in axis_indices if i != size_axis)]
@@ -215,6 +228,9 @@ def recipe_gallery(
     selections = {
         "size": field_sizes,
         "combiner": selected_combiners,
+        "m_selection": selected_m_selections
+        if selected_m_selections is not None
+        else (("minimum_period",) if minimum_post_modulus else ("catalogue",)),
         "sampling": selected_samplings,
         "additional_sampling": selected_additional_samplings,
     }
@@ -238,14 +254,6 @@ def recipe_gallery(
         indent=False,
         style=checkbox_style,
         layout=widgets.Layout(width="135px"),
-    )
-    minimum_control = widgets.Checkbox(
-        value=minimum_post_modulus,
-        description="Minimum M (displayed period)",
-        tooltip="Use the smallest power of two giving the field size as both least axis periods, with K fixed.",
-        indent=False,
-        layout=checkbox_layout,
-        style=checkbox_style,
     )
     wrap_control = widgets.BoundedIntText(
         min=0,
@@ -289,14 +297,14 @@ def recipe_gallery(
         return catalogue.build(**parameters)
 
     @byte_lru(84, 128 << 20, _prepared_field_bytes)
-    def prepared_field(recipe, size, sampling, minimum_m):
-        field = sample_field(recipe, size, sampling, minimum_post_modulus=minimum_m)
+    def prepared_field(recipe, size, sampling, m_selection):
+        field = sample_field(recipe, size, sampling, m_selection=m_selection)
         return field, indexed_order_palette(field.values, field.spec["color"])
 
     @lru_cache(maxsize=84)
-    def recipe_panel(recipe, size, sampling, additional_sampling, minimum_m):
+    def recipe_panel(recipe, size, sampling, additional_sampling, m_selection):
         try:
-            field, palette = prepared_field(recipe, size, sampling, minimum_m)
+            field, palette = prepared_field(recipe, size, sampling, m_selection)
         except exploration.PeriodTargetError as error:
             detail = str(error).replace(" at K=", "\nat K=")
             caption = f"{sampling.replace('_', ' ')} · unavailable\n{detail}"
@@ -316,7 +324,7 @@ def recipe_gallery(
             caption += f"\n↳ {additional_name} · {width}x{height}"
         return PreviewPanel(palette_preview(indices, palette, preview_pixels), caption), spec
 
-    def render_page(entries, transpose, wrap, minimum_m):
+    def render_page(entries, transpose, wrap):
         rows = []
         specs = {}
         for cases in entries:
@@ -326,15 +334,16 @@ def recipe_gallery(
                 recipe_position = case[: len(recipe_options)]
                 number = _product_rank(recipe_options, recipe_position) + 1
                 recipe = recipe_at(recipe_position)
-                size_index, sampling_index, additional_index = case[len(recipe_options) :]
+                size_index, m_index, sampling_index, additional_index = case[len(recipe_options) :]
+                m_selection = M_SELECTIONS[m_index]
                 size = FIELD_SIZES[size_index]
                 sampling = SAMPLINGS[sampling_index]
                 additional_sampling = ADDITIONAL_SAMPLINGS[additional_index]
                 heading = f"#{number} {recipe.combiner.upper()} · {size}x{size}"
-                description = recipe_description(recipe, size)
-                panel, spec = recipe_panel(recipe, size, sampling, additional_sampling, minimum_m)
+                description = recipe_description(recipe, size) + " · M: " + _option_label("m_selection", m_selection)
+                panel, spec = recipe_panel(recipe, size, sampling, additional_sampling, m_selection)
                 if spec is not None:
-                    specs[number, size, sampling, additional_sampling] = spec
+                    specs[number, size, m_selection, sampling, additional_sampling] = spec
                 headings.append((heading, description))
                 panels.append(panel)
             if all(heading == headings[0] for heading in headings):
@@ -423,9 +432,9 @@ def recipe_gallery(
         render = cached_page if page_panels <= 21 else render_page
         # The renderer puts entries in columns to fill a flat page across rows.
         entries_as_columns = transpose if grouped else not transpose
-        png, specs = render(tuple(page_entries), entries_as_columns, wrap_control.value, minimum_control.value)
+        png, specs = render(tuple(page_entries), entries_as_columns, wrap_control.value)
         unchanged = page_preview.layout.display != "none" and page_preview.value == png
-        if minimum_control.value and len(specs) < page_panels:
+        if len(specs) < page_panels:
             page_status.value += f" · {page_panels - len(specs)} unavailable"
         displayed_specs.clear()
         displayed_specs.update(deepcopy(specs))
@@ -496,7 +505,7 @@ def recipe_gallery(
             layout=row_layout,
         )
 
-    quick_names = ("size", "combiner", "sampling", "additional_sampling")
+    quick_names = ("size", "combiner", "m_selection", "sampling", "additional_sampling")
     quick_filters: list[widgets.HBox | widgets.Accordion] = [
         choice_row(names.index(name)) for name in quick_names if name in names
     ]
@@ -528,13 +537,11 @@ def recipe_gallery(
         page_control,
         transpose_control,
         wrap_control,
-        minimum_control,
     ):
         control.observe(redraw, names="value")
     controls = widgets.VBox(
         [
             *quick_filters,
-            minimum_control,
             widgets.HBox(
                 [dimension_control, slower_button, faster_button, grouped_control, order_label],
                 layout=row_layout,

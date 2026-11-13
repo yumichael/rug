@@ -1,3 +1,4 @@
+from io import BytesIO
 from pathlib import Path
 
 import json5
@@ -12,13 +13,14 @@ from ruglab.exploration import (
     PeriodTargetError,
     PostRecipe,
     PrePowerStudyRecipe,
+    _minimum_group_values,
     pre_power_study_catalogue,
     sample_field,
 )
 from ruglab.indexed import IndexedValues, combination_table
 from ruglab.operations import clmul
 from ruglab.plotting import colorize, export, indexed_order_palette
-from ruglab.previews import indexed_preview
+from ruglab.previews import PreviewPanel, indexed_preview, preview_grid
 from ruglab.research import family_pre_modulus, minimum_post_modulus, uniform_xor
 from ruglab.sampling import coordinates, resample_view
 from ruglab.specs import SAMPLINGS
@@ -511,3 +513,57 @@ def test_nonpolynomial_expression_does_not_reduce_before_division():
 def test_native_rejects_fractional_arithmetic():
     with pytest.raises(ValueError, match="Native expressions use integer arithmetic"):
         evaluate({"n": 8, "expression": "z0/2"})
+
+
+@pytest.mark.parametrize(
+    "values,initial,expected",
+    [
+        ([4, 6, 4], 8, 4),
+        ([0, 4, 6], 8, 8),
+        ([64, 64], 128, 1),
+        ([0, 0], 1, 1),
+        ([2**80, 2**80 + 2], 2**81, 4),
+    ],
+)
+def test_minimum_group_values_only_preserves_actual_outputs(values, initial, expected):
+    outputs, modulus = _minimum_group_values(np.array(values, dtype=object), initial)
+    assert modulus == expected
+    assert outputs.tolist() == [value % expected for value in values]
+
+
+@pytest.mark.parametrize("transpose", [False, True])
+def test_preview_titles_and_captions_stay_out_of_neighbouring_plots(transpose):
+    panel = PreviewPanel(Image.new("RGB", (128, 128), "red"), "checkerboard opposite · M: Minimum period")
+    heading = "#123 OR · 128x128 · Pre 64 · twist 13 · post 7 · M: Minimum period"
+    png = preview_grid(
+        [(heading, [panel]), (heading, [panel])], 128, transpose=transpose, wrap_after=2 if transpose else 1
+    )
+    with Image.open(BytesIO(png)) as image:
+        pixels = np.asarray(image)
+    assert np.all(pixels[:, 136:144] == 255)
+    assert np.count_nonzero(np.all(pixels == [255, 0, 0], axis=-1)) == 2 * 128 * 128
+
+
+@pytest.mark.parametrize("sampling", SAMPLINGS)
+@pytest.mark.parametrize(
+    "recipe",
+    [
+        PatternRecipe("or", 2, 1, 3),
+        PostRecipe("xor", "any powers", 4, 0, 0),
+        PrePowerStudyRecipe(64, 13, 7),
+    ],
+)
+def test_distinct_outputs_policy_preserves_the_partition_at_minimum_modulus(recipe, sampling):
+    original = sample_field(recipe, 8, sampling)
+    field = sample_field(recipe, 8, sampling, m_selection="distinct_outputs")
+    before = original.result.values
+    after = field.result.values
+    assert np.array_equal(after, evaluate(field.spec).values)
+    assert field.distinct_values == original.distinct_values
+    assert np.array_equal(after, before % field.spec["M"])
+    if (before == 0).any():
+        assert np.array_equal(before == 0, after == 0)
+    if field.spec["M"] > 1:
+        assert len(set((after % (field.spec["M"] // 2)).flat)) < field.distinct_values
+    assert field.zero_fraction == np.count_nonzero(after == 0) / after.size
+    assert periods(field.result, certified_torus=True) == periods(original.result, certified_torus=True)

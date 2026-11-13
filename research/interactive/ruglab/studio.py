@@ -32,6 +32,7 @@ from . import (
 )
 from .exploration import (
     FIELD_SIZES,
+    M_SELECTIONS,
     RecipeCatalogue,
     exploration_catalogue,
     exploration_recipes,
@@ -51,6 +52,7 @@ from .specs import ADDITIONAL_SAMPLINGS, SAMPLINGS
 __all__ = [
     "ADDITIONAL_SAMPLINGS",
     "FIELD_SIZES",
+    "M_SELECTIONS",
     "SAMPLINGS",
     "BytesIO",
     "Path",

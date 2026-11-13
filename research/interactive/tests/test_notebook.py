@@ -20,7 +20,7 @@ from nbclient import NotebookClient
 from nbformat.v4 import new_code_cell
 from PIL import Image
 from ruglab import exploration, pager, studio
-from ruglab.exploration import PatternRecipe, PrePowerStudyRecipe, RecipeCatalogue, sample_field
+from ruglab.exploration import PatternRecipe, RecipeCatalogue, sample_field
 from ruglab.pager import recipe_gallery
 
 NOTEBOOKS = Path("notebooks")
@@ -142,22 +142,22 @@ def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
     assert density.description == "Plots per page"
     assert wrap.description == "Plots per row"
     with Image.open(BytesIO(preview.value)) as image:
-        assert image.width > image.height
+        assert image.width > 2 * 128
     transpose.value = True
     assert wrap.description == "Plots per column"
-    assert list(specs) == [(1, 2, "full", "full"), (1, 2, "odd_odd", "full")]
+    assert list(specs) == [(1, 2, "catalogue", "full", "full"), (1, 2, "catalogue", "odd_odd", "full")]
     with Image.open(BytesIO(preview.value)) as image:
         assert image.height > image.width
     transpose.value = False
     page.value = 2
     original = list(specs)
-    assert original == [(2, 2, "full", "full"), (2, 2, "odd_odd", "full")]
+    assert original == [(2, 2, "catalogue", "full", "full"), (2, 2, "catalogue", "odd_odd", "full")]
 
     dimension.value = dict(dimension.options)["Sampling"]
     slower.click()
     slower.click()
     assert page.value == 1
-    assert list(specs) == [(1, 2, "full", "full"), (2, 2, "full", "full")]
+    assert list(specs) == [(1, 2, "catalogue", "full", "full"), (2, 2, "catalogue", "full", "full")]
 
     faster.click()
     faster.click()
@@ -165,7 +165,7 @@ def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
     assert list(specs) == original
     grouped.value = 2
     assert page.value == 1
-    assert list(specs) == [(n, 2, sampling, "full") for n in (1, 2) for sampling in ("full", "odd_odd")]
+    assert list(specs) == [(n, 2, "catalogue", sampling, "full") for n in (1, 2) for sampling in ("full", "odd_odd")]
 
 
 def test_gallery_reuses_the_computed_field_for_additional_sampling():
@@ -189,13 +189,16 @@ def test_gallery_reuses_the_computed_field_for_additional_sampling():
         assert faster.disabled
         assert calculate.call_count == 1
         assert list(specs) == [
-            (1, 8, "checkerboard_same", phase)
+            (1, 8, "catalogue", "checkerboard_same", phase)
             for phase in ("full", "doubled_checkerboard_opposite", "checkerboard_opposite")
         ]
-        assert specs[1, 8, "checkerboard_same", "full"] == specs[1, 8, "checkerboard_same", "checkerboard_opposite"]
         assert (
-            specs[1, 8, "checkerboard_same", "full"]
-            == specs[1, 8, "checkerboard_same", "doubled_checkerboard_opposite"]
+            specs[1, 8, "catalogue", "checkerboard_same", "full"]
+            == specs[1, 8, "catalogue", "checkerboard_same", "checkerboard_opposite"]
+        )
+        assert (
+            specs[1, 8, "catalogue", "checkerboard_same", "full"]
+            == specs[1, 8, "catalogue", "checkerboard_same", "doubled_checkerboard_opposite"]
         )
         with Image.open(BytesIO(preview.value)) as image:
             assert image.width > 2 * 128
@@ -211,8 +214,10 @@ def test_gallery_main_doubled_sampling():
     )
     names = [box.description for box in sampling.children[1:]]
     assert names[names.index("checkerboard opposite") - 1] == "doubled checkerboard opposite"
-    assert list(specs) == [(1, 8, "doubled_checkerboard_opposite", "full")]
-    assert specs[1, 8, "doubled_checkerboard_opposite", "full"]["sampling"] == "doubled_checkerboard_opposite"
+    assert list(specs) == [(1, 8, "catalogue", "doubled_checkerboard_opposite", "full")]
+    assert (
+        specs[1, 8, "catalogue", "doubled_checkerboard_opposite", "full"]["sampling"] == "doubled_checkerboard_opposite"
+    )
 
 
 def test_pre_power_gallery_selects_other_combiners():
@@ -236,35 +241,36 @@ def test_pre_power_gallery_selects_other_combiners():
     assert dimension.options[0][0] == "Field size"
 
 
-def test_gallery_minimum_modulus_toggle_preserves_page_and_additional_sampling():
-    catalogue = RecipeCatalogue({"pre_power": (2, 4)}, lambda pre_power: PrePowerStudyRecipe(pre_power, 0, 2))
+def _m_choices(gallery):
+    row = next(
+        row for row in _filter_rows(gallery) if isinstance(row, widgets.HBox) and row.children[0].value == "M-selection"
+    )
+    return {box.description: box for box in row.children[1:]}
+
+
+def test_gallery_m_selection_compares_policies_and_preserves_additional_sampling():
+    catalogue = RecipeCatalogue({}, lambda: PatternRecipe("or", 2, 0, 3))
     gallery, specs = recipe_gallery(
         catalogue,
         field_sizes=(8,),
         selected_samplings=("full",),
         selected_additional_samplings=("full", "checkerboard_same"),
-        page_size=2,
+        page_size=6,
         preview_pixels=64,
+        selected_m_selections=("catalogue", "distinct_outputs", "minimum_period"),
     )
-    controls, preview = gallery.children
-    minimum = next(c for c in controls.children if isinstance(c, widgets.Checkbox))
-    page = controls.children[-2].children[2]
-    original = dict(specs)
-    original_preview = bytes(preview.value)
-    assert {s["M"] for s in specs.values()} == {128}
-    minimum.value = True
-    assert list(specs) == list(original)
-    assert {s["M"] for s in specs.values()} == {16}
-    assert bytes(preview.value) != original_preview
-    minimum.value = False
-    assert specs == original
-    assert bytes(preview.value) == original_preview
-    page.value = 2
-    second_page = list(specs)
-    minimum.value = True
-    assert page.value == 2
-    assert list(specs) == second_page
-    assert {s["M"] for s in specs.values()} == {32}
+    assert len(specs) == 6
+    assert {key[2] for key in specs} == {"catalogue", "distinct_outputs", "minimum_period"}
+    assert {spec["M"] for key, spec in specs.items() if key[2] == "catalogue"} == {128}
+    assert {spec["M"] for key, spec in specs.items() if key[2] == "minimum_period"} == {16}
+    controls = gallery.children[0]
+    dimension = controls.children[-3].children[0]
+    labels = [name for name, _ in dimension.options]
+    assert labels[labels.index("Sampling") - 1] == "M-selection"
+    for policy in ("Catalogue", "Distinct outputs"):
+        _m_choices(gallery)[policy].value = False
+    assert len(specs) == 2
+    assert {key[2] for key in specs} == {"minimum_period"}
 
 
 def test_gallery_marks_unattainable_minimum_modulus_panels():
@@ -280,8 +286,9 @@ def test_gallery_marks_unattainable_minimum_modulus_panels():
     assert not specs
     assert "1 unavailable" in controls.children[-2].children[-1].value
     assert bytes(preview.value).startswith(b"\x89PNG")
-    minimum = next(c for c in controls.children if isinstance(c, widgets.Checkbox))
+    minimum = _m_choices(gallery)["Minimum period"]
     minimum.value = False
+    _m_choices(gallery)["Catalogue"].value = True
     assert len(specs) == 1
 
 
@@ -292,7 +299,7 @@ def test_gallery_reports_busy_through_calculation_and_rendering_even_when_previe
     )
     controls, preview = gallery.children
     activity = controls.children[-1]
-    minimum = next(c for c in controls.children if isinstance(c, widgets.Checkbox))
+    minimum = _m_choices(gallery)["Minimum period"]
     original_preview = bytes(preview.value)
     original_specs = dict(specs)
     assert "✓ Ready · Update #1" in activity.value
@@ -314,10 +321,10 @@ def test_gallery_reports_busy_through_calculation_and_rendering_even_when_previe
     ):
         minimum.value = True
         assert calculate.call_count == render.call_count == 1
-    assert specs == original_specs
-    assert bytes(preview.value) == original_preview
+    assert len(specs) == 2
+    assert bytes(preview.value) != original_preview
     assert "✓ Ready · Update #2" in activity.value
-    assert "Preview unchanged." in activity.value
+    assert "Preview updated." in activity.value
     assert " s</span>" in activity.value
     assert activity.layout.height == activity.layout.min_height == activity.layout.max_height == "30px"
     assert len(transitions) == 2
@@ -330,8 +337,11 @@ def test_gallery_reports_busy_through_calculation_and_rendering_even_when_previe
         calculate.assert_not_called()
         render.assert_not_called()
     assert "✓ Ready · Update #3" in activity.value
+    assert specs == original_specs
+    assert bytes(preview.value) == original_preview
+    controls.children[-2].children[3].value = 3
     assert "Preview unchanged." in activity.value
-    assert len(transitions) == 4
+    assert len(transitions) == 6
 
 
 def test_gallery_status_for_empty_and_oversized_pages():
@@ -352,7 +362,9 @@ def test_gallery_status_for_empty_and_oversized_pages():
     assert "✓ Ready · Update #3" in activity.value
     assert specs and preview.value
 
-    catalogue = RecipeCatalogue({"pre_power": (2, 4, 6, 8)}, lambda pre_power: PatternRecipe("or", pre_power, 0, 1))
+    catalogue = RecipeCatalogue(
+        {"pre_power": (2, 4, "catalogue", 6, 8)}, lambda pre_power: PatternRecipe("or", pre_power, 0, 1)
+    )
     gallery, specs = recipe_gallery(
         catalogue, field_sizes=(8,), selected_samplings=("full",), page_size=4, preview_pixels=4096
     )
@@ -367,7 +379,7 @@ def test_gallery_status_for_failed_or_interrupted_updates_and_recovery(failure):
     gallery, _ = recipe_gallery(catalogue, field_sizes=(8,), selected_samplings=("full",), preview_pixels=64)
     controls, preview = gallery.children
     activity = controls.children[-1]
-    minimum = next(c for c in controls.children if isinstance(c, widgets.Checkbox))
+    minimum = _m_choices(gallery)["Minimum period"]
     original_preview = bytes(preview.value)
     with patch("ruglab.pager.sample_field", side_effect=failure), pytest.raises(type(failure)):
         minimum.value = True

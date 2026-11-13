@@ -25,6 +25,7 @@ COMBINER_COLORS = {
     "mult": "cmr.ocean",
     "clmul": "cmr.guppy",
 }
+M_SELECTIONS = ("catalogue", "distinct_outputs", "minimum_period")
 FIELD_SIZES = tuple(1 << exponent for exponent in range(1, 13))
 _DENSE_CACHE_LIMIT = 1024
 _BLOCK_ROWS = 128
@@ -351,8 +352,25 @@ def _minimum_period_values(base, outputs, spec):
     return outputs & (modulus - 1), modulus
 
 
-def _finish_field(base, outputs, counts, spec, repeat, minimum_post_modulus):
-    if minimum_post_modulus:
+def _minimum_group_values(outputs, modulus):
+    """Reduce M while keeping the partition of actual catalogue outputs."""
+    labels = np.unique(outputs)
+    low, high = 0, modulus.bit_length() - 1
+    while low < high:
+        middle = (low + high) // 2
+        if np.unique(labels & ((1 << middle) - 1)).size == labels.size:
+            high = middle
+        else:
+            low = middle + 1
+    modulus = 1 << low
+    return outputs & (modulus - 1), modulus
+
+
+def _finish_field(base, outputs, counts, spec, repeat, m_selection):
+    if m_selection == "distinct_outputs":
+        outputs, modulus = _minimum_group_values(outputs, spec["M"])
+        spec = {**spec, "M": modulus}
+    elif m_selection == "minimum_period":
         outputs, modulus = _minimum_period_values(base, outputs, spec)
         spec = {**spec, "M": modulus}
     zeros = int(counts[outputs == 0].sum())
@@ -496,7 +514,7 @@ def _powered_labels(q, twist, K, combiner, size, sampling, power):
     return powers, modulus
 
 
-def _sample_post_field(recipe, size, sampling, minimum_post_modulus):
+def _sample_post_field(recipe, size, sampling, m_selection):
     coefficients, modulus = recipe.polynomial(size)
     combiner = recipe.combiner
     K = (
@@ -520,7 +538,7 @@ def _sample_post_field(recipe, size, sampling, minimum_post_modulus):
     }
     if sampling.startswith("checkerboard"):
         spec["checkerboard_axis"] = "vertical"
-    return _finish_field(base, outputs, counts, spec, repeat, minimum_post_modulus)
+    return _finish_field(base, outputs, counts, spec, repeat, m_selection)
 
 
 def _pre_modulus(q, size, sampling, combiner):
@@ -562,7 +580,7 @@ def _distinct_polynomial(inputs, coefficients):
     return outputs % modulus, modulus
 
 
-def _sample_pre_power_study(recipe, size, sampling, minimum_post_modulus):
+def _sample_pre_power_study(recipe, size, sampling, m_selection):
     q = recipe.pre_power
     K = _pre_modulus(q, size, sampling, recipe.combiner)
     twist = _study_twist(_STUDY_TWISTS[recipe.twist_index])
@@ -592,7 +610,7 @@ def _sample_pre_power_study(recipe, size, sampling, minimum_post_modulus):
     }
     if sampling.startswith("checkerboard"):
         spec["checkerboard_axis"] = "vertical"
-    return _finish_field(base, labels, counts, spec, repeat, minimum_post_modulus)
+    return _finish_field(base, labels, counts, spec, repeat, m_selection)
 
 
 def sample_field(
@@ -601,20 +619,29 @@ def sample_field(
     sampling: str,
     *,
     minimum_post_modulus=False,
+    m_selection=None,
 ) -> SampledField:
-    """Build a field, optionally minimizing M for exact size-by-size axis periods.
+    """Build a field with catalogue, distinct-output, or minimum-period M.
 
-    Minimum mode keeps K fixed and raises PeriodTargetError if the recipe
-    cannot attain both displayed periods.
+    Distinct-output mode preserves the catalogue output partition, including
+    zero only when present. Minimum-period mode keeps K fixed and raises
+    PeriodTargetError when the displayed axis periods cannot be attained.
+    minimum_post_modulus=True selects minimum-period mode.
     """
     if size not in FIELD_SIZES:
         raise ValueError("Choose a power-of-two field size from 2 to 4096 cells")
     if sampling not in SAMPLINGS:
         raise ValueError("Unknown sampling: " + sampling)
+    if m_selection is None:
+        m_selection = "minimum_period" if minimum_post_modulus else "catalogue"
+    if m_selection not in M_SELECTIONS:
+        raise ValueError("Unknown M-selection: " + str(m_selection))
+    if minimum_post_modulus and m_selection != "minimum_period":
+        raise ValueError("minimum_post_modulus=True conflicts with the selected M policy")
     if isinstance(recipe, PostRecipe):
-        return _sample_post_field(recipe, size, sampling, minimum_post_modulus)
+        return _sample_post_field(recipe, size, sampling, m_selection)
     if isinstance(recipe, PrePowerStudyRecipe):
-        return _sample_pre_power_study(recipe, size, sampling, minimum_post_modulus)
+        return _sample_pre_power_study(recipe, size, sampling, m_selection)
     q = recipe.pre_power
     if q < 2 or q % 2 or recipe.post_power < 1:
         raise ValueError("Use a positive even pre-power and a positive post-power")
@@ -641,4 +668,4 @@ def sample_field(
     base, repeat, counts = _base_field(q, recipe.twist, K, recipe.combiner, size, label_sampling)
     powers, modulus = _powered_labels(q, recipe.twist, K, recipe.combiner, size, label_sampling, recipe.post_power)
     spec.update(M=modulus, post=[["pow", recipe.post_power]])
-    return _finish_field(base, powers, counts, spec, repeat, minimum_post_modulus)
+    return _finish_field(base, powers, counts, spec, repeat, m_selection)
