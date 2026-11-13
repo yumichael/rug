@@ -136,6 +136,8 @@ def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
     _, _, page, density, transpose, wrap, status = controls.children[-2].children
     assert "8 plots" in status.value
     assert grouped.value == 0
+    assert dimension.options[0][0] == "Field size"
+    assert controls.children[-3].children[-1].value.startswith("Slow → fast: Field size →")
     assert dimension.options[-1][0] == "Additional sampling"
     assert density.description == "Plots per page"
     assert wrap.description == "Plots per row"
@@ -230,6 +232,8 @@ def test_pre_power_gallery_selects_other_combiners():
     assert len(specs) == 1
     assert next(iter(specs.values()))["combine"] == "clmul"
     assert "Ready" in gallery.children[0].children[-1].value
+    dimension = gallery.children[0].children[-3].children[0]
+    assert dimension.options[0][0] == "Field size"
 
 
 def test_gallery_minimum_modulus_toggle_preserves_page_and_additional_sampling():

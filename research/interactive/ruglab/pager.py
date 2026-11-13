@@ -165,7 +165,8 @@ def recipe_gallery(
     names = tuple(dimensions)
     axis_labels = tuple("Field size" if name == "size" else name.replace("_", " ").capitalize() for name in names)
     axis_indices = tuple(range(len(names)))
-    order = list(axis_indices)
+    size_axis = names.index("size")
+    order = [size_axis, *(i for i in axis_indices if i != size_axis)]
     options = tuple(tuple(range(len(values))) for values in dimensions.values())
     recipe_options = options[: len(catalogue.dimensions)]
     displayed_specs = {}
@@ -264,7 +265,7 @@ def recipe_gallery(
 
     dimension_control = widgets.Dropdown(
         description="Dimension",
-        options=list(zip(axis_labels, axis_indices, strict=True)),
+        options=[(axis_labels[i], i) for i in order],
         layout=widgets.Layout(width="220px"),
     )
     slower_button = widgets.Button(description="Slower", layout=widgets.Layout(width="auto"))
