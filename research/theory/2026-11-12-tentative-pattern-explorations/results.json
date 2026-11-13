@@ -2228,6 +2228,34 @@
       }
     ]
   },
+  "tail_modulus_selection": {
+    "all_twists_posts_N128": {
+      "recipes": 800,
+      "selectors_per_recipe": 3
+    },
+    "domain_and_combiner_sweep": {
+      "recipes": 60,
+      "selectors_per_recipe": 3
+    },
+    "positive_post_powers": {
+      "recipes": 24,
+      "selectors_per_recipe": 3
+    },
+    "outside_catalogue_H_z2_plus_6z": {
+      "catalogue": {
+        "M": 4096,
+        "groups": 32
+      },
+      "distinct_outputs": {
+        "M": 4096,
+        "groups": 32
+      },
+      "minimum_period": {
+        "M": 2048,
+        "groups": 16
+      }
+    }
+  },
   "exhaustive_order_counts": {
     "1": {
       "order_classes": 1,
@@ -2295,8 +2323,8 @@
     }
   },
   "benchmark_N1024": {
-    "setup_seconds": 2.334799834061414,
-    "median_draw_seconds": 0.00785981205990538,
+    "setup_seconds": 2.3955649168929085,
+    "median_draw_seconds": 0.008054708479903638,
     "draws": 10,
     "class_count_bits": 2302,
     "excludes": "polynomial realization and rendering"

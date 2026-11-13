@@ -49,3 +49,45 @@ The other eight strata each have zero excess-precision draws. Overall 103 of the
 The even-only strata initially have 24,8,1 complement-symmetric draws at v = 1,2,4. Every one of the 39 failures gains that symmetry after reduction, leaving all 72 even-only draws symmetric. This is explained by the general bound M_min ≤ 2N² in [the XOR symmetry report](xor-symmetry.md), not only by the finite observations.
 
 These counts concern the reference opposite-checkerboard XOR sampling. A polynomial drawn for that reference may have different minimum periods or insufficient precision under another sampler or combiner; those constructions require their own period test. The [results](results.json) record the precise counts and source hashes used in the rerun.
+
+## 4. All three selectors agree in the opposite-checkerboard tail
+
+**Theorem for the current post family.** Fix N = 2^r ≥ 8, an even pre-power q = 2^w u in the erased-even-branch tail q ≥ r+w, any integer pre-twist Q in the shared family, and any of OR, XOR, ADD, or ABSDIFF. Use the opposite checkerboard, K = N·2^w, and a post H from [the ten-polynomial catalogue family](pre-power-families.md#6-the-catalogue-post-family). Then
+
+$$
+\boxed{M_{\mathrm{catalogue}}=M_{\mathrm{distinct\ outputs}}=M_{\mathrm{minimum\ period}}=K\,2^d,\qquad d=\nu_2(H'(1)).}
+$$
+
+This is selector agreement for each fixed recipe. The common M can change with q through K and with H through d; equal tail geometry does not mean a constant numerical modulus across different recipes.
+
+**Proof.** The even branch is zero, so all four combiners return the odd pre-value. These values fill precisely
+
+$$
+\{1+Sa:0\le a<T\},\qquad S=2^{w+2},\quad T=N/4,\quad K=ST.
+$$
+
+The post family has d ≤ 1, so its difference quotient on this class has valuation exactly d. At M₀ = K·2^d it preserves all T groups, and its outputs form the complete congruence class H(1) modulo S·2^d. At M₀/2 that class has at most T/2 available residues, forcing mergers. Therefore the smallest distinction-preserving modulus is M₀. Since 1 ≤ H(1) ≤ 4 < S, none of the residues is zero at M₀; the catalogue's additional zero-preservation condition imposes no extra bit. Catalogue and Distinct outputs both select M₀.
+
+A spatial half-period changes the surviving odd pre-value by K/2 modulo K. Its post-difference has valuation log₂K−1+d, so the half-period survives at M₀/2 and fails at M₀, while the N-period already holds. Hence Minimum period also selects M₀. The pre-twist preserves the complete class and the difference valuations, so the proof is uniform over Q.
+
+**Every positive single post-power also agrees.** For H(z) = z^p with any integer p ≥ 1, the lifting formula on inputs a,b = 1 modulo S gives
+
+$$
+\nu_2(a^p-b^p)=\nu_2(a-b)+\nu_2(p).
+$$
+
+The outputs are odd, so zero preservation is automatic. The same distinctness and period argument yields all three moduli equal to K·2^ν₂(p), without restricting the valuation of p to zero or one.
+
+**Boundary of the statement.** Arbitrary post-polynomials can merge groups at minimum-period precision even in this tail. At N = 128, q = 10, no twist, and H(z) = z²+6z, the three choices are:
+
+| Selector         |    M | Distinct output groups |
+| ---------------- | ---: | ---------------------: |
+| Catalogue        | 4096 |                     32 |
+| Distinct outputs | 4096 |                     32 |
+| Minimum period   | 2048 |                     16 |
+
+Here K = 256 and the tail inputs are z = 1+8a with 0 ≤ a < 32. The post becomes 7+64a(a+1). Reducing to M = 2048 merges groups while retaining both least axis periods 128; at M = 1024 the requested periods are lost. This positive-coefficient quadratic has H′(1) = 8, beyond the ten-post family's d ≤ 1 condition.
+
+For AND, MULT, and CLMUL at this same K, the erased branch makes the basic field constant, so Minimum period reports an unattainable target rather than a matching modulus. Other samplings require their own analysis. OR on odd/odd sampling has the selector agreement proved in the pre-power report without needing to be in its valuation tail.
+
+The [new selector checks](tail_modulus_checks.py) compare all three actual implementation paths on 800 recipes spanning all 16 twists, all ten posts, and five tail powers at N = 128; 60 recipes spanning five sides and all four surviving combiners; and 24 pure-post-power recipes, including post-powers 32 and 64. They compare the numerical fields as well as M and independently verify the quadratic counterexample's periods. The general scope comes from the proofs, rather than extrapolation from those bounded sweeps.

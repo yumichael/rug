@@ -96,13 +96,13 @@ For the derivative formulas below, the catalogue post family is the following fi
 |     8 | z⁷      |    0 |    7 |
 |     9 | z¹⁴     |    1 |    7 |
 
-For a,b = 1 modulo S with S ≥ 8, the difference quotient of H is H′(1) plus a multiple of S. Since d ≤ 1, it has valuation exactly d. Thus these H preserve difference valuations after adding d. Also H(1) is between one and four, below S, so none of these odd/odd outputs can reduce to zero at the relevant modulus. Since the combined values fill a complete class, both the value-preserving and minimum-period choices are
+For a,b = 1 modulo S with S ≥ 8, the difference quotient of H is H′(1) plus a multiple of S. Since d ≤ 1, it has valuation exactly d. Thus these H preserve difference valuations after adding d. Also H(1) is between one and four, below S, so none of these odd/odd outputs can reduce to zero at the relevant modulus. Since the combined values fill a complete class, all three selections, Catalogue, Distinct outputs, and Minimum period, give
 
 $$
 M=K2^d.
 $$
 
-A half-period toggles the top bit of one odd pre-operand. Choosing the other pre-value one exposes that toggle under OR, giving a post-difference of valuation log₂K−1+d. This proves the minimum-period part of the assertion. The same argument applies to the opposite-checkerboard erased-even-branch tail, using its complete odd pre-value class.
+A half-period toggles the top bit of one odd pre-operand. Choosing the other pre-value one exposes that toggle under OR, giving a post-difference of valuation log₂K−1+d. This proves the minimum-period part of the assertion. The same argument applies to the opposite-checkerboard erased-even-branch tail, using its complete odd pre-value class. The [explicit selector theorem](precision-policy.md#4-all-three-selectors-agree-in-the-opposite-checkerboard-tail) states that tail result for all four surviving combiners, proves it for every positive post-power as well, and gives an outside-catalogue counterexample.
 
 ## 7. Exact valuation stabilization
 

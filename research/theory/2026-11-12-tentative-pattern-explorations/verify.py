@@ -18,6 +18,7 @@ from family_checks import (
 )
 from realize import realize
 from sampler import Sampler
+from tail_modulus_checks import run_checks as tail_modulus_checks
 from xor_checks import run_checks
 
 
@@ -43,6 +44,7 @@ def main():
         ('modulus_examples', modulus_and_counterexample_checks),
         ('fixed_modulus_sampling', fixed_modulus_checks),
         ('pre_power_families', pre_power_checks),
+        ('tail_modulus_selection', tail_modulus_checks),
     ]:
         result[name] = function()
         print(f'{name}: exact checks passed', flush=True)

@@ -19,7 +19,7 @@ Minimum-period precision chooses the smallest M attaining the requested axis per
 | [XOR symmetry](xor-symmetry.md)                               | Necessary-and-sufficient reflection test; exact admissible-modulus interval; complete G(z(2N−z)) representation; even-polynomial guarantee when M_min ≤ 2N²; counterexample beyond that regime; derivative shortcut; spatial centering | Derived here with proofs and exact checks                                                  |
 | [Fixed-modulus sampling](fixed-modulus-sampling.md)           | Independent centered-square Newton coordinates; exact coefficient ranges; linear period/minimum constraints; complete rejection-free M = 4N recipe; higher-precision shift/order collisions                                            | Derived here with proofs and bounded enumeration                                           |
 | [Uniform orders across all minimum moduli](uniform-orders.md) | Complete matching-and-circular-order characterization; integer counting recurrence; direct uniform order sampler; polynomial realizations at minimum-period precision                                                                  | New combinatorial extension and research prototype, with proof and small exhaustive checks |
-| [Precision policy](precision-policy.md)                       | Distinction-preserving M is an upper bound on minimum-period precision; concrete overshoots; fixed-precision XOR gallery corrections and counts                                                                                        | Derived consequences and dated workbench observations                                      |
+| [Precision policy](precision-policy.md)                       | Distinction-preserving M is an upper bound on minimum-period precision; all three selectors agree for the tail post family; concrete overshoots; fixed-precision XOR gallery corrections and counts                                    | Derived consequences and dated workbench observations                                      |
 | [Pre-power families](pre-power-families.md)                   | OR tail equality geometry; adaptive cutoffs; zero occupancy; odd/odd group frequencies and exact valuation tail; derivative-controlled rank formula; later-tail counterexample; four-combiner collapse                                 | Derived refinements of existing valuation lemmas, with proofs and bounded exact checks     |
 
 The new conclusions use background from the [November 2 polynomial-period report](../2026-11-02-xor-polynomial-period/2026-11-02-xor-polynomial-period.md), its [November 3 count comparison](../2026-11-02-xor-polynomial-period/2026-11-03-xor-polynomial-examples.md), and the [November 4 combiner and order-class report](../2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md). In particular, the isometry of the shared pre-twist, balanced monomial and same-valuation period results, interpolation allowance, and the general infinite-shift criterion are existing results. The reports identify where those are specialized or extended.
@@ -45,14 +45,15 @@ Add `--benchmark` to time N = 1024 order sampling on the current machine. The co
 
 The saved rerun covers 2,400 XOR symmetry examples, the 360-draw precision comparison, finite Newton-coordinate enumeration, pre-power partitions and derivative formulas, independent order enumeration through side 16, and 100 native polynomial realizations through side 32. The proof statements are not inferred solely from those checks. Coverage counts, source hashes, and optional machine timings are recorded in the JSON.
 
-| File                                 | Purpose                                                                                     |
-| ------------------------------------ | ------------------------------------------------------------------------------------------- |
-| [verify.py](verify.py)               | Run the recorded check groups and regenerate results                                        |
-| [xor_checks.py](xor_checks.py)       | Exact reflection depths, centered representatives, and native minimum-period counterexample |
-| [family_checks.py](family_checks.py) | Precision policies, fixed-M coordinates, pre-power families, and combiner comparisons       |
-| [count_orders.py](count_orders.py)   | Integer order counts and an independent small ordered-partition enumeration                 |
-| [sampler.py](sampler.py)             | Uniform order-class prototype; constructor takes p = N/4                                    |
-| [realize.py](realize.py)             | Integer polynomial interpolation and native cell/period verification                        |
+| File                                             | Purpose                                                                                               |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| [verify.py](verify.py)                           | Run the recorded check groups and regenerate results                                                  |
+| [xor_checks.py](xor_checks.py)                   | Exact reflection depths, centered representatives, and native minimum-period counterexample           |
+| [family_checks.py](family_checks.py)             | Precision policies, fixed-M coordinates, pre-power families, and combiner comparisons                 |
+| [tail_modulus_checks.py](tail_modulus_checks.py) | Compare all three selectors in the erased-even-branch tail and check an outside-family counterexample |
+| [count_orders.py](count_orders.py)               | Integer order counts and an independent small ordered-partition enumeration                           |
+| [sampler.py](sampler.py)                         | Uniform order-class prototype; constructor takes p = N/4                                              |
+| [realize.py](realize.py)                         | Integer polynomial interpolation and native cell/period verification                                  |
 
 For example, from this folder:
 
