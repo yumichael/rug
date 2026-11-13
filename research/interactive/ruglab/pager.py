@@ -242,7 +242,7 @@ def recipe_gallery(
 
     density_control = widgets.BoundedIntText(
         min=1,
-        max=max(16, page_size),
+        max=max(256, page_size),
         value=page_size,
         style={"description_width": "initial"},
         layout=widgets.Layout(width="170px"),
@@ -410,7 +410,7 @@ def recipe_gallery(
         )
         page_panels = (stop - first) * panels_per_entry
         estimated_pixels = page_panels * (preview_pixels + 8) * (preview_pixels + 130)
-        if not entry_count or estimated_pixels > 48 << 20:
+        if not entry_count or estimated_pixels > 64 << 20:
             displayed_specs.clear()
             message = (
                 "Select at least one value for each dimension."

@@ -140,6 +140,7 @@ def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
     assert controls.children[-3].children[-1].value.startswith("Slow → fast: Field size →")
     assert dimension.options[-1][0] == "Additional sampling"
     assert density.description == "Plots per page"
+    assert density.max >= 256
     assert wrap.description == "Plots per row"
     with Image.open(BytesIO(preview.value)) as image:
         assert image.width > 2 * 128
