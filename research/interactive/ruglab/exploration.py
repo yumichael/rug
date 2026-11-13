@@ -21,9 +21,9 @@ COMBINER_COLORS = {
     "or": "cmr.freeze",
     "xor": "cmr.fall",
     "add": "cmr.savanna",
+    "absdiff": "cmr.amber",
     "mult": "cmr.ocean",
     "clmul": "cmr.guppy",
-    "absdiff": "cmr.amber",
 }
 FIELD_SIZES = tuple(1 << exponent for exponent in range(1, 13))
 _DENSE_CACHE_LIMIT = 1024
@@ -108,7 +108,7 @@ class RecipeCatalogue:
 def pre_power_study_catalogue():
     return RecipeCatalogue(
         {
-            "combiner": ("or", *(name for name in COMBINER_COLORS if name != "or")),
+            "combiner": tuple(COMBINER_COLORS),
             "twist_index": tuple(range(len(_STUDY_TWISTS))),
             "post_index": tuple(range(len(_STUDY_POSTS))),
             "pre_power": PRE_POWER_STUDY_EXPONENTS,

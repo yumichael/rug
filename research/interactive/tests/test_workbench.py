@@ -259,15 +259,16 @@ def test_pre_power_study_combiners_match_exact_evaluation(combiner, sampling):
     assert np.array_equal(larger.values, np.tile(exact.values, (2, 2)))
 
 
-def test_pre_power_catalogue_keeps_or_sweeps_then_adds_other_combiners():
+def test_pre_power_catalogue_groups_sweeps_in_combiner_order():
     catalogue = pre_power_study_catalogue()
-    assert set(catalogue.dimensions["combiner"]) == set(COMBINER_COLORS)
+    expected = ("and", "or", "xor", "add", "absdiff", "mult", "clmul")
+    assert catalogue.dimensions["combiner"] == expected
     recipes = catalogue.recipes()
     for recipe, power in zip(recipes[:32], range(2, 65, 2), strict=True):
         assert isinstance(recipe, PrePowerStudyRecipe)
         assert recipe.pre_power == power
-    assert all(recipe.combiner == "or" for recipe in recipes[:5120])
-    assert {recipe.combiner for recipe in recipes[5120:]} == set(COMBINER_COLORS) - {"or"}
+    for index, combiner in enumerate(expected):
+        assert all(recipe.combiner == combiner for recipe in recipes[index * 5120 : (index + 1) * 5120])
 
 
 @pytest.mark.parametrize("combiner", COMBINER_COLORS)
