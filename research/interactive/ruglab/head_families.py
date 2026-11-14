@@ -8,6 +8,7 @@ from random import Random
 from .order_classes import ORDER_COMBINERS, OrderClassRecipe, _basic, head_powers
 
 PROPOSALS = {
+    "or_depth": "OR versus others by depth",
     "bit_depth": "Bit depth",
     "even_branch": "Even branch",
     "half_period_graph": "Half-period graph",
@@ -27,6 +28,10 @@ def head_family_keys(size, power, twist, combiner):
         raise ValueError("Choose a head pre-power and OR, XOR, ADD, or ABSDIFF")
     basic = _basic(size, power, twist, combiner)
     depth = _bit_depth(power)
+    powers = [q for q in head_powers(size) if _bit_depth(q) == depth]
+    power_label = " & ".join(map(str, powers))
+    combiner_label = "OR" if combiner == "or" else "Other combiners"
+    or_depth = f"{combiner_label} · Pre {power_label} (d={depth})"
     depth_key = (
         "Low-bit crossing"
         if depth < 0
@@ -58,7 +63,7 @@ def head_family_keys(size, power, twist, combiner):
         mask = f"OR: {forced} forced bits" if size >= 32 else "Small-domain OR"
     else:
         mask = "Other low-bit bases" if power == 2 else "Higher-power bases"
-    return dict(zip(PROPOSALS, (depth_key, branch, graph, carry, mask), strict=True))
+    return dict(zip(PROPOSALS, (or_depth, depth_key, branch, graph, carry, mask), strict=True))
 
 
 @dataclass(frozen=True)
@@ -107,11 +112,17 @@ def head_family_cases(size=64, seed=0, twists=((), (1,), (3, -2, 1)), proposals=
 
         def family_order(item, proposal=proposal):
             category, members = item
-            if proposal in ("bit_depth", "even_branch"):
+            if proposal in ("or_depth", "bit_depth", "even_branch"):
                 depths = [_bit_depth(q) for q, _, _ in members]
                 powers = [q for q, _, _ in members]
-                return min(depths), max(depths), min(powers), category
-            return 0, 0, 0, category
+                return (
+                    min(depths),
+                    max(depths),
+                    min(powers),
+                    int(members[0][2] != "or") if proposal == "or_depth" else 0,
+                    category,
+                )
+            return 0, 0, 0, 0, category
 
         for category, members in sorted(groups.items(), key=family_order):
             result.append(HeadFamilyCase(proposal, category, size, tuple(members)))

@@ -1,6 +1,6 @@
 # Competing visual head-family proposals
 
-The **Compare candidate head-family groupings** section of [explore.py](../../interactive/notebooks/explore.py) compares five candidate groupings of the head. These are alternatives to evaluate visually, rather than a final style taxonomy. Their definitions are implementable for every supported domain, and every grouping covers the whole head. The finite gallery illustrates selected twists and draws; it does not enumerate the whole pattern space.
+The **Compare candidate head-family groupings** section of [explore.py](../../interactive/notebooks/explore.py) compares candidate groupings of the head. These are alternatives to evaluate visually, rather than a final style taxonomy. Their definitions are implementable for every supported domain, and every grouping covers the whole head. The finite gallery illustrates selected twists and draws; it does not enumerate the whole pattern space.
 
 ## Scope and mathematical inputs
 
@@ -10,9 +10,11 @@ Write $E=\{P(2i):0\le i<N/2\}$, $O=\{P(2i+1):0\le i<N/2\}$, $e=\lvert E\rvert$, 
 
 The ordinary checkerboard-opposite view is the research reference. Doubled checkerboard opposite is the alternate layout of the same sampled scalar polynomial. A visual judgment made in one layout need not transfer to the other; the gallery lets you compare both.
 
-## Five alternative groupings
+## Alternative groupings
 
 Each row below describes one complete grouping, with its mutually exclusive base categories. Names describe mechanisms, not guaranteed perceived textures.
+
+The first gallery proposal, **OR versus others × depth**, crosses $c=\mathrm{OR}$ versus $c\in\{\mathrm{XOR},\mathrm{ADD},\mathrm{ABSDIFF}\}$ with the exact integer $d=q-\nu_2(q)-2$. Its nonempty categories exhaust the head at every supported side. It reproduces the observed pre-power groups $\{2\}$, $\{4\}$, and $\{6,8\}$ wherever those powers are in the head, since their depths are $-1$, $0$, and $3$. Higher head powers extend the same rule: ten has $d=7$, and twelve has $d=8$. Categories appear in increasing depth, with OR then the other combiners at each depth. The notebook user identified the OR/power split as especially salient around sides 64 and 128; the extension to larger domains is a proposed visual classification. Empty categories are omitted, and the tail remains separate.
 
 | Proposal          | Exact categories                                                                                                                                                                                                                                                                      | Visual question                                                                                                      |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -26,7 +28,7 @@ Each row below describes one complete grouping, with its mutually exclusive base
 
 ## Coverage and overlaps
 
-For every head base, $e\ge2$ and $\ell\ge1$: the zero even input survives, and the even branch is not erased. The even-branch alternatives therefore exhaust the head. Every integer $d$ falls into exactly one bit-depth interval. The half-period alternatives exhaust the component-size possibilities because every allowed base has a nontrivial half-period edge. Carry behavior first separates ABSDIFF, then the disjoint no-overlap and overlap cases for the other three combiners. The OR refinement exhausts the combiner, pre-power, and small/large-domain cases. Thus each proposal covers every allowed head base and every allowed post-polynomial on it, not just the configured examples.
+For every head base, $e\ge2$ and $\ell\ge1$: the zero even input survives, and the even branch is not erased. The even-branch alternatives therefore exhaust the head. Every integer $d$ falls into exactly one bit-depth interval. The half-period alternatives exhaust the component-size possibilities because every allowed base has a nontrivial half-period edge. Carry behavior first separates ABSDIFF, then the disjoint no-overlap and overlap cases for the other three combiners. The OR refinement exhausts the combiner, pre-power, and small/large-domain cases. The OR/depth product covers both combiner alternatives and every represented depth. Thus each proposal covers every allowed head base and every allowed post-polynomial on it, not just the configured examples.
 
 These are exact partitions of **base descriptions**, not proven disjoint partitions of **spatial order classes**. A rendered pattern can have several base descriptions and therefore belong to several candidates within a proposal. There is also deliberate overlap between proposals: each is a different attempt at a useful visual grouping. Coverage is guaranteed by the definitions; visual separation and small overlap are not guaranteed. Identical graph counts alone do not imply equal spatial texture.
 
@@ -34,7 +36,7 @@ These are exact partitions of **base descriptions**, not proven disjoint partiti
 
 The [recorded inventory](inventory.json) uses all head pre-powers, the four combiners, and the three twists $Q=0$, $Q=1$, and $Q=3-2t+t^2$ at sides 8, 16, 32, 64, 128, 256, and 512. It checks 24 base descriptions at each of the three smaller sides and 48 at each of the four larger sides. Raw equality partitions are canonicalized by first occurrence, so different numerical labels do not count as different partitions. At side 64, 48 descriptions give 43 raw partitions. At side 8, some raw partitions cross carry and OR-refinement categories. No other cross-category raw-partition collisions occur in this finite inventory. This does not establish disjoint order spaces: different raw partitions can still admit a common post-output order.
 
-I inspected seeded four-example rows for all five proposals at side 64, using actual conditional order draws, the existing interpolation, and the same random color rotations as the head gallery. **Even branch is the most promising initial candidate**: top-bit binary examples tend toward more separated repeated motifs, while the multiple-layer examples tend toward finer interleaved texture. Interior-bit binary is a useful intermediate group. This is a finite, subjective assessment, not a guarantee for every post-polynomial, twist, or domain.
+I inspected seeded four-example rows for the five original proposals at side 64, using actual conditional order draws, the existing interpolation, and the same random color rotations as the head gallery. **Even branch is the most promising initial candidate**: top-bit binary examples tend toward more separated repeated motifs, while the multiple-layer examples tend toward finer interleaved texture. Interior-bit binary is a useful intermediate group. This is a finite, subjective assessment, not a guarantee for every post-polynomial, twist, or domain.
 
 **Bit depth is a useful competing coarse proposal**, especially because it groups pre-powers six and eight. The branch proposal deliberately disagrees at larger sizes: at side 512, pre-power six has three even values in one valuation layer, while pre-power eight still has two. They therefore become One-layer multilevel and Interior-bit binary respectively, while remaining together under bit depth. This is a concrete test of fixed scale grouping versus domain-adaptive grouping.
 

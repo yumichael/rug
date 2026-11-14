@@ -196,3 +196,28 @@ def test_depth_and_branch_families_follow_represented_depth(size):
             "One-layer multilevel",
             "Interior-bit binary",
         ]
+
+
+@pytest.mark.parametrize("size", [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096])
+def test_or_depth_product_covers_each_head_base_in_depth_order(size):
+    cases = head_family_cases(size, twists=((),), proposals=("or_depth",))
+    observed = [base for case in cases for base in case.members]
+    assert set(observed) == set(product(head_powers(size), ((),), ORDER_COMBINERS))
+    assert len(observed) == len(set(observed))
+    keys = []
+    for case in cases:
+        depths = {q - (q & -q).bit_length() - 1 for q, _, _ in case.members}
+        is_or = {c == "or" for _, _, c in case.members}
+        assert len(depths) == len(is_or) == 1
+        keys.append((next(iter(depths)), not next(iter(is_or))))
+    assert keys == sorted(keys)
+    if size in (64, 128):
+        assert [{q for q, _, _ in c.members} for c in cases] == [
+            {2},
+            {2},
+            {4},
+            {4},
+            {6, 8},
+            {6, 8},
+        ]
+    assert head_family_cases(size, twists=((),))[0].proposal == "or_depth"
