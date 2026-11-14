@@ -329,6 +329,13 @@ def recipe_gallery(
             f"{field.zero_fraction:.1%} zero · {field.distinct_values:,} values\n"
             f"K=2^{k} · M=2^{m}"
         )
+        if "order_sample" in spec:
+            info = spec["order_sample"]
+            caption += (
+                f"\nPre {info['pre_power']} · Q={tuple(info['twist'])}"
+                f"\ngaps {info['min_gap_ratio']:.2g}-{info['max_gap_ratio']:.2g}x equal"
+                f"\nheaviest of 16 bins: {info['largest_bin_fraction']:.0%}"
+            )
         if additional_sampling != "full":
             height, width = indices.shape
             additional_name = additional_sampling.replace("_", " ")

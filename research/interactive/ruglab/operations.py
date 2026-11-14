@@ -7,8 +7,8 @@ from typing import SupportsIndex, SupportsInt
 import numpy as np
 
 
-def elementwise(function, *arrays):
-    return np.frompyfunc(function, len(arrays), 1)(*arrays)
+def elementwise(function, *arrays) -> np.ndarray:
+    return np.asarray(np.frompyfunc(function, len(arrays), 1)(*arrays), dtype=object)
 
 
 def clmul(a, b):
@@ -50,8 +50,13 @@ def combine(name, a, b):
 
 
 def operation(
-    values, name, arg: SupportsInt | SupportsIndex | str | Sequence | np.ndarray = 0, *, width=None, modulus=None
-):
+    values, name, arg: SupportsInt | SupportsIndex | str | Sequence | np.ndarray | dict = 0, *, width=None, modulus=None
+) -> np.ndarray:
+    if name == "lookup":
+        if not isinstance(arg, dict):
+            raise ValueError("Lookup operations require a table of integer inputs and hexadecimal outputs")
+        table = {int(key): int(value, 16) for key, value in arg.items()}
+        return elementwise(lambda value: table[int(value)], values)
     if name == "poly":
         if not isinstance(arg, (Sequence, np.ndarray)):
             raise ValueError("Polynomial operations require a coefficient sequence")

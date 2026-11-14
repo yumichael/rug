@@ -36,6 +36,7 @@ from .exploration import (
     RecipeCatalogue,
     exploration_catalogue,
     exploration_recipes,
+    order_class_catalogue,
     post_polynomial_catalogue,
     post_polynomial_recipes,
     pre_power_study_catalogue,
@@ -43,6 +44,7 @@ from .exploration import (
     sample_field,
 )
 from .operations import steps
+from .order_classes import realize_order_polynomial
 from .pager import recipe_gallery
 from .plotting import colorize
 from .previews import PreviewPanel, indexed_preview, preview_grid
@@ -78,6 +80,7 @@ __all__ = [
     "lru_cache",
     "minimum_post_modulus",
     "np",
+    "order_class_catalogue",
     "paired",
     "periods",
     "plt",
@@ -86,6 +89,7 @@ __all__ = [
     "pre_power_study_catalogue",
     "pre_power_study_recipes",
     "preview_grid",
+    "realize_order_polynomial",
     "recipe_gallery",
     "sample_field",
     "sampling_gallery",

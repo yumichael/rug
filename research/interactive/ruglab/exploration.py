@@ -12,6 +12,7 @@ import numpy as np
 from .engine import Result
 from .indexed import IndexedValues, byte_lru, combination_table
 from .operations import operation
+from .order_classes import ORDER_COMBINERS, OrderClassRecipe, OrderSampleUnavailable, head_powers, order_sample
 from .post_polynomials import POST_STRATA, draw_post_polynomial
 from .sampling import CARTESIAN_PHASES, checkerboard_indices, resample_view
 from .specs import SAMPLINGS
@@ -97,7 +98,7 @@ class RecipeCatalogue:
     """Ordered recipe dimensions and a factory accepting their named values."""
 
     dimensions: dict[str, tuple]
-    build: Callable[..., PatternRecipe | PostRecipe | PrePowerStudyRecipe]
+    build: Callable[..., PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe]
 
     def recipes(self):
         return [
@@ -141,7 +142,28 @@ def post_polynomial_recipes(draws=24, seed=0):
     return post_polynomial_catalogue(draws, seed).recipes()
 
 
+def order_class_catalogue(family="tail", *, seed=0, draws=64, size=64, twists=((), (1,), (3, -2, 1))):
+    """Uniform whole-tail or conditional-head order draws, fastest by draw."""
+    if family not in ("tail", "head") or draws < 1:
+        raise ValueError("Choose head or tail and a positive number of draws")
+    if size not in FIELD_SIZES or size < 8:
+        raise ValueError("Order galleries support power-of-two sides from 8 to 4096")
+    if family == "tail":
+        return RecipeCatalogue({"draw": tuple(range(draws))}, lambda draw: OrderClassRecipe("tail", seed, draw))
+    return RecipeCatalogue(
+        {
+            "pre_power": head_powers(size),
+            "twist": tuple(tuple(q) for q in twists),
+            "combiner": ORDER_COMBINERS,
+            "draw": tuple(range(draws)),
+        },
+        lambda pre_power, twist, combiner, draw: OrderClassRecipe("head", seed, draw, pre_power, twist, combiner),
+    )
+
+
 def recipe_description(recipe, size):
+    if isinstance(recipe, OrderClassRecipe):
+        return f"{recipe.family.title()} order · draw {recipe.draw + 1} · seed {recipe.seed}"
     if isinstance(recipe, PatternRecipe):
         return f"Pre {recipe.pre_power} · twist {recipe.twist} · post {recipe.post_power}"
     if isinstance(recipe, PrePowerStudyRecipe):
@@ -614,7 +636,7 @@ def _sample_pre_power_study(recipe, size, sampling, m_selection):
 
 
 def _sample_field(
-    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe,
+    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe,
     size: int,
     sampling: str,
     *,
@@ -638,6 +660,30 @@ def _sample_field(
         raise ValueError("Unknown M-selection: " + str(m_selection))
     if minimum_post_modulus and m_selection != "minimum_period":
         raise ValueError("minimum_post_modulus=True conflicts with the selected M policy")
+    if isinstance(recipe, OrderClassRecipe):
+        if sampling not in ("checkerboard_opposite", "doubled_checkerboard_opposite"):
+            raise PeriodTargetError(
+                "These order classes require checkerboard opposite or doubled checkerboard opposite."
+            )
+        try:
+            base, outputs, spec = order_sample(recipe, size)
+        except OrderSampleUnavailable as error:
+            raise PeriodTargetError(str(error)) from error
+        if sampling == "doubled_checkerboard_opposite":
+            doubled = _base_field(
+                spec["order_sample"]["pre_power"],
+                tuple(spec["pre"][1][1]),
+                spec["K"],
+                spec["combine"],
+                size,
+                sampling,
+            )[0]
+            outputs = outputs[np.searchsorted(base.labels, doubled.labels)]
+            base = doubled
+            spec = {**spec, "sampling": sampling}
+        counts = np.bincount(base.indices.ravel(), minlength=len(base.labels))
+        repeat = _repeat_shape(base.indices) or "smaller tile"
+        return _finish_field(base, outputs, counts, spec, repeat, m_selection)
     if isinstance(recipe, PostRecipe):
         return _sample_post_field(recipe, size, sampling, m_selection)
     if isinstance(recipe, PrePowerStudyRecipe):
@@ -672,7 +718,7 @@ def _sample_field(
 
 
 def sample_field(
-    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe,
+    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe,
     size: int,
     sampling: str,
     *,
