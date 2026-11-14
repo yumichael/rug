@@ -49,7 +49,7 @@ from ruglab.studio import *
 
 # %%
 PLOTS_PER_PAGE = 32
-PREVIEW_PIXELS = 384
+PREVIEW_PIXELS = 512
 DEFAULT_FIELD_SIZES = (128,)
 DEFAULT_COMBINERS = ("or",)
 DEFAULT_SAMPLINGS = ("full", "checkerboard_same", "checkerboard_opposite", "odd_odd")
@@ -159,6 +159,7 @@ pre_power_gallery_view, pre_power_specs = recipe_gallery(
     transposed=False,
     page_size=32,
     wrap_after=8,
+    preview_pixels=512,
 )
 display(pre_power_gallery_view)
 
@@ -237,7 +238,7 @@ display(head_order_view)
 # %%
 FAMILY_SIDE = 64
 FAMILY_SEED = 0
-FAMILY_EXAMPLES = 20
+FAMILY_EXAMPLES = 24
 FAMILY_TWISTS = ((), (1,), (3, -2, 1))
 FAMILY_PROPOSALS = ("bit_depth", "even_branch", "half_period_graph", "carry_behavior", "or_twist_mask")
 

@@ -166,7 +166,7 @@ def recipe_gallery(
     transposed=False,
     page_size=2,
     initial_page=1,
-    preview_pixels=384,
+    preview_pixels=512,
     wrap_after=0,
     grouped_dimensions=0,
     minimum_post_modulus=False,
