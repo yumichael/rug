@@ -16,14 +16,17 @@ PROPOSALS = {
 }
 
 
+def _bit_depth(power):
+    return power - (power & -power).bit_length() - 1
+
+
 @lru_cache(maxsize=256)
 def head_family_keys(size, power, twist, combiner):
     """Classify any allowed head base; no restriction on the twist coefficients."""
     if power not in head_powers(size) or combiner not in ORDER_COMBINERS:
         raise ValueError("Choose a head pre-power and OR, XOR, ADD, or ABSDIFF")
     basic = _basic(size, power, twist, combiner)
-    width = (power & -power).bit_length() - 1
-    depth = power - width - 2
+    depth = _bit_depth(power)
     depth_key = (
         "Low-bit crossing"
         if depth < 0
@@ -101,7 +104,16 @@ def head_family_cases(size=64, seed=0, twists=((), (1,), (3, -2, 1)), proposals=
         for base in bases:
             category = head_family_keys(size, *base)[proposal]
             groups.setdefault(category, []).append(base)
-        for category, members in sorted(groups.items()):
+
+        def family_order(item, proposal=proposal):
+            category, members = item
+            if proposal in ("bit_depth", "even_branch"):
+                depths = [_bit_depth(q) for q, _, _ in members]
+                powers = [q for q, _, _ in members]
+                return min(depths), max(depths), min(powers), category
+            return 0, 0, 0, category
+
+        for category, members in sorted(groups.items(), key=family_order):
             result.append(HeadFamilyCase(proposal, category, size, tuple(members)))
     return tuple(result)
 

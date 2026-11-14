@@ -165,3 +165,34 @@ def test_pager_pages_complete_proposals_with_unequal_family_counts():
     assert {s["order_sample"]["family_proposal"]["proposal"] for s in specs.values()} == set(tuple(PROPOSALS)[:2])
     mode.value = "Rows"
     assert specs
+
+
+@pytest.mark.parametrize("size", [8, 16, 64, 512, 1024])
+def test_depth_and_branch_families_follow_represented_depth(size):
+    cases = head_family_cases(size, proposals=("bit_depth", "even_branch"))
+    for proposal in ("bit_depth", "even_branch"):
+        ranges = []
+        for case in cases:
+            if case.proposal == proposal:
+                depths = [q - (q & -q).bit_length() - 1 for q, _, _ in case.members]
+                ranges.append((min(depths), max(depths)))
+        assert ranges == sorted(ranges)
+    if size == 1024:
+        assert [c.category for c in cases if c.proposal == "bit_depth"] == [
+            "Low-bit crossing",
+            "Stride boundary",
+            "Middle-bit modulation",
+            "Deep-bit modulation",
+        ]
+    if size == 64:
+        assert [c.category for c in cases if c.proposal == "even_branch"] == [
+            "Multiple even layers",
+            "Interior-bit binary",
+            "Top-bit binary",
+        ]
+    if size == 512:
+        assert [c.category for c in cases if c.proposal == "even_branch"] == [
+            "Multiple even layers",
+            "One-layer multilevel",
+            "Interior-bit binary",
+        ]
