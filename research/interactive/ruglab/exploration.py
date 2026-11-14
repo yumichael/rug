@@ -94,6 +94,10 @@ class PostRecipe:
         return draw_post_polynomial(max(8, 2 * size), self.family, self.valuation, self.seed, self.draw)
 
 
+class CatalogueUnavailable(ValueError):
+    """The catalogue has no construction for a requested domain."""
+
+
 @dataclass(frozen=True)
 class RecipeCatalogue:
     """Ordered recipe dimensions and a factory accepting their named values."""
@@ -167,6 +171,8 @@ def order_class_catalogue(family="tail", *, seed=0, draws=64, size=64, twists=((
 
 def head_family_catalogue(*, size=64, seed=0, draws=32, twists=((), (1,), (3, -2, 1)), proposals=None):
     """Compare alternative head partitions, balancing the configured bases."""
+    if size not in FIELD_SIZES or size < 8:
+        raise CatalogueUnavailable("Head-family proposals require a power-of-two side from 8 to 4096.")
     if draws < 1:
         raise ValueError("Supply a positive number of examples per candidate family")
     kwargs = {} if proposals is None else {"proposals": tuple(proposals)}

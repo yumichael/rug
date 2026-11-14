@@ -307,14 +307,22 @@ def recipe_gallery(
         layout=widgets.Layout(width="145px"),
     )
 
+    unavailable_sizes = {}
+
     @lru_cache(maxsize=128)
     def catalogue_at(size):
-        return catalogue.for_size(size) if catalogue.for_size else catalogue
+        try:
+            return catalogue.for_size(size) if catalogue.for_size else catalogue
+        except exploration.CatalogueUnavailable as error:
+            unavailable_sizes[size] = str(error)
+            return None
 
     @lru_cache(maxsize=128)
     def recipe_at(position, size):
         parameters = {name: dimensions[name][index] for name, index in zip(catalogue.dimensions, position, strict=True)}
         current = catalogue_at(size)
+        if current is None:
+            return None
         if catalogue.for_size is None:
             return catalogue.build(**parameters)
         for name, value in parameters.items():
@@ -382,7 +390,7 @@ def recipe_gallery(
                     panels.append(
                         PreviewPanel(
                             Image.new("RGB", (preview_pixels, preview_pixels), "#f4f4f4"),
-                            "No configured bases in this family at this size.",
+                            unavailable_sizes.get(size, "No configured bases in this family at this size."),
                         )
                     )
                     continue
@@ -420,7 +428,9 @@ def recipe_gallery(
         if not sizes or sizes == rebuilt_sizes:
             return
         rebuilt_sizes = sizes
-        catalogues = [catalogue_at(size) for size in sizes]
+        catalogues = [current for size in sizes if (current := catalogue_at(size)) is not None]
+        if not catalogues:
+            return
         for axis, name in enumerate(catalogue.dimensions):
             values = tuple({str(v): v for c in catalogues for v in c.dimensions[name]}.values())
             if tuple(map(str, values)) == tuple(map(str, dimensions[name])):

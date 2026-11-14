@@ -221,3 +221,42 @@ def test_or_depth_product_covers_each_head_base_in_depth_order(size):
             {6, 8},
         ]
     assert head_family_cases(size, twists=((),))[0].proposal == "or_depth"
+
+
+@pytest.mark.parametrize("unsupported", [2, 4])
+def test_unsupported_domain_is_unavailable_and_supported_selection_recovers(unsupported):
+    import ipywidgets as widgets
+
+    view, specs = recipe_gallery(
+        head_family_catalogue(size=16, draws=1),
+        field_sizes=(16,),
+        selected_samplings=("checkerboard_opposite",),
+        grouped_dimensions=4,
+        page_size=64,
+        preview_pixels=32,
+    )
+
+    def descendants(widget):
+        yield widget
+        for child in getattr(widget, "children", ()):
+            yield from descendants(child)
+
+    controls = list(descendants(view))
+
+    def checkbox(label):
+        return next(w for w in controls if isinstance(w, widgets.Checkbox) and w.description == label)
+
+    checkbox("16").value = False
+    checkbox(str(unsupported)).value = True
+    assert not specs
+    assert any("unavailable" in w.value for w in controls if isinstance(w, widgets.HTML))
+    assert not any("Update failed" in w.value for w in controls if isinstance(w, widgets.HTML))
+    # Repeated redraws must not reuse a partially rebuilt catalogue.
+    transpose = next(w for w in controls if isinstance(w, widgets.Checkbox) and w.description == "Transpose grid")
+    transpose.value = True
+    assert not specs
+    checkbox("16").value = True
+    assert specs
+    assert {s["order_sample"]["family_proposal"]["side"] for s in specs.values()} == {16}
+    checkbox(str(unsupported)).value = False
+    assert specs
