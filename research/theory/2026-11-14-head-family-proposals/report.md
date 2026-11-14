@@ -1,6 +1,6 @@
 # Competing visual head-family proposals
 
-The last section of [explore.py](../../interactive/notebooks/explore.py) compares five candidate groupings of the head. These are alternatives to evaluate visually, rather than a final style taxonomy. Their definitions are implementable for every supported domain, and every grouping covers the whole head. The finite gallery illustrates selected twists and draws; it does not enumerate the whole pattern space.
+The **Compare candidate head-family groupings** section of [explore.py](../../interactive/notebooks/explore.py) compares five candidate groupings of the head. These are alternatives to evaluate visually, rather than a final style taxonomy. Their definitions are implementable for every supported domain, and every grouping covers the whole head. The finite gallery illustrates selected twists and draws; it does not enumerate the whole pattern space.
 
 ## Scope and mathematical inputs
 
