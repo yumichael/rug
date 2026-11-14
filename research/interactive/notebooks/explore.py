@@ -18,6 +18,8 @@ from ruglab.studio import *
 # %% [markdown]
 # ## Explore repeating fields
 #
+# Run the initial import cell once. Every code cell below defines its own settings and can then run independently.
+#
 # Each plot comes from one combination of the selected parameter values. The dimension order runs from slowest to fastest. Choose a dimension and click **Slower** or **Faster** to move it. Use **More parameter filters** to choose recipe values such as pre-powers or twists.
 #
 # **Group fastest** keeps the selected values of the fastest dimensions together when paging. It defaults to 0, so each plot counts individually. Plots fill across rows, or down columns with **Transpose grid** on.
@@ -164,7 +166,7 @@ display(pre_power_gallery_view)
 # %% [markdown]
 # ## Sample the complete tail order space
 #
-# Set `ORDER_SEED` to reproduce these draws. Each draw is uniform over the complete tail space of spatial order classes at the selected side length, shared by OR, XOR, ADD, ABSDIFF, all tail pre-powers, and all allowed twists. One representative pre-power is chosen from the domain size. Draws are independent with replacement; a finite set of seeds is not a uniform enumeration of all classes. This is an order-class sampler, not a uniform sampler of numerical shift classes.
+# Set `TAIL_ORDER_SEED` to reproduce these draws. Each draw is uniform over the complete tail space of spatial order classes at the selected side length, shared by OR, XOR, ADD, ABSDIFF, all tail pre-powers, and all allowed twists. One representative pre-power is chosen from the domain size. Draws are independent with replacement; a finite set of seeds is not a uniform enumeration of all classes. This is an order-class sampler, not a uniform sampler of numerical shift classes.
 #
 # The displayed values are exactly the targets of the existing [interpolation procedure](../../theory/2026-11-12-2-checkerboard-head-tail/realize.py), including its chosen modulus and circular phase. Colors are direct $v/M$, with no rank remapping or spacing optimization. Coefficients are left unexpanded for fast previews; the saved post-operation is an exact lookup table on the attained raw values. `evaluate(spec)` and `export(evaluate(spec), path, mode="values")` work directly. Use `realize_order_polynomial(spec)` when you want the actual integer coefficients of that same interpolant. Its modulus is minimum-period for that polynomial, not globally smallest among every interpolant realizing the order.
 #
@@ -174,20 +176,19 @@ display(pre_power_gallery_view)
 #
 
 # %%
-ORDER_SEED = 0
-ORDER_SIDE = 64
-ORDER_DRAWS = 64
-ORDER_PAGE_SIZE = 16
-ORDER_PREVIEW_PIXELS = 384
-HEAD_ORDER_TWISTS = ((), (1,), (3, -2, 1))
+TAIL_ORDER_SEED = 0
+TAIL_ORDER_SIDE = 64
+TAIL_ORDER_DRAWS = 64
+TAIL_ORDER_PAGE_SIZE = 16
+TAIL_ORDER_PREVIEW_PIXELS = 384
 
 tail_order_view, tail_order_specs = recipe_gallery(
-    order_class_catalogue("tail", seed=ORDER_SEED, draws=ORDER_DRAWS, size=ORDER_SIDE),
-    field_sizes=(ORDER_SIDE,),
+    order_class_catalogue("tail", seed=TAIL_ORDER_SEED, draws=TAIL_ORDER_DRAWS, size=TAIL_ORDER_SIDE),
+    field_sizes=(TAIL_ORDER_SIDE,),
     selected_samplings=("checkerboard_opposite",),
     selected_m_selections=("minimum_period",),
-    page_size=ORDER_PAGE_SIZE,
-    preview_pixels=ORDER_PREVIEW_PIXELS,
+    page_size=TAIL_ORDER_PAGE_SIZE,
+    preview_pixels=TAIL_ORDER_PREVIEW_PIXELS,
     wrap_after=8,
 )
 display(tail_order_view)
@@ -195,20 +196,29 @@ display(tail_order_view)
 # %% [markdown]
 # ## Sample conditional head orders
 #
-# Each draw is uniform conditional on the selected pre-power, twist, and combiner. This is not a uniform draw from their union: bases overlap and have different class counts. The tail gallery above has the stronger whole-family guarantee because every tail base shares the same spatial order space. The head catalogue initially includes every even pre-power below the tail at `ORDER_SIDE`, the three explicit twist polynomials in `HEAD_ORDER_TWISTS`, and OR, XOR, ADD, ABSDIFF. These are arithmetic bases to compare, not a claim that the head has been divided into visually coherent styles.
+# Each draw is uniform conditional on the selected pre-power, twist, and combiner. This is not a uniform draw from their union: bases overlap and have different class counts. The tail gallery above has the stronger whole-family guarantee because every tail base shares the same spatial order space. The head catalogue initially includes every even pre-power below the tail at `HEAD_ORDER_SIDE`, the three explicit twist polynomials in `HEAD_ORDER_TWISTS`, and OR, XOR, ADD, ABSDIFF. These are arithmetic bases to compare, not a claim that the head has been divided into visually coherent styles.
 #
-# A twist tuple supplies the coefficients of $Q(t)$ in ascending degree in $f(t)=t+2t(t-1)Q(t)$. Edit `HEAD_ORDER_TWISTS` to try any finite integer polynomial. Draw changes fastest, so a page compares repeated draws at one fixed base. Changing Field size preserves the chosen pre-power; a base that moves into the tail shows an unavailable panel. Changing `ORDER_SIDE` in the settings cell and rerunning both galleries refreshes the head pre-power choices for that size. Both views share the seed and the existing interpolation algorithm.
+# A twist tuple supplies the coefficients of $Q(t)$ in ascending degree in $f(t)=t+2t(t-1)Q(t)$. Edit `HEAD_ORDER_TWISTS` to try any finite integer polynomial. Draw changes fastest, so a page compares repeated draws at one fixed base. Changing Field size preserves the chosen pre-power; a base that moves into the tail shows an unavailable panel. Changing `HEAD_ORDER_SIDE` and rerunning this cell refreshes the head pre-power choices for that size. This cell has its own seed and settings and can run directly after the initial import cell.
 #
 
 # %%
+HEAD_ORDER_SEED = 0
+HEAD_ORDER_SIDE = 64
+HEAD_ORDER_DRAWS = 64
+HEAD_ORDER_PAGE_SIZE = 16
+HEAD_ORDER_PREVIEW_PIXELS = 384
+HEAD_ORDER_TWISTS = ((), (1,), (3, -2, 1))
+
 head_order_view, head_order_specs = recipe_gallery(
-    order_class_catalogue("head", seed=ORDER_SEED, draws=ORDER_DRAWS, size=ORDER_SIDE, twists=HEAD_ORDER_TWISTS),
-    field_sizes=(ORDER_SIDE,),
+    order_class_catalogue(
+        "head", seed=HEAD_ORDER_SEED, draws=HEAD_ORDER_DRAWS, size=HEAD_ORDER_SIDE, twists=HEAD_ORDER_TWISTS
+    ),
+    field_sizes=(HEAD_ORDER_SIDE,),
     selected_combiners=("or",),
     selected_samplings=("checkerboard_opposite",),
     selected_m_selections=("minimum_period",),
-    page_size=ORDER_PAGE_SIZE,
-    preview_pixels=ORDER_PREVIEW_PIXELS,
+    page_size=HEAD_ORDER_PAGE_SIZE,
+    preview_pixels=HEAD_ORDER_PREVIEW_PIXELS,
     wrap_after=8,
 )
 display(head_order_view)

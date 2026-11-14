@@ -139,6 +139,25 @@ def test_text_notebook_roundtrip(source):
     assert [c.source for c in book.cells] == [c.source for c in again.cells]
 
 
+@pytest.mark.parametrize(
+    "cell_source",
+    [
+        cell.source
+        for cell in jupytext.read(Path(__file__).resolve().parents[1] / "notebooks/explore.py").cells
+        if cell.cell_type == "code"
+    ][1:],
+    ids=lambda source: source.splitlines()[0],
+)
+def test_explore_cells_run_independently_after_setup(cell_source, monkeypatch):
+    book = jupytext.read(NOTEBOOKS / "explore.py")
+    monkeypatch.setattr(studio, "recipe_gallery", lambda *args, **kwargs: (object(), {}))
+    monkeypatch.setattr(studio, "display", lambda *args, **kwargs: None)
+    monkeypatch.setattr(studio.plt, "show", lambda: studio.plt.close("all"))
+    namespace = {}
+    exec(book.cells[0].source, namespace)
+    exec(cell_source, namespace)
+
+
 def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
     catalogue = RecipeCatalogue(
         {"twist": (0, 1), "pre_power": (2, 4)},
