@@ -185,6 +185,52 @@ def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
     assert list(specs) == [(n, 2, "catalogue", sampling, "full") for n in (1, 2) for sampling in ("full", "odd_odd")]
 
 
+@pytest.mark.parametrize("new_combiner", ["and", "xor"])
+@pytest.mark.parametrize("select_first", [False, True])
+@pytest.mark.parametrize("grouped", [0, 2])
+def test_switching_filter_value_preserves_other_parameters(new_combiner, select_first, grouped):
+    catalogue = RecipeCatalogue(
+        {"combiner": ("and", "or", "xor"), "pre_power": (2, 4, 6)},
+        lambda combiner, pre_power: PatternRecipe(combiner, pre_power, 0, 3),
+    )
+    gallery, specs = recipe_gallery(
+        catalogue,
+        field_sizes=(8,),
+        selected_combiners=("or",),
+        selected_samplings=("full", "odd_odd"),
+        page_size=1,
+        grouped_dimensions=grouped,
+        preview_pixels=32,
+    )
+    controls = gallery.children[0]
+    page = controls.children[-2].children[2]
+    page.value = 2
+
+    def parameters():
+        return [(spec["pre"], *key[1:]) for key, spec in specs.items()]
+
+    before = parameters()
+    row = next(
+        row for row in _filter_rows(gallery) if isinstance(row, widgets.HBox) and row.children[0].value == "Combiner"
+    )
+    choices = {box.description.lower(): box for box in row.children[1:]}
+    if select_first:
+        choices[new_combiner].value = True
+        choices["or"].value = False
+    else:
+        choices["or"].value = False
+        assert not specs
+        choices[new_combiner].value = True
+    assert parameters() == before
+    assert {spec["combine"] for spec in specs.values()} == {new_combiner}
+
+    # Repeat in the reverse direction, including another empty selection.
+    choices[new_combiner].value = False
+    assert not specs
+    choices["or"].value = True
+    assert parameters() == before
+
+
 def test_gallery_reuses_the_computed_field_for_additional_sampling():
     catalogue = RecipeCatalogue({}, lambda: PatternRecipe("or", 2, 0, 3))
     with patch("ruglab.pager.sample_field", wraps=sample_field) as calculate:

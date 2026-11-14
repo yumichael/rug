@@ -249,6 +249,7 @@ def recipe_gallery(
         for name, values in dimensions.items()
     )
     boxes = {}
+    filter_positions = {}
 
     density_control = widgets.BoundedIntText(
         min=1,
@@ -385,6 +386,16 @@ def recipe_gallery(
             tuple(i for i, box in enumerate(boxes[axis]) if box.value) if axis in boxes else initial_choices[axis]
             for axis in axis_indices
         )
+        if change and page_anchor is not None:
+            position = filter_positions.get(change["owner"])
+            if position is not None:
+                axis, _ = position
+                choices = selected[axis]
+                if choices and page_anchor[axis] not in choices:
+                    # Change only this dimension, retaining the other anchor
+                    # coordinates even across a temporarily empty selection.
+                    replacement = choices[min(bisect_left(choices, page_anchor[axis]), len(choices) - 1)]
+                    page_anchor = tuple(replacement if i == axis else value for i, value in enumerate(page_anchor))
         split = len(order) - grouped
         entry_options = tuple(selected[i] for i in order[:split])
         panel_options = tuple(selected[i] for i in order[split:])
@@ -508,7 +519,8 @@ def recipe_gallery(
             )
             for i, value in enumerate(dimensions[names[axis]])
         )
-        for box in boxes[axis]:
+        for index, box in enumerate(boxes[axis]):
+            filter_positions[box] = (axis, index)
             box.observe(redraw, names="value")
         return widgets.HBox(
             [widgets.Label(axis_labels[axis], layout=filter_label_layout), *boxes[axis]],
