@@ -180,7 +180,7 @@ TAIL_ORDER_SEED = 0
 TAIL_ORDER_SIDE = 64
 TAIL_ORDER_DRAWS = 64
 TAIL_ORDER_PAGE_SIZE = 16
-TAIL_ORDER_PREVIEW_PIXELS = 384
+TAIL_ORDER_PREVIEW_PIXELS = 512
 
 tail_order_view, tail_order_specs = recipe_gallery(
     order_class_catalogue("tail", seed=TAIL_ORDER_SEED, draws=TAIL_ORDER_DRAWS, size=TAIL_ORDER_SIDE),
@@ -206,7 +206,7 @@ HEAD_ORDER_SEED = 0
 HEAD_ORDER_SIDE = 64
 HEAD_ORDER_DRAWS = 64
 HEAD_ORDER_PAGE_SIZE = 16
-HEAD_ORDER_PREVIEW_PIXELS = 384
+HEAD_ORDER_PREVIEW_PIXELS = 512
 HEAD_ORDER_TWISTS = ((), (1,), (3, -2, 1))
 
 head_order_view, head_order_specs = recipe_gallery(
@@ -237,7 +237,7 @@ display(head_order_view)
 # %%
 FAMILY_SIDE = 64
 FAMILY_SEED = 0
-FAMILY_EXAMPLES = 16
+FAMILY_EXAMPLES = 20
 FAMILY_TWISTS = ((), (1,), (3, -2, 1))
 FAMILY_PROPOSALS = ("bit_depth", "even_branch", "half_period_graph", "carry_behavior", "or_twist_mask")
 
@@ -254,6 +254,6 @@ head_family_view, head_family_specs = recipe_gallery(
     selected_m_selections=("minimum_period",),
     page_size=3,
     grouped_dimensions=4,
-    preview_pixels=320,
+    preview_pixels=512,
 )
 display(head_family_view)

@@ -102,6 +102,7 @@ class RecipeCatalogue:
     build: Callable[..., PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe]
 
     for_size: Callable[[int], RecipeCatalogue] | None = None
+    page_group: tuple[str, Callable] | None = None
 
     def recipes(self):
         return [
@@ -173,6 +174,7 @@ def head_family_catalogue(*, size=64, seed=0, draws=32, twists=((), (1,), (3, -2
     return RecipeCatalogue(
         {"family": cases, "draw": tuple(range(draws))},
         lambda family, draw: family.recipe(seed, draw),
+        page_group=("family", lambda family: family.proposal.replace("_", " ").capitalize()),
         for_size=lambda side: head_family_catalogue(
             size=side, seed=seed, draws=draws, twists=twists, proposals=proposals
         ),

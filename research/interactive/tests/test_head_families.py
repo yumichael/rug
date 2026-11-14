@@ -122,3 +122,46 @@ def test_gallery_rebuilds_family_choices_and_recipes_on_domain_change():
     assert "One-layer multilevel" in {s["order_sample"]["family_proposal"]["family"] for s in specs.values()}
     checkbox("64").value = True
     assert {s["order_sample"]["family_proposal"]["side"] for s in specs.values()} == {64, 512}
+
+
+def test_pager_pages_complete_proposals_with_unequal_family_counts():
+    import ipywidgets as widgets
+
+    catalogue = head_family_catalogue(size=64, draws=2)
+    view, specs = recipe_gallery(
+        catalogue,
+        field_sizes=(64,),
+        selected_samplings=("checkerboard_opposite",),
+        selected_m_selections=("minimum_period",),
+        grouped_dimensions=4,
+        page_size=4,
+        preview_pixels=32,
+    )
+
+    def descendants(widget):
+        yield widget
+        for child in getattr(widget, "children", ()):
+            yield from descendants(child)
+
+    controls = list(descendants(view))
+    mode = next(w for w in controls if isinstance(w, widgets.Dropdown) and w.description == "Page by")
+    page = next(w for w in controls if isinstance(w, widgets.BoundedIntText) and w.description == "Page")
+    mode.value = "Family groups"
+    assert page.max == len(PROPOSALS)
+    counts = []
+    for number, proposal in enumerate(PROPOSALS, 1):
+        page.value = number
+        expected = {c.category for c in catalogue.dimensions["family"] if c.proposal == proposal}
+        info = [s["order_sample"]["family_proposal"] for s in specs.values()]
+        assert {i["proposal"] for i in info} == {proposal}
+        assert {i["family"] for i in info} == expected
+        assert len(info) == 2 * len(expected)
+        counts.append(len(info))
+    assert len(set(counts)) > 1
+    page.value = 1
+    density = next(w for w in controls if isinstance(w, widgets.BoundedIntText) and w.description == "Groups per page")
+    density.value = 2
+    assert page.max == 3
+    assert {s["order_sample"]["family_proposal"]["proposal"] for s in specs.values()} == set(tuple(PROPOSALS)[:2])
+    mode.value = "Rows"
+    assert specs

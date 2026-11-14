@@ -258,6 +258,13 @@ def recipe_gallery(
         style={"description_width": "initial"},
         layout=widgets.Layout(width="170px"),
     )
+    page_by_control = widgets.Dropdown(
+        description="Page by",
+        options=("Rows", "Family groups"),
+        value="Rows",
+        layout=widgets.Layout(width="235px"),
+    )
+    page_by_control.layout.display = "" if catalogue.page_group else "none"
     transpose_control = widgets.Checkbox(
         value=transposed,
         description="Transpose grid",
@@ -455,12 +462,20 @@ def recipe_gallery(
         page_size = density_control.value
         transpose = transpose_control.value
         grouped = grouped_control.value
+        group_axis = names.index(catalogue.page_group[0]) if catalogue.page_group else None
+        group_pages = page_by_control.value == "Family groups" and group_axis is not None
+        if group_pages:
+            assert group_axis is not None
+            # Keep family categories as separate rows inside each proposal page.
+            grouped = len(order) - order.index(group_axis) - 1
         if grouped:
             density_control.description = "Columns per page" if transpose else "Rows per page"
             wrap_control.description = "Wrap columns at" if transpose else "Wrap rows at"
         else:
             density_control.description = "Plots per page"
             wrap_control.description = "Plots per column" if transpose else "Plots per row"
+        if group_pages:
+            density_control.description = "Groups per page"
         selected = tuple(
             tuple(i for i, box in enumerate(boxes[axis]) if box.value) if axis in boxes else initial_choices[axis]
             for axis in axis_indices
@@ -480,18 +495,33 @@ def recipe_gallery(
         panel_options = tuple(selected[i] for i in order[split:])
         panels_per_entry = prod(map(len, panel_options))
         entry_count = prod(map(len, entry_options)) if panels_per_entry else 0
-        page_count = max(1, (entry_count + page_size - 1) // page_size)
+        units = None
+        if group_pages:
+            assert catalogue.page_group is not None
+            buckets = {}
+            for index in range(entry_count):
+                position = _product_position(entry_options, index)
+                key = tuple(
+                    catalogue.page_group[1](dimensions[names[axis]][value]) if axis == group_axis else value
+                    for axis, value in zip(order[:split], position, strict=True)
+                )
+                buckets.setdefault(key, []).append(index)
+            units = tuple(buckets.values())
+        unit_count = len(units) if units is not None else entry_count
+        page_count = max(1, (unit_count + page_size - 1) // page_size)
         to_canonical = tuple(order.index(i) for i in axis_indices)
 
         if entry_count and (page_anchor is None or (change and change["owner"] is page_control)):
             first = (min(page_control.value, page_count) - 1) * page_size
-            position = _product_position(entry_options, first) + _product_position(panel_options, 0)
+            entry_index = units[first][0] if units is not None else first
+            position = _product_position(entry_options, entry_index) + _product_position(panel_options, 0)
             page_anchor = tuple(position[i] for i in to_canonical)
         page = 1
         if entry_count and page_anchor is not None:
             anchor = tuple(page_anchor[i] for i in order[:split])
             rank = min(_product_rank(entry_options, anchor), entry_count - 1)
-            page = rank // page_size + 1
+            unit = next(i for i, indices in enumerate(units) if rank in indices) if units is not None else rank
+            page = unit // page_size + 1
 
         # A layout or filter update must not replace the last navigated case.
         page_control.unobserve(redraw, names="value")
@@ -504,11 +534,18 @@ def recipe_gallery(
         back_button.disabled = page == 1
         next_button.disabled = page == page_count
         first = (page - 1) * page_size
-        stop = min(first + page_size, entry_count)
+        stop = min(first + page_size, unit_count)
+        page_indices = (
+            tuple(index for indices in units[first:stop] for index in indices)
+            if units is not None
+            else tuple(range(first, stop))
+        )
         page_status.value = (
             f"Page {page} of {page_count} · {entry_count:,} entries · {entry_count * panels_per_entry:,} plots"
         )
-        page_panels = (stop - first) * panels_per_entry
+        if units is not None:
+            page_status.value += f" · {unit_count} family groups"
+        page_panels = len(page_indices) * panels_per_entry
         estimated_pixels = page_panels * (preview_pixels + 8) * (preview_pixels + 130)
         if not entry_count or estimated_pixels > 64 << 20:
             displayed_specs.clear()
@@ -524,7 +561,7 @@ def recipe_gallery(
 
         panel_positions = tuple(product(*panel_options))
         page_entries = []
-        for index in range(first, stop):
+        for index in page_indices:
             entry = _product_position(entry_options, index)
             positions = (entry + panel for panel in panel_positions)
             page_entries.append(tuple(tuple(position[i] for i in to_canonical) for position in positions))
@@ -631,6 +668,18 @@ def recipe_gallery(
         more_filters.set_title(0, "More parameter filters")
         return body
 
+    def change_page_unit(change):
+        nonlocal page_anchor
+        page_anchor = None
+        grouped_control.disabled = page_by_control.value == "Family groups"
+        density_control.unobserve(redraw, names="value")
+        try:
+            density_control.value = 1
+        finally:
+            density_control.observe(redraw, names="value")
+        redraw()
+
+    page_by_control.observe(change_page_unit, names="value")
     back_button.on_click(lambda button: setattr(page_control, "value", page_control.value - 1))
     next_button.on_click(lambda button: setattr(page_control, "value", page_control.value + 1))
     slower_button.on_click(lambda button: move_dimension(-1))
@@ -648,7 +697,8 @@ def recipe_gallery(
         [
             *quick_filters,
             widgets.HBox(
-                [dimension_control, slower_button, faster_button, grouped_control, order_label],
+                [dimension_control, slower_button, faster_button, grouped_control, order_label]
+                + ([page_by_control] if catalogue.page_group else []),
                 layout=row_layout,
             ),
             widgets.HBox(
