@@ -22,8 +22,21 @@ from PIL import Image
 from ruglab import exploration, pager, studio
 from ruglab.exploration import PatternRecipe, RecipeCatalogue, sample_field
 from ruglab.pager import recipe_gallery
+from ruglab.plotting import colorize
 
 NOTEBOOKS = Path("notebooks")
+
+
+def test_gallery_preview_uses_direct_value_colors():
+    catalogue = RecipeCatalogue({}, lambda: PatternRecipe("or", 2, 1, 3))
+    view, specs = recipe_gallery(
+        catalogue, field_sizes=(16,), selected_samplings=("full",), page_size=1, preview_pixels=16
+    )
+    spec = next(iter(specs.values()))
+    expected = studio.np.rint(colorize(studio.evaluate(spec), mode="values") * 255).astype(studio.np.uint8)
+    with Image.open(BytesIO(view.children[1].value)) as image:
+        field = image.crop((8, image.height - 24, 24, image.height - 8))
+        assert studio.np.array_equal(studio.np.asarray(field), expected)
 
 
 def _filter_rows(gallery):

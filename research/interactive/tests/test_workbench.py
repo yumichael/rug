@@ -19,7 +19,7 @@ from ruglab.exploration import (
 )
 from ruglab.indexed import IndexedValues, combination_table
 from ruglab.operations import clmul
-from ruglab.plotting import colorize, export, indexed_order_palette
+from ruglab.plotting import colorize, export, indexed_order_palette, indexed_value_palette
 from ruglab.previews import PreviewPanel, indexed_preview, preview_grid
 from ruglab.research import family_pre_modulus, minimum_post_modulus, uniform_xor
 from ruglab.sampling import coordinates, resample_view
@@ -586,7 +586,6 @@ def test_centered_fields_match_saved_coordinates_and_preserve_statistics(recipe,
     assert field.spec == {
         **corner.spec,
         "origin": [-4, -4 + row_offset],
-        "color_anchor": int(field.result.values[4, 4]),
     }
     assert np.array_equal(field.result.values, evaluate(field.spec).values)
     assert np.array_equal(field.result.values, np.roll(corner.result.values, (4 - row_offset, 4), axis=(0, 1)))
@@ -642,14 +641,37 @@ def test_centered_opposite_checkerboards_align_center_values_and_colors(size, tm
     assert np.array_equal(values, values[:, ::-1])
     center = slice(size // 2 - 1, size // 2 + 1)
     assert np.array_equal(values[center, center], doubled.result.values[center, center])
-    assert checker.spec["color_anchor"] == doubled.spec["color_anchor"] == 1
+    assert "color_anchor" not in checker.spec and "color_anchor" not in doubled.spec
     palettes = []
     for field in (checker, doubled):
-        palette = indexed_order_palette(field.values, field.spec["color"], anchor=field.spec["color_anchor"])
+        palette = indexed_value_palette(field.values, field.spec["color"], field.spec["M"])
         colors = palette[field.values.indices][..., :3]
         palettes.append(colors[center, center])
         path = tmp_path / (field.spec["sampling"] + ".png")
-        export(evaluate(field.spec), path, mode="order")
+        export(evaluate(field.spec), path, mode="values")
         with Image.open(path) as image:
             assert np.array_equal(np.asarray(image), colors)
     assert np.array_equal(*palettes)
+
+
+@pytest.mark.parametrize(
+    "recipe,sampling",
+    [
+        (PatternRecipe("or", 2, 1, 3), "checkerboard_opposite"),
+        (PrePowerStudyRecipe(64, 13, 7), "even_even"),
+    ],
+)
+def test_indexed_value_palette_matches_direct_v_over_m(recipe, sampling):
+    field = sample_field(recipe, 16, sampling, centered=True)
+    palette = indexed_value_palette(field.values, field.spec["color"], field.spec["M"])
+    expected = np.rint(colorize(evaluate(field.spec), mode="values") * 255).astype(np.uint8)
+    assert np.array_equal(palette[field.values.indices][..., :3], expected)
+
+
+def test_value_colors_depend_on_residue_and_modulus_not_other_groups():
+    first = IndexedValues(np.array([1, 8, 15]), np.array([[0, 1, 2]]))
+    second = IndexedValues(np.array([0, 8]), np.array([[1, 0]]))
+    palette = indexed_value_palette(first, "gray", 16)
+    other = indexed_value_palette(second, "gray", 16)
+    assert np.array_equal(palette[1], other[1])
+    assert tuple(palette[1][:3]) == (128, 128, 128)

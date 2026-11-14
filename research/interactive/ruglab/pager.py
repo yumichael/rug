@@ -19,7 +19,7 @@ from PIL import Image
 from . import exploration
 from .exploration import FIELD_SIZES, M_SELECTIONS, RecipeCatalogue, recipe_description, sample_field
 from .indexed import byte_lru
-from .plotting import indexed_order_palette
+from .plotting import indexed_value_palette
 from .previews import PreviewPanel, palette_preview, preview_grid
 from .sampling import resample_view
 from .specs import ADDITIONAL_SAMPLINGS, SAMPLINGS
@@ -299,7 +299,7 @@ def recipe_gallery(
     @byte_lru(84, 128 << 20, _prepared_field_bytes)
     def prepared_field(recipe, size, sampling, m_selection):
         field = sample_field(recipe, size, sampling, m_selection=m_selection, centered=True)
-        return field, indexed_order_palette(field.values, field.spec["color"], anchor=field.spec.get("color_anchor"))
+        return field, indexed_value_palette(field.values, field.spec["color"], field.spec["M"])
 
     @lru_cache(maxsize=84)
     def recipe_panel(recipe, size, sampling, additional_sampling, m_selection):

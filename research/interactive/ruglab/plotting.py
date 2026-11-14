@@ -33,22 +33,28 @@ def colorize(result, mode="values", cmap=None):
     from .diagnostics import ranks
 
     if mode == "order":
-        a = ranks(result, anchor=result.spec.get("color_anchor"))
+        a = ranks(result)
         a = a / max(1, int(a.max()))
     else:
         a = result.normalized(anchored=mode == "anchored")
     return _colormap(cmap or result.colors)(np.clip(a, 0, 1))[..., :3]
 
 
-def indexed_order_palette(values, cmap, *, anchor=None):
+def indexed_value_palette(values, cmap, modulus):
+    """Map final residues directly through the colormap at v/M."""
+    normalized = np.fromiter((int(value) / modulus for value in values.labels), dtype=float, count=len(values.labels))
+    colors = _colormap(cmap)(normalized)
+    return np.rint(colors * 255).astype(np.uint8)
+
+
+def indexed_order_palette(values, cmap):
     """Map distinct residues to RGBA bytes in the same order as export."""
     count = len(values.labels)
     ranks = np.empty(count, dtype=np.intp)
     labels = values.labels
     order = sorted(range(count), key=labels.tolist().__getitem__) if labels.dtype == object else labels.argsort()
     ranks[order] = np.arange(count)
-    anchor_index = values.indices[0, 0] if anchor is None else np.flatnonzero(labels == anchor)[0]
-    ranks = (ranks - ranks[anchor_index]) % count
+    ranks = (ranks - ranks[values.indices[0, 0]]) % count
     colors = _colormap(cmap)(ranks / max(1, count - 1))
     return np.rint(colors * 255).astype(np.uint8)
 

@@ -24,7 +24,7 @@ from ruglab.studio import *
 #
 # Gallery fields offset both displayed axes by half the side length, centering the original coordinates. Full sampling uses $[-C/2,C/2)^2$ for a full side length $C$. Cartesian sampling preserves its original even/odd phases around the origin; the checkerboard views keep their vertical diagonal orientation. The central cell samples $(0,0)$ where it is included, or a nearest selected coordinate otherwise. The returned specification records the offset in `origin`, so evaluation and export match the centered plot. Additional sampling selects from this centered field.
 #
-# The checkerboard views run vertically along the operand grid's $x=y$ diagonal. Left-right reflection exchanges the two operands. Centering translates the existing periodic tile without changing the sampling orientation. Checkerboard opposite advances one row to center its reflection axis and put the original coordinate $(1,0)$ at the middle cell, matching doubled checkerboard opposite. Centered fields anchor rank colors to the middle cell rather than the plot corner; `color_anchor` records that value for export.
+# The checkerboard views run vertically along the operand grid's $x=y$ diagonal. Left-right reflection exchanges the two operands. Centering translates the existing periodic tile without changing the sampling orientation. Checkerboard opposite advances one row to center its reflection axis and put the original coordinate $(1,0)$ at the middle cell, matching doubled checkerboard opposite. Gallery colors apply the colormap directly to the final residue divided by $M$, with no rank remapping or anchoring.
 #
 # **Sampling** includes **doubled checkerboard opposite** immediately before **checkerboard opposite**. It uses the full grid's pre-modulus rule and duplicates the opposite-parity values one cell left before choosing the post-modulus. **Minimum period** targets the doubled field's periods.
 #
@@ -67,7 +67,7 @@ gallery_view, displayed_specs = recipe_gallery(
 display(gallery_view)
 
 # %% [markdown]
-# For a closer look, retrieve the base specification using its recipe number, field size, M-selection, sampling, and additional sampling, such as `displayed_specs[1, 8, "minimum_period", "even_odd", "checkerboard_same"]`. Recipe numbers stay fixed when you reorder dimensions. Use `export(evaluate(spec), "../output/field.png", mode="order", additional_sampling="checkerboard_same")` to export that view at one pixel per cell.
+# For a closer look, retrieve the base specification using its recipe number, field size, M-selection, sampling, and additional sampling, such as `displayed_specs[1, 8, "minimum_period", "even_odd", "checkerboard_same"]`. Recipe numbers stay fixed when you reorder dimensions. Use `export(evaluate(spec), "../output/field.png", mode="values", additional_sampling="checkerboard_same")` to export that view at one pixel per cell.
 #
 
 # %% [markdown]
@@ -77,7 +77,7 @@ display(gallery_view)
 #
 # The draw is uniform within each sampled family and precision on the odd XOR inputs. Each round gives those strata equal space in the gallery. Single powers and stabilized even sums cycle through their finite classes before repeating. Other families draw with replacement. Overlaps can occur across strata and under other samplings. The opposite-parity checkerboard is the reference for the full-period test at sizes of four cells and up. Other samplings and combiners show what the same polynomial does to their inputs.
 #
-# See the [polynomial period and sampling theory](../../theory/2026-11-02-xor-polynomial-period/2026-11-02-xor-polynomial-period.md) and the [order-class analysis](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#6-no-pre-operation-xor-when-order-and-shift-classes-coincide). The gallery colors cells by rank. The research proves uniform order draws for the same-valuation families at a fixed precision. The unrestricted and even-only draws cover numerical shift classes and may repeat an ordering. Use `post_specs[number, size, m_selection, sampling, additional_sampling]["post"]` to inspect the exact polynomial in ascending coefficient order.
+# See the [polynomial period and sampling theory](../../theory/2026-11-02-xor-polynomial-period/2026-11-02-xor-polynomial-period.md) and the [order-class analysis](../../theory/2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#6-no-pre-operation-xor-when-order-and-shift-classes-coincide). The gallery colors each final residue $v$ directly at colormap position $v/M$. The research proves uniform order draws for the same-valuation families at a fixed precision. The unrestricted and even-only draws cover numerical shift classes and may repeat an ordering. Use `post_specs[number, size, m_selection, sampling, additional_sampling]["post"]` to inspect the exact polynomial in ascending coefficient order.
 #
 # **Minimum period** is applied after drawing the polynomial, using the selected sampling's periods. The stratum label still describes the original draw precision; the panel reports the evaluated $M$. Different draws can become identical after minimizing, so the resulting minimum-modulus patterns need not be sampled uniformly.
 #
@@ -101,7 +101,7 @@ display(post_gallery_view)
 # %% [markdown]
 # ## An even post-power at two precisions
 #
-# Both panels use no-pre-operation XOR, the gallery's vertical opposite checkerboard, and the same post-square $H(z)=z^2$. For side length $N=128$, the pre-modulus is $K=2N=256$. The minimum post-modulus retaining least axis periods $(128,128)$ is $M=2K=512$. At that precision, $H(K-z)=H(z)$ on all odd inputs, giving the pseudo-square motifs. One extra bit, $M=1024$, breaks that equality while retaining the same periods. The panels use the gallery's anchored rank coloring.
+# Both panels use no-pre-operation XOR, the gallery's vertical opposite checkerboard, and the same post-square $H(z)=z^2$. For side length $N=128$, the pre-modulus is $K=2N=256$. The minimum post-modulus retaining least axis periods $(128,128)$ is $M=2K=512$. At that precision, $H(K-z)=H(z)$ on all odd inputs, giving the pseudo-square motifs. One extra bit, $M=1024$, breaks that equality while retaining the same periods. The panels use the gallery's direct $v/M$ coloring.
 #
 
 # %%
@@ -138,7 +138,7 @@ assert periods(evaluate({**xor_square_base, "M": xor_square_minimum // 2}), cert
     XOR_SQUARE_SIDE // 2,
     XOR_SQUARE_SIDE // 2,
 )
-grid(xor_square_examples, cols=2, width=12, mode="order")
+grid(xor_square_examples, cols=2, width=12, mode="values")
 plt.show()
 
 # %% [markdown]

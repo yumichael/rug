@@ -695,6 +695,5 @@ def sample_field(
     spec = {
         **field.spec,
         "origin": [-half, -half + row_offset],
-        "color_anchor": int(field.values.labels[indices[half, half]]),
     }
     return SampledField(IndexedValues(field.values.labels, indices), spec, field.repeat_shape, field.zero_fraction)
