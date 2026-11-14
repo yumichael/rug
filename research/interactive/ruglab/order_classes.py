@@ -42,6 +42,10 @@ class OrderClassRecipe:
     pre_power: int = 2
     twist: tuple[int, ...] = ()
     combiner: str = "or"
+    proposal: str = ""
+    candidate_family: str = ""
+    proposal_size: int = 0
+    preview_example: int = 0
 
 
 @lru_cache(maxsize=8)
@@ -103,6 +107,10 @@ def _indices(size, power, twist, combiner):
 def order_sample(recipe, size):
     if size < 8 or size > 4096 or size & (size - 1):
         raise OrderSampleUnavailable("Order sampling requires a power-of-two side from 8 to 4096.")
+    if recipe.proposal and size != recipe.proposal_size:
+        raise OrderSampleUnavailable(
+            "Rebuild the family catalogue for the selected Field size to refresh its classifications."
+        )
     if recipe.family not in ("head", "tail") or recipe.combiner not in ORDER_COMBINERS:
         raise ValueError("Choose head or tail and OR, XOR, ADD, or ABSDIFF")
     if recipe.draw < 0:
@@ -146,6 +154,13 @@ def order_sample(recipe, size):
         "cell_bins": bins,
         "largest_bin_fraction": max(bins) / indices.size,
     }
+    if recipe.proposal:
+        metadata["family_proposal"] = {
+            "proposal": recipe.proposal,
+            "family": recipe.candidate_family,
+            "side": recipe.proposal_size,
+            "example": recipe.preview_example,
+        }
     spec = {
         "n": size,
         "K": basic.K,

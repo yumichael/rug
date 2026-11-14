@@ -1,0 +1,53 @@
+# Competing visual head-family proposals
+
+The last section of [explore.py](../../interactive/notebooks/explore.py) compares five candidate groupings of the head. These are alternatives to evaluate visually, rather than a final style taxonomy. Their definitions are implementable for every supported domain, and every grouping covers the whole head. The finite gallery illustrates selected twists and draws; it does not enumerate the whole pattern space.
+
+## Scope and mathematical inputs
+
+Use the [existing shared-twist construction](../2026-11-12-2-checkerboard-head-tail/theory.md). Fix a power-of-two side $N$ from 8 through 4096, an even pre-power $q$, $w=\nu_2(q)$, and $K=N2^w$. Let $Q$ be any finite integer polynomial, $f(t)=t+2t(t-1)Q(t)$, and $P(x)=f(x^q)\bmod K$. The combiner is OR, XOR, ADD, or ABSDIFF. A head base has $q<\log_2N+w$. All admissible post-polynomials at their own minimum-period precision are included in the family associated with a base; previews use the existing conditional order sampler and its interpolation, with the existing random color rotation.
+
+Write $E=\{P(2i):0\le i<N/2\}$, $O=\{P(2i+1):0\le i<N/2\}$, $e=\lvert E\rvert$, $\ell=\lvert\{\nu_2(t):t\in E\setminus\{0\}\}\rvert$, and $d=q-w-2$. Let $G$ be the [half-period graph](../2026-11-12-2-checkerboard-head-tail/theory.md#1-one-half-period-graph-controls-both-axes), whose vertices are the distinct raw combiner outputs. These are pre-function and raw-field invariants, independent of post-polynomial draw and color offset.
+
+The ordinary checkerboard-opposite view is the research reference. Doubled checkerboard opposite is the alternate layout of the same sampled scalar polynomial. A visual judgment made in one layout need not transfer to the other; the gallery lets you compare both.
+
+## Five alternative groupings
+
+Each row below describes one complete grouping, with its mutually exclusive base categories. Names describe mechanisms, not guaranteed perceived textures.
+
+| Proposal          | Exact categories                                                                                                                                                                                                                                                                      | Visual question                                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Bit depth         | Low-bit crossing: $d<0$; Stride boundary: $d=0$; Middle-bit modulation: $0<d\le3$; Deep-bit modulation: $d>3$                                                                                                                                                                         | Does the location of the even branch's first active bit control motif scale?                                         |
+| Even branch       | Top-bit binary: $e=2$ and the nonzero even value is $K/2$; Interior-bit binary: $e=2$ otherwise; One-layer multilevel: $e>2$ and $\ell=1$; Multiple even layers: $e>2$ and $\ell>1$                                                                                                   | Do binary masks, multilevel modulation, and nested valuation layers form more stable styles?                         |
+| Half-period graph | Linked components: some component has more than two vertices; Pairs plus singletons: every component has size at most two and some is a singleton; Tail-count pairs: all sizes are two and there are $N/4$ vertices; Expanded pairs: all sizes are two and $\lvert V(G)\rvert\ne N/4$ | Does the freedom of assigning post-output groups predict visual identity, despite different coordinate embeddings?   |
+| Carry behavior    | Folded differences: ABSDIFF; Carry-free merge: OR/XOR/ADD with no shared active odd/even bit; otherwise Saturating bits: OR, Toggling bits: XOR, or Carrying sums: ADD                                                                                                                | Do saturation, toggling, carries, and comparison-like folds give recognizable alternatives?                          |
+| OR twist mask     | At $q=2$, OR, and $N\ge32$: separate families for zero, one, or two bits in $(-Q(0))\bmod4$; Small-domain OR: $q=2$, OR, $N<32$; Other low-bit bases: $q=2$ with another combiner; Higher-power bases: $q\ge4$                                                                        | Does the research's OR-specific forced-bit mechanism expose a useful refinement hidden by a pre-power-only grouping? |
+
+“No shared active bit” means that the bitwise AND of the bitwise union of $O$ and the bitwise union of $E$ is zero. This is an exact implementable existence test for overlap, not an image statistic. The OR forced-bit count and the branch/graph structure come from [the existing head-family research](../2026-11-12-2-checkerboard-head-tail/head-families.md). The threshold between middle and deep bit modulation is a proposed style grouping chosen to keep pre-powers six and eight together; its aesthetic significance is a hypothesis.
+
+## Coverage and overlaps
+
+For every head base, $e\ge2$ and $\ell\ge1$: the zero even input survives, and the even branch is not erased. The even-branch alternatives therefore exhaust the head. Every integer $d$ falls into exactly one bit-depth interval. The half-period alternatives exhaust the component-size possibilities because every allowed base has a nontrivial half-period edge. Carry behavior first separates ABSDIFF, then the disjoint no-overlap and overlap cases for the other three combiners. The OR refinement exhausts the combiner, pre-power, and small/large-domain cases. Thus each proposal covers every allowed head base and every allowed post-polynomial on it, not just the configured examples.
+
+These are exact partitions of **base descriptions**, not proven disjoint partitions of **spatial order classes**. A rendered pattern can have several base descriptions and therefore belong to several candidates within a proposal. There is also deliberate overlap between proposals: each is a different attempt at a useful visual grouping. Coverage is guaranteed by the definitions; visual separation and small overlap are not guaranteed. Identical graph counts alone do not imply equal spatial texture.
+
+## Bounded investigation and initial assessment
+
+The [recorded inventory](inventory.json) uses all head pre-powers, the four combiners, and the three twists $Q=0$, $Q=1$, and $Q=3-2t+t^2$ at sides 8, 16, 32, 64, 128, 256, and 512. It checks 24 base descriptions at each of the three smaller sides and 48 at each of the four larger sides. Raw equality partitions are canonicalized by first occurrence, so different numerical labels do not count as different partitions. At side 64, 48 descriptions give 43 raw partitions. At side 8, some raw partitions cross carry and OR-refinement categories. No other cross-category raw-partition collisions occur in this finite inventory. This does not establish disjoint order spaces: different raw partitions can still admit a common post-output order.
+
+I inspected seeded four-example rows for all five proposals at side 64, using actual conditional order draws, the existing interpolation, and the same random color rotations as the head gallery. **Even branch is the most promising initial candidate**: top-bit binary examples tend toward more separated repeated motifs, while the multiple-layer examples tend toward finer interleaved texture. Interior-bit binary is a useful intermediate group. This is a finite, subjective assessment, not a guarantee for every post-polynomial, twist, or domain.
+
+**Bit depth is a useful competing coarse proposal**, especially because it groups pre-powers six and eight. The branch proposal deliberately disagrees at larger sizes: at side 512, pre-power six has three even values in one valuation layer, while pre-power eight still has two. They therefore become One-layer multilevel and Interior-bit binary respectively, while remaining together under bit depth. This is a concrete test of fixed scale grouping versus domain-adaptive grouping.
+
+**Half-period graph alone looks too coarse as a style boundary** in the inspected examples. Its Tail-count pairs family mixes pre-power-four texture with the more separated motifs of six and eight. It remains useful as a contrast and as an exact description of conditional order freedom. **Carry behavior** tests whether separating arithmetic mechanisms improves that mixture. **OR twist mask** is a targeted refinement rather than a complete stylistic solution; its residual families are intentionally visible so the proposal still covers the whole head.
+
+## How the gallery makes comparisons
+
+`head_family_catalogue(...)` groups the configured finite base pool under each selected proposal. The Family checkboxes identify both the proposal and candidate. Examples from the same candidate are grouped together. A seeded shuffle visits each configured base in a candidate before taking its next conditional order draw. The same base and draw have exactly the same polynomial values and color offset under different proposals. This reduces confounding by resampling when comparing alternatives; it does not imply uniform sampling over the union of a candidate's order classes.
+
+Set `FAMILY_SIDE`, `FAMILY_SEED`, `FAMILY_TWISTS`, `FAMILY_EXAMPLES`, and `FAMILY_PROPOSALS` in the independently runnable notebook cell. The universal definitions allow arbitrary finite integer twists, but displayed examples only cover the configured twist list. Candidates with no examples in that finite list are omitted, not declared mathematically empty. Changing Field size rebuilds the catalogue automatically, retaining selected family names where available. With multiple sizes selected, the filter lists their combined candidates; a panel marks any candidate absent at a particular size. Family metadata is recorded in every returned specification.
+
+Regenerate the bounded inventory from the repository root:
+
+```sh
+research/interactive/.venv/bin/python -c 'import json; from pathlib import Path; from ruglab.head_families import audit_head_family_proposals; Path("research/theory/2026-11-14-head-family-proposals/inventory.json").write_text(json.dumps(audit_head_family_proposals(), indent=2) + "\n")'
+```

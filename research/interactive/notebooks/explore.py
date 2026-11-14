@@ -222,3 +222,38 @@ head_order_view, head_order_specs = recipe_gallery(
     wrap_after=8,
 )
 display(head_order_view)
+
+
+# %% [markdown]
+# ## Compare candidate head-family groupings
+#
+# This gallery tests five competing groupings, rather than proposing one final classification. Each grouping classifies every allowed head base. The induced pattern families can overlap because different bases can produce the same order class. The [definitions, coverage argument, and bounded investigation](../../theory/2026-11-14-head-family-proposals/report.md) explain the scope and the initial visual assessment. **Even branch** is the most promising initial hypothesis from the side-64 examples; **Half-period graph** is a deliberately contrasting proposal that groups some visibly different textures together.
+#
+# Choose candidates in **Family**, or restrict `FAMILY_PROPOSALS` below to one or more of `"bit_depth"`, `"even_branch"`, `"half_period_graph"`, `"carry_behavior"`, and `"or_twist_mask"`. Each row contains examples from one candidate family. Bases are visited in seeded order before repeating with another conditional order draw. When the same base and draw occur under different proposals, the sampled polynomial and random color offset match exactly. Examples illustrate the configured twist set; they are not uniform samples of the union of a family. The family definitions themselves allow any finite integer twist polynomial.
+#
+# Set `FAMILY_SIDE` for the initial domain, or switch **Field size** in the gallery to rebuild domain-dependent families automatically. Empty candidates for the selected domains and twist examples are omitted. When several sizes are selected, a panel marks candidates absent at one size. At side 512, for example, pre-power six moves into One-layer multilevel while pre-power eight remains Interior-bit binary. That is why the alternatives include a domain-adaptive branch proposal alongside the shared bit-depth proposal. This cell is independently runnable after the initial import cell.
+#
+
+# %%
+FAMILY_SIDE = 64
+FAMILY_SEED = 0
+FAMILY_EXAMPLES = 16
+FAMILY_TWISTS = ((), (1,), (3, -2, 1))
+FAMILY_PROPOSALS = ("bit_depth", "even_branch", "half_period_graph", "carry_behavior", "or_twist_mask")
+
+head_family_view, head_family_specs = recipe_gallery(
+    head_family_catalogue(
+        size=FAMILY_SIDE,
+        seed=FAMILY_SEED,
+        draws=FAMILY_EXAMPLES,
+        twists=FAMILY_TWISTS,
+        proposals=FAMILY_PROPOSALS,
+    ),
+    field_sizes=(FAMILY_SIDE,),
+    selected_samplings=("checkerboard_opposite",),
+    selected_m_selections=("minimum_period",),
+    page_size=3,
+    grouped_dimensions=4,
+    preview_pixels=320,
+)
+display(head_family_view)

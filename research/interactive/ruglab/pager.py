@@ -301,11 +301,21 @@ def recipe_gallery(
     )
 
     @lru_cache(maxsize=128)
-    def recipe_at(position):
-        parameters = {
-            name: values[index] for (name, values), index in zip(catalogue.dimensions.items(), position, strict=True)
-        }
-        return catalogue.build(**parameters)
+    def catalogue_at(size):
+        return catalogue.for_size(size) if catalogue.for_size else catalogue
+
+    @lru_cache(maxsize=128)
+    def recipe_at(position, size):
+        parameters = {name: dimensions[name][index] for name, index in zip(catalogue.dimensions, position, strict=True)}
+        current = catalogue_at(size)
+        if catalogue.for_size is None:
+            return catalogue.build(**parameters)
+        for name, value in parameters.items():
+            matches = [v for v in current.dimensions[name] if str(v) == str(value)]
+            if not matches:
+                return None
+            parameters[name] = matches[0]
+        return current.build(**parameters)
 
     @byte_lru(84, 128 << 20, _prepared_field_bytes)
     def prepared_field(recipe, size, sampling, m_selection):
@@ -334,6 +344,8 @@ def recipe_gallery(
         caption = f"{name} · {field.repeat_shape}\n{statistics}\nK=2^{k} · M=2^{m}"
         if "order_sample" in spec:
             info = spec["order_sample"]
+            if "family_proposal" in info:
+                caption += "\n" + info["family_proposal"]["proposal"].replace("_", " ")
             caption += (
                 f"\nPre {info['pre_power']} · Q={tuple(info['twist'])}"
                 f"\ngaps {info['min_gap_ratio']:.2g}-{info['max_gap_ratio']:.2g}x equal"
@@ -354,10 +366,19 @@ def recipe_gallery(
             for case in cases:
                 recipe_position = case[: len(recipe_options)]
                 number = _product_rank(recipe_options, recipe_position) + 1
-                recipe = recipe_at(recipe_position)
                 size_index, m_index, sampling_index, additional_index = case[len(recipe_options) :]
                 m_selection = M_SELECTIONS[m_index]
                 size = FIELD_SIZES[size_index]
+                recipe = recipe_at(recipe_position, size)
+                if recipe is None:
+                    headings.append((f"{size}x{size}", str(dimensions["family"][recipe_position[0]])))
+                    panels.append(
+                        PreviewPanel(
+                            Image.new("RGB", (preview_pixels, preview_pixels), "#f4f4f4"),
+                            "No configured bases in this family at this size.",
+                        )
+                    )
+                    continue
                 sampling = SAMPLINGS[sampling_index]
                 additional_sampling = ADDITIONAL_SAMPLINGS[additional_index]
                 heading = f"#{number} {recipe.combiner.upper()} · {size}x{size}"
@@ -367,6 +388,8 @@ def recipe_gallery(
                     specs[number, size, m_selection, sampling, additional_sampling] = spec
                 headings.append((heading, description))
                 panels.append(panel)
+            if not panels:
+                continue
             if all(heading == headings[0] for heading in headings):
                 heading = " · ".join(headings[0])
             else:
@@ -380,8 +403,54 @@ def recipe_gallery(
 
     cached_page = lru_cache(maxsize=8)(render_page)
 
+    rebuilt_sizes = None
+
+    def rebuild_catalogue():
+        nonlocal rebuilt_sizes, options, recipe_options, initial_choices, page_anchor
+        if catalogue.for_size is None:
+            return
+        sizes = tuple(FIELD_SIZES[i] for i, box in enumerate(boxes[size_axis]) if box.value)
+        if not sizes or sizes == rebuilt_sizes:
+            return
+        rebuilt_sizes = sizes
+        catalogues = [catalogue_at(size) for size in sizes]
+        for axis, name in enumerate(catalogue.dimensions):
+            values = tuple({str(v): v for c in catalogues for v in c.dimensions[name]}.values())
+            if tuple(map(str, values)) == tuple(map(str, dimensions[name])):
+                dimensions[name] = values
+                continue
+            old_values = dimensions[name]
+            chosen = (
+                {str(old_values[i]) for i, box in enumerate(boxes[axis]) if box.value}
+                if axis in boxes
+                else {str(old_values[i]) for i in initial_choices[axis]}
+            )
+            all_selected = len(chosen) == len(old_values)
+            anchor_label = str(old_values[page_anchor[axis]]) if page_anchor is not None else None
+            dimensions[name] = values
+            choices = tuple(i for i, v in enumerate(values) if all_selected or str(v) in chosen)
+            if not choices and chosen:
+                choices = tuple(range(len(values)))
+            initial_choices = tuple(choices if i == axis else v for i, v in enumerate(initial_choices))
+            if axis in boxes:
+                row = filter_rows[axis]
+                for box in boxes[axis]:
+                    box.unobserve(redraw, names="value")
+                    filter_positions.pop(box, None)
+                replacement = choice_row(axis)
+                row.children = replacement.children
+                filter_rows[axis] = row
+            if page_anchor is not None:
+                index = next((i for i, v in enumerate(values) if str(v) == anchor_label), choices[0] if choices else 0)
+                page_anchor = tuple(index if i == axis else v for i, v in enumerate(page_anchor))
+        options = tuple(tuple(range(len(values))) for values in dimensions.values())
+        recipe_options = options[: len(catalogue.dimensions)]
+        recipe_at.cache_clear()
+        cached_page.cache_clear()
+
     def update_page(change=None):
         nonlocal page_anchor
+        rebuild_catalogue()
 
         page_size = density_control.value
         transpose = transpose_control.value
@@ -518,6 +587,8 @@ def recipe_gallery(
         update_order_controls()
         redraw()
 
+    filter_rows = {}
+
     def choice_row(axis):
         boxes[axis] = tuple(
             widgets.Checkbox(
@@ -532,12 +603,14 @@ def recipe_gallery(
         for index, box in enumerate(boxes[axis]):
             filter_positions[box] = (axis, index)
             box.observe(redraw, names="value")
-        return widgets.HBox(
+        row = widgets.HBox(
             [widgets.Label(axis_labels[axis], layout=filter_label_layout), *boxes[axis]],
             layout=row_layout,
         )
+        filter_rows[axis] = row
+        return row
 
-    quick_names = ("size", "combiner", "m_selection", "sampling", "additional_sampling")
+    quick_names = ("size", "family", "combiner", "m_selection", "sampling", "additional_sampling")
     quick_filters: list[widgets.HBox | widgets.Accordion] = [
         choice_row(names.index(name)) for name in quick_names if name in names
     ]

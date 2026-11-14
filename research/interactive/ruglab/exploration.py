@@ -10,6 +10,7 @@ from sys import getsizeof
 import numpy as np
 
 from .engine import Result
+from .head_families import head_family_cases
 from .indexed import IndexedValues, byte_lru, combination_table
 from .operations import operation
 from .order_classes import ORDER_COMBINERS, OrderClassRecipe, OrderSampleUnavailable, head_powers, order_sample
@@ -100,6 +101,8 @@ class RecipeCatalogue:
     dimensions: dict[str, tuple]
     build: Callable[..., PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe]
 
+    for_size: Callable[[int], RecipeCatalogue] | None = None
+
     def recipes(self):
         return [
             self.build(**dict(zip(self.dimensions, values, strict=True)))
@@ -161,8 +164,25 @@ def order_class_catalogue(family="tail", *, seed=0, draws=64, size=64, twists=((
     )
 
 
+def head_family_catalogue(*, size=64, seed=0, draws=32, twists=((), (1,), (3, -2, 1)), proposals=None):
+    """Compare alternative head partitions, balancing the configured bases."""
+    if draws < 1:
+        raise ValueError("Supply a positive number of examples per candidate family")
+    kwargs = {} if proposals is None else {"proposals": tuple(proposals)}
+    cases = head_family_cases(size, seed, twists, **kwargs)
+    return RecipeCatalogue(
+        {"family": cases, "draw": tuple(range(draws))},
+        lambda family, draw: family.recipe(seed, draw),
+        for_size=lambda side: head_family_catalogue(
+            size=side, seed=seed, draws=draws, twists=twists, proposals=proposals
+        ),
+    )
+
+
 def recipe_description(recipe, size):
     if isinstance(recipe, OrderClassRecipe):
+        if recipe.proposal:
+            return f"{recipe.candidate_family} · example {recipe.preview_example + 1}"
         return f"{recipe.family.title()} order · draw {recipe.draw + 1} · seed {recipe.seed}"
     if isinstance(recipe, PatternRecipe):
         return f"Pre {recipe.pre_power} · twist {recipe.twist} · post {recipe.post_power}"

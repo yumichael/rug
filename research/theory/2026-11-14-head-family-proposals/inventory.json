@@ -1,0 +1,357 @@
+{
+  "seed": 0,
+  "twists": [
+    [],
+    [
+      1
+    ],
+    [
+      3,
+      -2,
+      1
+    ]
+  ],
+  "domain_checks": [
+    {
+      "side": 8,
+      "bases": 24,
+      "distinct_raw_partitions": 6,
+      "proposals": {
+        "bit_depth": {
+          "families": {
+            "Low-bit crossing": 12,
+            "Stride boundary": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "even_branch": {
+          "families": {
+            "Interior-bit binary": 12,
+            "Top-bit binary": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "half_period_graph": {
+          "families": {
+            "Expanded pairs": 10,
+            "Linked components": 6,
+            "Pairs plus singletons": 2,
+            "Tail-count pairs": 6
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "carry_behavior": {
+          "families": {
+            "Carry-free merge": 3,
+            "Carrying sums": 5,
+            "Folded differences": 6,
+            "Saturating bits": 5,
+            "Toggling bits": 5
+          },
+          "raw_partitions_crossing_families": 1
+        },
+        "or_twist_mask": {
+          "families": {
+            "Higher-power bases": 12,
+            "Other low-bit bases": 9,
+            "Small-domain OR": 3
+          },
+          "raw_partitions_crossing_families": 1
+        }
+      }
+    },
+    {
+      "side": 16,
+      "bases": 24,
+      "distinct_raw_partitions": 19,
+      "proposals": {
+        "bit_depth": {
+          "families": {
+            "Low-bit crossing": 12,
+            "Stride boundary": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "even_branch": {
+          "families": {
+            "Interior-bit binary": 12,
+            "Multiple even layers": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "half_period_graph": {
+          "families": {
+            "Expanded pairs": 5,
+            "Linked components": 12,
+            "Pairs plus singletons": 1,
+            "Tail-count pairs": 6
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "carry_behavior": {
+          "families": {
+            "Carrying sums": 6,
+            "Folded differences": 6,
+            "Saturating bits": 6,
+            "Toggling bits": 6
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "or_twist_mask": {
+          "families": {
+            "Higher-power bases": 12,
+            "Other low-bit bases": 9,
+            "Small-domain OR": 3
+          },
+          "raw_partitions_crossing_families": 0
+        }
+      }
+    },
+    {
+      "side": 32,
+      "bases": 24,
+      "distinct_raw_partitions": 24,
+      "proposals": {
+        "bit_depth": {
+          "families": {
+            "Low-bit crossing": 12,
+            "Stride boundary": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "even_branch": {
+          "families": {
+            "Interior-bit binary": 12,
+            "Multiple even layers": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "half_period_graph": {
+          "families": {
+            "Expanded pairs": 6,
+            "Linked components": 12,
+            "Tail-count pairs": 6
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "carry_behavior": {
+          "families": {
+            "Carrying sums": 6,
+            "Folded differences": 6,
+            "Saturating bits": 6,
+            "Toggling bits": 6
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "or_twist_mask": {
+          "families": {
+            "Higher-power bases": 12,
+            "OR: 0 forced bits": 1,
+            "OR: 1 forced bits": 1,
+            "OR: 2 forced bits": 1,
+            "Other low-bit bases": 9
+          },
+          "raw_partitions_crossing_families": 0
+        }
+      }
+    },
+    {
+      "side": 64,
+      "bases": 48,
+      "distinct_raw_partitions": 43,
+      "proposals": {
+        "bit_depth": {
+          "families": {
+            "Low-bit crossing": 12,
+            "Middle-bit modulation": 24,
+            "Stride boundary": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "even_branch": {
+          "families": {
+            "Interior-bit binary": 12,
+            "Multiple even layers": 12,
+            "Top-bit binary": 24
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "half_period_graph": {
+          "families": {
+            "Expanded pairs": 6,
+            "Linked components": 24,
+            "Tail-count pairs": 18
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "carry_behavior": {
+          "families": {
+            "Carrying sums": 12,
+            "Folded differences": 12,
+            "Saturating bits": 12,
+            "Toggling bits": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "or_twist_mask": {
+          "families": {
+            "Higher-power bases": 36,
+            "OR: 0 forced bits": 1,
+            "OR: 1 forced bits": 1,
+            "OR: 2 forced bits": 1,
+            "Other low-bit bases": 9
+          },
+          "raw_partitions_crossing_families": 0
+        }
+      }
+    },
+    {
+      "side": 128,
+      "bases": 48,
+      "distinct_raw_partitions": 48,
+      "proposals": {
+        "bit_depth": {
+          "families": {
+            "Low-bit crossing": 12,
+            "Middle-bit modulation": 24,
+            "Stride boundary": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "even_branch": {
+          "families": {
+            "Interior-bit binary": 24,
+            "Multiple even layers": 24
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "half_period_graph": {
+          "families": {
+            "Expanded pairs": 6,
+            "Linked components": 24,
+            "Tail-count pairs": 18
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "carry_behavior": {
+          "families": {
+            "Carrying sums": 12,
+            "Folded differences": 12,
+            "Saturating bits": 12,
+            "Toggling bits": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "or_twist_mask": {
+          "families": {
+            "Higher-power bases": 36,
+            "OR: 0 forced bits": 1,
+            "OR: 1 forced bits": 1,
+            "OR: 2 forced bits": 1,
+            "Other low-bit bases": 9
+          },
+          "raw_partitions_crossing_families": 0
+        }
+      }
+    },
+    {
+      "side": 256,
+      "bases": 48,
+      "distinct_raw_partitions": 48,
+      "proposals": {
+        "bit_depth": {
+          "families": {
+            "Low-bit crossing": 12,
+            "Middle-bit modulation": 24,
+            "Stride boundary": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "even_branch": {
+          "families": {
+            "Interior-bit binary": 24,
+            "Multiple even layers": 24
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "half_period_graph": {
+          "families": {
+            "Expanded pairs": 6,
+            "Linked components": 24,
+            "Tail-count pairs": 18
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "carry_behavior": {
+          "families": {
+            "Carrying sums": 12,
+            "Folded differences": 12,
+            "Saturating bits": 12,
+            "Toggling bits": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "or_twist_mask": {
+          "families": {
+            "Higher-power bases": 36,
+            "OR: 0 forced bits": 1,
+            "OR: 1 forced bits": 1,
+            "OR: 2 forced bits": 1,
+            "Other low-bit bases": 9
+          },
+          "raw_partitions_crossing_families": 0
+        }
+      }
+    },
+    {
+      "side": 512,
+      "bases": 48,
+      "distinct_raw_partitions": 48,
+      "proposals": {
+        "bit_depth": {
+          "families": {
+            "Low-bit crossing": 12,
+            "Middle-bit modulation": 24,
+            "Stride boundary": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "even_branch": {
+          "families": {
+            "Interior-bit binary": 12,
+            "Multiple even layers": 24,
+            "One-layer multilevel": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "half_period_graph": {
+          "families": {
+            "Expanded pairs": 6,
+            "Linked components": 24,
+            "Tail-count pairs": 18
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "carry_behavior": {
+          "families": {
+            "Carrying sums": 12,
+            "Folded differences": 12,
+            "Saturating bits": 12,
+            "Toggling bits": 12
+          },
+          "raw_partitions_crossing_families": 0
+        },
+        "or_twist_mask": {
+          "families": {
+            "Higher-power bases": 36,
+            "OR: 0 forced bits": 1,
+            "OR: 1 forced bits": 1,
+            "OR: 2 forced bits": 1,
+            "Other low-bit bases": 9
+          },
+          "raw_partitions_crossing_families": 0
+        }
+      }
+    }
+  ]
+}
