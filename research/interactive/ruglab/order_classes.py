@@ -126,9 +126,10 @@ def order_sample(recipe, size):
     groups = np.unique(outputs)
     gaps = [int(b - a) for a, b in zip(groups, [*groups[1:], int(groups[0]) + modulus], strict=True)]
     cell_counts = np.bincount(indices.ravel(), minlength=len(outputs))
+    offset = Random(f"{draw_seed}:color:{recipe.family}:{size}:{power}:{twist}:{recipe.combiner}").random()
     bins = [0] * 16
     for value, count in zip(outputs, cell_counts, strict=True):
-        bins[int(value) * 16 // modulus] += int(count)
+        bins[int(((int(value) / modulus + offset) % 1) * 16)] += int(count)
     metadata = {
         "family": recipe.family,
         "seed": recipe.seed,
@@ -155,6 +156,7 @@ def order_sample(recipe, size):
         "pre": [["pow", power], ["poly", pre_polynomial(twist)]],
         "post": [["lookup", {str(node): hex(int(value)) for node, value in zip(basic.nodes, outputs, strict=True)}]],
         "color": "cmr.emergency",
+        "color_offset": offset,
         "order_sample": metadata,
     }
     return IndexedValues(np.array(basic.nodes, dtype=object), indices), outputs, spec

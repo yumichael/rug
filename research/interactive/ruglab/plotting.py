@@ -37,12 +37,16 @@ def colorize(result, mode="values", cmap=None):
         a = a / max(1, int(a.max()))
     else:
         a = result.normalized(anchored=mode == "anchored")
+    if mode == "values" and result.spec.get("color_offset", 0):
+        a = (a + result.spec["color_offset"]) % 1
     return _colormap(cmap or result.colors)(np.clip(a, 0, 1))[..., :3]
 
 
-def indexed_value_palette(values, cmap, modulus):
+def indexed_value_palette(values, cmap, modulus, *, offset=0):
     """Map final residues directly through the colormap at v/M."""
     normalized = np.fromiter((int(value) / modulus for value in values.labels), dtype=float, count=len(values.labels))
+    if offset:
+        normalized = (normalized + offset) % 1
     colors = _colormap(cmap)(normalized)
     return np.rint(colors * 255).astype(np.uint8)
 

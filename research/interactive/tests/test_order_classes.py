@@ -2,16 +2,20 @@
 
 import json
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 import pytest
+from PIL import Image
 from ruglab import evaluate
+from ruglab import pager as pager_module
 from ruglab._orders.core import Basic
 from ruglab._orders.sampler import OrderSampler
 from ruglab.diagnostics import periods
 from ruglab.exploration import PeriodTargetError, order_class_catalogue, sample_field
 from ruglab.order_classes import OrderClassRecipe, head_powers, order_sample, realize_order_polynomial, tail_power
 from ruglab.pager import recipe_gallery
+from ruglab.plotting import _colormap, colorize, export, indexed_value_palette
 
 REFERENCE = json.loads((Path(__file__).parent / "fixtures/order_classes_reference.json").read_text())
 
@@ -68,7 +72,8 @@ def test_seed_reproducibility_and_actual_spacing_statistics():
     assert not np.array_equal(values, changed)
     info = spec["order_sample"]
     expanded = values[base.indices]
-    histogram = [sum(int(v) * 16 // spec["M"] == i for v in expanded.flat) for i in range(16)]
+    displayed_bins = np.floor(((expanded.astype(float) / spec["M"] + spec["color_offset"]) % 1) * 16)
+    histogram = [np.count_nonzero(displayed_bins == i) for i in range(16)]
     assert info["cell_bins"] == histogram
     positions = sorted(set(map(int, values)))
     gaps = np.diff(np.array([*positions, positions[0] + spec["M"]], dtype=object))
@@ -138,3 +143,38 @@ def test_new_galleries_page_reproducibly_and_export_evaluable_specs():
         assert len(specs) == 2
         for spec in specs.values():
             assert periods(evaluate(spec), certified_torus=True) == (16, 16)
+
+
+@pytest.mark.parametrize("family", ["head", "tail"])
+@pytest.mark.parametrize("sampling", ["checkerboard_opposite", "doubled_checkerboard_opposite"])
+def test_random_color_offset_matches_preview_and_export(family, sampling, tmp_path):
+    recipe = OrderClassRecipe(family, 31, 5)
+    field = sample_field(recipe, 32, sampling, centered=True)
+    offset = field.spec["color_offset"]
+    assert 0 <= offset < 1
+    assert sample_field(recipe, 32, sampling, centered=True).spec["color_offset"] == offset
+    assert sample_field(OrderClassRecipe(family, 31, 6), 32, sampling).spec["color_offset"] != offset
+    normalized = (field.result.normalized() + offset) % 1
+    expected = np.rint(_colormap(field.spec["color"])(normalized)[..., :3] * 255).astype(np.uint8)
+    palette = indexed_value_palette(field.values, field.spec["color"], field.spec["M"], offset=offset)
+    assert np.array_equal(palette[field.values.indices][..., :3], expected)
+    assert np.array_equal(np.rint(colorize(field.result) * 255).astype(np.uint8), expected)
+    path = tmp_path / "phase.png"
+    export(evaluate(field.spec), path)
+    with Image.open(path) as image:
+        assert np.array_equal(np.asarray(image), expected)
+
+
+@pytest.mark.parametrize("family", ["tail", "head"])
+def test_order_gallery_caption_shows_phase_instead_of_zero_percentage(family):
+    with patch("ruglab.pager.preview_grid", wraps=pager_module.preview_grid) as render:
+        recipe_gallery(
+            order_class_catalogue(family, size=16),
+            field_sizes=(16,),
+            selected_combiners=("or",),
+            selected_samplings=("checkerboard_opposite",),
+            page_size=1,
+            preview_pixels=64,
+        )
+    captions = [panel.caption for _, panels in render.call_args.args[0] for panel in panels]
+    assert captions and all("offset " in text and "zero" not in text for text in captions)

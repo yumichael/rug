@@ -310,7 +310,9 @@ def recipe_gallery(
     @byte_lru(84, 128 << 20, _prepared_field_bytes)
     def prepared_field(recipe, size, sampling, m_selection):
         field = sample_field(recipe, size, sampling, m_selection=m_selection, centered=True)
-        return field, indexed_value_palette(field.values, field.spec["color"], field.spec["M"])
+        return field, indexed_value_palette(
+            field.values, field.spec["color"], field.spec["M"], offset=field.spec.get("color_offset", 0)
+        )
 
     @lru_cache(maxsize=84)
     def recipe_panel(recipe, size, sampling, additional_sampling, m_selection):
@@ -324,11 +326,12 @@ def recipe_gallery(
         spec = field.spec
         k, m = (spec[key].bit_length() - 1 for key in ("K", "M"))
         name = sampling.replace("_", " ")
-        caption = (
-            f"{name} · {field.repeat_shape}\n"
-            f"{field.zero_fraction:.1%} zero · {field.distinct_values:,} values\n"
-            f"K=2^{k} · M=2^{m}"
+        statistics = (
+            f"{field.distinct_values:,} values · offset {spec['color_offset']:.3f}"
+            if "order_sample" in spec
+            else f"{field.zero_fraction:.1%} zero · {field.distinct_values:,} values"
         )
+        caption = f"{name} · {field.repeat_shape}\n{statistics}\nK=2^{k} · M=2^{m}"
         if "order_sample" in spec:
             info = spec["order_sample"]
             caption += (
