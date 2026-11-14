@@ -261,6 +261,7 @@ def test_gallery_m_selection_compares_policies_and_preserves_additional_sampling
         selected_m_selections=("catalogue", "distinct_outputs", "minimum_period"),
     )
     assert len(specs) == 6
+    assert all(spec["origin"] == [-4, -4] for spec in specs.values())
     assert {key[2] for key in specs} == {"catalogue", "distinct_outputs", "minimum_period"}
     assert {spec["M"] for key, spec in specs.items() if key[2] == "catalogue"} == {128}
     assert {spec["M"] for key, spec in specs.items() if key[2] == "minimum_period"} == {16}

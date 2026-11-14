@@ -298,8 +298,8 @@ def recipe_gallery(
 
     @byte_lru(84, 128 << 20, _prepared_field_bytes)
     def prepared_field(recipe, size, sampling, m_selection):
-        field = sample_field(recipe, size, sampling, m_selection=m_selection)
-        return field, indexed_order_palette(field.values, field.spec["color"])
+        field = sample_field(recipe, size, sampling, m_selection=m_selection, centered=True)
+        return field, indexed_order_palette(field.values, field.spec["color"], anchor=field.spec.get("color_anchor"))
 
     @lru_cache(maxsize=84)
     def recipe_panel(recipe, size, sampling, additional_sampling, m_selection):

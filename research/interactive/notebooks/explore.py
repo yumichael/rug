@@ -22,7 +22,9 @@ from ruglab.studio import *
 #
 # **Group fastest** keeps the selected values of the fastest dimensions together when paging. It defaults to 0, so each plot counts individually. Plots fill across rows, or down columns with **Transpose grid** on.
 #
-# The checkerboard views run vertically along the operand grid's $x=y$ diagonal. Left-right reflection exchanges the two operands. The same-parity tile starts with its cell-centered mirror column at the left edge. The opposite-parity tile starts with the preceding row of its vertical period.
+# Gallery fields offset both displayed axes by half the side length, centering the original coordinates. Full sampling uses $[-C/2,C/2)^2$ for a full side length $C$. Cartesian sampling preserves its original even/odd phases around the origin; the checkerboard views keep their vertical diagonal orientation. The central cell samples $(0,0)$ where it is included, or a nearest selected coordinate otherwise. The returned specification records the offset in `origin`, so evaluation and export match the centered plot. Additional sampling selects from this centered field.
+#
+# The checkerboard views run vertically along the operand grid's $x=y$ diagonal. Left-right reflection exchanges the two operands. Centering translates the existing periodic tile without changing the sampling orientation. Checkerboard opposite advances one row to center its reflection axis and put the original coordinate $(1,0)$ at the middle cell, matching doubled checkerboard opposite. Centered fields anchor rank colors to the middle cell rather than the plot corner; `color_anchor` records that value for export.
 #
 # **Sampling** includes **doubled checkerboard opposite** immediately before **checkerboard opposite**. It uses the full grid's pre-modulus rule and duplicates the opposite-parity values one cell left before choosing the post-modulus. **Minimum period** targets the doubled field's periods.
 #

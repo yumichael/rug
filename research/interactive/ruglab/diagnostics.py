@@ -11,8 +11,13 @@ def anchored(result):
     return (result.values - int(result.values.flat[0])) % result.modulus
 
 
-def ranks(result):
-    a = anchored(result)
+def ranks(result, *, anchor=None):
+    if anchor is None:
+        a = anchored(result)
+    else:
+        if result.modulus is None:
+            raise ValueError("Declare an integer modulus for exact diagnostics")
+        a = (result.values - anchor) % result.modulus
     lookup = {v: i for i, v in enumerate(sorted(set(a.flat)))}
     return np.asarray(np.frompyfunc(lookup.__getitem__, 1, 1)(a), dtype=int)
 

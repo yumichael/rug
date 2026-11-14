@@ -613,7 +613,7 @@ def _sample_pre_power_study(recipe, size, sampling, m_selection):
     return _finish_field(base, labels, counts, spec, repeat, m_selection)
 
 
-def sample_field(
+def _sample_field(
     recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe,
     size: int,
     sampling: str,
@@ -669,3 +669,32 @@ def sample_field(
     powers, modulus = _powered_labels(q, recipe.twist, K, recipe.combiner, size, label_sampling, recipe.post_power)
     spec.update(M=modulus, post=[["pow", recipe.post_power]])
     return _finish_field(base, powers, counts, spec, repeat, m_selection)
+
+
+def sample_field(
+    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe,
+    size: int,
+    sampling: str,
+    *,
+    minimum_post_modulus=False,
+    m_selection=None,
+    centered=False,
+) -> SampledField:
+    """Build a catalogue field, optionally centering the original coordinates.
+
+    centered=True offsets the displayed axes around -size/2 before sampling.
+    The original origin, or the nearest selected coordinates, lies at the
+    middle cell. The saved specification records the same offset.
+    """
+    field = _sample_field(recipe, size, sampling, minimum_post_modulus=minimum_post_modulus, m_selection=m_selection)
+    if not centered:
+        return field
+    half = size // 2
+    row_offset = 1 if sampling == "checkerboard_opposite" else 0
+    indices = np.roll(field.values.indices, (half - row_offset, half), axis=(0, 1))
+    spec = {
+        **field.spec,
+        "origin": [-half, -half + row_offset],
+        "color_anchor": int(field.values.labels[indices[half, half]]),
+    }
+    return SampledField(IndexedValues(field.values.labels, indices), spec, field.repeat_shape, field.zero_fraction)

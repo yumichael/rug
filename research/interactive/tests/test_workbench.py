@@ -567,3 +567,89 @@ def test_distinct_outputs_policy_preserves_the_partition_at_minimum_modulus(reci
         assert len(set((after % (field.spec["M"] // 2)).flat)) < field.distinct_values
     assert field.zero_fraction == np.count_nonzero(after == 0) / after.size
     assert periods(field.result, certified_torus=True) == periods(original.result, certified_torus=True)
+
+
+@pytest.mark.parametrize("sampling", SAMPLINGS)
+@pytest.mark.parametrize("policy", ["catalogue", "distinct_outputs", "minimum_period"])
+@pytest.mark.parametrize(
+    "recipe", [PatternRecipe("or", 2, 1, 3), PostRecipe("xor", "even power", 1, 0, 0), PrePowerStudyRecipe(64, 13, 7)]
+)
+def test_centered_fields_match_saved_coordinates_and_preserve_statistics(recipe, sampling, policy):
+    try:
+        corner = sample_field(recipe, 8, sampling, m_selection=policy)
+    except PeriodTargetError:
+        with pytest.raises(PeriodTargetError):
+            sample_field(recipe, 8, sampling, m_selection=policy, centered=True)
+        return
+    field = sample_field(recipe, 8, sampling, m_selection=policy, centered=True)
+    row_offset = 1 if sampling == "checkerboard_opposite" else 0
+    assert field.spec == {
+        **corner.spec,
+        "origin": [-4, -4 + row_offset],
+        "color_anchor": int(field.result.values[4, 4]),
+    }
+    assert np.array_equal(field.result.values, evaluate(field.spec).values)
+    assert np.array_equal(field.result.values, np.roll(corner.result.values, (4 - row_offset, 4), axis=(0, 1)))
+    assert field.zero_fraction == corner.zero_fraction
+    assert field.repeat_shape == corner.repeat_shape
+    assert field.distinct_values == corner.distinct_values
+
+
+@pytest.mark.parametrize(
+    "sampling,nearest",
+    [
+        ("full", (0, 0)),
+        ("checkerboard_same", (0, 0)),
+        ("checkerboard_opposite", (1, 0)),
+        ("doubled_checkerboard_opposite", (1, 0)),
+        ("even_even", (0, 0)),
+        ("even_odd", (0, 1)),
+        ("odd_even", (1, 0)),
+        ("odd_odd", (1, 1)),
+    ],
+)
+def test_centered_sampling_places_original_origin_near_middle(sampling, nearest):
+    origin = (-4, -3) if sampling == "checkerboard_opposite" else (-4, -4)
+    x, y = coordinates((8, 8), sampling, origin, checkerboard_axis="vertical")
+    assert (x[4, 4], y[4, 4]) == nearest
+    full_side = 8 if sampling in ("full", "doubled_checkerboard_opposite") else 16
+    assert x.min() >= -full_side // 2
+    assert y.min() >= -full_side // 2
+    # Doubling may read the next periodic neighbour at the right boundary.
+    assert (
+        x.max() <= full_side // 2
+        if sampling in ("doubled_checkerboard_opposite", "checkerboard_opposite")
+        else x.max() < full_side // 2
+    )
+    assert y.max() < full_side // 2
+    for additional in SAMPLINGS:
+        sx, sy = resample_view(x, additional), resample_view(y, additional)
+        distance = sx * sx + sy * sy
+        center = distance.shape[0] // 2
+        nearby = distance[max(0, center - 1) : center + 2, max(0, center - 1) : center + 2]
+        assert nearby.min() == distance.min()
+
+
+@pytest.mark.parametrize("size", [8, 32, 128])
+def test_centered_opposite_checkerboards_align_center_values_and_colors(size, tmp_path):
+    recipe = PrePowerStudyRecipe(2, 0, 0, "xor")
+    checker, doubled = (
+        sample_field(recipe, size, sampling, centered=True)
+        for sampling in ("checkerboard_opposite", "doubled_checkerboard_opposite")
+    )
+    values = checker.result.values
+    assert np.array_equal(values, values[::-1])
+    assert np.array_equal(values, values[:, ::-1])
+    center = slice(size // 2 - 1, size // 2 + 1)
+    assert np.array_equal(values[center, center], doubled.result.values[center, center])
+    assert checker.spec["color_anchor"] == doubled.spec["color_anchor"] == 1
+    palettes = []
+    for field in (checker, doubled):
+        palette = indexed_order_palette(field.values, field.spec["color"], anchor=field.spec["color_anchor"])
+        colors = palette[field.values.indices][..., :3]
+        palettes.append(colors[center, center])
+        path = tmp_path / (field.spec["sampling"] + ".png")
+        export(evaluate(field.spec), path, mode="order")
+        with Image.open(path) as image:
+            assert np.array_equal(np.asarray(image), colors)
+    assert np.array_equal(*palettes)
