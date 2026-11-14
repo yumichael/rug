@@ -65,7 +65,10 @@ def test_gallery_displays_native_png_and_updates_it_when_paging_or_filtering():
         assert isinstance(native, NotebookImage)
         assert native.data == bytes(preview.value)
         assert publish.call_args_list[2].kwargs == {"display_id": True}
-    controls.children[-2].children[2].value = 2
+    assert "value" not in preview.get_state()
+    with patch.object(preview.comm, "send") as widget_send:
+        controls.children[-2].children[2].value = 2
+        widget_send.assert_not_called()
     assert len(updates) == 1
     assert isinstance(updates[-1], NotebookImage)
     assert updates[-1].data == bytes(preview.value) != native.data
@@ -250,7 +253,7 @@ def test_pre_power_gallery_selects_other_combiners():
     assert len(combiners.children[1:]) == 7
     assert len(specs) == 1
     assert next(iter(specs.values()))["combine"] == "clmul"
-    assert "Ready" in gallery.children[0].children[-1].value
+    assert "Preview prepared" in gallery.children[0].children[-1].value
     dimension = gallery.children[0].children[-3].children[0]
     assert dimension.options[0][0] == "Field size"
 
@@ -317,13 +320,13 @@ def test_gallery_reports_busy_through_calculation_and_rendering_even_when_previe
     minimum = _m_choices(gallery)["Minimum period"]
     original_preview = bytes(preview.value)
     original_specs = dict(specs)
-    assert "✓ Ready · Update #1" in activity.value
+    assert "✓ Preview prepared · Update #1" in activity.value
     transitions = []
     activity.observe(lambda change: transitions.append(change["new"]), names="value")
 
     def check_busy(function):
         def checked(*args, **kwargs):
-            assert "Calculating and rendering… · Update #2" in activity.value
+            assert "Preparing preview… · Update #2" in activity.value
             assert "<progress " in activity.value
             assert bytes(preview.value) == original_preview
             return function(*args, **kwargs)
@@ -338,7 +341,7 @@ def test_gallery_reports_busy_through_calculation_and_rendering_even_when_previe
         assert calculate.call_count == render.call_count == 1
     assert len(specs) == 2
     assert bytes(preview.value) != original_preview
-    assert "✓ Ready · Update #2" in activity.value
+    assert "✓ Preview prepared · Update #2" in activity.value
     assert "Preview updated." in activity.value
     assert " s</span>" in activity.value
     assert activity.layout.height == activity.layout.min_height == activity.layout.max_height == "30px"
@@ -351,7 +354,7 @@ def test_gallery_reports_busy_through_calculation_and_rendering_even_when_previe
         minimum.value = False
         calculate.assert_not_called()
         render.assert_not_called()
-    assert "✓ Ready · Update #3" in activity.value
+    assert "✓ Preview prepared · Update #3" in activity.value
     assert specs == original_specs
     assert bytes(preview.value) == original_preview
     controls.children[-2].children[3].value = 3
@@ -374,7 +377,7 @@ def test_gallery_status_for_empty_and_oversized_pages():
     assert not specs and not preview.value
     assert preview.layout.display == "none"
     selected_size.value = True
-    assert "✓ Ready · Update #3" in activity.value
+    assert "✓ Preview prepared · Update #3" in activity.value
     assert specs and preview.value
 
     catalogue = RecipeCatalogue(
@@ -400,12 +403,12 @@ def test_gallery_status_for_failed_or_interrupted_updates_and_recovery(failure):
         minimum.value = True
     assert ("Update interrupted" if isinstance(failure, KeyboardInterrupt) else "Update failed") in activity.value
     assert "<progress " not in activity.value
-    assert "✓ Ready" not in activity.value
+    assert "✓ Preview prepared" not in activity.value
     assert bytes(preview.value) == original_preview
     if isinstance(failure, RuntimeError):
         assert "RuntimeError: &lt;bad&gt;" in activity.value
     minimum.value = False
-    assert "✓ Ready · Update #3" in activity.value
+    assert "✓ Preview prepared · Update #3" in activity.value
 
 
 def test_notebook_autoreload_resolves_new_helper_exception(tmp_path, monkeypatch):

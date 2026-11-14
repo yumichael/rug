@@ -13,6 +13,7 @@ import ipywidgets as widgets
 from IPython import get_ipython
 from IPython.display import HTML, DisplayHandle, display
 from IPython.display import Image as NotebookImage
+from ipywidgets.widgets.trait_types import CByteMemoryView
 from ipywidgets.widgets.widget_bool import CheckboxStyle
 from PIL import Image
 
@@ -33,6 +34,15 @@ def _schedule_stage(callback):
         callback()
     else:
         loop.add_callback(callback)
+
+
+class _NativePreviewImage(widgets.Image):
+    """Keep PNG data in Python; _GalleryView publishes the native output.
+
+    Syncing this unused widget image would transmit each PNG a second time.
+    """
+
+    value = CByteMemoryView().tag(sync=False)
 
 
 class _GalleryView(widgets.VBox):
@@ -198,8 +208,8 @@ def recipe_gallery(
 
     def set_activity(state, detail, elapsed=None):
         colors = {
-            "busy": ("#fff3cd", "#a66a00", "⏳ Calculating and rendering…"),
-            "ready": ("#e8f5e9", "#176b35", "✓ Ready"),
+            "busy": ("#fff3cd", "#a66a00", "⏳ Preparing preview…"),
+            "ready": ("#e8f5e9", "#176b35", "✓ Preview prepared"),
             "waiting": ("#eef2f6", "#475569", "Choose a selection"),
             "warning": ("#fff3cd", "#a66a00", "Page too large"),
             "error": ("#fee2e2", "#a61b1b", "Update failed"),
@@ -208,7 +218,7 @@ def recipe_gallery(
         background, accent, label = colors[state]
         heading = f"{label} · Update #{update_number}"
         if elapsed is not None:
-            heading += f" · {elapsed:.2f} s"
+            heading += f" · Python: {elapsed:.2f} s"
         progress = (
             '<progress aria-label="Gallery update in progress" '
             'style="width:80px;height:8px;flex:0 0 80px;margin:0"></progress>'
@@ -269,7 +279,7 @@ def recipe_gallery(
     back_button = widgets.Button(description="Back", layout=widgets.Layout(width="auto"))
     next_button = widgets.Button(description="Next", layout=widgets.Layout(width="auto"))
     page_status = widgets.HTML()
-    page_preview = widgets.Image(format="png", layout=widgets.Layout(max_width="100%", align_self="flex-start"))
+    page_preview = _NativePreviewImage(format="png", layout=widgets.Layout(max_width="100%", align_self="flex-start"))
 
     dimension_control = widgets.Dropdown(
         description="Dimension",

@@ -32,7 +32,7 @@ from ruglab.studio import *
 #
 # The pager remembers the first plot of the last page you navigated to. Filters, dimension order, and layout changes keep that plot as the anchor. If a filter hides it, the pager shows the next matching entry or the last available page.
 #
-# The compact status bar below the paging controls and immediately above the preview keeps the same height during updates. Hover to read any clipped details. It turns amber with **Calculating and rendering…** and an animated progress bar while updating. The previous preview can remain visible until it finishes. Green **Ready** shows the update number and elapsed time; **Preview unchanged** confirms that the update finished with the same picture. Empty selections, oversized pages, failures, and interruptions show their own status.
+# The compact status bar below the paging controls and immediately above the preview keeps the same height during updates. Hover to read any clipped details. Amber **Preparing preview…** shows that Python is calculating or encoding the preview. Green **Preview prepared** shows the update number and **Python** preparation time. The timer measures Python preparation rather than frontend delivery and display. **Preview unchanged** confirms that Python produced the same picture. Empty selections, oversized pages, failures, and interruptions show their own status.
 #
 # Use the wrap control to set how many entries fit per row or column. Set it to 0 for a single block.
 #
