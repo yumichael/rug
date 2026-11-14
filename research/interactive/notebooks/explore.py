@@ -114,7 +114,7 @@ xor_square_base = {
     "sampling": "checkerboard_opposite",
     "checkerboard_axis": "vertical",
     "post": [["pow", 2]],
-    "color": "cmr.fall",
+    "color": "cmr.emergency",
 }
 xor_square_minimum = 2 * xor_square_base["K"]
 xor_square_inputs = np.arange(1, xor_square_base["K"], 2, dtype=object)
