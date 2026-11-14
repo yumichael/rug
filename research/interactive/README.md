@@ -2,6 +2,8 @@
 
 Open `notebooks/explore.ipynb` with the **Rug research (Python 3.15)** kernel to start experimenting. Open `notebooks/reference.ipynb` for the worked examples and page controls. The versioned sources are [explore.py](notebooks/explore.py) and [reference.py](notebooks/reference.py), and their local `.ipynb` partners retain outputs and are ignored. Numerical and display logic lives in [ruglab](ruglab/).
 
+Write mathematical Markdown reports according to the repository’s [LaTeX policy](../../LATEX.md), including its compatibility fixtures and validation workflow.
+
 ## Setup and launch
 
 This is an optional environment for Python research. The repository’s general app development setup does not install it.

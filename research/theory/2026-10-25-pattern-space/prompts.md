@@ -98,13 +98,7 @@ Before proceeding, can you also think of extensions to my request that might giv
    > Beyond identifying which patterns happen to be symmetric, ask whether users can request horizontal and vertical reflection symmetry, diagonal symmetry, or quarter-turn symmetry and then sample uniformly within that class. Include exceptional parameter choices with extra symmetry. This connects particularly well to your earlier observation about XOR patterns having directional “threads.”
 > 
 > 4. **Study AND/OR duality and complemented combiners.**  
-   > At a fixed bit width, De Morgan’s identity gives
-   > $$
-   > a\mathbin{\mathrm{OR}}b
-   > =
-   > \neg\bigl((\neg a)\mathbin{\mathrm{AND}}(\neg b)\bigr).
-   > $$
-   > The interesting question is when those complements can be absorbed into coordinate changes, sampling phases, pre-operations, or post-operations. That could expose hidden overlap between AND and OR families. It would also tell us whether NAND, NOR, and XNOR offer additional structures worth exposing.
+   > At a fixed bit width, De Morgan’s identity gives $a\mathbin{\mathrm{OR}}b=\neg\bigl((\neg a)\mathbin{\mathrm{AND}}(\neg b)\bigr)$. The interesting question is when those complements can be absorbed into coordinate changes, sampling phases, pre-operations, or post-operations. That could expose hidden overlap between AND and OR families. It would also tell us whether NAND, NOR, and XNOR offer additional structures worth exposing.
 > 
 > 5. **Investigate consistency across repetition sizes.**  
    > Your stored pattern variation will be reused when the period changes. Uniformity at each period does not by itself make that change coherent. I’d ask whether canonical classes at a larger period reduce naturally to classes at smaller periods, and whether a sampler can preserve that relationship. Ideally, increasing the period would reveal additional structure while retaining a meaningful connection to the previous pattern.

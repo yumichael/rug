@@ -343,11 +343,7 @@ is a complete, nonredundant even-class index.
 Recover a productive representative as follows:
 
 $$
-(v,u)=
-\begin{cases}
-(c-4,1),&k=0,\\
-(1+\nu_2(k),\ k/2^{\nu_2(k)}),&k>0.
-\end{cases}
+(v,u)=(c-4,1)\quad(k=0),\qquad (v,u)=(1+\nu_2(k),\ k/2^{\nu_2(k)})\quad(k>0).
 $$
 
 Then use $p=2^vu$ and $M=C2^v$. Choosing $k$ uniformly is simpler than separately sampling weighted $v$ and canonical $u$.
@@ -367,13 +363,10 @@ The primitive even table projects by reduction modulo its smaller primitive deno
 For both parities, draw an independent tag $h$ uniformly from five choices and a uniform binary index $k\bmod W$:
 
 $$
-\begin{cases}
-h\in\{0,1,2,3\}:&t=4k+h,\quad u=2t+1,\quad v=0,\\
-h=4:&\text{use even index }k.
-\end{cases}
+t=4k+h,\quad u=2t+1,\quad v=0\qquad(h\in\{0,1,2,3\}).
 $$
 
-This samples all $5W$ affine classes uniformly. It also preserves natural class reduction when the period changes. The five-way tag requires unbiased bounded sampling; the $W$-way index is a power-of-two reduction.
+For $h=4$, use even index $k$. This samples all $5W$ affine classes uniformly. It also preserves natural class reduction when the period changes. The five-way tag requires unbiased bounded sampling; the $W$-way index is a power-of-two reduction.
 
 For the canonical target period $R$, set $C=2R$, so $W=R/16$. These formulas apply for $R\ge16$. Smaller periods require their own finite tables.
 
@@ -418,7 +411,7 @@ otherwise put $L=1$. All even nonzero inputs vanish after exponentiation precise
 For odd values put
 
 $$
-T=\mathop{\mathrm{lcm}}_{z\in S_Z,\ z\text{ odd}}\operatorname{ord}_{2^m}(z),
+T=\mathop{\mathrm{lcm}}_{z\in S_Z,\ z\text{ odd}}\mathrm{ord}_{2^m}(z),
 $$
 
 using $T=1$ for an empty set. This is a power of two.
@@ -528,11 +521,13 @@ $$
 If both valuations equal $t$, write $a=2^t a_0$, $b=2^t b_0$ with odd $a_0,b_0$. Then
 
 $$
-\nu_2(a^p-b^p)=
-\begin{cases}
-pt+\nu_2(a_0-b_0),&p\text{ odd},\\
-pt+\nu_2(a_0-b_0)+\nu_2(a_0+b_0)+\nu_2(p)-1,&p\text{ even}.
-\end{cases}
+\nu_2(a^p-b^p)=pt+\nu_2(a_0-b_0)\qquad(p\text{ odd}).
+$$
+
+For even $p$,
+
+$$
+\nu_2(a^p-b^p)=pt+\nu_2(a_0-b_0)+\nu_2(a_0+b_0)+\nu_2(p)-1.
 $$
 
 These formulas provide exact shift depths for any positive pre-power and any combiner. They account for even-input annihilation directly. For a general polynomial, evaluate differences with exact integers or capped modular valuations; precision can stop once the configured limit is exceeded.
@@ -636,8 +631,7 @@ Historical diagonal coordinates with even pre-power have their square center at 
 Write a sampling rule as
 
 $$
-\begin{pmatrix}x\\y\end{pmatrix}
-=B\begin{pmatrix}i\\j\end{pmatrix}+e,
+(x,y)^{\mathsf T}=B(i,j)^{\mathsf T}+e,
 $$
 
 where $B$ is a nonsingular integer matrix. The displayed material is $F(B(i,j)+e)$.
@@ -725,12 +719,13 @@ Consider $f_q(x)=x^q\bmod2^c$ for $q\ge1$. If $q$ is odd, its least additive per
 If $q$ is even, write $w=\nu_2(q)$. Its least additive period is
 
 $$
-\boxed{
-L_q(c)=
-\begin{cases}
-2,&c\le\min(q,w+2),\\
-2^{\max(2,c-w)},&c>\min(q,w+2).
-\end{cases}}
+\boxed{L_q(c)=2\quad(c\le\min(q,w+2)).}
+$$
+
+For $c>\min(q,w+2)$,
+
+$$
+\boxed{L_q(c)=2^{\max(2,c-w)}.}
 $$
 
 **Proof.** A period one is impossible because $f_q(0)\ne f_q(1)$. For a shift by two, even $x$ give difference valuation exactly $q$, while odd $x$ have minimum difference valuation $w+2$, attained at $x=1$. Hence two is a period exactly under the first condition.
@@ -788,7 +783,7 @@ Squared-pre XOR/OR have the guaranteed congruence $Z\equiv1\pmod4$; fourth-pre X
 For historical diagonal coordinates and $P(x)=x^q$, define
 
 $$
-d_q=\begin{cases}4,&q=2,\\q,&q\ne2.\end{cases}
+d_q=4\quad(q=2),\qquad d_q=q\quad(q\ne2).
 $$
 
 If $c\le d_q$, the entire diagonal AND motif is zero. If $c>d_q$, the minimum valuation of a nonzero combined value is exactly $d_q$.
@@ -924,7 +919,7 @@ Form an integer evaluation matrix $E$ with rows indexed by $z\in S_Z$ and column
 The possible post-value tables are exactly
 
 $$
-\boxed{\operatorname{im}(E:(\mathbb Z/2^m\mathbb Z)^d\to(\mathbb Z/2^m\mathbb Z)^{|S_Z|}).}
+\boxed{\mathrm{im}(E:(\mathbb Z/2^m\mathbb Z)^d\to(\mathbb Z/2^m\mathbb Z)^{|S_Z|}).}
 $$
 
 If integer Smith normal form diagonalizes $E$ with nonzero diagonal entries $d_i$, the number of distinct tables is

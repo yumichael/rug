@@ -10,6 +10,7 @@ The web application lives in `index.html`. See [Documentation](README.md#documen
 
 - Follow [development setup](README.md#development), including the [external dependency workflow](README.md#external-dependencies), before installing or changing tooling.
 - Follow the [Markdown conventions and validation workflow](README.md#markdown). Resolve checker findings without weakening the ruleset to hide violations.
+- Follow the [LaTeX writing policy](LATEX.md) for mathematical Markdown and its compatibility checks.
 - Prefer `tau` instead of `pi` in mathematical and computing work.
 - Verify changed behavior with focused checks and report any validation you could not complete.
 

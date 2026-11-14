@@ -11,7 +11,7 @@ Here pseudo-square symmetry means the complement symmetry $H(2N-z) \equiv H(z)\p
 Write $\nu_2(0) = \infty$. For odd $0 < z < N$, let $D(z) = H(z+N)-H(z)$. Define
 
 $$
-d_0=\min_{\substack{0<z<N/2\\z\text{ odd}}}\nu_2(D(z)),\qquad d_1=\min_{\substack{N/2<z<N\\z\text{ odd}}}\nu_2(D(z)).
+d_0=\min_{\substack{0<z<N/2,\,z\text{ odd}}}\nu_2(D(z)),\qquad d_1=\min_{\substack{N/2<z<N,\,z\text{ odd}}}\nu_2(D(z)).
 $$
 
 A horizontal or vertical half-period displacement toggles the raw input's top bit on one of these two quarters. Consequently the target periods are attainable if and only if both depths are finite, and then
@@ -25,7 +25,7 @@ The displayed $N$-shifts preserve the raw XOR table exactly, so they remain peri
 Define the reflection depth
 
 $$
-s=\min_{\substack{0<z<2N\\z\text{ odd}}}\nu_2\bigl(H(2N-z)-H(z)\bigr).
+s=\min_{\substack{0<z<2N,\,z\text{ odd}}}\nu_2\bigl(H(2N-z)-H(z)\bigr).
 $$
 
 The exact simultaneous criterion is

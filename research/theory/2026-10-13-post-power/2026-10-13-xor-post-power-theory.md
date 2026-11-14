@@ -18,7 +18,7 @@ The resulting theory separates naturally into three parts:
 
 1. **$C/M$ theory:** how the coordinate domain and modulus determine the surviving spatial period;
 2. **odd-part theory:** exact repetitions as the odd factor $u$ of the exponent changes;
-3. **valuation theory:** what genuinely new structure appears as $v$ increases, and where the high-$v$ tail becomes redundant.
+3. **valuation theory:** what genuinely new structure appears as $v$ increases, and where the high $v$ tail becomes redundant.
 
 This document focuses only on the **diagonal XOR combiner**. OR-family combiners are intentionally deferred to a later addendum.
 
@@ -194,7 +194,7 @@ These are not equivalent statements.
 
 The odd-part theorem below gives exact equality of the raw post-power values at fixed $v$.
 
-The high-$v$ valuation theory eventually gives equality only of the **spatial coefficient motif** unless one additionally compensates for a changing global channel phase.
+The high $v$ valuation theory eventually gives equality only of the **spatial coefficient motif** unless one additionally compensates for a changing global channel phase.
 
 This distinction is essential when deciding which repetitions should count as redundant for a generator.
 
@@ -996,7 +996,7 @@ $$
 \boxed{ \frac{z^p\bmod M}{M} \equiv \frac{A_{v,u}(z)}{C} + \frac1{C2^v} \pmod1. }
 $$
 
-This decomposition explains nearly all of the high-$v$ behavior.
+This decomposition explains nearly all of the high $v$ behavior.
 
 The term
 
@@ -1160,7 +1160,7 @@ $$
 c=8.
 $$
 
-So fixed-$u$ stabilization begins at
+So fixed $u$ stabilization begins at
 
 $$
 v=5.
@@ -1246,13 +1246,13 @@ $$
 
 ## 6. Stronger valuation result: the whole high-_v_ tail repeats
 
-Fixed-$u$ stabilization is not yet the strongest useful statement for a generator.
+Fixed $u$ stabilization is not yet the strongest useful statement for a generator.
 
 A generator samples both $v$ and $u$. So the relevant question is:
 
 > At what point does an entire $v$-row stop adding any spatial motifs that were not already available at a smaller $v$ with a different $u$?
 
-For $C\ge32$, the answer is one level earlier than fixed-$u$ stabilization.
+For $C\ge32$, the answer is one level earlier than fixed $u$ stabilization.
 
 ---
 
@@ -1284,7 +1284,7 @@ $$
 v=v_0=c-4.
 $$
 
-Because fixed-$u$ stabilization begins at $v=c-3$, every later level has the same set as well.
+Because fixed $u$ stabilization begins at $v=c-3$, every later level has the same set as well.
 
 Therefore
 
@@ -1360,7 +1360,7 @@ $$
 A_{v_0+1,1} \equiv \left(1+\frac C8\right)A \pmod C.
 $$
 
-At both $v_0$ and $v_0+1$, the high-$v$ linearization theorem applies. Hence
+At both $v_0$ and $v_0+1$, the high $v$ linearization theorem applies. Hence
 
 $$
 A_{v_0+1,u} \equiv u\left(1+\frac C8\right)A \pmod C.
@@ -1569,7 +1569,7 @@ $$
 \boxed{ v=r-2. }
 $$
 
-The fixed-$u$ sequence itself stabilizes starting at that same first redundant row,
+The fixed $u$ sequence itself stabilizes starting at that same first redundant row,
 
 $$
 v=r-2.
@@ -1715,11 +1715,11 @@ Large numerical $p$ is not itself a measure of pattern complexity.
 
 The natural general rule is:
 
-> If valuation $v$ contributes $n_v$ distinct pattern classes, then sampling every pattern uniformly requires
->
-> $$
-> P(v)=\frac{n_v}{\sum_j n_j}.
-> $$
+If valuation $v$ contributes $n_v$ distinct pattern classes, then sampling every pattern uniformly requires
+
+$$
+P(v)=\frac{n_v}{\sum_j n_j}.
+$$
 
 Then, conditional on $v$, sample uniformly among its distinct $u$-classes.
 
@@ -1735,7 +1735,7 @@ $$
 0\le v\le c-4,
 $$
 
-and the high-$v$ tail contributes no new spatial classes.
+and the high $v$ tail contributes no new spatial classes.
 
 Therefore:
 
@@ -1775,7 +1775,7 @@ uniformly instead.
 
 ### Odd versus even probability
 
-If odd and even exponents are both included and the goal is uniformity over all spatial exponent motifs, then $v=0$ should receive the same probability as each individual productive even-$v$ row.
+If odd and even exponents are both included and the goal is uniformity over all spatial exponent motifs, then $v=0$ should receive the same probability as each individual productive even $v$ row.
 
 There are
 
@@ -1851,13 +1851,13 @@ for the covered range.
 
 This distribution is very different from uniform sampling of distinct spatial exponent motifs, where every productive $v$-row has the same number of classes.
 
-The old distribution may still be aesthetically desirable. The point is that its low-$v$ bias is a **generator-design choice**, not something forced by the mathematics.
+The old distribution may still be aesthetically desirable. The point is that its low $v$ bias is a **generator-design choice**, not something forced by the mathematics.
 
 ---
 
 ## 13. Redundancy in the historical exponent range
 
-The original research quantified how many exact fixed-$v$ post-power/modulus cases the old range revisits.
+The original research quantified how many exact fixed $v$ post-power/modulus cases the old range revisits.
 
 When
 
@@ -1895,9 +1895,9 @@ Examples:
 |     512 |              8,191 |                64 |                         511 |
 |   2,048 |            131,071 |               256 |                       2,559 |
 
-This count is **not** the same as the spatial-$A$ count derived later in this report.
+This count is **not** the same as the spatial $A$ count derived later in this report.
 
-Different high-$v$ states can have different moduli and different constant phases even when their spatial $A$-motifs have already repeated.
+Different high $v$ states can have different moduli and different constant phases even when their spatial $A$-motifs have already repeated.
 
 For example, at
 
@@ -1923,7 +1923,7 @@ $$
 v=c-3.
 $$
 
-Under the old even-$q$ sampler, the exact probability mass in
+Under the old even $q$ sampler, the exact probability mass in
 
 $$
 v\ge c-3
@@ -1947,7 +1947,7 @@ $$
 R=128
 $$
 
-the high-$v$ tail receives roughly
+the high $v$ tail receives roughly
 
 $$
 6.25\%
@@ -2064,10 +2064,10 @@ This gives:
 
 - exact axis period $R$;
 - no duplicate odd-part classes;
-- no spatially redundant high-$v$ levels;
+- no spatially redundant high $v$ levels;
 - equal probability for every canonical spatial exponent motif.
 
-If preserving the visual statistics of the historical generator is more important than uniformity, step 2 can instead use an explicit low-$v$-biased distribution.
+If preserving the visual statistics of the historical generator is more important than uniformity, step 2 can instead use an explicit low $v$-biased distribution.
 
 ---
 
@@ -2129,9 +2129,9 @@ For XOR, it directly checked or enumerated:
 
 - the exact odd-part exponent cycle;
 - canonical exponent reductions;
-- fixed-$u$ coefficient stabilization;
+- fixed $u$ coefficient stabilization;
 - sharpness of the stabilization threshold;
-- high-$v$ linearization in $u$;
+- high $v$ linearization in $u$;
 - exact raw odd-input tables for domains $8$ through $128$;
 - inherited exponent-class counts through larger domains;
 - complete spatial axis periods across sampled domains, valuations, and odd parts;
@@ -2143,7 +2143,7 @@ The later results in this document add proofs for:
 
 - the general $C/M$ period formula;
 - exact motif independence from $C$ once $C \ge K$;
-- the setwise collapse of all high-$v$ rows onto the last productive row;
+- the setwise collapse of all high $v$ rows onto the last productive row;
 - pairwise distinctness of all productive valuation rows;
 - the resulting finite count of spatial XOR exponent motifs;
 - the uniform-sampling consequences.
@@ -2299,7 +2299,7 @@ For XOR:
 - $C$ and $M$ determine how much spatial period survives;
 - $u$ selects one class from a finite exact cycle;
 - $v$ selects a hierarchy of spatial arithmetic families, but only up to a finite cutoff for any fixed period;
-- the remaining high-$v$ changes are constant phase refinements rather than new spatial coefficient motifs.
+- the remaining high $v$ changes are constant phase refinements rather than new spatial coefficient motifs.
 
 This suggests a future generator in which period, valuation level, odd-part class, and channel phase are explicit independent concepts rather than accidental consequences of drawing a large integer $p$.
 

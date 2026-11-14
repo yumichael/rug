@@ -176,7 +176,7 @@ For scale, at a requested period of 512, squaring and sixth powering both have $
 There is also a closed pre-modulus rule on the opposite-parity checkerboard for AND when $P(x)=x^q$ itself. Let $q$ be even and $w=\nu_2(q)$. The bit positions that can survive the AND of an odd and an even pre-powered operand are exactly
 
 $$
-J_q=\begin{cases}\{j:j\ge4\},&q=2,\\\{q\}\cup\{j:j\ge q+w+2\},&q\ge4.\end{cases}
+J_2=\{j:j\ge4\},\qquad J_q=\{q\}\cup\{j:j\ge q+w+2\}\quad(q\ge4).
 $$
 
 At $K=2^k$, let $j$ be the largest member of $J_q$ below $k$. If there is no such member, the basic AND table is zero. Otherwise its two exact displayed axis periods are
@@ -191,7 +191,7 @@ $$
 \boxed{K_{\min}=2^{j_*+1}.}
 $$
 
-**Bit-support proof.** Powers of odd inputs have bit zero set, bits one through $w+1$ zero, and can set every individual higher bit. For the last assertion, changing an odd input by $2^{j-w}$ toggles bit $j\ge w+2$ while preserving lower bits, by the lifting formula. An arbitrary integer input is an odd input times a power of two; its power shifts those possible bits by a multiple of $q$. For $q\ge4$, the possible bit positions of an arbitrary $q$th power are therefore $\{0\}\cup\{j\ge w+2\}$. For $q=2$ they are $\{0\}\cup\{j\ge2\}$. Restricting to even inputs shifts these sets by $q$. Intersect with the odd-input bit positions to obtain $J_q$.
+**Bit-support proof.** Powers of odd inputs have bit zero set, bits one through $w+1$ zero, and can set every individual higher bit. For the last assertion, changing an odd input by $2^{j-w}$ toggles bit $j\ge w+2$ while preserving lower bits, by the lifting formula. An arbitrary integer input is an odd input times a power of two; its power shifts those possible bits by a multiple of $q$. For $q\ge4$, the possible bit positions of an arbitrary power with exponent $q$ are therefore $\{0\}\cup\{j\ge w+2\}$. For $q=2$ they are $\{0\}\cup\{j\ge2\}$. Restricting to even inputs shifts these sets by $q$. Intersect with the odd-input bit positions to obtain $J_q$.
 
 **Period proof.** All AND bits above $j$ are identically zero. On the low $j+1$ bits, the odd branch has physical period $2^{j+1-w}$ and the even branch has a period dividing its half. A full shift by that period preserves the output. Choose an even operand with bit $j$ set. A half-period shift leaves that operand's low bits unchanged and toggles bit $j$ of the odd branch; both grid axes permit such a witness. Hence the half-period is excluded and the displayed period formula is exact.
 
@@ -242,13 +242,13 @@ For a sample map $t\mapsto Bt+e$, a displayed shift $h$ adds $Bh$ to the operand
 For $P(x)=x^q$, even $q$, and $w=\nu_2(q)$, let $L_q(h)$ be the least additive period of $x^q\bmod2^h$, taking $L_q(h)=1$ for $h\le0$. Its explicit formula is
 
 $$
-L_q(h)=\begin{cases}2,&0<h\le\min(q,w+2),\\2^{\max(2,h-w)},&h>\min(q,w+2).\end{cases}
+L_q(h)=2\quad(0<h\le\min(q,w+2)),\qquad L_q(h)=2^{\max(2,h-w)}\quad(h>\min(q,w+2)).
 $$
 
 The displayed periods of the separate branches are
 
 $$
-E=L_q(k-q),\qquad O=\begin{cases}1,&k\le w+2,\\2^{k-w-1},&k>w+2.\end{cases}
+E=L_q(k-q),\qquad O=1\quad(k\le w+2),\qquad O=2^{k-w-1}\quad(k>w+2).
 $$
 
 The even branch is $2^q i^q\bmod K$, proving the first formula. For the odd branch, a shift of one in its displayed index changes odd inputs by two, with minimum difference depth $w+2$. Displayed shifts $2^h$, $h\ge1$, change them by $2^{h+1}$, with minimum depth $w+h+1$. This proves the second formula. The shared family in Section 3 retains these same branch periods.
@@ -300,7 +300,7 @@ $$
 
 These falling-factorial coordinates represent each function exactly once. Evaluating successively at $x=0,1,\ldots$ proves uniqueness, while divisibility of $(x)_j$ by $j!$ proves the coefficient reductions. Functional evenness and requested basic-combiner periods are subsequent admissibility conditions. Uniformly choosing these coefficients samples pre-functions, not necessarily resulting numerical patterns uniformly.
 
-A fixed-$K$ classification does not classify all pre-powers at their individually selected minimum moduli. For example, the MULT/CLMUL minimum in Section 3 grows with $q$ even if $\nu_2(q)$ stays fixed. One cannot impose one finite pre-power list across changing $K$ without a separate proof.
+A fixed $K$ classification does not classify all pre-powers at their individually selected minimum moduli. For example, the MULT/CLMUL minimum in Section 3 grows with $q$ even if $\nu_2(q)$ stays fixed. One cannot impose one finite pre-power list across changing $K$ without a separate proof.
 
 ### 5.2 All post-powers at a fixed final modulus
 

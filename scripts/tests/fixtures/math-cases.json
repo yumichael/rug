@@ -1,0 +1,347 @@
+{
+  "evidence": {
+    "date": "2026-11-12",
+    "github": "public rendered files, visual inspection",
+    "vscode": "1.142.0 bundled parser/plugin generated HTML with KaTeX 0.16.21",
+    "source": "https://github.com/yumichael/markdown-math-rendering-probe/tree/d4987cdb795ca743fd60dc50eac41bd40aa019ed",
+    "scope": "Observed cases minimize the corresponding probe layouts. Convention, regression, and syntax cases are local policy tests, not new platform observations."
+  },
+  "cases": [
+    {
+      "name": "prose",
+      "source": "Take $x^2+\\alpha$.",
+      "rules": [],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "unordered and nested lists",
+      "source": "- Take $x^2$.\n  - Take $y^2$.\n",
+      "rules": [],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "ordered list",
+      "source": "1. Take $x^2$.\n",
+      "rules": [],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "table header and cell",
+      "source": "| $x^2$ | Condition |\n| --- | --- |\n| $\\lvert x\\rvert$ | $a\\mid b$ |\n",
+      "rules": [],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "blockquote",
+      "source": "> Take $x^2$.\n",
+      "rules": [],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "bold",
+      "source": "**Take $x^2$.**",
+      "rules": [],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "display",
+      "source": "$$\nx^2+\\alpha\n$$\n",
+      "rules": [],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "roman operator",
+      "source": "$\\mathrm{ord}_{2^m}(z)$",
+      "rules": [],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "math then hyphen",
+      "source": "$H$-word",
+      "rules": [],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "parenthesized math",
+      "source": "($H$), then $N$.",
+      "rules": [],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "hyphen then math",
+      "source": "word-$H$",
+      "rules": [
+        "MATH002"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "hyphens both sides",
+      "source": "pre-$H$-post",
+      "rules": [
+        "MATH002"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "Unicode prefix 0x2010",
+      "source": "word‐$H$",
+      "rules": [
+        "MATH002"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "Unicode prefix 0x2011",
+      "source": "word‑$H$",
+      "rules": [
+        "MATH002"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "Unicode prefix 0x2013",
+      "source": "word–$H$",
+      "rules": [
+        "MATH002"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "Unicode prefix 0x2014",
+      "source": "word—$H$",
+      "rules": [
+        "MATH002"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "Unicode prefix 0x2212",
+      "source": "word−$H$",
+      "rules": [
+        "MATH002"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "italic",
+      "source": "*Take $x^2$.*",
+      "rules": [
+        "MATH006"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "underscore italic",
+      "source": "_Take $x^2$._",
+      "rules": [
+        "MATH006"
+      ],
+      "kind": "regression"
+    },
+    {
+      "name": "list display",
+      "source": "- Item\n\n  $$\n  x^2\n  $$\n",
+      "rules": [
+        "MATH007"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "operatorname",
+      "source": "$\\operatorname{ord}(x)$",
+      "rules": [
+        "MATH003"
+      ],
+      "kind": "observed",
+      "github": "macro rejected",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "matrix row breaks",
+      "source": "$$\n\\begin{pmatrix}a\\\\b\\end{pmatrix}\n$$\n",
+      "rules": [
+        "MATH004"
+      ],
+      "kind": "observed",
+      "github": "row breaks altered",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "parenthesis delimiters",
+      "source": "\\(x^2\\)",
+      "rules": [
+        "MATH001"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "remains literal"
+    },
+    {
+      "name": "bracket delimiters",
+      "source": "\\[x^2\\]",
+      "rules": [
+        "MATH001"
+      ],
+      "kind": "observed",
+      "github": "remains literal",
+      "vscodeGenerated": "remains literal"
+    },
+    {
+      "name": "GitHub alternative",
+      "source": "$`x^2`$",
+      "rules": [
+        "MATH001"
+      ],
+      "kind": "observed",
+      "github": "renders",
+      "vscodeGenerated": "backticks become formula content"
+    },
+    {
+      "name": "raw table pipe",
+      "source": "| Quantity |\n| --- |\n| $a|b$ |\n",
+      "rules": [
+        "MATH001"
+      ],
+      "kind": "observed",
+      "github": "table cell split",
+      "vscodeGenerated": "table cell split"
+    },
+    {
+      "name": "escaped table pipe",
+      "source": "| Quantity |\n| --- |\n| $a\\|b$ |\n",
+      "rules": [
+        "MATH010"
+      ],
+      "kind": "convention"
+    },
+    {
+      "name": "plain heading convention",
+      "source": "## Take $H$",
+      "rules": [
+        "MATH009"
+      ],
+      "kind": "convention",
+      "github": "renders",
+      "vscodeGenerated": "renders"
+    },
+    {
+      "name": "code samples",
+      "source": "Use `$x$`, ``code `$y$` ``, and `\\(z\\)`.\n\n```math-example\n$x$\n```\n",
+      "rules": [],
+      "kind": "regression"
+    },
+    {
+      "name": "escaped literal dollars",
+      "source": "Costs \\$5; take $x^2$.",
+      "rules": [],
+      "kind": "regression"
+    },
+    {
+      "name": "suffix letters",
+      "source": "$M$s",
+      "rules": [
+        "MATH002"
+      ],
+      "kind": "regression"
+    },
+    {
+      "name": "spaces inside dollars",
+      "source": "$ x $",
+      "rules": [
+        "MATH001"
+      ],
+      "kind": "regression"
+    },
+    {
+      "name": "unclosed inline",
+      "source": "$x",
+      "rules": [
+        "MATH001"
+      ],
+      "kind": "regression"
+    },
+    {
+      "name": "multiline inline",
+      "source": "$x\n+y$",
+      "rules": [
+        "MATH001"
+      ],
+      "kind": "regression"
+    },
+    {
+      "name": "same line display",
+      "source": "$$x^2$$",
+      "rules": [
+        "MATH007"
+      ],
+      "kind": "convention"
+    },
+    {
+      "name": "fenced math",
+      "source": "```math\nx^2\n```\n",
+      "rules": [
+        "MATH007"
+      ],
+      "kind": "convention"
+    },
+    {
+      "name": "local syntax error",
+      "source": "$\\unknownRugCommand{x}$",
+      "rules": [
+        "MATH008"
+      ],
+      "kind": "syntax",
+      "fastRules": []
+    },
+    {
+      "name": "plain document",
+      "source": "# A document\n\nPlain text.\n",
+      "rules": [],
+      "kind": "regression"
+    }
+  ],
+  "localReference": {
+    "markdown-it": "14.3.3",
+    "@vscode/markdown-it-katex": "1.1.2",
+    "katex": "0.19.1"
+  }
+}

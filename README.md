@@ -10,15 +10,17 @@ Project documentation lives in [docs/](docs/). The [original kickoff prompt](doc
 
 The [theory research](research/theory/) contains mathematical reports and their verification scripts. The [interactive research workbench](research/interactive/README.md) provides Python pattern tools, a notebook for experiments, and a reference notebook with worked examples.
 
+[LATEX.md](LATEX.md) defines mathematical Markdown conventions, compatibility evidence, and the process for extending the supported syntax.
+
 ## Development
 
-Install Node.js 22 or newer with npm, then run:
+Install Node.js 22.12 or newer with npm, then run:
 
 ```sh
 sh setup-dev.sh
 ```
 
-Setup installs the pinned rumdl npm dependency, records the Node.js executable and installation in local Git configuration as `rug.nodeExecutable` and `rug.nodeModules`, and activates the versioned hook with `git config --local core.hooksPath scripts/hooks`. The hook uses the recorded Node.js executable when committing from an editor. Rerun `sh scripts/setup-rumdl.sh` after moving or replacing that runtime.
+Setup installs the pinned Markdown npm dependencies, records the Node.js executable and installation in local Git configuration as `rug.nodeExecutable` and `rug.nodeModules`, and activates the versioned hook with `git config --local core.hooksPath scripts/hooks`. The hook uses the recorded Node.js executable when committing from an editor. Rerun `sh scripts/setup-rumdl.sh` after moving or replacing that runtime.
 
 ### External dependencies
 
@@ -39,11 +41,11 @@ npm run check:markdown
 npm run format:markdown
 ```
 
-Both commands accept optional paths, such as `npm run check:markdown -- README.md`. Formatting applies permitted fixes; structural issues that require a human decision remain errors. Use `1.` ordered-list markers. Keep mathematical expressions as `$...$` inline math or `$$...$$` display math, and use plain text or Unicode notation in headings for consistent VS Code and GitHub rendering.
+Both commands accept optional paths, such as `npm run check:markdown -- README.md`. Formatting applies permitted fixes; structural issues that require a human decision remain errors. Use `1.` ordered-list markers. Follow the [LaTeX writing policy](LATEX.md) for mathematical Markdown.
 
 VS Code recommends the rumdl extension and uses `node_modules/.bin/rumdl` to format Markdown on save. Files under `.vscode/` use JSONC, allowing comments and trailing commas.
 
-The pre-commit hook checks formatting and lint in added, copied, modified, and renamed Markdown from the Git index. It also checks relative links and heading anchors throughout indexed Markdown, so deleting or renaming a target can fail the gate even when no Markdown is staged. Unstaged edits are left untouched. After formatting, review and stage the intended changes before committing. CI runs `npm run check:markdown` on pull requests and pushes to `main`.
+The pre-commit hook checks formatting and lint in added, copied, modified, and renamed Markdown from the Git index. It also checks relative links and heading anchors throughout indexed Markdown, so deleting or renaming a target can fail the gate even when no Markdown is staged. Known math compatibility problems are checked only in staged Markdown, in the same Node process; full local equation rendering runs in the on-demand command and CI. Unstaged edits are left untouched. After formatting, review and stage the intended changes before committing. CI runs `npm run check:markdown` and the compatibility tests (`npm run test:markdown`) on pull requests and pushes to `main`.
 
 ### Optional Python research tools
 

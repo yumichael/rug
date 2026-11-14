@@ -2,8 +2,9 @@
 // Run the pinned rumdl installation for working-tree and indexed Markdown.
 import { execFileSync, spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
-import { dirname, join, posix } from 'node:path';
+import { dirname, join, posix, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { checkMath } from './math-policy.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 process.chdir(root);
@@ -11,6 +12,18 @@ const maxBuffer = 128 * 1024 * 1024;
 // Match rumdl's native Markdown discovery.
 const markdown = (path) => /\.(md|markdown|mdown|mdwn|mkd|mkdn|mdx|qmd|rmd)$/.test(path);
 const linkRules = new Set(['MD051', 'MD057']);
+const included = (path) => markdown(path) && !path.startsWith('archives/') && !path.split('/').includes('_vendor');
+
+function mathDiagnostics(documents, modules, render) {
+  let failed = false;
+  for (const [path, source] of documents) {
+    for (const issue of checkMath(source, { modules, render })) {
+      console.error(`${path}:${issue.line}: [${issue.rule}] ${issue.message}`);
+      failed = true;
+    }
+  }
+  return failed;
+}
 
 function git(...args) {
   return execFileSync('git', args, { encoding: 'utf8', maxBuffer });
@@ -30,6 +43,7 @@ async function main() {
     const recorded = spawnSync('git', ['config', '--local', '--get', 'rug.nodeModules'], { encoding: 'utf8' });
     modules = recorded.status === 0 ? recorded.stdout.trim() : join(root, 'node_modules');
   }
+  modules = resolve(root, modules);
   const packagePath = join(modules, 'rumdl/package.json');
   const pkg = await readFile(packagePath, 'utf8').then(JSON.parse).catch(() => {
     throw new Error('rumdl is unavailable. Run sh scripts/setup-rumdl.sh, preserving RUG_NPM_PREFIX for an external install.');
@@ -46,6 +60,19 @@ async function main() {
     if (mode === '--write') args.push('--fix');
     args.push(...(paths.length ? paths : ['.']));
     process.exitCode = run(args, { stdio: 'inherit' }).status ?? 1;
+    const selected = paths.map((path) => relative(root, resolve(root, path)));
+    const candidates = names(git('ls-files', '--cached', '--others', '--exclude-standard', '-z'));
+    const documents = new Map();
+    for (const path of new Set(candidates)) {
+      if (included(path) && (!selected.length || selected.some((prefix) => prefix === '.' || path === prefix || path.startsWith(`${prefix}/`)))) {
+        try {
+          documents.set(path, await readFile(join(root, path), 'utf8'));
+        } catch (error) {
+          if (error.code !== 'ENOENT') throw error;
+        }
+      }
+    }
+    if (mathDiagnostics(documents, modules, true)) process.exitCode = 1;
     return;
   }
 
@@ -62,7 +89,7 @@ async function main() {
     }
   }
   const active = new Set([...documents.keys()].filter((path) =>
-    markdown(path) && !path.startsWith('archives/') && !path.split('/').includes('_vendor') && !ignored.has(path),
+    included(path) && !ignored.has(path),
   ));
   if (!active.size) return;
   for (const path of active) {
@@ -83,7 +110,7 @@ async function main() {
     process.exitCode = 1;
     return;
   }
-  let failed = false;
+  let failed = mathDiagnostics([...documents].filter(([path]) => active.has(path) && staged.has(path)), modules, false);
   for (const diagnostic of JSON.parse(result.stdout)) {
     if (active.has(diagnostic.file) && (staged.has(diagnostic.file) || linkRules.has(diagnostic.rule))) {
       console.error(`${diagnostic.file}:${diagnostic.line}:${diagnostic.column}: [${diagnostic.rule}] ${diagnostic.message}`);

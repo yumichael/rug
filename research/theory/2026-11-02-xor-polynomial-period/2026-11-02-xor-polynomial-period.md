@@ -114,7 +114,7 @@ These switches are anchored integer-polynomial patterns, but the switches themse
 Put $w=z^{2^v}$. The same-valuation polynomials are exactly $b+wA(w^2)$ for integer polynomials $A$. Set
 
 $$
-e=\begin{cases}3,&v=0,\\v+3,&v\ge1.\end{cases}
+e=3\quad(v=0),\qquad e=v+3\quad(v\ge1).
 $$
 
 As the odd input $z$ varies below $C$, the values $w^2\pmod M$ cover exactly the congruence class $1\pmod{2^e}$. For $v=0$ this is the odd-square image; for positive $v$ it follows from the odd-unit power image. The earlier congruence lemma ensures that restricting the input from all odd residues modulo $M$ to odd residues below $C$ loses no power values. These use the unit-group and lifting results already established in the earlier research.
@@ -236,7 +236,7 @@ $$
 For shift classes, drop $k=0$: all other products already vanish at input 1. Put
 
 $$
-\ell_k=m-k-\nu_2(k!),\qquad S=\sum_{\substack{1\le k<n\\\ell_k>0}}\ell_k.
+\ell_k=m-k-\nu_2(k!),\qquad S=\sum_{\substack{1\le k<n,\,\ell_k>0}}\ell_k.
 $$
 
 There are exactly $2^S$ anchored polynomial tables before filtering period. Their cyclic coordinates are explicit polynomials, with no matrix decomposition needed for this first step.
