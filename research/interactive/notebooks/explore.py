@@ -257,7 +257,10 @@ tail_order_view, tail_order_specs = recipe_gallery(
     selected_m_selections=("minimum_period",),
     page_size=TAIL_ORDER_PAGE_SIZE,
     preview_pixels=TAIL_ORDER_PREVIEW_PIXELS,
-    wrap_after=8,
+    initial_page=1,
+    grouped_dimensions=4,
+    wrap_after=0,
+    group_wrap_after=16,
 )
 display(tail_order_view)
 
@@ -273,7 +276,7 @@ display(tail_order_view)
 HEAD_ORDER_SEED = 0
 HEAD_ORDER_SIDE = 64
 HEAD_ORDER_DRAWS = 64
-HEAD_ORDER_PAGE_SIZE = 16
+HEAD_ORDER_PAGE_SIZE = 1
 HEAD_ORDER_PREVIEW_PIXELS = 512
 HEAD_ORDER_TWISTS = ((), (1,), (3, -2, 1))
 
@@ -282,12 +285,15 @@ head_order_view, head_order_specs = recipe_gallery(
         "head", seed=HEAD_ORDER_SEED, draws=HEAD_ORDER_DRAWS, size=HEAD_ORDER_SIDE, twists=HEAD_ORDER_TWISTS
     ),
     field_sizes=(HEAD_ORDER_SIDE,),
-    selected_combiners=("or",),
+    selected_combiners=("or", "xor", "add", "absdiff"),
     selected_samplings=("checkerboard_opposite",),
     selected_m_selections=("minimum_period",),
     page_size=HEAD_ORDER_PAGE_SIZE,
     preview_pixels=HEAD_ORDER_PREVIEW_PIXELS,
-    wrap_after=8,
+    initial_page=1,
+    grouped_dimensions=4,
+    wrap_after=0,
+    group_wrap_after=16,
 )
 display(head_order_view)
 
