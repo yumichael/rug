@@ -6,6 +6,8 @@ For the follow-up discussion, read [XOR polynomial counts and the extra bit at l
 
 The central result for sums of same-valuation powers is simple: the full axis period survives exactly when the sum of the nonconstant coefficients is odd. A constructive coordinate system removes duplicate descriptions and turns that criterion into independent binary choices around a fixed base pattern. The report also gives an exact characterization for arbitrary post-polynomials, with a derivative test in the usual valuation range.
 
+The [November 14 positive-valuation union](../2026-11-14-2-xor-positive-valuation-union/report.md) proves which conditional rows are disjoint, identifies their shared tail, and combines these samplers into one exact uniform shift/order-class sampler across every positive valuation.
+
 Run the reproducible checks from the repository root:
 
 ```sh

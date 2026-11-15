@@ -1,0 +1,388 @@
+{
+  "scope": "positive exponent valuations; odd sum of nonconstant coefficients; no-pre XOR",
+  "coverage": {
+    "exhaustive": [
+      {
+        "C": 8,
+        "exhaustive_union_classes": 1
+      },
+      {
+        "C": 16,
+        "exhaustive_union_classes": 2
+      },
+      {
+        "C": 32,
+        "exhaustive_union_classes": 4
+      },
+      {
+        "C": 64,
+        "exhaustive_union_classes": 16
+      },
+      {
+        "C": 128,
+        "exhaustive_union_classes": 64
+      },
+      {
+        "C": 256,
+        "exhaustive_union_classes": 256
+      }
+    ],
+    "affine_intersection_pairs": 122,
+    "seeded_conditional_draws": 640,
+    "coefficient_sum_examples_per_row": 8,
+    "native": {
+      "native_fields": 72,
+      "existing_gallery_draws": 36,
+      "axes": [
+        "horizontal",
+        "vertical"
+      ]
+    }
+  },
+  "checks": 205997,
+  "counts": [
+    {
+      "C": 8,
+      "displayed_side": 4,
+      "shared_tail_starts_at_v": 1,
+      "valid_bits_by_v": [
+        0
+      ],
+      "row_counts": [
+        1
+      ],
+      "union_classes": 1,
+      "single_power_union_classes": 1,
+      "ratio_to_single_powers": "1"
+    },
+    {
+      "C": 16,
+      "displayed_side": 8,
+      "shared_tail_starts_at_v": 1,
+      "valid_bits_by_v": [
+        1
+      ],
+      "row_counts": [
+        2
+      ],
+      "union_classes": 2,
+      "single_power_union_classes": 2,
+      "ratio_to_single_powers": "1"
+    },
+    {
+      "C": 32,
+      "displayed_side": 16,
+      "shared_tail_starts_at_v": 1,
+      "valid_bits_by_v": [
+        2
+      ],
+      "row_counts": [
+        4
+      ],
+      "union_classes": 4,
+      "single_power_union_classes": 4,
+      "ratio_to_single_powers": "1"
+    },
+    {
+      "C": 64,
+      "displayed_side": 32,
+      "shared_tail_starts_at_v": 2,
+      "valid_bits_by_v": [
+        3,
+        3
+      ],
+      "row_counts": [
+        8,
+        8
+      ],
+      "union_classes": 16,
+      "single_power_union_classes": 16,
+      "ratio_to_single_powers": "1"
+    },
+    {
+      "C": 128,
+      "displayed_side": 64,
+      "shared_tail_starts_at_v": 3,
+      "valid_bits_by_v": [
+        5,
+        4,
+        4
+      ],
+      "row_counts": [
+        32,
+        16,
+        16
+      ],
+      "union_classes": 64,
+      "single_power_union_classes": 64,
+      "ratio_to_single_powers": "1"
+    },
+    {
+      "C": 256,
+      "displayed_side": 128,
+      "shared_tail_starts_at_v": 4,
+      "valid_bits_by_v": [
+        7,
+        6,
+        5,
+        5
+      ],
+      "row_counts": [
+        128,
+        64,
+        32,
+        32
+      ],
+      "union_classes": 256,
+      "single_power_union_classes": 256,
+      "ratio_to_single_powers": "1"
+    },
+    {
+      "C": 512,
+      "displayed_side": 256,
+      "shared_tail_starts_at_v": 5,
+      "valid_bits_by_v": [
+        9,
+        8,
+        7,
+        6,
+        6
+      ],
+      "row_counts": [
+        512,
+        256,
+        128,
+        64,
+        64
+      ],
+      "union_classes": 1024,
+      "single_power_union_classes": 1024,
+      "ratio_to_single_powers": "1"
+    },
+    {
+      "C": 1024,
+      "displayed_side": 512,
+      "shared_tail_starts_at_v": 6,
+      "valid_bits_by_v": [
+        11,
+        10,
+        9,
+        8,
+        7,
+        7
+      ],
+      "row_counts": [
+        2048,
+        1024,
+        512,
+        256,
+        128,
+        128
+      ],
+      "union_classes": 4096,
+      "single_power_union_classes": 4096,
+      "ratio_to_single_powers": "1"
+    },
+    {
+      "C": 2048,
+      "displayed_side": 1024,
+      "shared_tail_starts_at_v": 7,
+      "valid_bits_by_v": [
+        13,
+        12,
+        11,
+        10,
+        9,
+        8,
+        8
+      ],
+      "row_counts": [
+        8192,
+        4096,
+        2048,
+        1024,
+        512,
+        256,
+        256
+      ],
+      "union_classes": 16384,
+      "single_power_union_classes": 16384,
+      "ratio_to_single_powers": "1"
+    },
+    {
+      "C": 4096,
+      "displayed_side": 2048,
+      "shared_tail_starts_at_v": 8,
+      "valid_bits_by_v": [
+        16,
+        14,
+        13,
+        12,
+        11,
+        10,
+        9,
+        9
+      ],
+      "row_counts": [
+        65536,
+        16384,
+        8192,
+        4096,
+        2048,
+        1024,
+        512,
+        512
+      ],
+      "union_classes": 98304,
+      "single_power_union_classes": 65536,
+      "ratio_to_single_powers": "3/2"
+    },
+    {
+      "C": 8192,
+      "displayed_side": 4096,
+      "shared_tail_starts_at_v": 9,
+      "valid_bits_by_v": [
+        19,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10,
+        10
+      ],
+      "row_counts": [
+        524288,
+        65536,
+        32768,
+        16384,
+        8192,
+        4096,
+        2048,
+        1024,
+        1024
+      ],
+      "union_classes": 655360,
+      "single_power_union_classes": 262144,
+      "ratio_to_single_powers": "5/2"
+    },
+    {
+      "C": 16384,
+      "displayed_side": 8192,
+      "shared_tail_starts_at_v": 10,
+      "valid_bits_by_v": [
+        22,
+        19,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        11
+      ],
+      "row_counts": [
+        4194304,
+        524288,
+        131072,
+        65536,
+        32768,
+        16384,
+        8192,
+        4096,
+        2048,
+        2048
+      ],
+      "union_classes": 4980736,
+      "single_power_union_classes": 1048576,
+      "ratio_to_single_powers": "19/4"
+    },
+    {
+      "C": 32768,
+      "displayed_side": 16384,
+      "shared_tail_starts_at_v": 11,
+      "valid_bits_by_v": [
+        25,
+        22,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        12
+      ],
+      "row_counts": [
+        33554432,
+        4194304,
+        524288,
+        262144,
+        131072,
+        65536,
+        32768,
+        16384,
+        8192,
+        4096,
+        4096
+      ],
+      "union_classes": 38797312,
+      "single_power_union_classes": 4194304,
+      "ratio_to_single_powers": "37/4"
+    },
+    {
+      "C": 65536,
+      "displayed_side": 32768,
+      "shared_tail_starts_at_v": 12,
+      "valid_bits_by_v": [
+        29,
+        25,
+        22,
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        13
+      ],
+      "row_counts": [
+        536870912,
+        33554432,
+        4194304,
+        1048576,
+        524288,
+        262144,
+        131072,
+        65536,
+        32768,
+        16384,
+        8192,
+        8192
+      ],
+      "union_classes": 576716800,
+      "single_power_union_classes": 16777216,
+      "ratio_to_single_powers": "275/8"
+    }
+  ],
+  "example": {
+    "domain": 4096,
+    "valuation": 1,
+    "modulus": 8192,
+    "spanning_coefficients": [
+      5249,
+      1398,
+      1
+    ]
+  },
+  "source_sha256": {
+    "research/theory/2026-11-14-2-xor-positive-valuation-union/verify.py": "9a229a988972b2b1cfc47776663ebfbe4c3cfdfd32af21814547846d631bb1ed",
+    "research/theory/2026-11-14-2-xor-positive-valuation-union/union_sampler.py": "9b4f8a317593b8642a9faf8bccac90facbc57dfb345d330c9dad9c8a6ac7d6ff",
+    "research/theory/2026-11-02-xor-polynomial-period/xor_polynomial_period.py": "aa259c22cf6d713f209200e5fea2ba0dc272991c0af2139efe9e740c137a5501"
+  }
+}

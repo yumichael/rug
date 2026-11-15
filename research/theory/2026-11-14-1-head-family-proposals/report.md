@@ -51,5 +51,5 @@ Set `FAMILY_SIDE`, `FAMILY_SEED`, `FAMILY_TWISTS`, `FAMILY_EXAMPLES`, and `FAMIL
 Regenerate the bounded inventory from the repository root:
 
 ```sh
-research/interactive/.venv/bin/python -c 'import json; from pathlib import Path; from ruglab.head_families import audit_head_family_proposals; Path("research/theory/2026-11-14-head-family-proposals/inventory.json").write_text(json.dumps(audit_head_family_proposals(), indent=2) + "\n")'
+research/interactive/.venv/bin/python -c 'import json; from pathlib import Path; from ruglab.head_families import audit_head_family_proposals; Path("research/theory/2026-11-14-1-head-family-proposals/inventory.json").write_text(json.dumps(audit_head_family_proposals(), indent=2) + "\n")'
 ```
