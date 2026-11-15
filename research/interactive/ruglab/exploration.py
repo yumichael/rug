@@ -145,6 +145,18 @@ def post_polynomial_catalogue(draws=24, seed=0):
     )
 
 
+def xor_valuation_catalogue(*, draws=64, seed=0, valuations=tuple(range(9))):
+    """Same-valuation polynomial shift-class draws for identity-pre XOR."""
+    valuations = tuple(valuations)
+    if draws < 1 or not valuations or any(not isinstance(v, int) or v < 0 for v in valuations):
+        raise ValueError("Choose positive draws and nonnegative integer valuations")
+    valuations = tuple(sorted(set(valuations)))
+    return RecipeCatalogue(
+        {"valuation": valuations, "draw": tuple(range(draws))},
+        lambda valuation, draw: PostRecipe("xor", "odd sum" if valuation == 0 else "even sum", valuation, seed, draw),
+    )
+
+
 def post_polynomial_recipes(draws=24, seed=0):
     """Cycle through the strata on each pass through the catalogue."""
     return post_polynomial_catalogue(draws, seed).recipes()

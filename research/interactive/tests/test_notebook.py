@@ -172,7 +172,7 @@ def test_gallery_reorders_dimensions_and_keeps_the_navigated_plot():
     )
     controls, preview = gallery.children
     dimension, slower, faster, grouped, _ = controls.children[-3].children
-    _, _, page, density, transpose, wrap, status = controls.children[-2].children
+    _, _, page, density, transpose, wrap, _, status = controls.children[-2].children
     assert "8 plots" in status.value
     assert grouped.value == 0
     assert dimension.options[0][0] == "Field size"
@@ -607,3 +607,62 @@ assert bytes(page_preview.value) == first_page
     ]
     assert images
     assert all(output.output_type == 'display_data' for output in images)
+
+
+def test_xor_valuation_gallery_pages_one_class_at_a_time():
+    catalogue = exploration.xor_valuation_catalogue(draws=3, seed=2, valuations=(2, 0, 1))
+    assert catalogue.dimensions["valuation"] == (0, 1, 2)
+    with patch.object(pager, "preview_grid", wraps=pager.preview_grid) as render:
+        view, specs = recipe_gallery(
+            catalogue,
+            field_sizes=(16,),
+            selected_samplings=("checkerboard_opposite",),
+            selected_m_selections=("catalogue",),
+            grouped_dimensions=4,
+            page_size=1,
+            group_wrap_after=2,
+            preview_pixels=32,
+        )
+    assert [len(panels) for _, panels in render.call_args.args[0]] == [2, 1]
+    page = view.children[0].children[-2].children[2]
+    assert page.max == 3
+    for valuation in range(3):
+        page.value = valuation + 1
+        assert len(specs) == 3
+        expected = [
+            sample_field(
+                catalogue.build(valuation=valuation, draw=draw), 16, "checkerboard_opposite", centered=True
+            ).spec
+            for draw in range(3)
+        ]
+        assert list(specs.values()) == expected
+
+
+def test_group_wrap_control_reflows_without_changing_the_page_or_recipes():
+    view, specs = recipe_gallery(
+        exploration.xor_valuation_catalogue(draws=5, valuations=(0, 1)),
+        field_sizes=(16,),
+        selected_samplings=("checkerboard_opposite",),
+        grouped_dimensions=4,
+        group_wrap_after=2,
+        page_size=1,
+        preview_pixels=32,
+    )
+    controls, preview = view.children
+    page = controls.children[-2].children[2]
+    wrap = next(w for w in controls.children[-2].children if getattr(w, "description", "") == "Plots per group row")
+    assert wrap.value == 2 and not wrap.disabled
+    before = dict(specs)
+    original_png = bytes(preview.value)
+    with patch.object(pager, "preview_grid", wraps=pager.preview_grid) as render:
+        wrap.value = 3
+        assert [len(panels) for _, panels in render.call_args.args[0]] == [3, 2]
+        assert page.value == 1 and specs == before
+        wrap.value = 0
+        assert [len(panels) for _, panels in render.call_args.args[0]] == [5]
+        wrap.value = 2
+        assert bytes(preview.value) == original_png
+    transpose = controls.children[-2].children[4]
+    transpose.value = True
+    assert wrap.description == "Plots per group column"
+    assert specs == before

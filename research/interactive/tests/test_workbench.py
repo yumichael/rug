@@ -675,3 +675,19 @@ def test_value_colors_depend_on_residue_and_modulus_not_other_groups():
     other = indexed_value_palette(second, "gray", 16)
     assert np.array_equal(palette[1], other[1])
     assert tuple(palette[1][:3]) == (128, 128, 128)
+
+
+@pytest.mark.parametrize("valuation", range(9))
+def test_xor_valuation_catalogue_retains_precision_exponent_class_and_period(valuation):
+    from ruglab.exploration import PostRecipe, xor_valuation_catalogue
+
+    recipe = xor_valuation_catalogue(draws=2, seed=7, valuations=(valuation,)).recipes()[1]
+    assert isinstance(recipe, PostRecipe)
+    coefficients, modulus = recipe.polynomial(16)
+    assert modulus == 32 << valuation
+    assert all((power & -power) == 1 << valuation for power, term in enumerate(coefficients) if power and term)
+    field = sample_field(recipe, 16, "checkerboard_opposite", centered=True)
+    assert field.spec["pre"] == []
+    assert field.spec["combine"] == "xor"
+    assert field.spec["M"] == modulus
+    assert periods(evaluate(field.spec), certified_torus=True) == (16, 16)

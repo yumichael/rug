@@ -169,6 +169,7 @@ def recipe_gallery(
     preview_pixels=512,
     wrap_after=0,
     grouped_dimensions=0,
+    group_wrap_after=0,
     minimum_post_modulus=False,
     selected_m_selections=None,
     selected_parameters=None,
@@ -292,6 +293,15 @@ def recipe_gallery(
         style={"description_width": "initial"},
         layout=widgets.Layout(width="155px"),
     )
+    group_wrap_control = widgets.BoundedIntText(
+        min=0,
+        max=max(256, group_wrap_after),
+        value=group_wrap_after,
+        description="Plots per group row",
+        tooltip="Wrap plots within each group. Set to 0 to leave groups unwrapped.",
+        style={"description_width": "initial"},
+        layout=widgets.Layout(width="235px"),
+    )
     page_control = widgets.BoundedIntText(
         min=1, max=max(1, prod(map(len, options))), value=initial_page, description="Page"
     )
@@ -383,7 +393,7 @@ def recipe_gallery(
             caption += f"\n↳ {additional_name} · {width}x{height}"
         return PreviewPanel(palette_preview(indices, palette, preview_pixels), caption), spec
 
-    def render_page(entries, transpose, wrap):
+    def render_page(entries, transpose, wrap, group_wrap):
         rows = []
         specs = {}
         for cases in entries:
@@ -424,7 +434,9 @@ def recipe_gallery(
                     PreviewPanel(panel.image, "\n".join((*title, panel.caption)))
                     for title, panel in zip(headings, panels, strict=True)
                 ]
-            rows.append((heading, panels))
+            step = group_wrap or len(panels)
+            for start in range(0, len(panels), step):
+                rows.append((heading if start == 0 else "", panels[start : start + step]))
         return preview_grid(rows, preview_pixels, transpose=transpose, wrap_after=wrap), specs
 
     cached_page = lru_cache(maxsize=8)(render_page)
@@ -495,6 +507,8 @@ def recipe_gallery(
         else:
             density_control.description = "Plots per page"
             wrap_control.description = "Plots per column" if transpose else "Plots per row"
+        group_wrap_control.disabled = not grouped
+        group_wrap_control.description = "Plots per group column" if transpose else "Plots per group row"
         if group_pages:
             density_control.description = "Groups per page"
         selected = tuple(
@@ -590,7 +604,9 @@ def recipe_gallery(
         render = cached_page if page_panels <= 21 else render_page
         # The renderer puts entries in columns to fill a flat page across rows.
         entries_as_columns = transpose if grouped else not transpose
-        png, specs = render(tuple(page_entries), entries_as_columns, wrap_control.value)
+        png, specs = render(
+            tuple(page_entries), entries_as_columns, wrap_control.value, group_wrap_control.value if grouped else 0
+        )
         unchanged = page_preview.layout.display != "none" and page_preview.value == png
         if len(specs) < page_panels:
             page_status.value += f" · {page_panels - len(specs)} unavailable"
@@ -712,6 +728,7 @@ def recipe_gallery(
         page_control,
         transpose_control,
         wrap_control,
+        group_wrap_control,
     ):
         control.observe(redraw, names="value")
     controls = widgets.VBox(
@@ -723,7 +740,16 @@ def recipe_gallery(
                 layout=row_layout,
             ),
             widgets.HBox(
-                [back_button, next_button, page_control, density_control, transpose_control, wrap_control, page_status],
+                [
+                    back_button,
+                    next_button,
+                    page_control,
+                    density_control,
+                    transpose_control,
+                    wrap_control,
+                    group_wrap_control,
+                    page_status,
+                ],
                 layout=row_layout,
             ),
             activity_status,

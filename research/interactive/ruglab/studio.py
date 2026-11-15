@@ -43,6 +43,7 @@ from .exploration import (
     pre_power_study_catalogue,
     pre_power_study_recipes,
     sample_field,
+    xor_valuation_catalogue,
 )
 from .operations import steps
 from .order_classes import realize_order_polynomial
@@ -102,6 +103,7 @@ __all__ = [
     "symmetries",
     "uniform_xor",
     "widgets",
+    "xor_valuation_catalogue",
 ]
 
 

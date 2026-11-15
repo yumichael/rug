@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from functools import lru_cache
 from io import BytesIO
+from itertools import zip_longest
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -139,7 +140,8 @@ def preview_grid(rows, pixels=384, *, transpose=False, wrap_after=0):
             )
         ]
         if transpose:
-            transposed = [("", panels) for panels in zip(*(panels for _, panels in band), strict=True)]
+            blank = (Image.new("RGB", (pixels, pixels), "white"), [])
+            transposed = [("", panels) for panels in zip_longest(*(panels for _, panels in band), fillvalue=blank)]
             draw_band(transposed, column_headings[start : start + band_size], 0, index * band_height)
         else:
             draw_band(band, (), index * band_width, 0)
