@@ -150,7 +150,11 @@ def test_text_notebook_roundtrip(source):
 )
 def test_explore_cells_run_independently_after_setup(cell_source, monkeypatch):
     book = jupytext.read(NOTEBOOKS / "explore.py")
-    monkeypatch.setattr(studio, "recipe_gallery", lambda *args, **kwargs: (object(), {}))
+    monkeypatch.setattr(
+        studio,
+        "recipe_gallery",
+        lambda *args, **kwargs: (SimpleNamespace(children=(SimpleNamespace(children=()),)), {}),
+    )
     monkeypatch.setattr(studio, "display", lambda *args, **kwargs: None)
     monkeypatch.setattr(studio.plt, "show", lambda: studio.plt.close("all"))
     namespace = {}
@@ -603,3 +607,35 @@ assert bytes(page_preview.value) == first_page
     ]
     assert images
     assert all(output.output_type == 'display_data' for output in images)
+
+
+def test_saved_pre_power_view_matches_observed_page_and_layout():
+    source = next(
+        cell.source
+        for cell in jupytext.read(NOTEBOOKS / "explore.py").cells
+        if cell.cell_type == "code" and "saved_pre_power_view, saved_pre_power_specs =" in cell.source
+    )
+    namespace = vars(studio).copy()
+    namespace["display"] = lambda *_: None
+    original = recipe_gallery
+    namespace["recipe_gallery"] = lambda *args, **kwargs: original(*args, **{**kwargs, "preview_pixels": 32})
+    with patch.object(pager, "preview_grid", wraps=pager.preview_grid) as render:
+        exec(source, namespace)
+    specs = namespace["saved_pre_power_specs"]
+    assert len(specs) == 64
+    assert next(iter(specs)) == (5889, 64, "catalogue", "checkerboard_opposite", "full")
+    expected = [
+        exploration.PrePowerStudyRecipe(q, 2, post, combiner)
+        for post in range(4, 8)
+        for q in (2, 4, 6, 8)
+        for combiner in ("or", "xor", "add", "absdiff")
+    ]
+    for spec, recipe in zip(specs.values(), expected, strict=True):
+        assert spec == sample_field(recipe, 64, "checkerboard_opposite", centered=True).spec
+    args, kwargs = render.call_args
+    assert len(args[0]) == 16
+    assert all(len(panels) == 4 for _, panels in args[0])
+    assert kwargs == {"transpose": True, "wrap_after": 16}
+    controls = namespace["saved_pre_power_view"].children[0]
+    assert controls.children[-2].children[2].value == 7
+    assert any(isinstance(w, widgets.Accordion) and w.selected_index == 0 for w in controls.children)

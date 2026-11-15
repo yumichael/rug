@@ -164,6 +164,48 @@ pre_power_gallery_view, pre_power_specs = recipe_gallery(
 display(pre_power_gallery_view)
 
 
+# %%
+# Saved view from Compare pre-powers across combiners.
+from ipywidgets import Accordion, Dropdown
+
+saved_pre_power_view, saved_pre_power_specs = recipe_gallery(
+    pre_power_study_catalogue(),
+    field_sizes=(64,),
+    selected_combiners=("or", "xor", "add", "absdiff"),
+    selected_m_selections=("catalogue",),
+    selected_samplings=("checkerboard_opposite",),
+    selected_additional_samplings=("full",),
+    selected_parameters={
+        "twist_index": tuple(range(16)),
+        "post_index": tuple(range(10)),
+        "pre_power": (2, 4, 6, 8),
+    },
+    dimension_order=(
+        "size",
+        "twist_index",
+        "post_index",
+        "m_selection",
+        "sampling",
+        "additional_sampling",
+        "pre_power",
+        "combiner",
+    ),
+    grouped_dimensions=1,
+    transposed=True,
+    page_size=16,
+    initial_page=1,
+    wrap_after=16,
+    preview_pixels=512,
+)
+for row in saved_pre_power_view.children[0].children:
+    if isinstance(row, Accordion):
+        row.selected_index = 0
+    for control in getattr(row, "children", ()):
+        if isinstance(control, Dropdown) and control.description == "Dimension":
+            control.value = 0  # Combiner is dimension zero in this catalogue.
+display(saved_pre_power_view)
+
+
 # %% [markdown]
 # ## Sample the complete tail order space
 #
@@ -237,7 +279,7 @@ display(head_order_view)
 
 # %%
 FAMILY_SIDE = 64
-FAMILY_SEED = 0
+FAMILY_SEED = 1
 FAMILY_EXAMPLES = 24
 FAMILY_TWISTS = ((), (1,), (3, -2, 1))
 FAMILY_PROPOSALS = ("or_depth", "bit_depth", "even_branch", "half_period_graph", "carry_behavior", "or_twist_mask")

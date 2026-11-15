@@ -171,6 +171,8 @@ def recipe_gallery(
     grouped_dimensions=0,
     minimum_post_modulus=False,
     selected_m_selections=None,
+    selected_parameters=None,
+    dimension_order=None,
 ):
     """Browse a recipe catalogue with field size and two sampling dimensions."""
     view_dimensions = {
@@ -189,7 +191,12 @@ def recipe_gallery(
     )
     axis_indices = tuple(range(len(names)))
     size_axis = names.index("size")
-    order = [size_axis, *(i for i in axis_indices if i != size_axis)]
+    if dimension_order is not None:
+        if len(dimension_order) != len(names) or set(dimension_order) != set(names):
+            raise ValueError("Dimension order must name every gallery dimension exactly once")
+        order = [names.index(name) for name in dimension_order]
+    else:
+        order = [size_axis, *(i for i in axis_indices if i != size_axis)]
     options = tuple(tuple(range(len(values))) for values in dimensions.values())
     recipe_options = options[: len(catalogue.dimensions)]
     displayed_specs = {}
@@ -244,6 +251,10 @@ def recipe_gallery(
         "sampling": selected_samplings,
         "additional_sampling": selected_additional_samplings,
     }
+    if selected_parameters is not None:
+        if set(selected_parameters) - catalogue.dimensions.keys():
+            raise ValueError("Selected parameters must name catalogue dimensions")
+        selections.update(selected_parameters)
     initial_choices = tuple(
         tuple(i for i, value in enumerate(values) if selections.get(name) is None or value in selections[name])
         for name, values in dimensions.items()
