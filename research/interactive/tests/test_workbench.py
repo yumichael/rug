@@ -691,3 +691,33 @@ def test_xor_valuation_catalogue_retains_precision_exponent_class_and_period(val
     assert field.spec["combine"] == "xor"
     assert field.spec["M"] == modulus
     assert periods(evaluate(field.spec), certified_torus=True) == (16, 16)
+
+
+@pytest.mark.parametrize(
+    "side, tail",
+    [(4, 1), (8, 1), (16, 1), (32, 2), (64, 3), (128, 4), (256, 5), (512, 6), (1024, 7), (2048, 8), (4096, 9)],
+)
+def test_xor_valuation_catalogue_defaults_end_at_shared_tail(side, tail):
+    from ruglab.exploration import xor_valuation_catalogue
+
+    catalogue = xor_valuation_catalogue(size=side, draws=1)
+    assert catalogue.dimensions["valuation"] == tuple(range(tail + 1))
+
+
+@pytest.mark.parametrize("domain", [8, 16, 32, 64, 128, 256, 512, 1024])
+def test_shared_xor_tail_is_later_than_cyclic_structure(domain):
+    from ruglab.post_polynomials import xor_valuation_tail
+
+    def classes(valuation):
+        modulus = domain << valuation
+        # Exact common-grid coordinates of the entire cyclic polynomial space.
+        generator = [pow(z, 1 << valuation, modulus) - 1 for z in range(1, domain, 2)]
+        return {
+            tuple(((a * value) % modulus) >> (valuation + 2) for value in generator) for a in range(1, domain // 4, 2)
+        }
+
+    tail = xor_valuation_tail(domain)
+    assert classes(tail) == classes(tail + 1) == classes(tail + 2)
+    if tail > 1:
+        # At tail-1 the polynomial space is already cyclic, yet is a different family.
+        assert classes(tail - 1).isdisjoint(classes(tail))

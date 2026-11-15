@@ -23,6 +23,13 @@ POST_STRATA = (
 )
 
 
+def xor_valuation_tail(domain):
+    """First shared normalized same-valuation family; domain is C, not side N."""
+    if domain < 8 or domain & (domain - 1):
+        raise ValueError("Choose a power-of-two coordinate domain of at least 8")
+    return max(1, domain.bit_length() - 5)
+
+
 @lru_cache(maxsize=64)
 def _newton_basis(domain, modulus, family, valuation):
     """Return (polynomial, coefficient width) columns on the odd input set."""

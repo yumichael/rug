@@ -148,16 +148,15 @@ plt.show()
 #
 # Each page samples one fixed exponent valuation: $H(z)=b+\sum_{u\text{ odd}}a_u z^{2^v u}$. Valuation zero uses odd powers; positive valuations use even powers. These are the existing uniform full-period shift-class draws, anchored by subtracting $H(1)$, at the research precision $M=(2N)2^v$ for displayed side $N$. **Catalogue** preserves that precision. Switching M-selection applies a further transformation and need not preserve the sampler's distribution.
 #
-# Edit the draw count, seed, side, and valuation list below. Back and Next move through valuations in increasing order, beginning with zero. The list is finite and editable; it can include higher valuations beyond the defaults. General sums draw with replacement; stabilized classes use a seeded cycle and repeat once exhausted. Repeated plots are therefore expected when a class is small. Colors use the existing direct $v/M$ mapping of output residues, with no extra random rotation. Checkerboard opposite is the period reference; doubled checkerboard opposite is also available. This cell runs independently after the initial import cell.
+# Edit the draw count, seed, and initial side below. Back and Next move through valuations in increasing order, beginning with zero. Field size changes rebuild the valuation choices from zero through the shared tail, $v_{\mathrm{tail}}=\max(1,\log_2(2N)-4)$. The final valuation represents all higher valuations as a family, rather than matching the same seed draw across valuations. Single-generator structure begins earlier, at $\max(1,\log_2(2N)-5)$; it does not identify that earlier family with the shared tail. General sums draw with replacement; stabilized classes use a seeded cycle and repeat once exhausted. Repeated plots are therefore expected when a class is small. Colors use the existing direct $v/M$ mapping of output residues, with no extra random rotation. Checkerboard opposite is the period reference; doubled checkerboard opposite is also available. This cell runs independently after the initial import cell.
 #
 # %%
 XOR_VALUATION_DRAWS = 64
 XOR_VALUATION_SEED = 0
 XOR_VALUATION_SIDE = 128
-XOR_VALUATIONS = tuple(range(9))
 
 xor_valuation_view, xor_valuation_specs = recipe_gallery(
-    xor_valuation_catalogue(draws=XOR_VALUATION_DRAWS, seed=XOR_VALUATION_SEED, valuations=XOR_VALUATIONS),
+    xor_valuation_catalogue(size=XOR_VALUATION_SIDE, draws=XOR_VALUATION_DRAWS, seed=XOR_VALUATION_SEED),
     field_sizes=(XOR_VALUATION_SIDE,),
     selected_samplings=("checkerboard_opposite",),
     selected_m_selections=("catalogue",),

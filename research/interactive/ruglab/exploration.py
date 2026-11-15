@@ -14,7 +14,7 @@ from .head_families import head_family_cases
 from .indexed import IndexedValues, byte_lru, combination_table
 from .operations import operation
 from .order_classes import ORDER_COMBINERS, OrderClassRecipe, OrderSampleUnavailable, head_powers, order_sample
-from .post_polynomials import POST_STRATA, draw_post_polynomial
+from .post_polynomials import POST_STRATA, draw_post_polynomial, xor_valuation_tail
 from .sampling import CARTESIAN_PHASES, checkerboard_indices, resample_view
 from .specs import SAMPLINGS
 
@@ -145,15 +145,19 @@ def post_polynomial_catalogue(draws=24, seed=0):
     )
 
 
-def xor_valuation_catalogue(*, draws=64, seed=0, valuations=tuple(range(9))):
+def xor_valuation_catalogue(*, size=128, draws=64, seed=0, valuations=None):
     """Same-valuation polynomial shift-class draws for identity-pre XOR."""
-    valuations = tuple(valuations)
+    if size not in FIELD_SIZES or size < 4:
+        raise CatalogueUnavailable("XOR valuation sampling requires a power-of-two side from 4 to 4096.")
+    requested = None if valuations is None else tuple(valuations)
+    valuations = tuple(range(xor_valuation_tail(2 * size) + 1)) if requested is None else requested
     if draws < 1 or not valuations or any(not isinstance(v, int) or v < 0 for v in valuations):
         raise ValueError("Choose positive draws and nonnegative integer valuations")
     valuations = tuple(sorted(set(valuations)))
     return RecipeCatalogue(
         {"valuation": valuations, "draw": tuple(range(draws))},
         lambda valuation, draw: PostRecipe("xor", "odd sum" if valuation == 0 else "even sum", valuation, seed, draw),
+        for_size=lambda side: xor_valuation_catalogue(size=side, draws=draws, seed=seed, valuations=requested),
     )
 
 

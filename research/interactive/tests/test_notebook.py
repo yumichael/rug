@@ -666,3 +666,44 @@ def test_group_wrap_control_reflows_without_changing_the_page_or_recipes():
     transpose.value = True
     assert wrap.description == "Plots per group column"
     assert specs == before
+
+
+def test_xor_valuation_choices_rebuild_with_field_size_through_tail():
+    view, specs = recipe_gallery(
+        exploration.xor_valuation_catalogue(size=128, draws=1),
+        field_sizes=(128,),
+        selected_samplings=("checkerboard_opposite",),
+        grouped_dimensions=4,
+        page_size=1,
+        preview_pixels=32,
+    )
+    controls = view.children[0]
+    size_row = next(w for w in controls.children if isinstance(w, widgets.HBox) and w.children[0].value == "Field size")
+    valuation_row = next(
+        w
+        for w in controls.children
+        if isinstance(w, widgets.HBox) and getattr(w.children[0], "value", None) == "Valuation"
+    )
+    page = controls.children[-2].children[2]
+
+    def choose_size(size):
+        next(w for w in size_row.children[1:] if w.description == str(size)).value = True
+
+    def remove_size(size):
+        next(w for w in size_row.children[1:] if w.description == str(size)).value = False
+
+    assert page.max == 5
+    assert [w.description for w in valuation_row.children[1:]] == [str(v) for v in range(5)]
+    page.value = 5
+    assert {s["M"] for s in specs.values()} == {256 << 4}
+    remove_size(128)
+    choose_size(64)
+    assert page.max == 4
+    page.value = 4
+    assert {s["M"] for s in specs.values()} == {128 << 3}
+    remove_size(64)
+    choose_size(512)
+    assert page.max == 7
+    remove_size(512)
+    choose_size(128)
+    assert page.max == 5

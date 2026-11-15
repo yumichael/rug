@@ -407,7 +407,15 @@ def recipe_gallery(
                 size = FIELD_SIZES[size_index]
                 recipe = recipe_at(recipe_position, size)
                 if recipe is None:
-                    headings.append((f"{size}x{size}", str(dimensions["family"][recipe_position[0]])))
+                    headings.append(
+                        (
+                            f"{size}x{size}",
+                            " · ".join(
+                                str(dimensions[name][index])
+                                for name, index in zip(catalogue.dimensions, recipe_position, strict=True)
+                            ),
+                        )
+                    )
                     panels.append(
                         PreviewPanel(
                             Image.new("RGB", (preview_pixels, preview_pixels), "#f4f4f4"),
@@ -684,7 +692,7 @@ def recipe_gallery(
         filter_rows[axis] = row
         return row
 
-    quick_names = ("size", "family", "combiner", "m_selection", "sampling", "additional_sampling")
+    quick_names = ("size", "family", "valuation", "combiner", "m_selection", "sampling", "additional_sampling")
     quick_filters: list[widgets.HBox | widgets.Accordion] = [
         choice_row(names.index(name)) for name in quick_names if name in names
     ]
