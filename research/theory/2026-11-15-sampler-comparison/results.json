@@ -1,0 +1,275 @@
+{
+  "limits": {
+    "base_descriptions": 4096,
+    "retained_grid_cells": 16000000,
+    "isometry_tables": 50000
+  },
+  "groups": [
+    {
+      "side": 8,
+      "group": "Pre 2",
+      "powers": [
+        2
+      ],
+      "base_descriptions": 8,
+      "raw_partitions": 2,
+      "isometric_representative_powers": [
+        2
+      ],
+      "isometric_equalities": 4,
+      "isometric_extra_orders": 3,
+      "isometric_window_orders": 11
+    },
+    {
+      "side": 8,
+      "group": "Pre 4",
+      "powers": [
+        4
+      ],
+      "base_descriptions": 4,
+      "raw_partitions": 4,
+      "isometric_representative_powers": [
+        4
+      ],
+      "isometric_equalities": 5,
+      "isometric_extra_orders": 1,
+      "isometric_window_orders": 5
+    },
+    {
+      "side": 8,
+      "group": "Tail",
+      "powers": [
+        6
+      ],
+      "base_descriptions": 1,
+      "raw_partitions": 1,
+      "isometric_representative_powers": [
+        6
+      ],
+      "isometric_equalities": 1,
+      "isometric_extra_orders": 0,
+      "isometric_window_orders": 1
+    },
+    {
+      "side": 16,
+      "group": "Pre 2",
+      "powers": [
+        2
+      ],
+      "base_descriptions": 32,
+      "raw_partitions": 13,
+      "isometric_representative_powers": [
+        2
+      ],
+      "isometric_equalities": 37,
+      "isometric_extra_orders": 88,
+      "isometric_window_orders": 1180
+    },
+    {
+      "side": 16,
+      "group": "Pre 4",
+      "powers": [
+        4
+      ],
+      "base_descriptions": 16,
+      "raw_partitions": 14,
+      "isometric_representative_powers": [
+        4
+      ],
+      "isometric_equalities": 22,
+      "isometric_extra_orders": 13,
+      "isometric_window_orders": 67
+    },
+    {
+      "side": 16,
+      "group": "Tail",
+      "powers": [
+        6
+      ],
+      "base_descriptions": 1,
+      "raw_partitions": 1,
+      "isometric_representative_powers": [
+        6
+      ],
+      "isometric_equalities": 1,
+      "isometric_extra_orders": 0,
+      "isometric_window_orders": 6
+    },
+    {
+      "side": 32,
+      "group": "Pre 2",
+      "powers": [
+        2
+      ],
+      "base_descriptions": 128,
+      "raw_partitions": 68,
+      "isometric_representative_powers": [
+        2
+      ],
+      "isometric_equalities": 198,
+      "isometric_extra_orders": 2432,
+      "isometric_window_orders": {
+        "unavailable": "Exact isometric order enumeration exceeds 50,000 tables for this precision window. No truncated union was sampled."
+      }
+    },
+    {
+      "side": 32,
+      "group": "Pre 4",
+      "powers": [
+        4
+      ],
+      "base_descriptions": 64,
+      "raw_partitions": 56,
+      "isometric_representative_powers": [
+        4
+      ],
+      "isometric_equalities": 100,
+      "isometric_extra_orders": 167,
+      "isometric_window_orders": 901
+    },
+    {
+      "side": 32,
+      "group": "Tail",
+      "powers": [
+        6
+      ],
+      "base_descriptions": 1,
+      "raw_partitions": 1,
+      "isometric_representative_powers": [
+        6
+      ],
+      "isometric_equalities": 1,
+      "isometric_extra_orders": 0,
+      "isometric_window_orders": 104
+    },
+    {
+      "side": 64,
+      "group": "Pre 2",
+      "powers": [
+        2
+      ],
+      "base_descriptions": 512,
+      "raw_partitions": 416,
+      "isometric_representative_powers": [
+        2
+      ],
+      "isometric_equalities": 1060,
+      "isometric_extra_orders": {
+        "unavailable": "Complete isometric union exceeds the 64 MiB spatial-signature budget; no partial union was sampled."
+      },
+      "isometric_window_orders": {
+        "unavailable": "Exact isometric order enumeration exceeds 50,000 tables for this precision window. No truncated union was sampled."
+      }
+    },
+    {
+      "side": 64,
+      "group": "Pre 4",
+      "powers": [
+        4
+      ],
+      "base_descriptions": 256,
+      "raw_partitions": 224,
+      "isometric_representative_powers": [
+        4
+      ],
+      "isometric_equalities": 464,
+      "isometric_extra_orders": {
+        "unavailable": "Complete isometric union exceeds the 64 MiB spatial-signature budget; no partial union was sampled."
+      },
+      "isometric_window_orders": {
+        "unavailable": "Complete isometric union exceeds the 64 MiB spatial-signature budget; no partial union was sampled."
+      }
+    },
+    {
+      "side": 64,
+      "group": "Pre 6 & 8",
+      "powers": [
+        6,
+        8
+      ],
+      "base_descriptions": 64,
+      "raw_partitions": 49,
+      "isometric_representative_powers": [
+        6,
+        8
+      ],
+      "isometric_equalities": 113,
+      "isometric_extra_orders": 1200,
+      "isometric_window_orders": {
+        "unavailable": "Complete isometric union exceeds the 64 MiB spatial-signature budget; no partial union was sampled."
+      }
+    },
+    {
+      "side": 64,
+      "group": "Tail",
+      "powers": [
+        10
+      ],
+      "base_descriptions": 1,
+      "raw_partitions": 1,
+      "isometric_representative_powers": [
+        10,
+        12
+      ],
+      "isometric_equalities": 1,
+      "isometric_extra_orders": 0,
+      "isometric_window_orders": 1144
+    },
+    {
+      "side": 128,
+      "group": "Pre 2",
+      "powers": [
+        2
+      ],
+      "unavailable": "Exact union exceeds the 16 million retained grid-cell work budget; choose a smaller field or a higher power group."
+    },
+    {
+      "side": 128,
+      "group": "Pre 4",
+      "powers": [
+        4
+      ],
+      "unavailable": "Exact union exceeds the 16 million retained grid-cell work budget; choose a smaller field or a higher power group."
+    },
+    {
+      "side": 128,
+      "group": "Pre 6 & 8",
+      "powers": [
+        6,
+        8
+      ],
+      "base_descriptions": 256,
+      "raw_partitions": 208,
+      "isometric_representative_powers": [
+        6,
+        8
+      ],
+      "isometric_equalities": 530,
+      "isometric_extra_orders": {
+        "unavailable": "Complete isometric union exceeds the 64 MiB spatial-signature budget; no partial union was sampled."
+      },
+      "isometric_window_orders": {
+        "unavailable": "Exact isometric order enumeration exceeds 50,000 tables for this precision window. No truncated union was sampled."
+      }
+    },
+    {
+      "side": 128,
+      "group": "Tail",
+      "powers": [
+        10
+      ],
+      "base_descriptions": 1,
+      "raw_partitions": 1,
+      "isometric_representative_powers": [
+        10,
+        12,
+        24
+      ],
+      "isometric_equalities": 1,
+      "isometric_extra_orders": 0,
+      "isometric_window_orders": {
+        "unavailable": "Complete isometric union exceeds the 64 MiB spatial-signature budget; no partial union was sampled."
+      }
+    }
+  ]
+}

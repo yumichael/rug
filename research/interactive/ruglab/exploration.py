@@ -15,6 +15,7 @@ from .indexed import IndexedValues, byte_lru, combination_table
 from .operations import operation
 from .order_classes import ORDER_COMBINERS, OrderClassRecipe, OrderSampleUnavailable, head_powers, order_sample
 from .post_polynomials import POST_STRATA, draw_post_polynomial, xor_valuation_tail
+from .sampler_comparison import STRATEGIES, ComparisonRecipe, ComparisonUnavailable, comparison_sample, power_groups
 from .sampling import CARTESIAN_PHASES, checkerboard_indices, resample_view
 from .specs import SAMPLINGS
 
@@ -103,7 +104,7 @@ class RecipeCatalogue:
     """Ordered recipe dimensions and a factory accepting their named values."""
 
     dimensions: dict[str, tuple]
-    build: Callable[..., PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe]
+    build: Callable[..., PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe | ComparisonRecipe]
 
     for_size: Callable[[int], RecipeCatalogue] | None = None
     page_group: tuple[str, Callable] | None = None
@@ -161,6 +162,46 @@ def xor_valuation_catalogue(*, size=128, draws=64, seed=0, valuations=None):
     )
 
 
+def sampler_comparison_catalogue(
+    *,
+    size=64,
+    draws=16,
+    seed=0,
+    concentration=1.0,
+    strategies=tuple(STRATEGIES),
+    max_bases=4096,
+    isometry_offsets=(0, 1, 2),
+    max_isometry_tables=50000,
+):
+    """Compare exact finite unions, with explicit feasibility limits."""
+    if draws < 1 or not np.isfinite(concentration) or concentration <= 0 or max_bases < 1 or max_isometry_tables < 1:
+        raise ValueError("Use positive draws, concentration, and work limits")
+    if not strategies or set(strategies) - STRATEGIES.keys():
+        raise ValueError("Choose known comparison strategies")
+    if not isometry_offsets or any(not isinstance(v, int) or v < 0 for v in isometry_offsets):
+        raise ValueError("Choose nonnegative integer isometry precision offsets")
+    try:
+        groups = power_groups(size)
+    except ComparisonUnavailable as error:
+        raise CatalogueUnavailable(str(error)) from error
+    return RecipeCatalogue(
+        {"power_group": groups, "strategy": tuple(strategies), "draw": tuple(range(draws))},
+        lambda power_group, strategy, draw: ComparisonRecipe(
+            power_group, strategy, draw, seed, concentration, max_bases, tuple(isometry_offsets), max_isometry_tables
+        ),
+        for_size=lambda side: sampler_comparison_catalogue(
+            size=side,
+            draws=draws,
+            seed=seed,
+            concentration=concentration,
+            strategies=strategies,
+            max_bases=max_bases,
+            isometry_offsets=isometry_offsets,
+            max_isometry_tables=max_isometry_tables,
+        ),
+    )
+
+
 def post_polynomial_recipes(draws=24, seed=0):
     """Cycle through the strata on each pass through the catalogue."""
     return post_polynomial_catalogue(draws, seed).recipes()
@@ -204,6 +245,8 @@ def head_family_catalogue(*, size=64, seed=0, draws=32, twists=((), (1,), (3, -2
 
 
 def recipe_description(recipe, size):
+    if isinstance(recipe, ComparisonRecipe):
+        return f"{recipe.group} · {STRATEGIES[recipe.strategy]} · draw {recipe.draw + 1}"
     if isinstance(recipe, OrderClassRecipe):
         if recipe.proposal:
             return f"{recipe.candidate_family} · example {recipe.preview_example + 1}"
@@ -679,8 +722,20 @@ def _sample_pre_power_study(recipe, size, sampling, m_selection):
     return _finish_field(base, labels, counts, spec, repeat, m_selection)
 
 
+def _opposite_layout(base, outputs, spec, size, sampling):
+    """Apply either opposite-checkerboard layout to the same sampled scalar map."""
+    if sampling == "doubled_checkerboard_opposite":
+        doubled = _base_field(spec["pre"][0][1], tuple(spec["pre"][1][1]), spec["K"], spec["combine"], size, sampling)[
+            0
+        ]
+        outputs = outputs[np.searchsorted(base.labels, doubled.labels)]
+        base = doubled
+        spec = {**spec, "sampling": sampling}
+    return base, outputs, spec
+
+
 def _sample_field(
-    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe,
+    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe | ComparisonRecipe,
     size: int,
     sampling: str,
     *,
@@ -704,6 +759,18 @@ def _sample_field(
         raise ValueError("Unknown M-selection: " + str(m_selection))
     if minimum_post_modulus and m_selection != "minimum_period":
         raise ValueError("minimum_post_modulus=True conflicts with the selected M policy")
+    if isinstance(recipe, ComparisonRecipe):
+        if sampling not in ("checkerboard_opposite", "doubled_checkerboard_opposite") or m_selection != "catalogue":
+            raise PeriodTargetError(
+                "Sampler comparison fixes its output scale; choose Catalogue and checkerboard opposite or doubled checkerboard opposite."
+            )
+        try:
+            base, outputs, spec = comparison_sample(recipe, size)
+        except ComparisonUnavailable as error:
+            raise PeriodTargetError(str(error)) from error
+        base, outputs, spec = _opposite_layout(base, outputs, spec, size, sampling)
+        counts = np.bincount(base.indices.ravel(), minlength=len(outputs))
+        return _finish_field(base, outputs, counts, spec, (size, size), m_selection)
     if isinstance(recipe, OrderClassRecipe):
         if sampling not in ("checkerboard_opposite", "doubled_checkerboard_opposite"):
             raise PeriodTargetError(
@@ -713,18 +780,7 @@ def _sample_field(
             base, outputs, spec = order_sample(recipe, size)
         except OrderSampleUnavailable as error:
             raise PeriodTargetError(str(error)) from error
-        if sampling == "doubled_checkerboard_opposite":
-            doubled = _base_field(
-                spec["order_sample"]["pre_power"],
-                tuple(spec["pre"][1][1]),
-                spec["K"],
-                spec["combine"],
-                size,
-                sampling,
-            )[0]
-            outputs = outputs[np.searchsorted(base.labels, doubled.labels)]
-            base = doubled
-            spec = {**spec, "sampling": sampling}
+        base, outputs, spec = _opposite_layout(base, outputs, spec, size, sampling)
         counts = np.bincount(base.indices.ravel(), minlength=len(base.labels))
         repeat = _repeat_shape(base.indices) or "smaller tile"
         return _finish_field(base, outputs, counts, spec, repeat, m_selection)
@@ -762,7 +818,7 @@ def _sample_field(
 
 
 def sample_field(
-    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe,
+    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe | ComparisonRecipe,
     size: int,
     sampling: str,
     *,

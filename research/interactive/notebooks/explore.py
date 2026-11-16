@@ -62,7 +62,7 @@ gallery_view, displayed_specs = recipe_gallery(
     selected_samplings=DEFAULT_SAMPLINGS,
     transposed=DEFAULT_TRANSPOSE,
     page_size=PLOTS_PER_PAGE,
-    preview_pixels=PREVIEW_PIXELS,
+    # preview_pixels=PREVIEW_PIXELS,
     wrap_after=len(DEFAULT_SAMPLINGS),
     selected_m_selections=("minimum_period",),
 )
@@ -163,7 +163,7 @@ xor_valuation_view, xor_valuation_specs = recipe_gallery(
     grouped_dimensions=4,
     page_size=1,
     group_wrap_after=16,
-    preview_pixels=512,
+    # preview_pixels=512,
 )
 display(xor_valuation_view)
 
@@ -184,7 +184,7 @@ pre_power_gallery_view, pre_power_specs = recipe_gallery(
     transposed=False,
     page_size=32,
     wrap_after=8,
-    preview_pixels=512,
+    # preview_pixels=512,
 )
 display(pre_power_gallery_view)
 
@@ -220,7 +220,7 @@ saved_pre_power_view, saved_pre_power_specs = recipe_gallery(
     page_size=16,
     initial_page=1,
     wrap_after=16,
-    preview_pixels=512,
+    # preview_pixels=512,
 )
 for row in saved_pre_power_view.children[0].children:
     if isinstance(row, Accordion):
@@ -256,7 +256,7 @@ tail_order_view, tail_order_specs = recipe_gallery(
     selected_samplings=("checkerboard_opposite",),
     selected_m_selections=("minimum_period",),
     page_size=TAIL_ORDER_PAGE_SIZE,
-    preview_pixels=TAIL_ORDER_PREVIEW_PIXELS,
+    # preview_pixels=TAIL_ORDER_PREVIEW_PIXELS,
     initial_page=1,
     grouped_dimensions=4,
     wrap_after=0,
@@ -289,7 +289,7 @@ head_order_view, head_order_specs = recipe_gallery(
     selected_samplings=("checkerboard_opposite",),
     selected_m_selections=("minimum_period",),
     page_size=HEAD_ORDER_PAGE_SIZE,
-    preview_pixels=HEAD_ORDER_PREVIEW_PIXELS,
+    # preview_pixels=HEAD_ORDER_PREVIEW_PIXELS,
     initial_page=1,
     grouped_dimensions=4,
     wrap_after=0,
@@ -328,6 +328,59 @@ head_family_view, head_family_specs = recipe_gallery(
     selected_m_selections=("minimum_period",),
     page_size=3,
     grouped_dimensions=4,
-    preview_pixels=512,
+    # preview_pixels=512,
 )
 display(head_family_view)
+
+
+# %% [markdown]
+# ## Compare checkerboard samplers
+#
+# Compare spatial classes after deduplicating the complete admissible twist family across OR, XOR, ADD, and ABSDIFF. The power groups rebuild with Field size; at side 64 they are Pre 2, Pre 4, Pre 6 & 8, and Tail. The complete isometric tail strategies use a finite valuation reduction across all erased powers and twists; the separate precision-window strategy uses the canonical tail pre-power and its full twist set. The [comparison report](../../theory/2026-11-15-sampler-comparison/report.md) defines every target, proves the weighting and isometric constructions, and states the scope and limits.
+#
+# Strategy names distinguish raw equality classes from nonmerging circular orders and the minimum-modulus polynomial order union, which permits mergers. The isometric equality union spans every post-modulus; the isometric order union combines all nonmerging orders with an exact finite enumeration of coarser ones. The separate window strategy restricts post-precision to offsets above the first period-preserving bit. Enumeration exceeding the work limits shows an unavailable panel, never a smaller implicit sample space. Random color rotations are independent and reproducible. Synthetic levels are finite-precision lookup colors; the general-polynomial strategy retains the existing interpolation spacing. Use Catalogue M-selection to preserve each strategy's scale. Both checkerboard opposite and doubled checkerboard opposite use the same sampled scalar values and color rotation; select either or both in Sampling.
+#
+# %%
+COMPARISON_SIDE = 64
+COMPARISON_SEED = 0
+COMPARISON_DRAWS = 64
+COMPARISON_CONCENTRATION = 1.0
+COMPARISON_MAX_BASES = 4096
+COMPARISON_ISOMETRY_OFFSETS = (0, 1, 2)
+COMPARISON_MAX_ISOMETRY_TABLES = 50000
+COMPARISON_STRATEGIES = (
+    "polynomial_orders",
+    "equality_iid",
+    "order_iid",
+    "equality_equal",
+    "order_equal",
+    "equality_dirichlet",
+    "order_dirichlet",
+    "isometric_equalities",
+    "isometric_orders",
+    "cell_mass",
+    "isometric_window",
+    "polynomial_all_orders",
+    "polynomial_equalities",
+)
+
+comparison_view, comparison_specs = recipe_gallery(
+    sampler_comparison_catalogue(
+        size=COMPARISON_SIDE,
+        seed=COMPARISON_SEED,
+        draws=COMPARISON_DRAWS,
+        concentration=COMPARISON_CONCENTRATION,
+        strategies=COMPARISON_STRATEGIES,
+        max_bases=COMPARISON_MAX_BASES,
+        isometry_offsets=COMPARISON_ISOMETRY_OFFSETS,
+        max_isometry_tables=COMPARISON_MAX_ISOMETRY_TABLES,
+    ),
+    field_sizes=(COMPARISON_SIDE,),
+    selected_samplings=("checkerboard_opposite",),
+    selected_m_selections=("catalogue",),
+    page_size=1,
+    grouped_dimensions=4,
+    group_wrap_after=16,
+    # preview_pixels=512,
+)
+display(comparison_view)

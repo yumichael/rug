@@ -137,6 +137,8 @@ def _product_rank(options, position):
 
 
 def _option_label(name, value):
+    if name == "strategy":
+        return exploration.STRATEGIES.get(value, str(value))
     if name == "m_selection":
         return {"catalogue": "Catalogue", "distinct_outputs": "Distinct outputs", "minimum_period": "Minimum period"}[
             value
@@ -166,7 +168,7 @@ def recipe_gallery(
     transposed=False,
     page_size=2,
     initial_page=1,
-    preview_pixels=512,
+    preview_pixels=384,
     wrap_after=0,
     grouped_dimensions=0,
     group_wrap_after=0,
@@ -374,10 +376,16 @@ def recipe_gallery(
         name = sampling.replace("_", " ")
         statistics = (
             f"{field.distinct_values:,} values · offset {spec['color_offset']:.3f}"
-            if "order_sample" in spec
+            if "order_sample" in spec or "comparison_sample" in spec
             else f"{field.zero_fraction:.1%} zero · {field.distinct_values:,} values"
         )
-        caption = f"{name} · {field.repeat_shape}\n{statistics}\nK=2^{k} · M=2^{m}"
+        modulus_label = f"2^{m}" if spec["M"] & (spec["M"] - 1) == 0 else str(spec["M"])
+        caption = f"{name} · {field.repeat_shape}\n{statistics}\nK=2^{k} · M={modulus_label}"
+        if "comparison_sample" in spec:
+            info = spec["comparison_sample"]
+            caption += f"\n{info['raw_partitions']} raw partitions · union multiplicity {info['multiplicity']}"
+            caption += f"\ngaps {info['min_gap_ratio']:.2g}-{info['max_gap_ratio']:.2g}x equal · max bin {info['largest_bin_fraction']:.0%}"
+            caption += f"\n{spec['combine'].upper()} · Pre {info['pre_power']} · Q={tuple(info['twist'])}"
         if "order_sample" in spec:
             info = spec["order_sample"]
             if "family_proposal" in info:
@@ -426,6 +434,8 @@ def recipe_gallery(
                 sampling = SAMPLINGS[sampling_index]
                 additional_sampling = ADDITIONAL_SAMPLINGS[additional_index]
                 heading = f"#{number} {recipe.combiner.upper()} · {size}x{size}"
+                if isinstance(recipe, exploration.ComparisonRecipe):
+                    heading = f"#{number} · {size}x{size}"
                 description = recipe_description(recipe, size) + " · M: " + _option_label("m_selection", m_selection)
                 panel, spec = recipe_panel(recipe, size, sampling, additional_sampling, m_selection)
                 if spec is not None:
@@ -692,7 +702,17 @@ def recipe_gallery(
         filter_rows[axis] = row
         return row
 
-    quick_names = ("size", "family", "valuation", "combiner", "m_selection", "sampling", "additional_sampling")
+    quick_names = (
+        "size",
+        "family",
+        "power_group",
+        "strategy",
+        "valuation",
+        "combiner",
+        "m_selection",
+        "sampling",
+        "additional_sampling",
+    )
     quick_filters: list[widgets.HBox | widgets.Accordion] = [
         choice_row(names.index(name)) for name in quick_names if name in names
     ]

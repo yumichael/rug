@@ -43,6 +43,7 @@ from .exploration import (
     pre_power_study_catalogue,
     pre_power_study_recipes,
     sample_field,
+    sampler_comparison_catalogue,
     xor_valuation_catalogue,
 )
 from .operations import steps
@@ -95,6 +96,7 @@ __all__ = [
     "realize_order_polynomial",
     "recipe_gallery",
     "sample_field",
+    "sampler_comparison_catalogue",
     "sampling_gallery",
     "signature",
     "stages",
