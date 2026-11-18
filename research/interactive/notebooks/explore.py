@@ -340,6 +340,8 @@ display(head_family_view)
 #
 # Strategy names distinguish raw equality classes from nonmerging circular orders and the minimum-modulus polynomial order union, which permits mergers. The isometric equality union spans every post-modulus; the isometric order union combines all nonmerging orders with an exact finite enumeration of coarser ones. The separate window strategy restricts post-precision to offsets above the first period-preserving bit. Enumeration exceeding the work limits shows an unavailable panel, never a smaller implicit sample space. Random color rotations are independent and reproducible. Synthetic levels are finite-precision lookup colors; the general-polynomial strategy retains the existing interpolation spacing. Use Catalogue M-selection to preserve each strategy's scale. Both checkerboard opposite and doubled checkerboard opposite use the same sampled scalar values and color rotation; select either or both in Sampling.
 #
+# TODO Add more color-order variety to strategy 8, `isometric_eqalities`. The isometric equality sampler currently uses the identity polynomial as its representative for each attainable equality partition. This is mathematically valid: all 2-adic isometries produce the same equality partition at a fixed modulus. However, it means this gallery does not explore how other isometric polynomials reorder the colors within those equality groups. For visual exploration, I would consider sampling an isometric post-polynomial after selecting the equality class. That would retain uniform equality-class sampling while giving the gallery more variety.
+#
 # %%
 COMPARISON_SIDE = 64
 COMPARISON_SEED = 0
