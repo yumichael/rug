@@ -1,0 +1,122 @@
+{
+  "conditional_classes_checked": 5762,
+  "pre_map_classes_checked": 2384,
+  "cross_base_classes_checked": 10592,
+  "top_bit_head_classes_checked": 314,
+  "side_64_top_bit_head_counts_with_twists": {
+    "or": {
+      "orders": 192,
+      "equalities": 16
+    },
+    "xor": {
+      "orders": 16,
+      "equalities": 1
+    },
+    "add": {
+      "orders": 16,
+      "equalities": 1
+    },
+    "absdiff": {
+      "orders": 24,
+      "equalities": 17
+    }
+  },
+  "native_and_large_precision_checks": 184,
+  "preserving_order_collision": {
+    "side": 16,
+    "pre_power": 4,
+    "post_power": 1,
+    "modulus": 64,
+    "raw_labels": [
+      1,
+      15,
+      17,
+      33,
+      49
+    ],
+    "normalized_denominator": 32,
+    "order_counts_by_shift_multiplicity": {
+      "1": 2,
+      "4": 6,
+      "5": 2
+    },
+    "anchored_numerators_by_multiplier": {
+      "1": [
+        0,
+        7,
+        8,
+        16,
+        24
+      ],
+      "5": [
+        0,
+        3,
+        8,
+        16,
+        24
+      ]
+    }
+  },
+  "class_counts": {
+    "16": {
+      "odd_odd_and_or_all_twists": 32,
+      "odd_odd_and_or_identity": 32,
+      "erased_checkerboard_tail_identity": 2,
+      "erased_checkerboard_tail_twists_odd_posts": 2,
+      "odd_odd_mult_identity": 4,
+      "odd_odd_mult_w1_all_twists": 4,
+      "odd_odd_linear_pre_add": 8,
+      "odd_odd_linear_pre_clmul": 8
+    },
+    "32": {
+      "odd_odd_and_or_all_twists": 384,
+      "odd_odd_and_or_identity": 384,
+      "erased_checkerboard_tail_identity": 4,
+      "erased_checkerboard_tail_twists_odd_posts": 4,
+      "odd_odd_mult_identity": 16,
+      "odd_odd_mult_w1_all_twists": 16,
+      "odd_odd_linear_pre_add": 16,
+      "odd_odd_linear_pre_clmul": 32
+    },
+    "64": {
+      "odd_odd_and_or_all_twists": 5632,
+      "odd_odd_and_or_identity": 3584,
+      "erased_checkerboard_tail_identity": 16,
+      "erased_checkerboard_tail_twists_odd_posts": 16,
+      "odd_odd_mult_identity": 64,
+      "odd_odd_mult_w1_all_twists": 128,
+      "odd_odd_linear_pre_add": 32,
+      "odd_odd_linear_pre_clmul": 128
+    },
+    "128": {
+      "odd_odd_and_or_all_twists": 88064,
+      "odd_odd_and_or_identity": 30720,
+      "erased_checkerboard_tail_identity": 64,
+      "erased_checkerboard_tail_twists_odd_posts": 64,
+      "odd_odd_mult_identity": 256,
+      "odd_odd_mult_w1_all_twists": 1024,
+      "odd_odd_linear_pre_add": 64,
+      "odd_odd_linear_pre_clmul": 512
+    },
+    "256": {
+      "odd_odd_and_or_all_twists": 1400832,
+      "odd_odd_and_or_identity": 253952,
+      "erased_checkerboard_tail_identity": 256,
+      "erased_checkerboard_tail_twists_odd_posts": 256,
+      "odd_odd_mult_identity": 1024,
+      "odd_odd_mult_w1_all_twists": 8192,
+      "odd_odd_linear_pre_add": 128,
+      "odd_odd_linear_pre_clmul": 2048
+    },
+    "4096": {
+      "odd_odd_and_or_all_twists": 589842874368,
+      "odd_odd_and_or_identity": 1071644672,
+      "erased_checkerboard_tail_identity": 65536,
+      "erased_checkerboard_tail_twists_odd_posts": 163840,
+      "odd_odd_mult_identity": 262144,
+      "odd_odd_mult_w1_all_twists": 268435456,
+      "odd_odd_linear_pre_add": 2048,
+      "odd_odd_linear_pre_clmul": 524288
+    }
+  }
+}

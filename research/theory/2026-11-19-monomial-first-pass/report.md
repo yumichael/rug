@@ -2,6 +2,8 @@
 
 The [selector and pre-twist extension](modulus-and-twists.md) compares Minimum period, Distinct outputs, and Catalogue for the full shared twist family.
 
+The [direct-sampling extension](direct-sampling.md) derives exact class counts and samplers that avoid catalogues for the stated families.
+
 Identity pre-twist and one post-power already give finite, exactly sampleable equality and circular order families for both requested samplings. At minimum precision, checkerboard-opposite OR, XOR, ADD, and ABSDIFF always use equally spaced distinct colors. So do odd-odd AND, OR, ADD, MULT, and CLMUL. Odd-odd XOR and ABSDIFF have finite circular order spaces but infinitely many numerical shift classes. Two paired examples below show what a larger post-modulus and a pre-twist can add.
 
 This first pass builds on the [fixed-base odd-input post-power theorem](../2026-11-03-combiners-and-order-classes/2026-11-04-combiners-and-order-classes.md#54-an-unbounded-power-theorem-for-odd-valued-basic-tables), the [checkerboard head and tail analysis](../2026-11-12-2-checkerboard-head-tail/theory.md), and the [odd-odd OR valuation theorem](../2026-11-12-1-tentative-pattern-explorations/pre-power-families.md#7-exact-valuation-stabilization). In particular, the previous precision-policy report gives the [checkerboard tail's common modulus](../2026-11-12-1-tentative-pattern-explorations/precision-policy.md#4-all-three-selectors-agree-in-the-opposite-checkerboard-tail). The extensions here are the complete color grids in the checkerboard head, a finite union across its pre-power groups, and the modulus and class results for the remaining odd-odd combiners.

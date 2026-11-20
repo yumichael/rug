@@ -2,6 +2,8 @@
 
 **Catalogue and Distinct outputs agree for every positive single post-power in this study.** Minimum period agrees with them for checkerboard-opposite OR and XOR, all four checkerboard tail combiners, and odd-odd AND and OR. In the other cases the distinction-preserving modulus can recover many color groups. A shared pre-twist can change the shape of those groups. On odd-odd sampling at fixed pre-power it preserves the complete color histogram.
 
+The [direct-sampling extension](direct-sampling.md) gives algebraic coordinates for the conditional unit cases and resolves several unions across pre-powers and twists.
+
 This extends the [first pass](report.md) to the workbench's three selectors and to the full shared family $f(z)=z+2z(z-1)Q(z)$ with $Q\in\mathbb{Z}[z]$. The pre-modulus and sample maps are the same as in the first pass. The result concerns $N=2^r\ge16$, positive even pre-power $q=2^wu$, positive post-power $p=2^vj$, and an odd multiplier. Choose the modulus for the powered values and apply an independent circular color offset afterward. The [earlier checkerboard tail result](../2026-11-12-1-tentative-pattern-explorations/precision-policy.md#4-all-three-selectors-agree-in-the-opposite-checkerboard-tail) already covers that tail, including shared twists.
 
 ## What each selector preserves
