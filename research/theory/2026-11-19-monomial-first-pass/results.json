@@ -1,0 +1,538 @@
+{
+  "side": 64,
+  "post_powers_for_window": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "checkerboard_opposite": {
+    "Pre 2": {
+      "representative_pre_powers": [
+        2
+      ],
+      "all_twists_raw_equalities": 416,
+      "all_post_powers": {
+        "equality": 5,
+        "order": 449,
+        "shift": 449
+      }
+    },
+    "Pre 4": {
+      "representative_pre_powers": [
+        4
+      ],
+      "all_twists_raw_equalities": 224,
+      "all_post_powers": {
+        "equality": 5,
+        "order": 33,
+        "shift": 33
+      }
+    },
+    "Pre 6 & 8": {
+      "representative_pre_powers": [
+        6,
+        8
+      ],
+      "all_twists_raw_equalities": 49,
+      "all_post_powers": {
+        "equality": 5,
+        "order": 42,
+        "shift": 42
+      }
+    },
+    "Tail": {
+      "representative_pre_powers": [
+        34,
+        38,
+        10,
+        14,
+        18,
+        22,
+        26,
+        30,
+        68,
+        12,
+        20,
+        28,
+        36,
+        44,
+        52,
+        60,
+        136,
+        24,
+        40,
+        56,
+        72,
+        88,
+        104,
+        120
+      ],
+      "all_twists_raw_equalities": 1,
+      "all_post_powers": {
+        "equality": 1,
+        "order": 16,
+        "shift": 16
+      }
+    }
+  },
+  "odd_odd": {
+    "and": {
+      "1": {
+        "window": {
+          "equality": 16,
+          "order": 1024,
+          "shift": 1024
+        },
+        "all_post_powers": {
+          "equality": 16,
+          "order": 1024,
+          "shift": 1024
+        }
+      },
+      "2": {
+        "window": {
+          "equality": 16,
+          "order": 512,
+          "shift": 512
+        },
+        "all_post_powers": {
+          "equality": 16,
+          "order": 512,
+          "shift": 512
+        }
+      },
+      "3": {
+        "window": {
+          "equality": 16,
+          "order": 256,
+          "shift": 256
+        },
+        "all_post_powers": {
+          "equality": 16,
+          "order": 256,
+          "shift": 256
+        }
+      },
+      "4": {
+        "window": {
+          "equality": 16,
+          "order": 256,
+          "shift": 256
+        },
+        "all_post_powers": {
+          "equality": 16,
+          "order": 256,
+          "shift": 256
+        }
+      }
+    },
+    "or": {
+      "1": {
+        "window": {
+          "equality": 16,
+          "order": 1024,
+          "shift": 1024
+        },
+        "all_post_powers": {
+          "equality": 16,
+          "order": 1024,
+          "shift": 1024
+        }
+      },
+      "2": {
+        "window": {
+          "equality": 16,
+          "order": 512,
+          "shift": 512
+        },
+        "all_post_powers": {
+          "equality": 16,
+          "order": 512,
+          "shift": 512
+        }
+      },
+      "3": {
+        "window": {
+          "equality": 16,
+          "order": 256,
+          "shift": 256
+        },
+        "all_post_powers": {
+          "equality": 16,
+          "order": 256,
+          "shift": 256
+        }
+      },
+      "4": {
+        "window": {
+          "equality": 16,
+          "order": 256,
+          "shift": 256
+        },
+        "all_post_powers": {
+          "equality": 16,
+          "order": 256,
+          "shift": 256
+        }
+      }
+    },
+    "xor": {
+      "1": {
+        "window": {
+          "equality": 48,
+          "order": 1280,
+          "shift": 2560
+        },
+        "all_post_powers": {
+          "equality": 48,
+          "order": 1536,
+          "shift": "infinite"
+        }
+      },
+      "2": {
+        "window": {
+          "equality": 48,
+          "order": 1280,
+          "shift": 2560
+        },
+        "all_post_powers": {
+          "equality": 48,
+          "order": 1536,
+          "shift": "infinite"
+        }
+      },
+      "3": {
+        "window": {
+          "equality": 48,
+          "order": 1280,
+          "shift": 2560
+        },
+        "all_post_powers": {
+          "equality": 48,
+          "order": 1536,
+          "shift": "infinite"
+        }
+      },
+      "4": {
+        "window": {
+          "equality": 48,
+          "order": 1280,
+          "shift": 2560
+        },
+        "all_post_powers": {
+          "equality": 48,
+          "order": 1536,
+          "shift": "infinite"
+        }
+      }
+    },
+    "add": {
+      "1": {
+        "window": {
+          "equality": 2,
+          "order": 256,
+          "shift": 256
+        },
+        "all_post_powers": {
+          "equality": 2,
+          "order": 256,
+          "shift": 256
+        }
+      },
+      "2": {
+        "window": {
+          "equality": 1,
+          "order": 64,
+          "shift": 64
+        },
+        "all_post_powers": {
+          "equality": 1,
+          "order": 64,
+          "shift": 64
+        }
+      },
+      "3": {
+        "window": {
+          "equality": 1,
+          "order": 32,
+          "shift": 32
+        },
+        "all_post_powers": {
+          "equality": 1,
+          "order": 32,
+          "shift": 32
+        }
+      },
+      "4": {
+        "window": {
+          "equality": 1,
+          "order": 16,
+          "shift": 16
+        },
+        "all_post_powers": {
+          "equality": 1,
+          "order": 16,
+          "shift": 16
+        }
+      },
+      "5": {
+        "window": {
+          "equality": 1,
+          "order": 16,
+          "shift": 16
+        },
+        "all_post_powers": {
+          "equality": 1,
+          "order": 16,
+          "shift": 16
+        }
+      }
+    },
+    "absdiff": {
+      "1": {
+        "window": {
+          "equality": 38,
+          "order": 256,
+          "shift": 576
+        },
+        "all_post_powers": {
+          "equality": 38,
+          "order": 256,
+          "shift": "infinite"
+        }
+      },
+      "2": {
+        "window": {
+          "equality": 35,
+          "order": 160,
+          "shift": 320
+        },
+        "all_post_powers": {
+          "equality": 35,
+          "order": 160,
+          "shift": "infinite"
+        }
+      },
+      "3": {
+        "window": {
+          "equality": 35,
+          "order": 160,
+          "shift": 320
+        },
+        "all_post_powers": {
+          "equality": 35,
+          "order": 160,
+          "shift": "infinite"
+        }
+      },
+      "4": {
+        "window": {
+          "equality": 35,
+          "order": 160,
+          "shift": 320
+        },
+        "all_post_powers": {
+          "equality": 35,
+          "order": 160,
+          "shift": "infinite"
+        }
+      }
+    },
+    "mult": {
+      "1": {
+        "window": {
+          "equality": 1,
+          "order": 64,
+          "shift": 64
+        },
+        "all_post_powers": {
+          "equality": 1,
+          "order": 64,
+          "shift": 64
+        }
+      },
+      "2": {
+        "window": {
+          "equality": 1,
+          "order": 32,
+          "shift": 32
+        },
+        "all_post_powers": {
+          "equality": 1,
+          "order": 32,
+          "shift": 32
+        }
+      },
+      "3": {
+        "window": {
+          "equality": 1,
+          "order": 16,
+          "shift": 16
+        },
+        "all_post_powers": {
+          "equality": 1,
+          "order": 16,
+          "shift": 16
+        }
+      },
+      "4": {
+        "window": {
+          "equality": 1,
+          "order": 16,
+          "shift": 16
+        },
+        "all_post_powers": {
+          "equality": 1,
+          "order": 16,
+          "shift": 16
+        }
+      }
+    },
+    "clmul": {
+      "1": {
+        "window": {
+          "equality": 8,
+          "order": 512,
+          "shift": 512
+        },
+        "all_post_powers": {
+          "equality": 8,
+          "order": 512,
+          "shift": 512
+        }
+      },
+      "2": {
+        "window": {
+          "equality": 8,
+          "order": 256,
+          "shift": 256
+        },
+        "all_post_powers": {
+          "equality": 8,
+          "order": 256,
+          "shift": 256
+        }
+      },
+      "3": {
+        "window": {
+          "equality": 8,
+          "order": 128,
+          "shift": 128
+        },
+        "all_post_powers": {
+          "equality": 8,
+          "order": 128,
+          "shift": 128
+        }
+      },
+      "4": {
+        "window": {
+          "equality": 8,
+          "order": 128,
+          "shift": 128
+        },
+        "all_post_powers": {
+          "equality": 8,
+          "order": 128,
+          "shift": 128
+        }
+      }
+    }
+  },
+  "odd_odd_absdiff_precision": {
+    "minimum": {
+      "M": 32,
+      "colors": 4,
+      "largest_cell_share": 0.265625,
+      "largest_circular_gap": 0.25
+    },
+    "all_raw_colors": {
+      "M": 256,
+      "colors": 32,
+      "largest_cell_share": 0.060547,
+      "largest_circular_gap": 0.03125
+    }
+  },
+  "checkerboard_pre_2_twist_witness": {
+    "or": {
+      "cells_row_col": [
+        [
+          0,
+          10
+        ],
+        [
+          0,
+          21
+        ]
+      ],
+      "identity_raw_value": 125,
+      "twisted_or_outputs": [
+        125,
+        61
+      ]
+    },
+    "xor": {
+      "cells_row_col": [
+        [
+          0,
+          4
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "identity_raw_value": 9,
+      "twisted_or_outputs": [
+        121,
+        25
+      ]
+    },
+    "add": {
+      "cells_row_col": [
+        [
+          0,
+          31
+        ],
+        [
+          2,
+          5
+        ]
+      ],
+      "identity_raw_value": 65,
+      "twisted_or_outputs": [
+        65,
+        113
+      ]
+    },
+    "absdiff": {
+      "cells_row_col": [
+        [
+          0,
+          4
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "identity_raw_value": 9,
+      "twisted_or_outputs": [
+        121,
+        25
+      ]
+    }
+  },
+  "native_checks_by_side": {
+    "16": 909,
+    "32": 1182,
+    "64": 1559,
+    "128": 1832
+  },
+  "additional_odd_odd_order_checks_at_side_64": 256
+}
