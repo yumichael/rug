@@ -6,8 +6,8 @@ from math import inf
 from random import Random
 
 import numpy as np
-
 from ruglab.engine import evaluate
+from ruglab.exploration import _study_twist
 from ruglab.research import _power_depth, _valuation
 from ruglab.sampler_comparison import power_groups
 
@@ -28,12 +28,16 @@ class Base:
     sampling: str
     combiner: str
     q: int
+    twist: tuple[int, ...] = ()
 
     @property
     def K(self):
         return self.size << (valuation(self.q) + (self.sampling == ODD_ODD))
 
     def spec(self, p=1, a=1, M=1, phase=0):
+        pre = [["pow", self.q]]
+        if self.twist:
+            pre.append(["poly", list(_study_twist(self.twist))])
         return {
             "n": self.size,
             "K": self.K,
@@ -41,7 +45,7 @@ class Base:
             "checkerboard_axis": "vertical",
             "sampling": self.sampling,
             "combine": self.combiner,
-            "pre": [["pow", self.q]],
+            "pre": pre,
             "post": [["pow", p], ["mult", a], ["add", phase]],
         }
 
@@ -60,7 +64,7 @@ class Base:
         return tuple(
             {
                 (int(a), int(b))
-                for a, b in zip(indices.ravel(), np.roll(indices, self.size // 2, axis=axis).ravel())
+                for a, b in zip(indices.ravel(), np.roll(indices, self.size // 2, axis=axis).ravel(), strict=True)
                 if a != b
             }
             for axis in (0, 1)
@@ -70,15 +74,15 @@ class Base:
         """Reuse the period valuation test on the actual sampled half-period edges."""
         values, _ = self.labels
         depth = max(
-            min((_power_depth(values[a], values[b], p) for a, b in edges), default=inf)
-            for edges in self.half_edges
+            min((_power_depth(values[a], values[b], p) for a, b in edges), default=inf) for edges in self.half_edges
         )
         if depth == inf:
             raise ValueError("One axis is already periodic at half the target side.")
         return 1 << (1 + int(depth))
 
-    def effective_values(self, p):
-        M = self.minimum(p)
+    def effective_values(self, p, M=None):
+        if M is None:
+            M = self.minimum(p)
         values, indices = self.labels
         anchor = pow(values[indices[0, 0]], p, M)
         anchored = tuple((pow(z, p, M) - anchor) % M for z in values)
@@ -91,9 +95,10 @@ class Witness:
     base: Base
     p: int
     a: int
+    modulus: int
 
     def spec(self, phase=0):
-        return self.base.spec(self.p, self.a, self.base.minimum(self.p), phase)
+        return self.base.spec(self.p, self.a, self.modulus, phase)
 
 
 def odd_odd_tail(size, combiner):
@@ -104,8 +109,7 @@ def odd_odd_prepowers(size, combiner):
     """All pre-power motifs up to the proved valuation tail and odd-part cycle."""
     t = valuation(size) - 1
     return tuple(
-        (w, tuple((1 << w) * u for u in range(1, 1 << t, 2)))
-        for w in range(1, odd_odd_tail(size, combiner) + 1)
+        (w, tuple((1 << w) * u for u in range(1, 1 << t, 2))) for w in range(1, odd_odd_tail(size, combiner) + 1)
     )
 
 
@@ -138,9 +142,7 @@ def postpowers(base):
     split_absdiff = base.sampling == CHECKERBOARD and base.combiner == "absdiff" and base.q < valuation(base.K)
     start = int(split_absdiff)
     return ((1,) if split_absdiff else ()) + tuple(
-        (1 << v) * u
-        for v in range(start, max(start, t - s + 1) + 1)
-        for u in range(1, 1 << t, 2)
+        (1 << v) * u for v in range(start, max(start, t - s + 1) + 1) for u in range(1, 1 << t, 2)
     )
 
 
@@ -176,7 +178,7 @@ def partition(values):
     return labels[indices]
 
 
-def catalogues(bases, powers, *, retain_shifts=True):
+def catalogues(bases, powers, *, retain_shifts=True, modulus=Base.minimum):
     """Deduplicate the supplied powers and every effective odd multiplier.
 
     A uniform index in a returned dictionary samples its discrete classes exactly.
@@ -186,25 +188,26 @@ def catalogues(bases, powers, *, retain_shifts=True):
     for base in bases:
         indices = base.labels[1].ravel()[positions]
         for p in powers(base):
-            outputs, modulus = base.effective_values(p)
-            if modulus > 1 << 31:
+            M = modulus(base, p)
+            outputs, effective_modulus = base.effective_values(p, M)
+            if effective_modulus > 1 << 31:
                 raise ValueError("This finite enumeration needs at most 31 effective bits.")
             values = np.asarray(outputs, dtype=np.int64)
-            equality.setdefault(partition(values[indices]).astype(np.uint32).tobytes(), Witness(base, p, 1))
-            for a in range(1, modulus, 2):
-                residues = (a * values) % modulus
-                witness = Witness(base, p, a)
+            equality.setdefault(partition(values[indices]).astype(np.uint32).tobytes(), Witness(base, p, 1, M))
+            for a in range(1, effective_modulus, 2):
+                residues = (a * values) % effective_modulus
+                witness = Witness(base, p, a, M)
                 ranks = np.unique(residues, return_inverse=True)[1]
                 order.setdefault(ranks[indices].astype(np.uint32).tobytes(), witness)
                 if retain_shifts:
-                    shift.setdefault((modulus, residues[indices].astype(np.uint32).tobytes()), witness)
+                    shift.setdefault((effective_modulus, residues[indices].astype(np.uint32).tobytes()), witness)
     return {"equality": equality, "order": order, "shift": shift}
 
 
 def draw(classes, rng: Random):
     """Choose one distinct class and then an independent uniform modular phase."""
     witness = tuple(classes.values())[rng.randrange(len(classes))]
-    return witness.spec(rng.randrange(witness.base.minimum(witness.p)))
+    return witness.spec(rng.randrange(witness.modulus))
 
 
 def checkerboard_groups(size):

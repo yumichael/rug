@@ -1,0 +1,1325 @@
+{
+  "side_for_complete_twist_catalogues": 64,
+  "post_powers_for_exhaustive_twist_modulus_checks": [
+    1,
+    2,
+    3,
+    4,
+    8,
+    16
+  ],
+  "workbench_recipe_and_selector_checks": 4455,
+  "all_twists_modulus_triples_checked": 9216,
+  "fixed_pre_power_twist_counts": {
+    "checkerboard_opposite": {
+      "2": {
+        "or": {
+          "twist_actions": 128,
+          "distinct_and_catalogue_partitions": 128,
+          "minimum_period_partitions_by_p": {
+            "1": 128,
+            "2": 128,
+            "3": 128,
+            "4": 128,
+            "8": 128,
+            "16": 128
+          }
+        },
+        "xor": {
+          "twist_actions": 128,
+          "distinct_and_catalogue_partitions": 32,
+          "minimum_period_partitions_by_p": {
+            "1": 32,
+            "2": 32,
+            "3": 32,
+            "4": 32,
+            "8": 32,
+            "16": 32
+          }
+        },
+        "add": {
+          "twist_actions": 128,
+          "distinct_and_catalogue_partitions": 128,
+          "minimum_period_partitions_by_p": {
+            "1": 4,
+            "2": 4,
+            "3": 4,
+            "4": 4,
+            "8": 4,
+            "16": 4
+          }
+        },
+        "absdiff": {
+          "twist_actions": 128,
+          "distinct_and_catalogue_partitions": 128,
+          "minimum_period_partitions_by_p": {
+            "1": 128,
+            "2": 4,
+            "3": 128,
+            "4": 4,
+            "8": 4,
+            "16": 4
+          }
+        }
+      },
+      "4": {
+        "or": {
+          "twist_actions": 64,
+          "distinct_and_catalogue_partitions": 64,
+          "minimum_period_partitions_by_p": {
+            "1": 64,
+            "2": 64,
+            "3": 64,
+            "4": 64,
+            "8": 64,
+            "16": 64
+          }
+        },
+        "xor": {
+          "twist_actions": 64,
+          "distinct_and_catalogue_partitions": 32,
+          "minimum_period_partitions_by_p": {
+            "1": 32,
+            "2": 32,
+            "3": 32,
+            "4": 32,
+            "8": 32,
+            "16": 32
+          }
+        },
+        "add": {
+          "twist_actions": 64,
+          "distinct_and_catalogue_partitions": 64,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        },
+        "absdiff": {
+          "twist_actions": 64,
+          "distinct_and_catalogue_partitions": 64,
+          "minimum_period_partitions_by_p": {
+            "1": 57,
+            "2": 8,
+            "3": 57,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        }
+      },
+      "6": {
+        "or": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        },
+        "xor": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "add": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "absdiff": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 1,
+            "3": 8,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        }
+      },
+      "8": {
+        "or": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        },
+        "xor": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "add": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "absdiff": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 1,
+            "3": 8,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        }
+      },
+      "10": {
+        "or": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "xor": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "add": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "absdiff": {
+          "twist_actions": 8,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        }
+      }
+    },
+    "odd_odd": {
+      "2": {
+        "and": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "or": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "xor": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        },
+        "add": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "absdiff": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 1,
+            "3": 16,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "mult": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 2,
+            "2": 2,
+            "3": 2,
+            "4": 2,
+            "8": 2,
+            "16": 2
+          }
+        },
+        "clmul": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        }
+      },
+      "4": {
+        "and": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "or": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "xor": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        },
+        "add": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "absdiff": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 1,
+            "3": 16,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "mult": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "clmul": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        }
+      },
+      "6": {
+        "and": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "or": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "xor": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        },
+        "add": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "absdiff": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 1,
+            "3": 16,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "mult": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 2,
+            "2": 2,
+            "3": 2,
+            "4": 2,
+            "8": 2,
+            "16": 2
+          }
+        },
+        "clmul": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        }
+      },
+      "8": {
+        "and": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "or": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "xor": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        },
+        "add": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "absdiff": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 1,
+            "3": 16,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "mult": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "clmul": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        }
+      },
+      "16": {
+        "and": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "or": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "xor": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        },
+        "add": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "absdiff": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 1,
+            "3": 16,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "mult": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "clmul": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        }
+      },
+      "32": {
+        "and": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "or": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 16,
+            "3": 16,
+            "4": 16,
+            "8": 16,
+            "16": 16
+          }
+        },
+        "xor": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 8,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        },
+        "add": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "absdiff": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 16,
+          "minimum_period_partitions_by_p": {
+            "1": 16,
+            "2": 1,
+            "3": 16,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "mult": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 1,
+            "2": 1,
+            "3": 1,
+            "4": 1,
+            "8": 1,
+            "16": 1
+          }
+        },
+        "clmul": {
+          "twist_actions": 16,
+          "distinct_and_catalogue_partitions": 1,
+          "minimum_period_partitions_by_p": {
+            "1": 8,
+            "2": 8,
+            "3": 8,
+            "4": 8,
+            "8": 8,
+            "16": 8
+          }
+        }
+      }
+    }
+  },
+  "odd_odd_twist_coordinate_checks": 640,
+  "odd_odd_operand_coverage": {
+    "32": {
+      "1": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      },
+      "2": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      },
+      "3": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      },
+      "4": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      }
+    },
+    "64": {
+      "1": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      },
+      "2": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 16
+      },
+      "3": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 16
+      },
+      "4": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 16
+      },
+      "5": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 16
+      }
+    },
+    "128": {
+      "1": {
+        "vary_pre_power": 32,
+        "vary_pre_power_and_twist": 128
+      },
+      "2": {
+        "vary_pre_power": 32,
+        "vary_pre_power_and_twist": 64
+      },
+      "3": {
+        "vary_pre_power": 32,
+        "vary_pre_power_and_twist": 32
+      },
+      "4": {
+        "vary_pre_power": 32,
+        "vary_pre_power_and_twist": 32
+      },
+      "5": {
+        "vary_pre_power": 32,
+        "vary_pre_power_and_twist": 32
+      },
+      "6": {
+        "vary_pre_power": 32,
+        "vary_pre_power_and_twist": 32
+      }
+    }
+  },
+  "checkerboard_tail_operand_coverage": {
+    "32": {
+      "1": {
+        "vary_pre_power": 4,
+        "vary_pre_power_and_twist": 4
+      },
+      "2": {
+        "vary_pre_power": 4,
+        "vary_pre_power_and_twist": 4
+      },
+      "3": {
+        "vary_pre_power": 4,
+        "vary_pre_power_and_twist": 4
+      },
+      "4": {
+        "vary_pre_power": 4,
+        "vary_pre_power_and_twist": 4
+      }
+    },
+    "64": {
+      "1": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      },
+      "2": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      },
+      "3": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      },
+      "4": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      },
+      "5": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      }
+    },
+    "128": {
+      "1": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      },
+      "2": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 16
+      },
+      "3": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 16
+      },
+      "4": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 16
+      },
+      "5": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 16
+      },
+      "6": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 16
+      }
+    }
+  },
+  "side_64_odd_odd_spatial_coverage_at_post_1_and_pre_valuation_1": {
+    "and": {
+      "minimum_period": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      },
+      "distinct_outputs_and_catalogue": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      }
+    },
+    "or": {
+      "minimum_period": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      },
+      "distinct_outputs_and_catalogue": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      }
+    },
+    "xor": {
+      "minimum_period": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      },
+      "distinct_outputs_and_catalogue": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      }
+    },
+    "add": {
+      "minimum_period": {
+        "vary_pre_power": 2,
+        "vary_pre_power_and_twist": 2
+      },
+      "distinct_outputs_and_catalogue": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      }
+    },
+    "absdiff": {
+      "minimum_period": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      },
+      "distinct_outputs_and_catalogue": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      }
+    },
+    "mult": {
+      "minimum_period": {
+        "vary_pre_power": 1,
+        "vary_pre_power_and_twist": 2
+      },
+      "distinct_outputs_and_catalogue": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      }
+    },
+    "clmul": {
+      "minimum_period": {
+        "vary_pre_power": 8,
+        "vary_pre_power_and_twist": 8
+      },
+      "distinct_outputs_and_catalogue": {
+        "vary_pre_power": 16,
+        "vary_pre_power_and_twist": 32
+      }
+    }
+  },
+  "side_16_pre_2_order_pilot": {
+    "checkerboard_opposite": {
+      "or": {
+        "post_powers": "all",
+        "identity": {
+          "minimum_period": 8,
+          "distinct_outputs_and_catalogue": 8,
+          "shared": 8
+        },
+        "all_twists": {
+          "minimum_period": 64,
+          "distinct_outputs_and_catalogue": 64,
+          "shared": 64
+        }
+      },
+      "xor": {
+        "post_powers": "all",
+        "identity": {
+          "minimum_period": 8,
+          "distinct_outputs_and_catalogue": 8,
+          "shared": 8
+        },
+        "all_twists": {
+          "minimum_period": 16,
+          "distinct_outputs_and_catalogue": 16,
+          "shared": 16
+        }
+      },
+      "add": {
+        "post_powers": "all",
+        "identity": {
+          "minimum_period": 8,
+          "distinct_outputs_and_catalogue": 32,
+          "shared": 0
+        },
+        "all_twists": {
+          "minimum_period": 8,
+          "distinct_outputs_and_catalogue": 128,
+          "shared": 0
+        }
+      },
+      "absdiff": {
+        "post_powers": "all",
+        "identity": {
+          "minimum_period": 5,
+          "distinct_outputs_and_catalogue": 48,
+          "shared": 0
+        },
+        "all_twists": {
+          "minimum_period": 16,
+          "distinct_outputs_and_catalogue": 320,
+          "shared": 0
+        }
+      }
+    },
+    "odd_odd": {
+      "and": {
+        "post_powers": "all",
+        "identity": {
+          "minimum_period": 4,
+          "distinct_outputs_and_catalogue": 4,
+          "shared": 4
+        },
+        "all_twists": {
+          "minimum_period": 16,
+          "distinct_outputs_and_catalogue": 16,
+          "shared": 16
+        }
+      },
+      "or": {
+        "post_powers": "all",
+        "identity": {
+          "minimum_period": 4,
+          "distinct_outputs_and_catalogue": 4,
+          "shared": 4
+        },
+        "all_twists": {
+          "minimum_period": 16,
+          "distinct_outputs_and_catalogue": 16,
+          "shared": 16
+        }
+      },
+      "xor": {
+        "post_powers": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "identity": {
+          "minimum_period": 14,
+          "distinct_outputs_and_catalogue": 220,
+          "shared": 4
+        },
+        "all_twists": {
+          "minimum_period": 28,
+          "distinct_outputs_and_catalogue": 840,
+          "shared": 8
+        }
+      },
+      "add": {
+        "post_powers": "all",
+        "identity": {
+          "minimum_period": 8,
+          "distinct_outputs_and_catalogue": 32,
+          "shared": 0
+        },
+        "all_twists": {
+          "minimum_period": 8,
+          "distinct_outputs_and_catalogue": 128,
+          "shared": 0
+        }
+      },
+      "absdiff": {
+        "post_powers": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "identity": {
+          "minimum_period": 10,
+          "distinct_outputs_and_catalogue": 220,
+          "shared": 0
+        },
+        "all_twists": {
+          "minimum_period": 22,
+          "distinct_outputs_and_catalogue": 880,
+          "shared": 0
+        }
+      },
+      "mult": {
+        "post_powers": "all",
+        "identity": {
+          "minimum_period": 4,
+          "distinct_outputs_and_catalogue": 16384,
+          "shared": 0
+        },
+        "all_twists": {
+          "minimum_period": 4,
+          "distinct_outputs_and_catalogue": 65536,
+          "shared": 0
+        }
+      },
+      "clmul": {
+        "post_powers": "all",
+        "identity": {
+          "minimum_period": 4,
+          "distinct_outputs_and_catalogue": 4096,
+          "shared": 0
+        },
+        "all_twists": {
+          "minimum_period": 8,
+          "distinct_outputs_and_catalogue": 16384,
+          "shared": 0
+        }
+      }
+    }
+  },
+  "side_64_atlas_metrics": [
+    {
+      "sampling": "checkerboard_opposite",
+      "combiner": "add",
+      "q": 2,
+      "p": 1,
+      "Identity": {
+        "Minimum period": {
+          "M": 128,
+          "colors": 32,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.03125
+        },
+        "Distinct / Catalogue": {
+          "M": 256,
+          "colors": 52,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.140625
+        }
+      },
+      "Q = 1": {
+        "Minimum period": {
+          "M": 128,
+          "colors": 32,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.03125
+        },
+        "Distinct / Catalogue": {
+          "M": 256,
+          "colors": 58,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.046875
+        }
+      }
+    },
+    {
+      "sampling": "checkerboard_opposite",
+      "combiner": "absdiff",
+      "q": 2,
+      "p": 1,
+      "Identity": {
+        "Minimum period": {
+          "M": 4,
+          "colors": 2,
+          "largest_cell_share": 0.6875,
+          "largest_circular_gap": 0.5
+        },
+        "Distinct / Catalogue": {
+          "M": 128,
+          "colors": 52,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.0625
+        }
+      },
+      "Q = 1": {
+        "Minimum period": {
+          "M": 4,
+          "colors": 2,
+          "largest_cell_share": 0.59375,
+          "largest_circular_gap": 0.5
+        },
+        "Distinct / Catalogue": {
+          "M": 128,
+          "colors": 58,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.046875
+        }
+      }
+    },
+    {
+      "sampling": "odd_odd",
+      "combiner": "xor",
+      "q": 2,
+      "p": 3,
+      "Identity": {
+        "Minimum period": {
+          "M": 16384,
+          "colors": 19,
+          "largest_cell_share": 0.25,
+          "largest_circular_gap": 0.0625
+        },
+        "Distinct / Catalogue": {
+          "M": 4194304,
+          "colors": 32,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.125366
+        }
+      },
+      "Q = 1": {
+        "Minimum period": {
+          "M": 16384,
+          "colors": 19,
+          "largest_cell_share": 0.25,
+          "largest_circular_gap": 0.0625
+        },
+        "Distinct / Catalogue": {
+          "M": 4194304,
+          "colors": 32,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.125366
+        }
+      }
+    },
+    {
+      "sampling": "odd_odd",
+      "combiner": "mult",
+      "q": 16,
+      "p": 1,
+      "Identity": {
+        "Minimum period": {
+          "M": 2048,
+          "colors": 32,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.03125
+        },
+        "Distinct / Catalogue": {
+          "M": 1048576,
+          "colors": 528,
+          "largest_cell_share": 0.001953,
+          "largest_circular_gap": 0.01239
+        }
+      },
+      "Q = 1": {
+        "Minimum period": {
+          "M": 2048,
+          "colors": 32,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.03125
+        },
+        "Distinct / Catalogue": {
+          "M": 1048576,
+          "colors": 528,
+          "largest_cell_share": 0.001953,
+          "largest_circular_gap": 0.01239
+        }
+      }
+    },
+    {
+      "sampling": "odd_odd",
+      "combiner": "clmul",
+      "q": 16,
+      "p": 1,
+      "Identity": {
+        "Minimum period": {
+          "M": 2048,
+          "colors": 32,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.03125
+        },
+        "Distinct / Catalogue": {
+          "M": 2097152,
+          "colors": 528,
+          "largest_cell_share": 0.001953,
+          "largest_circular_gap": 0.01944
+        }
+      },
+      "Q = 1": {
+        "Minimum period": {
+          "M": 2048,
+          "colors": 32,
+          "largest_cell_share": 0.03125,
+          "largest_circular_gap": 0.03125
+        },
+        "Distinct / Catalogue": {
+          "M": 2097152,
+          "colors": 528,
+          "largest_cell_share": 0.001953,
+          "largest_circular_gap": 0.01944
+        }
+      }
+    }
+  ]
+}
