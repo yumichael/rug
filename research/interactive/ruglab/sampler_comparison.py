@@ -384,6 +384,50 @@ class ComparisonRecipe:
     combiner: str = "or"
 
 
+def group_levels(strategy, counts, rng, concentration):
+    k = len(counts)
+    modulus = 1 << 53
+    if strategy.endswith("_equal"):
+        modulus = k
+        values = list(range(k))
+        rng.shuffle(values)
+    elif strategy.endswith("_dirichlet"):
+        gaps = [rng.gammavariate(concentration, 1) for _ in range(k)]
+        total = sum(gaps)
+        if not total or not np.isfinite(total):
+            raise ComparisonUnavailable("Dirichlet concentration is below useful numerical precision.")
+        gaps = [max(1, int(g / total * (modulus - k))) for g in gaps]
+        # Integer positive gaps retain every group despite finite precision.
+        modulus = sum(gaps)
+        values = np.cumsum([0, *gaps[:-1]]).tolist()
+        rng.shuffle(values)
+    elif strategy == "cell_mass":
+        order = list(range(k))
+        rng.shuffle(order)
+        values = [0] * k
+        position = 0
+        modulus = 2 * int(counts.sum())
+        for i in order:
+            values[i] = 2 * position + int(counts[i])
+            position += int(counts[i])
+    else:
+        values = rng.sample(range(modulus), k)
+    return np.array(values, dtype=np.int64), modulus
+
+
+def level_statistics(values, counts, modulus, offset):
+    levels = sorted(set(map(int, values)))
+    gaps = [b - a for a, b in zip(levels, [*levels[1:], levels[0] + modulus], strict=True)]
+    bins = [0] * 16
+    for value, count in zip(values, counts, strict=True):
+        bins[int(((int(value) / modulus + offset) % 1) * 16)] += int(count)
+    return {
+        "min_gap_ratio": min(gaps) * len(levels) / modulus,
+        "max_gap_ratio": max(gaps) * len(levels) / modulus,
+        "largest_bin_fraction": max(bins) / int(counts.sum()),
+    }
+
+
 def comparison_sample(recipe, size):
     entries, _ = base_pool(size, recipe.group, recipe.max_bases)
     rng = Random(f"comparison:{recipe.seed}:{size}:{recipe.group}:{recipe.strategy}:{recipe.draw}")
@@ -409,44 +453,12 @@ def comparison_sample(recipe, size):
         weights = [factorial(len(e.first) - 1) if order_weighted else 1 for e in entries]
         source = entries[pick(rng, list(enumerate(weights)))]
         basic = source.basic
-        k = len(basic.nodes)
-        modulus = 1 << 53
-        if strategy.endswith("_equal"):
-            modulus = k
-            values = list(range(k))
-            rng.shuffle(values)
-        elif strategy.endswith("_dirichlet"):
-            gaps = [rng.gammavariate(recipe.concentration, 1) for _ in range(k)]
-            total = sum(gaps)
-            if not total or not np.isfinite(total):
-                raise ComparisonUnavailable("Dirichlet concentration is below useful numerical precision.")
-            gaps = [max(1, int(g / total * (modulus - k))) for g in gaps]
-            # Integer positive gaps retain every group despite finite precision.
-            modulus = sum(gaps)
-            values = np.cumsum([0, *gaps[:-1]]).tolist()
-            rng.shuffle(values)
-        elif strategy == "cell_mass":
-            order = list(range(k))
-            rng.shuffle(order)
-            counts = np.bincount(basic.indices.ravel(), minlength=k)
-            values = [0] * k
-            position = 0
-            modulus = 2 * size * size
-            for i in order:
-                values[i] = 2 * position + int(counts[i])
-                position += int(counts[i])
-        else:
-            values = rng.sample(range(modulus), k)
-        values = np.array(values, dtype=np.int64)
+        counts = np.bincount(basic.indices.ravel(), minlength=len(basic.nodes))
+        values, modulus = group_levels(strategy, counts, rng, recipe.concentration)
     values = np.asarray(values, dtype=object)
     values = (values - values[basic.anchor]) % modulus
     offset = Random(f"comparison-rotation:{recipe.seed}:{size}:{recipe.group}:{recipe.draw}").random()
-    levels = sorted(set(map(int, values)))
-    gaps = [b - a for a, b in zip(levels, [*levels[1:], levels[0] + modulus], strict=True)]
-    bins = [0] * 16
     counts = np.bincount(basic.indices.ravel(), minlength=len(values))
-    for value, count in zip(values, counts, strict=True):
-        bins[int(((int(value) / modulus + offset) % 1) * 16)] += int(count)
     spec = {
         "n": size,
         "K": basic.K,
@@ -463,9 +475,7 @@ def comparison_sample(recipe, size):
             "group": str(recipe.group),
             "draw": recipe.draw,
             "raw_partitions": len(entries),
-            "min_gap_ratio": min(gaps) * len(levels) / modulus,
-            "max_gap_ratio": max(gaps) * len(levels) / modulus,
-            "largest_bin_fraction": max(bins) / (size * size),
+            **level_statistics(values, counts, modulus, offset),
             "multiplicity": multiplicity,
             "pre_power": basic.q,
             "twist": list(basic.Q),

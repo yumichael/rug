@@ -386,3 +386,37 @@ comparison_view, comparison_specs = recipe_gallery(
     # preview_pixels=512,
 )
 display(comparison_view)
+
+
+# %% [markdown]
+# ## Sample odd-odd equality and order classes
+#
+# Check any subset of AND, OR, XOR, ADD, ABSDIFF, MULT, and CLMUL under **Combiners (pooled)**. Every draw uses one deduplicated class space across the checked combiners, even pre-powers, and shared twists. All seven start checked. Draws are with replacement.
+#
+# **Strategy** chooses the class distribution and color spacing. The raw equality modes give each distinct partition equal weight. The nonmerging order modes weight a partition with $k$ groups by $(k-1)!$, then choose a uniform circular order. IID levels, equal spacing, Dirichlet gaps, and cell-mass spacing use the same rules as the checkerboard comparison. The optional polynomial modes allow mergers that preserve both axis periods. With MULT or CLMUL checked, the all-precision modes can produce any symmetric merger on the unordered pairs, including highly irregular patterns. Minimum M uses the existing antipodal-component spacing. Isometric equalities use the identity polynomial at the selected modulus. **Residue partitions / uniform circular orders** gives those same partitions factorial weights and assigns freely permuted levels.
+#
+# Odd-odd samples the original coordinates $(2x+1,2y+1)$ with $(1,1)$ at the center. The gallery uses `cmr.emergency` and an independent uniform color rotation. Choose **Catalogue** to keep the sampled levels. The [odd-odd report](../../theory/2026-11-21-odd-odd-samplers/report.md) gives the exact supports, proofs, and work limits. Saved specifications evaluate and export with the chosen colors.
+#
+# %%
+ODD_ODD_SIDE = 64
+ODD_ODD_SEED = 0
+ODD_ODD_DRAWS = 64
+ODD_ODD_CONCENTRATION = 1.0
+ODD_ODD_MAX_CELLS = 16_000_000
+
+odd_odd_view, odd_odd_specs = recipe_gallery(
+    odd_odd_catalogue(
+        seed=ODD_ODD_SEED,
+        draws=ODD_ODD_DRAWS,
+        concentration=ODD_ODD_CONCENTRATION,
+        max_cells=ODD_ODD_MAX_CELLS,
+    ),
+    field_sizes=(ODD_ODD_SIDE,),
+    selected_parameters={"strategy": ("equality_iid",)},
+    selected_samplings=("odd_odd",),
+    selected_m_selections=("catalogue",),
+    page_size=1,
+    grouped_dimensions=4,
+    group_wrap_after=16,
+)
+display(odd_odd_view)

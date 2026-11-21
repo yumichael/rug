@@ -138,7 +138,7 @@ def _product_rank(options, position):
 
 def _option_label(name, value):
     if name == "strategy":
-        return exploration.STRATEGIES.get(value, str(value))
+        return exploration.ODD_STRATEGIES.get(value, exploration.STRATEGIES.get(value, str(value)))
     if name == "m_selection":
         return {"catalogue": "Catalogue", "distinct_outputs": "Distinct outputs", "minimum_period": "Minimum period"}[
             value
@@ -208,6 +208,16 @@ def recipe_gallery(
     checkbox_style = CheckboxStyle()
     filter_label_layout = widgets.Layout(width="140px")
     row_layout = widgets.Layout(flex_flow="row wrap")
+    combiner_boxes = tuple(
+        widgets.Checkbox(
+            value=selected_combiners is None or name in selected_combiners,
+            description=_option_label("combiner", name),
+            indent=False,
+            layout=checkbox_layout,
+            style=checkbox_style,
+        )
+        for name in catalogue.combiner_pool
+    )
     page_anchor = None
     update_number = 0
     activity_status = widgets.HTML(
@@ -341,18 +351,19 @@ def recipe_gallery(
             return None
 
     @lru_cache(maxsize=128)
-    def recipe_at(position, size):
+    def recipe_at(position, size, combiners):
         parameters = {name: dimensions[name][index] for name, index in zip(catalogue.dimensions, position, strict=True)}
         current = catalogue_at(size)
         if current is None:
             return None
-        if catalogue.for_size is None:
-            return catalogue.build(**parameters)
-        for name, value in parameters.items():
-            matches = [v for v in current.dimensions[name] if str(v) == str(value)]
-            if not matches:
-                return None
-            parameters[name] = matches[0]
+        if catalogue.for_size is not None:
+            for name, value in parameters.items():
+                matches = [v for v in current.dimensions[name] if str(v) == str(value)]
+                if not matches:
+                    return None
+                parameters[name] = matches[0]
+        if combiners:
+            parameters["combiners"] = combiners
         return current.build(**parameters)
 
     @byte_lru(84, 128 << 20, _prepared_field_bytes)
@@ -376,7 +387,7 @@ def recipe_gallery(
         name = sampling.replace("_", " ")
         statistics = (
             f"{field.distinct_values:,} values · offset {spec['color_offset']:.3f}"
-            if "order_sample" in spec or "comparison_sample" in spec
+            if any(key in spec for key in ("order_sample", "comparison_sample", "odd_odd_sample"))
             else f"{field.zero_fraction:.1%} zero · {field.distinct_values:,} values"
         )
         modulus_label = f"2^{m}" if spec["M"] & (spec["M"] - 1) == 0 else str(spec["M"])
@@ -386,6 +397,10 @@ def recipe_gallery(
             caption += f"\n{info['raw_partitions']} raw partitions · union multiplicity {info['multiplicity']}"
             caption += f"\ngaps {info['min_gap_ratio']:.2g}-{info['max_gap_ratio']:.2g}x equal · max bin {info['largest_bin_fraction']:.0%}"
             caption += f"\n{spec['combine'].upper()} · Pre {info['pre_power']} · Q={tuple(info['twist'])}"
+        if "odd_odd_sample" in spec:
+            info = spec["odd_odd_sample"]
+            caption += f"\n{info['source_partitions']:,} source partitions · source {spec['combine'].upper()}"
+            caption += f"\ngaps {info['min_gap_ratio']:.2g}-{info['max_gap_ratio']:.2g}x equal · max bin {info['largest_bin_fraction']:.0%}"
         if "order_sample" in spec:
             info = spec["order_sample"]
             if "family_proposal" in info:
@@ -401,7 +416,7 @@ def recipe_gallery(
             caption += f"\n↳ {additional_name} · {width}x{height}"
         return PreviewPanel(palette_preview(indices, palette, preview_pixels), caption), spec
 
-    def render_page(entries, transpose, wrap, group_wrap):
+    def render_page(entries, transpose, wrap, group_wrap, combiners):
         rows = []
         specs = {}
         for cases in entries:
@@ -413,7 +428,7 @@ def recipe_gallery(
                 size_index, m_index, sampling_index, additional_index = case[len(recipe_options) :]
                 m_selection = M_SELECTIONS[m_index]
                 size = FIELD_SIZES[size_index]
-                recipe = recipe_at(recipe_position, size)
+                recipe = recipe_at(recipe_position, size, combiners)
                 if recipe is None:
                     headings.append(
                         (
@@ -433,9 +448,10 @@ def recipe_gallery(
                     continue
                 sampling = SAMPLINGS[sampling_index]
                 additional_sampling = ADDITIONAL_SAMPLINGS[additional_index]
-                heading = f"#{number} {recipe.combiner.upper()} · {size}x{size}"
-                if isinstance(recipe, exploration.ComparisonRecipe):
+                if isinstance(recipe, (exploration.ComparisonRecipe, exploration.OddOddRecipe)):
                     heading = f"#{number} · {size}x{size}"
+                else:
+                    heading = f"#{number} {recipe.combiner.upper()} · {size}x{size}"
                 description = recipe_description(recipe, size) + " · M: " + _option_label("m_selection", m_selection)
                 panel, spec = recipe_panel(recipe, size, sampling, additional_sampling, m_selection)
                 if spec is not None:
@@ -533,6 +549,8 @@ def recipe_gallery(
             tuple(i for i, box in enumerate(boxes[axis]) if box.value) if axis in boxes else initial_choices[axis]
             for axis in axis_indices
         )
+        combiners = tuple(name for name, box in zip(catalogue.combiner_pool, combiner_boxes, strict=True) if box.value)
+        empty_pool = bool(combiner_boxes) and not combiners
         if change and page_anchor is not None:
             position = filter_positions.get(change["owner"])
             if position is not None:
@@ -547,7 +565,7 @@ def recipe_gallery(
         entry_options = tuple(selected[i] for i in order[:split])
         panel_options = tuple(selected[i] for i in order[split:])
         panels_per_entry = prod(map(len, panel_options))
-        entry_count = prod(map(len, entry_options)) if panels_per_entry else 0
+        entry_count = prod(map(len, entry_options)) if panels_per_entry and not empty_pool else 0
         units = None
         if group_pages:
             assert catalogue.page_group is not None
@@ -602,11 +620,12 @@ def recipe_gallery(
         estimated_pixels = page_panels * (preview_pixels + 8) * (preview_pixels + 130)
         if not entry_count or estimated_pixels > 64 << 20:
             displayed_specs.clear()
-            message = (
-                "Select at least one value for each dimension."
-                if not entry_count
-                else "This page is too large. Reduce the page size, group fewer dimensions, or filter some values."
-            )
+            if empty_pool:
+                message = "Select at least one combiner."
+            elif not entry_count:
+                message = "Select at least one value for each dimension."
+            else:
+                message = "This page is too large. Reduce the page size, group fewer dimensions, or filter some values."
             page_status.value += f" · {message}"
             page_preview.layout.display = "none"
             page_preview.value = b""
@@ -623,7 +642,11 @@ def recipe_gallery(
         # The renderer puts entries in columns to fill a flat page across rows.
         entries_as_columns = transpose if grouped else not transpose
         png, specs = render(
-            tuple(page_entries), entries_as_columns, wrap_control.value, group_wrap_control.value if grouped else 0
+            tuple(page_entries),
+            entries_as_columns,
+            wrap_control.value,
+            group_wrap_control.value if grouped else 0,
+            combiners,
         )
         unchanged = page_preview.layout.display != "none" and page_preview.value == png
         if len(specs) < page_panels:
@@ -716,6 +739,15 @@ def recipe_gallery(
     quick_filters: list[widgets.HBox | widgets.Accordion] = [
         choice_row(names.index(name)) for name in quick_names if name in names
     ]
+    if combiner_boxes:
+        for box in combiner_boxes:
+            box.observe(redraw, names="value")
+        quick_filters.insert(
+            1,
+            widgets.HBox(
+                [widgets.Label("Combiners (pooled)", layout=filter_label_layout), *combiner_boxes], layout=row_layout
+            ),
+        )
     other_axes = [i for i, name in enumerate(names) if name not in quick_names]
     hidden_filters = widgets.VBox()
     more_filters = None

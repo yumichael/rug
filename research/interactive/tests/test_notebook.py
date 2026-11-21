@@ -327,6 +327,37 @@ def test_pre_power_gallery_selects_other_combiners():
     assert dimension.options[0][0] == "Field size"
 
 
+def test_odd_odd_gallery_redraws_one_deduplicated_combiner_pool():
+    view, specs = recipe_gallery(
+        exploration.odd_odd_catalogue(draws=1, strategies=("equality_iid",)),
+        field_sizes=(16,),
+        selected_combiners=("mult", "clmul"),
+        selected_samplings=("odd_odd",),
+        page_size=1,
+        preview_pixels=32,
+    )
+    row = next(
+        w for w in _filter_rows(view) if isinstance(w, widgets.HBox) and w.children[0].value == "Combiners (pooled)"
+    )
+    boxes = {box.description: box for box in row.children[1:]}
+    initial = specs.copy()
+    assert len(initial) == 1
+    info = next(iter(specs.values()))["odd_odd_sample"]
+    assert info["combiners"] == ["mult", "clmul"]
+    assert info["source_partitions"] == 1
+
+    boxes["MULT"].value = False
+    spec = next(iter(specs.values()))
+    assert spec["combine"] == "clmul"
+    assert spec["odd_odd_sample"]["combiners"] == ["clmul"]
+    boxes["CLMUL"].value = False
+    assert not specs
+    assert "Select at least one combiner." in view.children[0].children[-1].value
+    boxes["MULT"].value = True
+    boxes["CLMUL"].value = True
+    assert specs == initial
+
+
 def _m_choices(gallery):
     row = next(
         row for row in _filter_rows(gallery) if isinstance(row, widgets.HBox) and row.children[0].value == "M-selection"

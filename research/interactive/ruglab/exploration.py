@@ -12,6 +12,7 @@ import numpy as np
 from .engine import Result
 from .head_families import head_family_cases
 from .indexed import IndexedValues, byte_lru, combination_table
+from .odd_odd import ODD_COMBINERS, ODD_STRATEGIES, OddOddRecipe, odd_odd_sample
 from .operations import operation
 from .order_classes import ORDER_COMBINERS, OrderClassRecipe, OrderSampleUnavailable, head_powers, order_sample
 from .post_polynomials import POST_STRATA, draw_post_polynomial, xor_valuation_tail
@@ -99,15 +100,19 @@ class CatalogueUnavailable(ValueError):
     """The catalogue has no construction for a requested domain."""
 
 
+type Recipe = PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe | ComparisonRecipe | OddOddRecipe
+
+
 @dataclass(frozen=True)
-class RecipeCatalogue:
+class RecipeCatalogue[R: Recipe]:
     """Ordered recipe dimensions and a factory accepting their named values."""
 
     dimensions: dict[str, tuple]
-    build: Callable[..., PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe | ComparisonRecipe]
+    build: Callable[..., R]
 
-    for_size: Callable[[int], RecipeCatalogue] | None = None
+    for_size: Callable[[int], RecipeCatalogue[R]] | None = None
     page_group: tuple[str, Callable] | None = None
+    combiner_pool: tuple[str, ...] = ()
 
     def recipes(self):
         return [
@@ -207,6 +212,25 @@ def post_polynomial_recipes(draws=24, seed=0):
     return post_polynomial_catalogue(draws, seed).recipes()
 
 
+def odd_odd_catalogue(*, draws=16, seed=0, concentration=1.0, strategies=tuple(ODD_STRATEGIES), max_cells=16_000_000):
+    """Draw from the deduplicated union of the checked odd-odd combiners."""
+    if draws < 1 or max_cells < 1 or not np.isfinite(concentration) or concentration <= 0:
+        raise ValueError("Use positive draws, concentration, and a positive cell-work limit.")
+    if not strategies or set(strategies) - ODD_STRATEGIES.keys():
+        raise ValueError("Choose known odd-odd strategies.")
+
+    def build(strategy, draw, combiners=ODD_COMBINERS):
+        subset = set(combiners)
+        if not subset or subset.difference(ODD_COMBINERS):
+            raise ValueError("Choose a nonempty subset of the odd-odd combiners.")
+        ordered = tuple(combiner for combiner in ODD_COMBINERS if combiner in subset)
+        return OddOddRecipe(ordered, strategy, draw, seed, concentration, max_cells)
+
+    return RecipeCatalogue(
+        {"strategy": tuple(strategies), "draw": tuple(range(draws))}, build, combiner_pool=ODD_COMBINERS
+    )
+
+
 def order_class_catalogue(family="tail", *, seed=0, draws=64, size=64, twists=((), (1,), (3, -2, 1))):
     """Uniform whole-tail or conditional-head order draws, fastest by draw."""
     if family not in ("tail", "head") or draws < 1:
@@ -247,6 +271,8 @@ def head_family_catalogue(*, size=64, seed=0, draws=32, twists=((), (1,), (3, -2
 def recipe_description(recipe, size):
     if isinstance(recipe, ComparisonRecipe):
         return f"{recipe.group} · {STRATEGIES[recipe.strategy]} · draw {recipe.draw + 1}"
+    if isinstance(recipe, OddOddRecipe):
+        return f"{ODD_STRATEGIES[recipe.strategy]} · draw {recipe.draw + 1}"
     if isinstance(recipe, OrderClassRecipe):
         if recipe.proposal:
             return f"{recipe.candidate_family} · example {recipe.preview_example + 1}"
@@ -735,7 +761,7 @@ def _opposite_layout(base, outputs, spec, size, sampling):
 
 
 def _sample_field(
-    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe | ComparisonRecipe,
+    recipe: Recipe,
     size: int,
     sampling: str,
     *,
@@ -759,6 +785,15 @@ def _sample_field(
         raise ValueError("Unknown M-selection: " + str(m_selection))
     if minimum_post_modulus and m_selection != "minimum_period":
         raise ValueError("minimum_post_modulus=True conflicts with the selected M policy")
+    if isinstance(recipe, OddOddRecipe):
+        if sampling != "odd_odd" or m_selection != "catalogue":
+            raise PeriodTargetError("Choose Catalogue and odd-odd sampling for these spatial classes.")
+        try:
+            values, spec, zero_fraction = odd_odd_sample(recipe, size)
+        except ComparisonUnavailable as error:
+            raise PeriodTargetError(str(error)) from error
+        repeat = _repeat_shape(values.indices) or "smaller tile"
+        return SampledField(values, spec, repeat, zero_fraction)
     if isinstance(recipe, ComparisonRecipe):
         if sampling not in ("checkerboard_opposite", "doubled_checkerboard_opposite") or m_selection != "catalogue":
             raise PeriodTargetError(
@@ -818,7 +853,7 @@ def _sample_field(
 
 
 def sample_field(
-    recipe: PatternRecipe | PostRecipe | PrePowerStudyRecipe | OrderClassRecipe | ComparisonRecipe,
+    recipe: Recipe,
     size: int,
     sampling: str,
     *,

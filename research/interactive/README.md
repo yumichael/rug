@@ -87,7 +87,7 @@ Both **Sampling** and **Additional sampling** include **Doubled checkerboard opp
 
 The XOR polynomial gallery draws at its original stratum precision before applying this option. Minimizing can map several draws to the same pattern, so uniformity of the original draws does not imply uniformity over the minimized patterns. The option does not change which polynomial was drawn.
 
-The last explore gallery compares even pre-powers across OR, AND, XOR, addition, absolute difference, multiplication, and carryless multiplication. Choose them with **Combiner**; OR is selected initially. Each sweep retains the same 32 pre-powers, twists, and post-polynomials. The pre-modulus follows the sampling rule, and **Minimum period** tests the selected combiner’s actual field periods.
+The **Compare pre-powers across combiners** gallery compares even pre-powers across OR, AND, XOR, addition, absolute difference, multiplication, and carryless multiplication. Choose them with **Combiner**; OR is selected initially. Each sweep retains the same 32 pre-powers, twists, and post-polynomials. The pre-modulus follows the sampling rule, and **Minimum period** tests the selected combiner’s actual field periods.
 
 Recipe galleries load automatically in stages: the native preview is published first, visible controls are shown on the next kernel event-loop turn, and hidden recipe filters are constructed on a subsequent turn. No expansion is needed to trigger loading. The fixed-height status row shows **Loading controls…**, then **Loading parameter filters…**, until the widget frontend reports those views ready. Page and filter changes update the same native image.
 
@@ -110,6 +110,8 @@ The **Compare XOR post-polynomial valuations** notebook section uses `xor_valuat
 ## Checkerboard sampler comparison
 
 The **Compare checkerboard samplers** notebook section compares class targets and color-spacing laws across dynamically rebuilt power groups. It covers all admissible shared twists across OR, XOR, ADD, and ABSDIFF, enumerating and deduplicating head partitions and using the proved tail reductions. Change the seed, draws, concentration, strategies, and exact-work limits in that cell. Strategy and Power group filters control the comparison; no base selection is required. The [research report](../theory/2026-11-15-sampler-comparison/report.md) gives the definitions, uniformity proofs, all-precision additions, and feasibility limits. In particular, minimum-modulus orders differ from unrestricted-precision orders, and the extra finite-window isometric tail panels concern the canonical tail pre-power. Work limits produce unavailable panels without substituting a smaller twist set. Use Catalogue with checkerboard opposite or doubled checkerboard opposite to preserve these targets; Additional sampling can change their visible equivalences.
+
+The **Sample odd-odd equality and order classes** section draws uniformly from the deduplicated class space of any checked subset of the seven combiners. It compares raw partitions, their circular orders, isometric residue partitions, and full-period polynomial mergers. The [odd-odd theory](../theory/2026-11-21-odd-odd-samplers/report.md) gives the class definitions, exact distributions, and notebook size limits.
 
 ## Competing head-family proposals
 

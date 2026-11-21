@@ -70,12 +70,11 @@ def _map_structure(structure, nodes):
     return [(group(a), group(b), [group(g) for g in p], [group(g) for g in q]) for a, b, p, q in structure]
 
 
-def _interpolated_targets(basic, structure):
-    # These are the label placements and common denominator scale used by
-    # realize.py, with no spacing optimization or rank-color substitution.
+def component_levels(count, anchor, structure):
+    """Place antipodal components and intervening levels at dyadic precision."""
     need = sum(1 + max(len(p), len(q)) for _, _, p, q in structure)
     half = 1 << (need - 1).bit_length()
-    labels = [0] * len(basic.nodes)
+    labels = [0] * count
     position = 0
     for a, b, p, q in structure:
         for node in a:
@@ -87,11 +86,17 @@ def _interpolated_targets(basic, structure):
                 for node in group:
                     labels[node] = start + offset
         position += 1 + max(len(p), len(q))
-    labels = [(v - labels[basic.anchor]) % (2 * half) for v in labels]
+    labels = [(v - labels[anchor]) % (2 * half) for v in labels]
+    return labels, 2 * half
+
+
+def _interpolated_targets(basic, structure):
+    # These placements use the same common denominator scale as realize.py.
+    labels, modulus = component_levels(len(basic.nodes), basic.anchor, structure)
     # Valuation of each Lagrange denominator is the sum of its factor depths.
     # This equals realize.py's depth without constructing the huge products.
     depth = max(sum(int(nu(t - u)) for j, u in enumerate(basic.nodes) if i != j) for i, t in enumerate(basic.nodes))
-    return np.array([v << depth for v in labels], dtype=object), (2 * half) << depth
+    return np.array([v << depth for v in labels], dtype=object), modulus << depth
 
 
 @byte_lru(8, 64 << 20, lambda result: result.nbytes)
