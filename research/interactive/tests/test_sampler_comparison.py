@@ -4,6 +4,7 @@ from fractions import Fraction
 from itertools import product
 from math import factorial
 
+import ipywidgets as widgets
 import numpy as np
 import pytest
 from ruglab._orders.combinatorics import admissible
@@ -17,6 +18,7 @@ from ruglab.sampler_comparison import (
     isometric_coordinates,
     isometric_equalities,
     isometric_order_extras,
+    isometric_window_orders,
     partition_count,
     power_groups,
 )
@@ -31,15 +33,45 @@ def test_complete_side64_twist_pools_and_domain_groups():
     assert power_groups(1024)[-2].powers == (10,)
 
 
+def test_subset_unions_deduplicate_partitions_and_isometric_orders():
+    size = 16
+    group = power_groups(size)[0]
+    combiners = ("xor", "add")
+    _, all_bases = base_pool(size, group, 4096)
+    expected = {canonical_partition(basic.indices).tobytes() for basic in all_bases if basic.combiner in combiners}
+    entries, _ = base_pool(size, group, 4096, combiners=combiners)
+    assert {entry.partition.tobytes() for entry in entries} == expected
+    assert len(entries) == 3
+
+    def window_keys(scope):
+        choices = isometric_window_orders(size, group, 4096, (0, 1, 2), 50000, combiners=scope)
+        keys = set()
+        for basic, values, _ in choices:
+            _, ranks = np.unique(values, return_inverse=True)
+            anchored = (ranks - ranks[basic.anchor]) % (int(ranks.max()) + 1)
+            keys.add(anchored[basic.indices].tobytes())
+        return keys
+
+    xor, add = (window_keys((combiner,)) for combiner in combiners)
+    assert xor & add
+    assert window_keys(combiners) == xor | add
+    # XOR's raw partition already supplies the coarse ADD orders in this pool.
+    assert isometric_order_extras(size, group, 4096, 50000, combiners=("add",))
+    assert not isometric_order_extras(size, group, 4096, 50000, combiners=combiners)
+
+
 @pytest.mark.parametrize("sampling", ("checkerboard_opposite", "doubled_checkerboard_opposite"))
 @pytest.mark.parametrize("strategy", tuple(STRATEGIES))
 @pytest.mark.parametrize("group", power_groups(8))
-def test_lookup_roundtrips_with_full_period_and_reproducible_rotation(strategy, group, sampling):
-    recipe = ComparisonRecipe(group, strategy, 1, 17)
+@pytest.mark.parametrize("combiners", [("or", "xor", "add", "absdiff"), ("xor", "add")])
+def test_lookup_roundtrips_with_full_period_and_reproducible_rotation(strategy, group, sampling, combiners):
+    recipe = ComparisonRecipe(group, strategy, 1, 17, combiners=combiners)
     field = sample_field(recipe, 8, sampling, centered=True)
     result = evaluate(field.spec)
     assert np.array_equal(result.values, field.values.expand())
     assert periods(result, certified_torus=True) == (8, 8)
+    assert field.spec["combine"] in combiners
+    assert field.spec["comparison_sample"]["combiners"] == list(combiners)
     assert 0 <= field.spec["color_offset"] < 1
     assert sample_field(recipe, 8, sampling, centered=True).spec == field.spec
 
@@ -153,7 +185,24 @@ def test_gallery_and_dynamic_groups():
         preview_pixels=32,
     )
     assert view.children[1].value and len(specs) == 2
-    assert all("comparison_sample" in s for s in specs.values())
+    rows = {
+        w.children[0].value: w
+        for w in view.children[0].children
+        if isinstance(w, widgets.HBox) and w.children and isinstance(w.children[0], widgets.Label)
+    }
+    combiner_boxes = {box.description: box for box in rows["Combiners (pooled)"].children[1:]}
+    assert all(box.value for box in combiner_boxes.values())
+    combiner_boxes["OR"].value = combiner_boxes["ABSDIFF"].value = False
+    assert len(specs) == 2
+    assert all(spec["comparison_sample"]["raw_partitions"] == 1 for spec in specs.values())
+
+    size_boxes = {box.description: box for box in rows["Field size"].children[1:]}
+    size_boxes["8"].value = False
+    size_boxes["64"].value = True
+    assert len(specs) == 2
+    for spec in specs.values():
+        assert spec["comparison_sample"]["combiners"] == ["xor", "add"]
+        assert spec["comparison_sample"]["raw_partitions"] == 160
 
 
 def test_isometric_high_precision_witness_has_global_isometric_polynomial():

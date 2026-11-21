@@ -336,7 +336,9 @@ display(head_family_view)
 # %% [markdown]
 # ## Compare checkerboard samplers
 #
-# Compare spatial classes after deduplicating the complete admissible twist family across OR, XOR, ADD, and ABSDIFF. The power groups rebuild with Field size; at side 64 they are Pre 2, Pre 4, Pre 6 & 8, and Tail. The complete isometric tail strategies use a finite valuation reduction across all erased powers and twists; the separate precision-window strategy uses the canonical tail pre-power and its full twist set. The [comparison report](../../theory/2026-11-15-sampler-comparison/report.md) defines every target, proves the weighting and isometric constructions, and states the scope and limits.
+# Check any subset of OR, XOR, ADD, and ABSDIFF under **Combiners (pooled)**. All four start checked. Each strategy draws from the deduplicated spatial classes across the checked combiners and all admissible twists for the selected power group. The power groups rebuild with Field size. At side 64 they are Pre 2, Pre 4, Pre 6 & 8, and Tail.
+#
+# The complete isometric tail strategies use a finite valuation reduction across all erased powers and twists. The separate precision-window strategy uses the canonical tail pre-power and its full twist set. The [comparison report](../../theory/2026-11-15-sampler-comparison/report.md) defines the class spaces, weighting, and work limits.
 #
 # Strategy names distinguish raw equality classes from nonmerging circular orders and the minimum-modulus polynomial order union, which permits mergers. The isometric equality union spans every post-modulus; the isometric order union combines all nonmerging orders with an exact finite enumeration of coarser ones. The separate window strategy restricts post-precision to offsets above the first period-preserving bit. Enumeration exceeding the work limits shows an unavailable panel, never a smaller implicit sample space. Random color rotations are independent and reproducible. Synthetic levels are finite-precision lookup colors; the general-polynomial strategy retains the existing interpolation spacing. Use Catalogue M-selection to preserve each strategy's scale. Both checkerboard opposite and doubled checkerboard opposite use the same sampled scalar values and color rotation; select either or both in Sampling.
 #
@@ -412,7 +414,7 @@ odd_odd_view, odd_odd_specs = recipe_gallery(
         max_cells=ODD_ODD_MAX_CELLS,
     ),
     field_sizes=(ODD_ODD_SIDE,),
-    selected_parameters={"strategy": ("equality_iid",)},
+    # selected_parameters={"strategy": ("equality_iid",)},
     selected_samplings=("odd_odd",),
     selected_m_selections=("catalogue",),
     page_size=1,

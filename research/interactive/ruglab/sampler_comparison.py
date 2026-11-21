@@ -50,15 +50,15 @@ def bounded_cache(size):
 
     def decorate(function):
         @lru_cache(maxsize=size)
-        def cached(*args):
+        def cached(*args, **kwargs):
             try:
-                return function(*args)
+                return function(*args, **kwargs)
             except ComparisonUnavailable as error:
                 return str(error)
 
         @wraps(function)
-        def call(*args):
-            result = cached(*args)
+        def call(*args, **kwargs):
+            result = cached(*args, **kwargs)
             if isinstance(result, str):
                 raise ComparisonUnavailable(result)
             return result
@@ -109,12 +109,13 @@ def entry(basic):
 
 
 @bounded_cache(6)
-def base_pool(size, group, max_bases, tail_twists=False):
+def base_pool(size, group, max_bases, tail_twists=False, *, combiners=ORDER_COMBINERS):
     if group not in power_groups(size):
         raise ComparisonUnavailable("This power group is absent at the selected size.")
     reduced_tail = group.tail and not tail_twists
     spaces = [(group.powers[0], [], [])] if reduced_tail else [(q, *twist_space(size, q)) for q in group.powers]
-    combiners = ("or",) if reduced_tail else ORDER_COMBINERS
+    # In the erased tail every combiner returns the same surviving operand.
+    combiners = combiners[:1] if reduced_tail else combiners
     descriptions = sum(len(combiners) * (1 << sum(bits)) for _, bits, _ in spaces)
     if descriptions > max_bases:
         raise ComparisonUnavailable(
@@ -220,9 +221,9 @@ def minimum_bits(basic):
 
 
 @lru_cache(maxsize=8)
-def isometric_bases(size, group, max_bases):
+def isometric_bases(size, group, max_bases, *, combiners=ORDER_COMBINERS):
     if not group.tail:
-        return base_pool(size, group, max_bases)[1]
+        return base_pool(size, group, max_bases, combiners=combiners)[1]
     # At low (merging) precision all twists and odd exponent parts are
     # absorbed by global post-isometries. Valuations stabilize at r-4.
     r = size.bit_length() - 1
@@ -232,12 +233,12 @@ def isometric_bases(size, group, max_bases):
         while (1 << w) * u < r + w:
             u += 2
         powers.append((1 << w) * u)
-    return tuple(Basic(size, q, (), "or") for q in powers)
+    return tuple(Basic(size, q, (), combiners[0]) for q in powers)
 
 
 @bounded_cache(8)
-def isometric_equalities(size, group, max_bases):
-    bases = isometric_bases(size, group, max_bases)
+def isometric_equalities(size, group, max_bases, *, combiners=ORDER_COMBINERS):
+    bases = isometric_bases(size, group, max_bases, combiners=combiners)
     result = {}
     for basic in bases:
         nodes = np.array(basic.nodes, dtype=np.int64)
@@ -281,8 +282,8 @@ def isometric_coordinates(nodes, modulus):
 
 
 @bounded_cache(8)
-def isometric_window_orders(size, group, max_bases, offsets, limit):
-    _, bases = base_pool(size, group, max_bases, True)
+def isometric_window_orders(size, group, max_bases, offsets, limit, *, combiners=ORDER_COMBINERS):
+    _, bases = base_pool(size, group, max_bases, True, combiners=combiners)
     jobs, work = [], 0
     seen_jobs = set()
     for basic in bases:
@@ -317,10 +318,10 @@ def isometric_window_orders(size, group, max_bases, offsets, limit):
 
 
 @bounded_cache(8)
-def isometric_order_extras(size, group, max_bases, limit):
+def isometric_order_extras(size, group, max_bases, limit, *, combiners=ORDER_COMBINERS):
     """Coarse orders outside the symbolic nonmerging-order union."""
-    entries, _ = base_pool(size, group, max_bases)
-    bases = isometric_bases(size, group, max_bases)
+    entries, _ = base_pool(size, group, max_bases, combiners=combiners)
+    bases = isometric_bases(size, group, max_bases, combiners=combiners)
     raw_keys = {e.partition.tobytes() for e in entries}
     extras, seen, work = {}, set(), 0
     for basic in bases:
@@ -355,7 +356,9 @@ def isometric_order_extras(size, group, max_bases, limit):
 
 
 def draw_isometric_union(entries, size, recipe, rng):
-    extras = isometric_order_extras(size, recipe.group, recipe.max_bases, recipe.max_isometry_tables)
+    extras = isometric_order_extras(
+        size, recipe.group, recipe.max_bases, recipe.max_isometry_tables, combiners=recipe.combiners
+    )
     weights = [factorial(len(e.first) - 1) for e in entries]
     choice = pick(rng, [*enumerate(weights), (len(entries), len(extras))])
     if choice == len(entries):
@@ -381,7 +384,13 @@ class ComparisonRecipe:
     max_bases: int = 4096
     isometry_offsets: tuple[int, ...] = (0, 1, 2)
     max_isometry_tables: int = 50000
-    combiner: str = "or"
+    combiners: tuple[str, ...] = ORDER_COMBINERS
+
+    def __post_init__(self):
+        selected = set(self.combiners)
+        if not selected or selected.difference(ORDER_COMBINERS):
+            raise ValueError("Choose a nonempty subset of the checkerboard comparison combiners.")
+        object.__setattr__(self, "combiners", tuple(c for c in ORDER_COMBINERS if c in selected))
 
 
 def group_levels(strategy, counts, rng, concentration):
@@ -429,7 +438,7 @@ def level_statistics(values, counts, modulus, offset):
 
 
 def comparison_sample(recipe, size):
-    entries, _ = base_pool(size, recipe.group, recipe.max_bases)
+    entries, _ = base_pool(size, recipe.group, recipe.max_bases, combiners=recipe.combiners)
     rng = Random(f"comparison:{recipe.seed}:{size}:{recipe.group}:{recipe.strategy}:{recipe.draw}")
     multiplicity = 1
     strategy = recipe.strategy
@@ -441,10 +450,15 @@ def comparison_sample(recipe, size):
         basic, values, modulus = draw_isometric_union(entries, size, recipe, rng)
     elif strategy.startswith("isometric_"):
         choices = (
-            isometric_equalities(size, recipe.group, recipe.max_bases)
+            isometric_equalities(size, recipe.group, recipe.max_bases, combiners=recipe.combiners)
             if strategy == "isometric_equalities"
             else isometric_window_orders(
-                size, recipe.group, recipe.max_bases, recipe.isometry_offsets, recipe.max_isometry_tables
+                size,
+                recipe.group,
+                recipe.max_bases,
+                recipe.isometry_offsets,
+                recipe.max_isometry_tables,
+                combiners=recipe.combiners,
             )
         )
         basic, values, modulus = choices[rng.randrange(len(choices))]
@@ -473,6 +487,7 @@ def comparison_sample(recipe, size):
         "comparison_sample": {
             "strategy": STRATEGIES[strategy],
             "group": str(recipe.group),
+            "combiners": list(recipe.combiners),
             "draw": recipe.draw,
             "raw_partitions": len(entries),
             **level_statistics(values, counts, modulus, offset),

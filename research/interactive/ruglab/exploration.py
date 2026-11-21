@@ -178,7 +178,7 @@ def sampler_comparison_catalogue(
     isometry_offsets=(0, 1, 2),
     max_isometry_tables=50000,
 ):
-    """Compare exact finite unions, with explicit feasibility limits."""
+    """Compare exact unions of selected combiners, with explicit feasibility limits."""
     if draws < 1 or not np.isfinite(concentration) or concentration <= 0 or max_bases < 1 or max_isometry_tables < 1:
         raise ValueError("Use positive draws, concentration, and work limits")
     if not strategies or set(strategies) - STRATEGIES.keys():
@@ -191,8 +191,16 @@ def sampler_comparison_catalogue(
         raise CatalogueUnavailable(str(error)) from error
     return RecipeCatalogue(
         {"power_group": groups, "strategy": tuple(strategies), "draw": tuple(range(draws))},
-        lambda power_group, strategy, draw: ComparisonRecipe(
-            power_group, strategy, draw, seed, concentration, max_bases, tuple(isometry_offsets), max_isometry_tables
+        lambda power_group, strategy, draw, combiners=ORDER_COMBINERS: ComparisonRecipe(
+            power_group,
+            strategy,
+            draw,
+            seed,
+            concentration,
+            max_bases,
+            tuple(isometry_offsets),
+            max_isometry_tables,
+            combiners=combiners,
         ),
         for_size=lambda side: sampler_comparison_catalogue(
             size=side,
@@ -204,6 +212,7 @@ def sampler_comparison_catalogue(
             isometry_offsets=isometry_offsets,
             max_isometry_tables=max_isometry_tables,
         ),
+        combiner_pool=ORDER_COMBINERS,
     )
 
 
