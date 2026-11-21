@@ -1,12 +1,31 @@
-fav9
-fav2
-fav15
-fav18
-fav11
-fav16
-fav10
-fav21
-fav8
-fav24
-fav14
-fav5
+# Exact compares the saved JSON with the embedded preset settings. The app sets view rotation for the viewport when selecting a preset.
+# Approximate means a related settings variant. Different pattern draws or powers can change the rendered rug.
+fav9   # Approximate · OKLCH + OR² · different seed and pattern parameters.
+fav2   # Approximate · Classic HSV · different seed and pattern parameters, odd field power, and turned inner guard and main border.
+fav15  # Exact · HSV + OR².
+fav18  # Approximate · Classic HSV · half the field width and height, with different seed and pattern parameters.
+fav11  # Approximate · OKLCH + OR² · different seed and pattern parameters, with a 90° saved view.
+fav16  # Approximate · OKLCH + OR⁴ · different seed and pattern parameters, odd field power, and different field lightness and chroma.
+fav10  # Approximate · OKLCH + OR² · different seed and pattern parameters, with a 90° saved view.
+fav21  # Approximate · OKLCH + OR² · same color controls, with different seed and pattern parameters and a centered, unturned field.
+fav8   # Approximate · OKLCH + OR⁴ · different seed and pattern parameters and different field lightness, chroma, and hue.
+fav24  # Related · OKLCH + OR² · same field style, with different pattern parameters, OKLCH coloring on the inner guard and main border, and a diagonal main-border basis.
+fav14  # Approximate · OKLCH + OR⁴ · different seed and pattern parameters, a different field lightness minimum, and a different chroma range.
+fav5   # Approximate · HSV + OR² · different seed and pattern parameters, even field power, and an unturned field with full saturation and tone ranges.
+
+---
+
+# Remaining exact preset sources
+fav13  # Exact · RGB borders.
+fav20  # Exact · Classic HSV.
+fav3   # Exact · Shared OKLCH.
+fav6   # Exact · OKLCH + OR⁴.
+fav19  # Exact · OKLCH + OR².
+
+# Other saved variants in the app's preset groups, plus the square variant of fav13
+fav1         # Approximate · RGB borders · different seed and pattern parameters, with an unturned saved view.
+fav12        # Approximate · RGB borders · different seed and pattern parameters.
+fav13-square # Approximate · RGB borders · same seed and region styles, with a square field.
+fav4         # Approximate · OKLCH + OR⁴ · different seed and pattern parameters and different field lightness and chroma.
+fav7         # Approximate · OKLCH + OR⁴ · different seed and pattern parameters and different field lightness and chroma.
+fav17        # Approximate · OKLCH + OR⁴ · different seed and pattern parameters, odd field power, corner-based field coordinates, and different field lightness and chroma.
