@@ -7,6 +7,7 @@ from random import Random
 
 import numpy as np
 
+from . import sampler_comparison
 from ._orders.combinatorics import pick
 from ._orders.core import poly
 from ._orders.odd_pre import OddPreSpace
@@ -14,7 +15,6 @@ from .indexed import IndexedValues, byte_lru, combination_table
 from .order_classes import _map_structure, _model, component_levels
 from .sampler_comparison import (
     STRATEGIES,
-    ComparisonUnavailable,
     _pre_polynomial,
     canonical_partition,
     group_levels,
@@ -157,7 +157,7 @@ def partition_pool(period, combiners, residue, max_cells):
     """Deduplicate the exact finite range on one triangular fundamental tile."""
     pool = _partition_pool(period, combiners, residue, max_cells)
     if isinstance(pool, str):
-        raise ComparisonUnavailable(pool)
+        raise sampler_comparison.ComparisonUnavailable(pool)
     return pool
 
 
@@ -251,7 +251,7 @@ def coarsening_draw(period, recipe, rng):
     if product is not None:
         largest = period * (period + 1) // 2
         if largest > _MAX_COARSENING_GROUPS:
-            raise ComparisonUnavailable(
+            raise sampler_comparison.ComparisonUnavailable(
                 f"Exact merger draws exceed the {_MAX_COARSENING_GROUPS}-group limit. Choose a smaller field."
             )
         q, twist = pre_spaces(period, product_tail=True)[-1].unrank(0)
@@ -261,7 +261,7 @@ def coarsening_draw(period, recipe, rng):
         return witness, table, values, modulus, 1, 1
 
     if 2 * period - 1 > _MAX_COARSENING_GROUPS:
-        raise ComparisonUnavailable(
+        raise sampler_comparison.ComparisonUnavailable(
             f"Exact merger draws exceed the {_MAX_COARSENING_GROUPS}-group limit. Choose a smaller field."
         )
     plans = _coarsening_plans(period, combiners, recipe.max_cells, strategy)
@@ -281,7 +281,9 @@ def coarsening_draw(period, recipe, rng):
 def odd_odd_sample(recipe, size):
     """Return the compact field, exact native lookup specification, and zero fraction."""
     if size < 8:
-        raise ComparisonUnavailable("Odd-odd class sampling requires a displayed side of at least 8.")
+        raise sampler_comparison.ComparisonUnavailable(
+            "Odd-odd class sampling requires a displayed side of at least 8."
+        )
     period = size // 2
     scope = ",".join(recipe.combiners)
     rng = Random(f"odd-odd:{recipe.seed}:{size}:{scope}:{recipe.strategy}:{recipe.draw}")

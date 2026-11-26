@@ -19,7 +19,7 @@ from jupyter_client.manager import KernelManager
 from nbclient import NotebookClient
 from nbformat.v4 import new_code_cell
 from PIL import Image
-from ruglab import exploration, pager, studio
+from ruglab import exploration, odd_odd, pager, sampler_comparison, studio
 from ruglab.exploration import PatternRecipe, RecipeCatalogue, sample_field
 from ruglab.pager import recipe_gallery
 from ruglab.plotting import colorize
@@ -355,6 +355,32 @@ def test_odd_odd_gallery_redraws_one_deduplicated_combiner_pool():
     assert "Select at least one combiner." in view.children[0].children[-1].value
     boxes["MULT"].value = True
     boxes["CLMUL"].value = True
+    assert specs == initial
+
+
+def test_odd_odd_gallery_handles_small_size_after_exception_reload(monkeypatch):
+    catalogue = exploration.odd_odd_catalogue(draws=1, strategies=("equality_iid",))
+    view, specs = recipe_gallery(catalogue, field_sizes=(8,), selected_samplings=("odd_odd",), preview_pixels=64)
+    row = next(w for w in _filter_rows(view) if isinstance(w, widgets.HBox) and w.children[0].value == "Field size")
+    sizes = {box.description: box for box in row.children[1:]}
+    initial = specs.copy()
+    assert initial
+
+    class ReloadedComparisonUnavailable(ValueError):
+        pass
+
+    monkeypatch.setattr(sampler_comparison, "ComparisonUnavailable", ReloadedComparisonUnavailable)
+    # The sampler must raise the current exception even if its module was loaded earlier.
+    with pytest.raises(ReloadedComparisonUnavailable, match="at least 8"):
+        odd_odd.odd_odd_sample(catalogue.recipes()[0], 2)
+
+    sizes["8"].value = False
+    sizes["2"].value = True
+    assert not specs
+    assert bytes(view.children[1].value).startswith(b"\x89PNG")
+    assert "1 unavailable" in view.children[0].children[-2].children[-1].value
+    sizes["8"].value = True
+    sizes["2"].value = False
     assert specs == initial
 
 

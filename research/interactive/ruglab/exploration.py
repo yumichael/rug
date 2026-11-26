@@ -9,6 +9,7 @@ from sys import getsizeof
 
 import numpy as np
 
+from . import sampler_comparison
 from .engine import Result
 from .head_families import head_family_cases
 from .indexed import IndexedValues, byte_lru, combination_table
@@ -16,7 +17,7 @@ from .odd_odd import ODD_COMBINERS, ODD_STRATEGIES, OddOddRecipe, odd_odd_sample
 from .operations import operation
 from .order_classes import ORDER_COMBINERS, OrderClassRecipe, OrderSampleUnavailable, head_powers, order_sample
 from .post_polynomials import POST_STRATA, draw_post_polynomial, xor_valuation_tail
-from .sampler_comparison import STRATEGIES, ComparisonRecipe, ComparisonUnavailable, comparison_sample, power_groups
+from .sampler_comparison import STRATEGIES, ComparisonRecipe, comparison_sample, power_groups
 from .sampling import CARTESIAN_PHASES, checkerboard_indices, resample_view
 from .specs import SAMPLINGS
 
@@ -187,7 +188,7 @@ def sampler_comparison_catalogue(
         raise ValueError("Choose nonnegative integer isometry precision offsets")
     try:
         groups = power_groups(size)
-    except ComparisonUnavailable as error:
+    except sampler_comparison.ComparisonUnavailable as error:
         raise CatalogueUnavailable(str(error)) from error
     return RecipeCatalogue(
         {"power_group": groups, "strategy": tuple(strategies), "draw": tuple(range(draws))},
@@ -799,7 +800,7 @@ def _sample_field(
             raise PeriodTargetError("Choose Catalogue and odd-odd sampling for these spatial classes.")
         try:
             values, spec, zero_fraction = odd_odd_sample(recipe, size)
-        except ComparisonUnavailable as error:
+        except sampler_comparison.ComparisonUnavailable as error:
             raise PeriodTargetError(str(error)) from error
         repeat = _repeat_shape(values.indices) or "smaller tile"
         return SampledField(values, spec, repeat, zero_fraction)
@@ -810,7 +811,7 @@ def _sample_field(
             )
         try:
             base, outputs, spec = comparison_sample(recipe, size)
-        except ComparisonUnavailable as error:
+        except sampler_comparison.ComparisonUnavailable as error:
             raise PeriodTargetError(str(error)) from error
         base, outputs, spec = _opposite_layout(base, outputs, spec, size, sampling)
         counts = np.bincount(base.indices.ravel(), minlength=len(outputs))
