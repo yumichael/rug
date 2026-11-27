@@ -1,4 +1,4 @@
-# Rug studio v2 prototype
+# Rug studio v2
 
 ## Writing convention
 
