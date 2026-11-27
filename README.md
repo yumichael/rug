@@ -6,7 +6,7 @@ Agent-specific guidance is in [AGENTS.md](AGENTS.md).
 
 ## Documentation
 
-Project documentation lives in [docs/](docs/). The [original kickoff prompt](docs/prototype.md) was a one-time instruction to an agent to begin implementing the app. It is preserved as historical context, rather than maintained as a description of the current design.
+The [original kickoff prompt](legacy/docs/prototype.md) records the instructions that started development of the now-legacy Rug app.
 
 The [theory research](research/theory/) contains mathematical reports and their verification scripts. The [interactive research workbench](research/interactive/README.md) provides Python pattern tools, a notebook for experiments, and a reference notebook with worked examples.
 
