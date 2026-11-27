@@ -1,6 +1,6 @@
 # Research request
 
-Source: [personal notes](../../../notes/yumichael/2026-10-00%20rug.md), latest substantive research section read on November 12, 2026. The trailing TODO list is separate. Inline plural notation is normalized for Markdown rendering.
+Source: [personal notes](../../../notes/yumichael/2026-10-00%20rug%20prompts.md), latest substantive research section read on November 12, 2026. The trailing TODO list is separate. Inline plural notation is normalized for Markdown rendering.
 
 Consider my observations from the last cell of the explore research notebook.
 
