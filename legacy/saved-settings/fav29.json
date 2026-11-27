@@ -1,0 +1,335 @@
+{
+  "version": 6,
+  "references": {
+    "field": {
+      "width": 1024,
+      "height": 512,
+      "period": null
+    },
+    "inner": {
+      "width": 1088,
+      "height": 576,
+      "period": 32
+    },
+    "main": {
+      "width": 1216,
+      "height": 704,
+      "period": 64
+    },
+    "outer": {
+      "width": 1280,
+      "height": 768,
+      "period": 32
+    }
+  },
+  "resizeModes": {
+    "field": "crop",
+    "inner": "crop",
+    "main": "crop",
+    "outer": "crop"
+  },
+  "keepReference": false,
+  "cellScale": 2,
+  "alignmentVersion": 2,
+  "viewRotation": 0,
+  "k": 9,
+  "aspect": 2,
+  "border": 64,
+  "seed": "1669464999",
+  "lock": true,
+  "shared": false,
+  "innerEnabled": true,
+  "outerEnabled": true,
+  "styles": {
+    "field": {
+      "originalHue": 0,
+      "saturationMin": 0,
+      "saturationMax": 1,
+      "toneMin": 0.09,
+      "toneMax": 1,
+      "redMin": 0,
+      "redMax": 1,
+      "greenMin": 0,
+      "greenMax": 1,
+      "blueMin": 0,
+      "blueMax": 1,
+      "gamma": 1,
+      "rgbSaturation": 0.75,
+      "family": "xor",
+      "parity": "even",
+      "basis": "diagonal",
+      "rotation": 0,
+      "centered": true,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "rgb",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.19,
+      "lightMax": 0.94,
+      "chromaMin": 0.02,
+      "chroma": 0.24,
+      "hue": 0.12,
+      "arc": "short",
+      "contrast": false,
+      "power": 172508,
+      "draws": [
+        "4523595085758124956",
+        "16914187730432949596",
+        "12415835385764614987",
+        "3799261187749432911",
+        "9324236512470369167",
+        "18349959925905561636"
+      ],
+      "reroll": 0
+    },
+    "inner": {
+      "originalHue": 0,
+      "saturationMin": 0,
+      "saturationMax": 1,
+      "toneMin": 0,
+      "toneMax": 1,
+      "redMin": 0,
+      "redMax": 1,
+      "greenMin": 0,
+      "greenMax": 1,
+      "blueMin": 0,
+      "blueMax": 1,
+      "gamma": 0.9,
+      "rgbSaturation": 1,
+      "family": "xor",
+      "parity": "even",
+      "basis": "diagonal",
+      "rotation": 90,
+      "centered": false,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "rgb",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.35,
+      "lightMax": 0.85,
+      "chromaMin": 0,
+      "chroma": 0.12,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "power": 173822,
+      "draws": [
+        "7278323308388601913",
+        "15157647175614248210",
+        "13184808098897213971",
+        "8433774802880738267",
+        "3720164541766123341",
+        "9531915806974208640"
+      ],
+      "reroll": 0
+    },
+    "main": {
+      "originalHue": 0,
+      "saturationMin": 0,
+      "saturationMax": 1,
+      "toneMin": 0,
+      "toneMax": 1,
+      "redMin": 0,
+      "redMax": 1,
+      "greenMin": 0,
+      "greenMax": 1,
+      "blueMin": 0,
+      "blueMax": 1,
+      "gamma": 0.9,
+      "rgbSaturation": 1,
+      "family": "2",
+      "parity": "even",
+      "basis": "straight",
+      "rotation": 90,
+      "centered": false,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "rgb",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.35,
+      "lightMax": 0.85,
+      "chromaMin": 0,
+      "chroma": 0.12,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "power": 213538,
+      "draws": [
+        "11086499592310451950",
+        "6494082786289797224",
+        "1150414814321332657",
+        "1671597133884966028",
+        "18133558114095970747",
+        "13115828514676014222"
+      ],
+      "reroll": 0
+    },
+    "outer": {
+      "originalHue": 0,
+      "saturationMin": 0,
+      "saturationMax": 1,
+      "toneMin": 0,
+      "toneMax": 1,
+      "redMin": 0,
+      "redMax": 1,
+      "greenMin": 0,
+      "greenMax": 1,
+      "blueMin": 0,
+      "blueMax": 1,
+      "gamma": 1,
+      "rgbSaturation": 1,
+      "family": "xor",
+      "parity": "even",
+      "basis": "diagonal",
+      "rotation": 0,
+      "centered": true,
+      "phaseX": 0,
+      "phaseY": 0,
+      "mode": "hsv",
+      "preset": "heritage",
+      "mapping": "linear",
+      "levels": 0,
+      "lightMin": 0.35,
+      "lightMax": 0.85,
+      "chromaMin": 0,
+      "chroma": 0.12,
+      "hue": 0,
+      "arc": "short",
+      "contrast": false,
+      "power": 71112,
+      "draws": [
+        "17622120892600539324",
+        "8923145255126438232",
+        "12910500665254857694",
+        "15414416703343961182",
+        "11479427819031266213",
+        "794671055302030045"
+      ],
+      "reroll": 0
+    }
+  },
+  "resolved": {
+    "outer": {
+      "N": 4096,
+      "domain": 64,
+      "reference": {
+        "width": 1088,
+        "height": 576,
+        "period": 32
+      },
+      "resizeMode": "crop",
+      "basis": "diagonal",
+      "cellScale": 2,
+      "alignmentVersion": 2,
+      "modulus": "128",
+      "power": 173822,
+      "channels": [
+        {
+          "multiply": "115",
+          "add": "18"
+        },
+        {
+          "multiply": "39",
+          "add": "91"
+        },
+        {
+          "multiply": "27",
+          "add": "0"
+        }
+      ]
+    },
+    "main": {
+      "N": 4096,
+      "domain": 128,
+      "reference": {
+        "width": 1216,
+        "height": 704,
+        "period": 64
+      },
+      "resizeMode": "crop",
+      "basis": "straight",
+      "cellScale": 2,
+      "alignmentVersion": 2,
+      "modulus": "256",
+      "power": 213538,
+      "channels": [
+        {
+          "multiply": "221",
+          "add": "104"
+        },
+        {
+          "multiply": "99",
+          "add": "140"
+        },
+        {
+          "multiply": "119",
+          "add": "142"
+        }
+      ]
+    },
+    "inner": {
+      "N": 4096,
+      "domain": 64,
+      "reference": {
+        "width": 1088,
+        "height": 576,
+        "period": 32
+      },
+      "resizeMode": "crop",
+      "basis": "diagonal",
+      "cellScale": 2,
+      "alignmentVersion": 2,
+      "modulus": "128",
+      "power": 173822,
+      "channels": [
+        {
+          "multiply": "115",
+          "add": "18"
+        },
+        {
+          "multiply": "39",
+          "add": "91"
+        },
+        {
+          "multiply": "27",
+          "add": "0"
+        }
+      ]
+    },
+    "field": {
+      "N": 2048,
+      "domain": 2048,
+      "reference": {
+        "width": 1024,
+        "height": 512,
+        "period": null
+      },
+      "resizeMode": "crop",
+      "basis": "diagonal",
+      "cellScale": 2,
+      "alignmentVersion": 2,
+      "modulus": "8192",
+      "power": 172508,
+      "channels": [
+        {
+          "multiply": "1849",
+          "add": "7516"
+        },
+        {
+          "multiply": "1687",
+          "add": "3663"
+        },
+        {
+          "multiply": "1823",
+          "add": "6180"
+        }
+      ]
+    }
+  }
+}
