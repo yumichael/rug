@@ -16,9 +16,9 @@ First, they will be able to choose a rug out of two lists, one for built-in rugs
 
 Each entry in either list is called a **rug slot**. There is a **saved rug** associated with each slot, and a **rug draft** on top of it if the user has made unsaved changes. The **current rug** is the working rug in the currently selected slot. All the rug slots, including their drafts, will together be called the **rug workspace**.
 
-The rug previews will have a togglable (naturally small because they exist in a preview list) viewing area to display the rugs in, with an option to zoom in to the rug. They show the drafts if there are any. The list highlights (I'm envisioning more of a box highlight rather than a background color highlight) the currently selected slot, and notes which slots have unsaved changes. Switching between rug slots preserves the unsaved changes made on top of each saved rug.
+The rug previews will have a togglable (naturally small because they exist in a preview list) viewing area to display the rugs in, with an option to zoom in to the rug. They show the drafts if there are any. The list highlights the currently selected slot with a box outline, and notes which slots have unsaved changes. Switching between rug slots preserves the unsaved changes made on top of each saved rug.
 
-The built-in rugs are always shown in the order provided by the app. The user can reorder the rug slots in the user-saved list, e.g. with drag handles that work with both mouse and touch. Reordering doesn't change which slot is selected. User-saved rugs can also be renamed and deleted.
+The built-in rugs are always shown in the order provided by the app. The user can reorder the rug slots in the user-saved list using drag handles that work with both mouse and touch. Reordering doesn't change which slot is selected. User-saved rugs can also be renamed and deleted.
 
 There is a "Save rug" button and a "Save as new rug" button to save the current rug and style settings; overall UI options of the app are not saved as part of a rug. "Save rug" is disabled when the currently selected slot is one of the built-in ones. "Save as new rug" creates a prompt to enter a name for the saved rug and selects the newly created slot in the user-saved list, leaving the old slot and its draft as they were. There is also a "Revert changes" action to discard the draft of a slot and go back to its saved rug.
 
@@ -56,7 +56,7 @@ Rug construction has the following options:
 
 The guards can still be enabled when the main border is disabled, with their sizes based on the retained main border size setting. Only allow guard sizes that can be subdivided into whole cells as dictated by the construction (e.g. multiples of four for "Triple"). I want the intended size ratios to be remembered, so rounding of the dimensions when resizing the field doesn't cause the ratios to drift as the user changes the field size back and forth.
 
-When the user disables a component, changes a guard's construction, or enables mirroring, retain the settings of the components that are no longer independently visible so that they can be brought back when the user switches back. Give newly available bands sensible default settings if they haven't been configured before.
+When the user disables a component, changes a guard's construction, or enables mirroring, retain the settings of the components that are no longer independently visible so that they can be brought back when the user switches back. Keep the band configurations for each guard construction separately, including the inner and outer bands of "Double" and "Triple". Initialize newly available bands to their default settings if they haven't been configured before. The user can copy from an existing band explicitly using the copying UI. We'll work out the default settings in a separate design pass.
 
 ##### Rug color style
 
@@ -64,11 +64,13 @@ This section allows the user to set a **global color style** for the rug, which 
 
 Just use the same settings as the legacy app's color settings. However, only keep RGB, HSV, HSL, OKLCH, and lose the "original" and "independent channels" tags. Also remove "Square RGB" (it's covered by gamma; extend the lower end of the gamma range to 0.1) and all of the hue offsets.
 
+Remember the settings for each color space separately, so that when switching to a different color space and back, the previous settings for that color space come back. This applies to the global color style and the individual component color styles.
+
 There is also a "Copy color style from…" button. This opens up a UI to copy a color style from a component of any rug in the workspace, including the current rug. The source rug's global color style counts as a source of color style as well.
 
 #### Component settings
 
-Each of "Field", "Main border", and the various guard bands gets its own section if it's enabled. I'm envisioning that the bands for a subdivided guard are grouped under "Inner guard" or "Outer guard" so that they can simply be titled "Inner band", "Middle band" or "Outer band" in their respective groups. For a single-band guard the guard itself is the component. If a component is set to mirror another component, it still gets its own section, but with a placeholder explaining that it's locked and which component it's mirroring, like in the legacy app.
+Each of "Field", "Main border", and the various guard bands gets its own section if it's enabled. The bands for a subdivided guard are grouped under "Inner guard" or "Outer guard" so that they can simply be titled "Inner band", "Middle band" or "Outer band" in their respective groups. For a single-band guard the guard itself is the component. If a component is set to mirror another component, it still gets its own section, but with a placeholder explaining that it's locked and which component it's mirroring, like in the legacy app.
 
 Each independently configurable component has a "Pattern style" section and a "Color style" section. These section UIs are shared between the components. There is also a "Copy from…" button at the component level (see copying below).
 
@@ -87,7 +89,8 @@ Let's walk through the option selections.
      - "Checkerboard even pre-powers". Use the uniform raw equalities with IID levels samplers on OR XOR ADD ABSDIFF with even pre-powers and pre-twists.
      - "Odd-odd even pre-powers". Use the uniform raw equalities with IID levels samplers on AND OR XOR ADD ABSDIFF MUL (instead of MULT) CLMUL with even pre-powers and pre-twists.
    - Regenerates the pattern from the seed or loads the saved pattern-style-specific advanced-customized pattern if switched.
-   - It would be nice to have some short explanations of the visual characteristics of the families, maybe with a little example preview of each.
+   - Include a short explanation of the visual characteristics of each family and a representative example preview of each.
+   - Remember the family-specific settings such as the combiner selection and pattern orientation when switching to a different family and back.
 2. "Combiners". Only shows up for the even pre-powers families.
    - Normal options are "OR" "XOR" "ADD" "ABSDIFF" for the checkerboard one and "AND" "OR" "XOR" "ADD" "ABSDIFF" "MUL" "CLMUL" for the odd-odd one.
    - Make this list a multi-select list instead of a single-select list, and add a "Select all" checkbox that deselects all when pressed again. A selection with no combiners isn't a valid pattern style.
@@ -108,7 +111,7 @@ Let's walk through the option selections.
    - This setting sticks as-is even when component dimensions from rug construction change. When changing orientation, preserve the user-selected stretch multiplier relative to the orientation's native stretch, so that switching back restores the original stretch.
 5. "Vertical stretch". Same as horizontal stretch but vertical.
 6. "Tile size". A **pattern tile** is a fundamental repeating region of the pattern. Depending on the sampling and orientation it can be rectangular or diamond-shaped. Its **tile size** is the size of the smallest axis-aligned rectangle containing the tile (the least horizontal and vertical periods), in cells before stretching.
-   - Expose the **tile shape** to the user, e.g. with a little rectangle or diamond symbol next to the tile size. This is informative, not independently selectable. The sampling algorithms give each channel the selected least axis periods.
+   - Expose the **tile shape** to the user with a little rectangle or diamond symbol next to the tile size. This is informative, not independently selectable. The sampling algorithms give each channel the selected least axis periods.
    - Support power-of-two tile sizes all the way from 1 × 1 cells up to 16384 × 16384 cells (2^14 per axis). Do additional mathematical research as needed to make all the sampling methods work for the small domains, including sizes below 8 × 8. A 1 × 1 tile is just a spatially constant random channel. Where the existing construction cannot attain a requested small tile size, come up with a mathematically natural extension of that sampler, retaining the intended symmetry, exact axis periods and sampling distribution where possible.
    - When the component dimensions from the rug construction are changed, this changes accordingly by the same ratio while preserving the constant stretch. Remember the intended ratio so that changing the dimensions back and forth doesn't cause the tile size to drift.
    - Display not only the original cell dimensions but also the stretched cell dimensions and the relative dimensions as ratios of the component size. The label on the options and in particular the selected option may therefore change even if the pattern stays the same across another setting's change.
@@ -123,14 +126,14 @@ Let's walk through the option selections.
    - For diamond tiles there are only two distinct choices, "Corner" and "Tile center", with the canonical diamond placed consistently relative to the original sampling coordinates. For "Checkerboard XOR (even)" only expose these two choices regardless of the tile shape, as the patterns in this family tend to have approximately square symmetry. For degenerate small tiles there may be even fewer meaningful choices.
    - Again, the pattern is always centered. Therefore we will not have the spatial phase options.
 
-Try to keep the settings valid in the first place, but if the pattern style is invalid due to out of range values or an empty combiner selection, show a placeholder error notice for the affected component without unnecessarily hiding the rest of the rug.
+Prevent invalid settings wherever possible. If the pattern style is invalid due to out of range values or an empty combiner selection, show a placeholder error notice for the affected component without unnecessarily hiding the rest of the rug.
 
 Then there is a "New pattern" button. This will generate a random seed and then create the pattern associated with that seed in the pattern style.
 
 There is a further collapsible "Advanced pattern settings" section.
 
 1. "Channel phase". For each randomly sampled channel, let the user adjust the circular phase of the values in the channel using a number in [0, 1).
-2. "Channel assignment". Use a UI that lets the user specify which randomly generated channel goes to which color channel. Since there are only six permutations, this could be as simple as a dropdown. The channel phases follow the sampled channels when their assignments are changed.
+2. "Channel assignment". Use a dropdown with the six permutations of the randomly generated channels to let the user specify which randomly generated channel goes to which color channel. The channel phases follow the sampled channels when their assignments are changed.
 
 The advanced customization options remain in place if the pattern style is changed without needing to regenerate the pattern from the seed. When the pattern style is changed requiring regenerating the pattern from the seed, the advanced customization options are remembered for when the pattern style comes back to the one used to set them. However, the advanced customization options (including any remembered pattern overrides) are reset when generating a new seed for that component. Copying or restoring a pattern brings along the corresponding overrides instead.
 
@@ -140,13 +143,15 @@ This has the same UI as the "Rug color style" section, but with a "Use rug color
 
 ##### Resetting settings and restoring saved sections
 
-I want the user to be able to reset settings or restore individual sections from the saved rug without having to revert the whole rug. I'm envisioning a little action menu in the section headers for "Rug construction", "Rug color style", and each independently configurable component's "Pattern style" and "Color style".
+I want the user to be able to reset settings or restore individual sections from the saved rug without having to revert the whole rug. Put these actions in a little action menu in the section headers for "Rug construction", "Rug color style", and each independently configurable component's "Pattern style" and "Color style".
 
 - "Reset pattern settings" restores the default pattern style settings for that component, keeping its seed and its remembered pattern overrides and advanced settings.
 - "Restore saved pattern" restores the component's pattern and its style as it was in the saved rug, including the seed, actual pattern and remembered overrides.
 - "Reset color settings" restores the default color settings for the currently selected color space, keeping the color space selection. For a component, this resets its own color style without changing whether it inherits the global color style.
 - "Restore saved color style" restores the color style as it was in the saved rug, including whether the component inherits the global color style.
 - "Reset construction settings" and "Restore saved construction" similarly restore the default and saved rug construction settings, respectively.
+
+We'll work out the actual default settings for the reset actions in a separate design pass.
 
 There is also a "Reset advanced pattern settings" action in the "Advanced pattern settings" section. This resets the channel phases to zero and the channel assignment to the default for the current pattern realization. It doesn't change the underlying mathematical mappings or the remembered advanced settings for other realizations.
 
@@ -156,9 +161,9 @@ If there's no corresponding component in the saved rug, don't offer the correspo
 
 The "Copy from…" button for a component opens up a UI to pick a rug and one of its components. For a rug with unsaved changes, default to the draft but include a toggle to copy from the saved rug instead.
 
-The user should also be able to pick guard components whose settings have been retained from other guard constructions, even if they're not currently part of the rug being copied from. E.g. after switching a guard from "Single" to "Triple", the user might want to copy the single band's pattern and color style to the middle band of that same rug slot. Make it clear in the selection UI which components are inactive and which guard construction they belong to. It would be nice to also be able to pick a visible component by clicking on it in a preview of the rug.
+The user should also be able to pick guard components whose settings have been retained from other guard constructions, even if they're not currently part of the rug being copied from. E.g. after switching a guard from "Single" to "Triple", the user might want to copy the single band's pattern and color style to the middle band of that same rug slot. Make it clear in the selection UI which components are inactive and which guard construction they belong to. Also let the user pick a visible component by clicking on it in a preview of the rug.
 
-Let the user choose what to copy: "Pattern and color style", "Pattern only", or "Color style only", defaulting to copying both. It might be nice to remember the last choice for the next time the user opens this UI. The source rug's global color style is also selectable as a source for copying color style only. The global "Rug color style" section has its own "Copy color style from…" button that uses the same source selection UI but only copies the color style.
+Let the user choose what to copy: "Pattern and color style", "Pattern only", or "Color style only", defaulting to copying both the first time. Remember the last choice for the next time the user opens this UI. The source rug's global color style is also selectable as a source for copying color style only. The global "Rug color style" section has its own "Copy color style from…" button that uses the same source selection UI but only copies the color style.
 
 When copying a pattern, copy the pattern seed and all of the pattern style settings, including the mathematical realization and any remembered overrides. Preserve the absolute tile size and stretch even if the destination component is a different size, enabling "Lock tile size" in the destination.
 
@@ -170,7 +175,7 @@ Copying both the pattern and color style is a single undoable editing action.
 
 There is a "New rug" button always visible at the bottom. This button generates new seeds for each component from a master seed, letting each component be redrawn with a pattern derived from the seed, but preserving the non-seed-derived pattern style settings and color styles. It makes the seed changes on top of the current rug slot as unsaved changes.
 
-I want to be able to lock individual component patterns (e.g. with a little lock icon in their section headers) so that if I particularly like the field and inner guard, I can keep pressing "New rug" to experiment with the other components. The lock only affects generation through "New rug"; the user can still use "New pattern" for a locked component. Mirrored components follow the component they're mirroring.
+I want to be able to lock individual component patterns with a toggleable lock icon in their section headers so that if I particularly like the field and inner guard, I can keep pressing "New rug" to experiment with the other components. Save the lock setting as part of the rug configuration. The lock only affects generation through "New rug"; the user can still use "New pattern" for a locked component. Mirrored components follow the component they're mirroring.
 
 ### Rug view
 
@@ -190,7 +195,7 @@ A **generation history** tracks the previously generated patterns or rugs along 
 
 ##### New pattern history
 
-"New pattern history" acts similarly to "New rug history", except it tracks the patterns actually generated for a component when either the "New rug" button or the "New pattern" button was pressed. These UI elements go under each component's customization section. Let the user choose whether to restore just the pattern (default) or also the color style as it was at the time the pattern was generated. These past patterns are labelled by a generation counter separately for each component, prefixed by an abbreviation of the component name to distinguish them from each other and the global "New rug history". Make sure the abbreviations for the various guard bands don't conflict with each other.
+"New pattern history" acts similarly to "New rug history", except it tracks the patterns actually generated for a component when either the "New rug" button or the "New pattern" button was pressed. These UI elements go under each component's customization section. Let the user choose whether to restore just the pattern (default) or also the color style as it was at the time the pattern was generated. As when copying a pattern, preserve the absolute tile size and stretch when restoring a pattern into a differently sized component, enabling "Lock tile size". These past patterns are labelled by a generation counter separately for each component, prefixed by an abbreviation of the component name to distinguish them from each other and the global "New rug history". Make sure the abbreviations for the various guard bands don't conflict with each other. We'll work out the abbreviations later.
 
 #### Edit history
 
@@ -198,7 +203,7 @@ This saves a stack of editing actions. For each rug editing action there is one 
 
 Going back or forward for a rug editing action selects the affected rug slot and restores its draft and the remembered UI state. The other rug slots' drafts are unaffected. Returning to a previous point does not undo rug saving; it restores the working settings on top of whatever is currently saved in that slot.
 
-Deleting, renaming and reordering user-saved rug slots are also editing actions that can be undone and redone. In particular, undoing a deletion should restore the entire slot, with the same identity, name, saved rug, draft and position in the list, so we can still undo the editing actions that came before the deletion. Importing additional rugs is also an undoable action, preferably as a single action even when importing several rugs.
+Deleting, renaming and reordering user-saved rug slots are also editing actions that can be undone and redone. In particular, undoing a deletion should restore the entire slot, with the same identity, name, saved rug, draft and position in the list, so we can still undo the editing actions that came before the deletion. Importing additional rugs is also a single undoable action, even when importing several rugs from multiple files.
 
 "Save rug" and "Save as new rug" are not themselves undoable. Restoring something from a generation history, resetting settings or reverting changes is a rug editing action. Undoing a generation does not remove it from the generation history. Group continuous slider changes and the like into a single editing action rather than putting every intermediate value into the stack.
 
@@ -206,25 +211,25 @@ Deleting, renaming and reordering user-saved rug slots are also editing actions 
 
 #### Autosave
 
-The generation histories and the entire workspace state are autosaved in browser storage, as are the app's UI preferences and (within reasonable storage limits) the edit history. I'd favor IndexedDB for this given the amount of data the app might end up keeping. Avoid storing full-sized rendered images in the histories and put some sensible limits on the storage used by the histories. Let the user know if autosaving fails.
+The generation histories and the entire workspace state are autosaved in IndexedDB, as are the app's UI preferences and the edit history. IndexedDB seems to be the best choice at the time of writing given the amount of data the app might end up keeping. Avoid storing full-sized rendered images in the histories and use a sensible storage budget for the histories rather than a fixed number of entries. Give the user actions to clear the edit history and the generation histories. Let the user know if autosaving fails.
 
 #### Exporting
 
 ##### Workspace state export
 
-There are "Export workspace" and "Import…" buttons for saving to and loading from the user's filesystem. "Import…" opens a common file picker, and the user then chooses whether to replace the workspace ("Import workspace") or add the rugs to the current workspace ("Import rugs"). I want this to work conveniently on both the computer and the phone.
+There are "Export workspace" and "Import…" buttons for saving to and loading from the user's filesystem. "Import…" opens a common file picker that supports selecting multiple files, and the user then chooses whether to replace the workspace ("Import workspace") or add the rugs to the current workspace ("Import rugs"). Default to "Import rugs", and only offer "Import workspace" when exactly one file has been selected. I want this to work conveniently on both the computer and the phone.
 
-The workspace save file will have the `.rugs` extension. Save the user-saved rug slots in order, including their saved rug and any unsaved draft changes, and remember which slot is selected. The built-in rugs are handled specially as described below. The same format can be used for a file containing just one rug or several rugs, and the import rugs action should allow the user to choose multiple files if possible. The edit history and overall UI preferences are local to the app, and the generation histories can be kept local as well.
+The workspace save file will have the `.rugs` extension. Save the user-saved rug slots in order, including their saved rug and any unsaved draft changes, and remember which slot is selected. The built-in rugs are handled specially as described below. The same format can represent a file containing just one rug or several rugs. "Export workspace" always exports the whole workspace. The edit history, overall UI preferences, and generation histories are local to the app.
 
 The app has a current list of built-in rugs, each with a permanent identifier. Keep an archive of the definitions of all past built-in rugs as well; a built-in identifier always refers to the same rug definition (give a revised built-in rug a new identifier if its definition changes). In the save file only the permanent identifier is needed for a built-in rug with no draft, and for one with a draft also save the draft on top of it. User-saved rugs have their saved configurations included in the file.
 
-"Import workspace" overwrites the workspace state and starts a new edit history. A confirmation dialog pops up before overwriting unless the workspace is in a completely untouched fresh state with no unsaved changes (but possibly with view changes).
+"Import workspace" overwrites the workspace state and starts a new edit history, but retains the generation histories. A confirmation dialog pops up before overwriting unless the workspace is in a completely untouched fresh state with no unsaved changes (but possibly with view changes).
 
 When loading a workspace, the built-in list always contains the app's current built-in rugs in the order provided by the app. Restore any drafts from the file for the built-ins that are still current. If there are built-in identifiers from the file that are no longer in the current built-in list, treat those rugs as user-saved rugs using their archived definitions and any drafts on top of them. Add them to the user-saved list being loaded using the same deduplication rules as when importing rugs. This way the user still has access to the old built-in rugs as well as the newest ones.
 
 "Import rugs" lets the user add rugs from a save file to the user-saved list without touching the existing slots. For a built-in from the file that is still a built-in of the app, only bring it into the user-saved list if it has a draft change. For a retired built-in, look up its archived definition and treat it just like an incoming user-saved rug, including any draft and subject to the same deduplication rules. Preserve the relative order of the rugs being added.
 
-When importing rugs, if the name and saved rug of an incoming slot are identical to those of an existing slot, and the incoming slot has no draft change, skip that slot regardless of whether the existing slot has a draft change. Apply this same rule to retired built-ins when adding them to the user-saved list, checking against the user-saved slots. If the incoming slot does have a draft change, add it as a separate user-saved slot with the draft and append a name deduplication suffix to the name (e.g. the first available suffix starting with " (2)"). Use the suffix for other name conflicts as well. Importing rugs never overwrites a slot or its draft.
+When importing rugs, if the name and saved rug of an incoming slot are identical to those of an existing slot, and the incoming slot has no draft change, skip that slot regardless of whether the existing slot has a draft change. Apply this same rule to retired built-ins when adding them to the user-saved list, checking against the user-saved slots. If the incoming slot does have a draft change, add it as a separate user-saved slot with the draft and append a name deduplication suffix to the name, using the first available suffix starting with " (2)". Use the suffix for other name conflicts as well. Importing rugs never overwrites a slot or its draft.
 
 ##### PNG export
 
@@ -240,7 +245,7 @@ On a computer or a phone with enough screen space, we can keep the UI layout muc
 
 We can convert the landscape layout to a portrait layout in the same spirit as how the legacy app does it. There are two key behaviors I want in addition. When the user scrolls down to show the rug view, as the user scrolls further down to reveal the customization settings, the rug view should shrink a little to make room, but push everything above it out of view so the rug view remains at the top. The smaller rug view should always remain at the top so that the user gets instant feedback whenever they change the settings. The second behavior I want is that "New rug history" and the "New rug" button should always show up at the very bottom. This way the simplest ways the user can interact with the app are always kept visible: the rug view and the new rug button.
 
-Choose between the two layouts based on the available window dimensions. Make sure the landscape layout also works well on short, wide viewports such as a phone in landscape orientation. Make the pinned preview expandable/collapsible by the user, and make sure the bottom controls fit within the phone's safe area. On the computer, it would be nice to have keyboard shortcuts for "New rug", undo, redo and "Save rug".
+Choose between the two layouts based on the available window dimensions. Make sure the landscape layout also works well on short, wide viewports such as a phone in landscape orientation. Make the pinned preview expandable/collapsible by the user, and make sure the bottom controls fit within the phone's safe area. On the computer, have keyboard shortcuts for "New rug" (Cmd/Ctrl+Shift+Enter), undo (Cmd/Ctrl+Z), redo (Cmd/Ctrl+Shift+Z, also Ctrl+Y where appropriate), and "Save rug" (Cmd/Ctrl+S). Use the platform's usual modifier key and make the shortcuts discoverable in the UI. Don't intercept normal text editing shortcuts when the user is editing a text input.
 
 ### State format
 
@@ -252,4 +257,4 @@ I want saved rugs to continue to give the same patterns when the app gets update
 
 The file format should be able to support pattern mappings that are not generated with a seed. To see how this works, consider converting one of the legacy app's save settings into a single-rug workspace in the new app. Each of that rug's component patterns will not be drawn from the new random generation algorithm. That's ok. We will configure a random master seed and generate random component seeds. But then for the compatible pattern style settings in each component, we will calculate the equivalent specifications for that pattern in the new app's language (e.g. converting polynomials to the IID levels) and add that as a saved override in that seed-draw view, in the same way the advanced customization does. Treat these explicit mappings as first-class pattern realizations, even when they can't be obtained by sampling from the chosen seed.
 
-For the larger tile sizes, avoid materializing the entire tile if possible. Ideally use implicit representations and evaluate the parts of the tile that are actually needed for the rug, including generating the IID equality-class values lazily where applicable. Make sure expensive sampling and rendering work doesn't block the UI. Do the mathematical and computational work needed to determine how best to implement the samplers at the supported sizes.
+Support the full range of tile sizes without unnecessarily materializing entire pattern tiles. Build on the legacy app's efficient rendering architecture, using implicit or partial tile evaluation where materializing an entire tile would be prohibitively expensive. Carry out any additional mathematical and computational research needed to make the sampling algorithms practical at the larger tile sizes while preserving their intended distributions. Make sure expensive sampling and rendering work doesn't block the UI.
