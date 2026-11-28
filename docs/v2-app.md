@@ -68,9 +68,9 @@ There is also a "Copy color style from…" button. This opens up a UI to copy a 
 
 #### Component settings
 
-Each of "Field", "Main border", and the various guard bands gets its own section if it's enabled and independently configurable. I'm envisioning that the bands for a subdivided guard are grouped under "Inner guard" or "Outer guard" so that they can simply be titled "Inner band", "Middle band" or "Outer band" in their respective groups. For a single-band guard the guard itself is the component. A component that mirrors another can indicate which component it's mirroring instead of showing a separate set of controls.
+Each of "Field", "Main border", and the various guard bands gets its own section if it's enabled. I'm envisioning that the bands for a subdivided guard are grouped under "Inner guard" or "Outer guard" so that they can simply be titled "Inner band", "Middle band" or "Outer band" in their respective groups. For a single-band guard the guard itself is the component. If a component is set to mirror another component, it still gets its own section, but with a placeholder explaining that it's locked and which component it's mirroring, like in the legacy app.
 
-Each component has a "Pattern style" section and a "Color style" section. These section UIs are shared between the components.
+Each independently configurable component has a "Pattern style" section and a "Color style" section. These section UIs are shared between the components.
 
 ##### Pattern style
 
