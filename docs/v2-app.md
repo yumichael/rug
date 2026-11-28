@@ -134,11 +134,23 @@ There is a further collapsible "Advanced pattern settings" section.
 
 The advanced customization options remain in place if the pattern style is changed without needing to regenerate the pattern from the seed. When the pattern style is changed requiring regenerating the pattern from the seed, the advanced customization options are remembered for when the pattern style comes back to the one used to set them. However, the advanced customization options (including any remembered pattern overrides) are reset when generating a new seed for that component. Copying or restoring a pattern brings along the corresponding overrides instead.
 
-It would also be nice to have ways to reset individual pattern and color settings without having to revert the whole rug.
-
 ##### Color style
 
 This has the same UI as the rug color style selection, but with a "Use rug color style" checkbox. If the component has never had its own color style, unchecking it initializes its own style to the current rug color style. Remember the component's own style when the checkbox is checked again, so that the user can switch back and forth.
+
+##### Resetting and reverting settings
+
+I want the user to be able to reset or revert individual sections without having to revert the whole rug. I'm envisioning a little action menu in the section headers for "Rug construction", "Rug color style", and each independently configurable component's "Pattern style" and "Color style".
+
+- "Reset pattern style" restores the default pattern style settings for that component, keeping its seed and its remembered pattern overrides and advanced settings.
+- "Revert pattern style" restores the component's pattern style as it was in the saved rug, including the seed, actual pattern and remembered overrides.
+- "Reset color style" restores the default color settings for the currently selected color space, keeping the color space selection. For a component, this resets its own color style without changing whether it uses the rug color style.
+- "Revert color style" restores the color style as it was in the saved rug, including whether the component uses the rug color style.
+- "Reset rug construction" and "Revert rug construction" similarly restore the default and saved rug construction settings, respectively.
+
+There is also a "Reset advanced pattern settings" action in the "Advanced pattern settings" section. This resets the channel phases to zero and the channel assignment to the default for the current pattern realization. It doesn't change the underlying mathematical mappings or the remembered advanced settings for other realizations.
+
+If there's no corresponding component in the saved rug, don't offer a revert action for its settings. All of these reset and revert actions are undoable through edit history, so there's no need for confirmation dialogs.
 
 ##### Copying patterns and color styles
 
@@ -182,7 +194,7 @@ Going back or forward for a rug editing action selects the affected rug slot and
 
 Deleting, renaming and reordering user-saved rug slots are also editing actions that can be undone and redone. In particular, undoing a deletion should restore the entire slot, with the same identity, name, saved rug, draft and position in the list, so we can still undo the editing actions that came before the deletion. Importing additional rugs is also an undoable action, preferably as a single action even when importing several rugs.
 
-"Save rug" and "Save as new rug" are not themselves undoable. Restoring something from a generation history or reverting changes is a rug editing action. Undoing a generation does not remove it from the generation history. Group continuous slider changes and the like into a single editing action rather than putting every intermediate value into the stack.
+"Save rug" and "Save as new rug" are not themselves undoable. Restoring something from a generation history, resetting settings or reverting changes is a rug editing action. Undoing a generation does not remove it from the generation history. Group continuous slider changes and the like into a single editing action rather than putting every intermediate value into the stack.
 
 ### Persistence
 
