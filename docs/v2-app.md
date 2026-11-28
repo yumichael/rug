@@ -70,7 +70,7 @@ There is also a "Copy color style from…" button. This opens up a UI to copy a 
 
 Each of "Field", "Main border", and the various guard bands gets its own section if it's enabled. I'm envisioning that the bands for a subdivided guard are grouped under "Inner guard" or "Outer guard" so that they can simply be titled "Inner band", "Middle band" or "Outer band" in their respective groups. For a single-band guard the guard itself is the component. If a component is set to mirror another component, it still gets its own section, but with a placeholder explaining that it's locked and which component it's mirroring, like in the legacy app.
 
-Each independently configurable component has a "Pattern style" section and a "Color style" section. These section UIs are shared between the components.
+Each independently configurable component has a "Pattern style" section and a "Color style" section. These section UIs are shared between the components. There is also a "Copy from…" button at the component level (see copying below).
 
 ##### Pattern style
 
@@ -125,7 +125,7 @@ Let's walk through the option selections.
 
 Try to keep the settings valid in the first place, but if the pattern style is invalid due to out of range values or an empty combiner selection, show a placeholder error notice for the affected component without unnecessarily hiding the rest of the rug.
 
-Then there is a "New pattern" button. This will generate a random seed and then create the pattern associated with that seed in the pattern style. There is also a "Copy pattern from…" button to copy a pattern from another component of any rug in the workspace (see copying below).
+Then there is a "New pattern" button. This will generate a random seed and then create the pattern associated with that seed in the pattern style.
 
 There is a further collapsible "Advanced pattern settings" section.
 
@@ -154,11 +154,15 @@ If there's no corresponding component in the saved rug, don't offer the correspo
 
 ##### Copying patterns and color styles
 
-The copying UI should let the user pick a rug and one of its components (it would be nice to be able to do the latter by clicking on the component in a preview of the rug). For a rug with unsaved changes, default to the draft but include a toggle to copy from the saved rug instead.
+The "Copy from…" button for a component opens up a UI to pick a rug and one of its components (it would be nice to be able to do the latter by clicking on the component in a preview of the rug). For a rug with unsaved changes, default to the draft but include a toggle to copy from the saved rug instead.
 
-"Copy pattern from…" copies the pattern seed and all of the pattern style settings, including the mathematical realization and any remembered overrides, but not the color style. Preserve the absolute tile size and stretch even if the destination component is a different size, enabling "Lock tile size" in the destination.
+Let the user choose what to copy: "Pattern and color style", "Pattern only", or "Color style only", defaulting to copying both. It might be nice to remember the last choice for the next time the user opens this UI. The rug color style of the source rug is also selectable as a source for copying color style only. The global "Rug color style" section has its own "Copy color style from…" button that uses the same source selection UI but only copies the color style.
 
-"Copy color style from…" copies the source's effective color style, making it an independent color style if copying to a component. When copying from a component that mirrors another component or inherits the rug color style, copy the effective settings. These are copies, so subsequent changes to the source don't change what was copied.
+When copying a pattern, copy the pattern seed and all of the pattern style settings, including the mathematical realization and any remembered overrides. Preserve the absolute tile size and stretch even if the destination component is a different size, enabling "Lock tile size" in the destination.
+
+When copying a color style, copy the source's effective color style, making it an independent color style if copying to a component. When copying from a component that mirrors another component or inherits the rug color style, copy the effective settings. These are copies, so subsequent changes to the source don't change what was copied.
+
+Copying both the pattern and color style is a single undoable editing action.
 
 ### New rug
 
