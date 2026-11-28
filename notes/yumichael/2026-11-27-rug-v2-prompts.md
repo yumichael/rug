@@ -122,3 +122,20 @@ You have "rug color style", both unquoted and quoted and capitalized. It is conf
 7. I would not mandate `localStorage` as the underlying persistence mechanism. DONE
 8. Provide convenient resets for individual pattern and color settings. DONE
 9. Extend supported cell dimensions down to 1 × 1. DONE
+
+---
+
+I merged the PR. We are going to make another PR to decide right now on decisions left to the implementer via e.g. "it would be nice". Before making the PR, let's walk through the decisions we have to make.
+
+---
+
+I agree with all your recommendations, except for these clarifications I want to make:
+
+- "Default settings used by resets" - we'll work on this later.
+- "Newly introduced guard bands" - I thought about this, but I think having defaults while also being able to copy from ... explicitly using the UI is better.
+- "Component history identifiers" - delay doing this.
+- "Exporting a single rug" - don't allow this; I think it will only confuse the user since we require them to choose between this and exporting the whole workspace.
+- "Browser storage" - ok we can commit, but note that technologies change, I guess; this choice was decided to be optimal at the time of writing.
+- "Large tile evaluation" - can you explain what exactly I have to figure out here? Doesn't the legacy app handle large rug sizes fine?
+
+Discuss.
