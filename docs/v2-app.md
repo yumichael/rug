@@ -240,7 +240,7 @@ On a computer or a phone with enough screen space, we can keep the UI layout muc
 
 We can convert the landscape layout to a portrait layout in the same spirit as how the legacy app does it. There are two key behaviors I want in addition. When the user scrolls down to show the rug view, as the user scrolls further down to reveal the customization settings, the rug view should shrink a little to make room, but push everything above it out of view so the rug view remains at the top. The smaller rug view should always remain at the top so that the user gets instant feedback whenever they change the settings. The second behavior I want is that "New rug history" and the "New rug" button should always show up at the very bottom. This way the simplest ways the user can interact with the app are always kept visible: the rug view and the new rug button.
 
-Choose between the two layouts based on the available width and height of the window (a landscape phone might not actually have enough height for the landscape layout). Make the pinned preview expandable/collapsible by the user, and make sure the bottom controls fit within the phone's safe area. On the computer, it would be nice to have keyboard shortcuts for "New rug", undo, redo and "Save rug".
+Choose between the two layouts based on the available window dimensions. Make sure the landscape layout also works well on short, wide viewports such as a phone in landscape orientation. Make the pinned preview expandable/collapsible by the user, and make sure the bottom controls fit within the phone's safe area. On the computer, it would be nice to have keyboard shortcuts for "New rug", undo, redo and "Save rug".
 
 ### State format
 
