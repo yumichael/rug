@@ -63,14 +63,62 @@ Great. I like everything you proposed, with my requests on top. Can you make a p
 
 ---
 
+Actually, I don't want the built-in rugs to be reorderable.
+
+---
+
+~~About "Give newly available bands sensible default settings if they haven't been configured before." Actually, since all user created rugs branch off of some built-in rug save, this just means that the impl~~
+
+---
+
+"Each of "Field", "Main border", and the various guard bands gets its own section if it's enabled and independently configurable." Let's actually have a placeholder section explaining that the component is locked if it's set as mirroring another component and therefore not independently configurable, just like in the legacy app.
+
+---
+
+"It would also be nice to have ways to reset individual pattern and color settings without having to revert the whole rug." Make this a requirement. Let's discuss how this will work before you edit the PR.
+
+---
+
+I think there should be only two choices for each section. The behaviors in the current PR works perfectly as it is. The only thing I think needs changing is the naming. Can you change the naming so that the expanded scope of the reverts is clear?
+
+---
+
+I don't like how for copying patterns and color styles one has to do it twice if they want to copy both pattern and color style. Suggestions?
+
+---
+
+You have "rug color style", both unquoted and quoted and capitalized. It is confusing to understand what the unquoted "rug color style" is exactly referring to.
+
+---
+
+"it would be nice to be able to do the latter by clicking on the component in a preview of the rug": I just want to note that I want the user to be able to copy from guard components that are not included in the active guard construction. The user might want to do this for example when copying the middle band from the same rug slot's single guard.
+
+---
+
+"Possibly combine the two import actions into a common file picker": Yes, I want them combined.
+
+---
+
+"For a retired built-in, bring it into the user-saved list using its archived definition even if there are no draft changes." only if it either has a draft or it doesn't already appear as an identically defined saved rug among the user-saved list. In other words just treat it as a user-saved rug.
+
+---
+
+"a landscape phone might not actually have enough height for the landscape layout" How is this possible? Doesn't the landscape view demand less vertical space than the portrait view to look good?
+
+---
+
+"Use a deterministic, versioned RNG for the sampling, and generate fresh 128-bit seeds using the browser's random number generator." I don't want to be confused here: you're saying the random value derivations from the seed should be code we write ourselves, and versioned, but the seed picking can come from the browser?
+
+---
+
 **Changes checklist (for me to go through manually only).**
 
-1. Concept of a draft.
-2. Missing saved-rug operations
-3. Global color style inheritance.
-4. Locking component patterns when using "New rug".
-5. Let the user see the source rug and select its individual components visually.
-6. Restore pattern only instead of necessitating restoring color style as well.
-7. I would not mandate `localStorage` as the underlying persistence mechanism.
-8. Provide convenient resets for individual pattern and color settings.
-9. Extend supported cell dimensions down to 1 × 1.
+1. Concept of a draft. DONE
+2. Missing saved-rug operations. DONE
+3. Global color style inheritance. DONE
+4. Locking component patterns when using "New rug". DONE
+5. Let the user see the source rug and select its individual components visually. DONE
+6. Restore pattern only instead of necessitating restoring color style as well. DONE
+7. I would not mandate `localStorage` as the underlying persistence mechanism. DONE
+8. Provide convenient resets for individual pattern and color settings. DONE
+9. Extend supported cell dimensions down to 1 × 1. DONE
