@@ -60,11 +60,11 @@ When the user disables a component, changes a guard's construction, or enables m
 
 ##### Rug color style
 
-This section allows the user to set a global **color style** for every component of the rug, overridable individually.
+This section allows the user to set a **global color style** for the rug, which each component inherits unless it has its own color style.
 
 Just use the same settings as the legacy app's color settings. However, only keep RGB, HSV, HSL, OKLCH, and lose the "original" and "independent channels" tags. Also remove "Square RGB" (it's covered by gamma; extend the lower end of the gamma range to 0.1) and all of the hue offsets.
 
-There is also a "Copy color style from…" button. This opens up a UI to copy a color style from a component of any rug in the workspace, including the current rug. The rug color style counts as a source of color style as well.
+There is also a "Copy color style from…" button. This opens up a UI to copy a color style from a component of any rug in the workspace, including the current rug. The source rug's global color style counts as a source of color style as well.
 
 #### Component settings
 
@@ -136,7 +136,7 @@ The advanced customization options remain in place if the pattern style is chang
 
 ##### Color style
 
-This has the same UI as the rug color style selection, but with a "Use rug color style" checkbox. If the component has never had its own color style, unchecking it initializes its own style to the current rug color style. Remember the component's own style when the checkbox is checked again, so that the user can switch back and forth.
+This has the same UI as the "Rug color style" section, but with a "Use rug color style" checkbox that determines whether the component inherits the global color style. If the component has never had its own color style, unchecking it initializes its own style to the current rug's global color style. Remember the component's own style when the checkbox is checked again, so that the user can switch back and forth.
 
 ##### Resetting settings and restoring saved sections
 
@@ -144,8 +144,8 @@ I want the user to be able to reset settings or restore individual sections from
 
 - "Reset pattern settings" restores the default pattern style settings for that component, keeping its seed and its remembered pattern overrides and advanced settings.
 - "Restore saved pattern" restores the component's pattern and its style as it was in the saved rug, including the seed, actual pattern and remembered overrides.
-- "Reset color settings" restores the default color settings for the currently selected color space, keeping the color space selection. For a component, this resets its own color style without changing whether it uses the rug color style.
-- "Restore saved color style" restores the color style as it was in the saved rug, including whether the component uses the rug color style.
+- "Reset color settings" restores the default color settings for the currently selected color space, keeping the color space selection. For a component, this resets its own color style without changing whether it inherits the global color style.
+- "Restore saved color style" restores the color style as it was in the saved rug, including whether the component inherits the global color style.
 - "Reset construction settings" and "Restore saved construction" similarly restore the default and saved rug construction settings, respectively.
 
 There is also a "Reset advanced pattern settings" action in the "Advanced pattern settings" section. This resets the channel phases to zero and the channel assignment to the default for the current pattern realization. It doesn't change the underlying mathematical mappings or the remembered advanced settings for other realizations.
@@ -156,11 +156,11 @@ If there's no corresponding component in the saved rug, don't offer the correspo
 
 The "Copy from…" button for a component opens up a UI to pick a rug and one of its components (it would be nice to be able to do the latter by clicking on the component in a preview of the rug). For a rug with unsaved changes, default to the draft but include a toggle to copy from the saved rug instead.
 
-Let the user choose what to copy: "Pattern and color style", "Pattern only", or "Color style only", defaulting to copying both. It might be nice to remember the last choice for the next time the user opens this UI. The rug color style of the source rug is also selectable as a source for copying color style only. The global "Rug color style" section has its own "Copy color style from…" button that uses the same source selection UI but only copies the color style.
+Let the user choose what to copy: "Pattern and color style", "Pattern only", or "Color style only", defaulting to copying both. It might be nice to remember the last choice for the next time the user opens this UI. The source rug's global color style is also selectable as a source for copying color style only. The global "Rug color style" section has its own "Copy color style from…" button that uses the same source selection UI but only copies the color style.
 
 When copying a pattern, copy the pattern seed and all of the pattern style settings, including the mathematical realization and any remembered overrides. Preserve the absolute tile size and stretch even if the destination component is a different size, enabling "Lock tile size" in the destination.
 
-When copying a color style, copy the source's effective color style, making it an independent color style if copying to a component. When copying from a component that mirrors another component or inherits the rug color style, copy the effective settings. These are copies, so subsequent changes to the source don't change what was copied.
+When copying a color style, copy the source's effective color style, making it an independent color style if copying to a component. When copying from a component that mirrors another component or inherits its rug's global color style, copy the effective settings. These are copies, so subsequent changes to the source don't change what was copied.
 
 Copying both the pattern and color style is a single undoable editing action.
 
