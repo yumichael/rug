@@ -82,8 +82,8 @@ Let's walk through the option selections.
 
 1. "Pattern family".
    - Options are:
-     - "Checkerboard XOR (even)". Sample from no-pre-operation XOR using the uniform sampler that samples over odd-coefficient-sum polynomials without constant term, over the union of the non-zero 2-valuation families.
-     - "Checkerboard XOR (odd)". Same as previous but over odd-power polynomials only.
+     - "Checkerboard XOR (even)". Sample from no-pre-operation XOR using the uniform sampler over the union of the non-zero 2-valuation families. Each sampled polynomial has no constant term, an odd coefficient sum, and all its nonzero terms have exponents of the same positive 2-valuation (which can vary from one sampled polynomial to another).
+     - "Checkerboard XOR (odd)". Same as previous but with the 2-valuation of the exponents fixed at zero, i.e. odd-power polynomials only.
      - "Checkerboard even pre-powers". Use the uniform raw equalities with IID levels samplers on OR XOR ADD ABSDIFF with even pre-powers and pre-twists.
      - "Odd-odd even pre-powers". Use the uniform raw equalities with IID levels samplers on AND OR XOR ADD ABSDIFF MUL (instead of MULT) CLMUL with even pre-powers and pre-twists.
    - Regenerates the pattern from the seed or loads the saved pattern-style-specific advanced-customized pattern if switched.
