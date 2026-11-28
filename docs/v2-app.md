@@ -154,7 +154,9 @@ If there's no corresponding component in the saved rug, don't offer the correspo
 
 ##### Copying patterns and color styles
 
-The "Copy from…" button for a component opens up a UI to pick a rug and one of its components (it would be nice to be able to do the latter by clicking on the component in a preview of the rug). For a rug with unsaved changes, default to the draft but include a toggle to copy from the saved rug instead.
+The "Copy from…" button for a component opens up a UI to pick a rug and one of its components. For a rug with unsaved changes, default to the draft but include a toggle to copy from the saved rug instead.
+
+The user should also be able to pick guard components whose settings have been retained from other guard constructions, even if they're not currently part of the rug being copied from. E.g. after switching a guard from "Single" to "Triple", the user might want to copy the single band's pattern and color style to the middle band of that same rug slot. Make it clear in the selection UI which components are inactive and which guard construction they belong to. It would be nice to also be able to pick a visible component by clicking on it in a preview of the rug.
 
 Let the user choose what to copy: "Pattern and color style", "Pattern only", or "Color style only", defaulting to copying both. It might be nice to remember the last choice for the next time the user opens this UI. The source rug's global color style is also selectable as a source for copying color style only. The global "Rug color style" section has its own "Copy color style from…" button that uses the same source selection UI but only copies the color style.
 
