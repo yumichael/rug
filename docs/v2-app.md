@@ -246,7 +246,7 @@ Choose between the two layouts based on the available window dimensions. Make su
 
 I give the implementer freedom in choosing the very nitty-gritty details of the save-file format. There are just some requirements I have.
 
-Give the rug slots stable identifiers independent of their names and positions in the lists. Use a deterministic, versioned RNG for the sampling, and generate fresh 128-bit seeds using the browser's random number generator. Derive component seeds from the master seed using stable component identifiers, and use independent random streams for the channels. Treat the multi-selected combiners as a set when deriving the draw. Store component seeds individually as they can be rerolled independently.
+Give the rug slots stable identifiers independent of their names and positions in the lists. Use the browser's random number generator to pick fresh 128-bit seeds. All random derivations from these seeds should use deterministic algorithms implemented by the app. Version both the deterministic random number generation and the sampling algorithms so that saved seeds continue to produce the same patterns across app updates. Derive component seeds from the master seed using stable component identifiers, and use independent random streams for the channels. Treat the multi-selected combiners as a set when deriving the draw. Store component seeds individually as they can be rerolled independently.
 
 I want saved rugs to continue to give the same patterns when the app gets updated. Account for changes to the save-file schema, sampling algorithms, and rendering/color conversion independently as needed to preserve the saved realizations and their appearance.
 
