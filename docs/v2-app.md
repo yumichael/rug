@@ -142,11 +142,11 @@ This has the same UI as the rug color style selection, but with a "Use rug color
 
 I want the user to be able to reset settings or restore individual sections from the saved rug without having to revert the whole rug. I'm envisioning a little action menu in the section headers for "Rug construction", "Rug color style", and each independently configurable component's "Pattern style" and "Color style".
 
-- "Reset pattern style settings" restores the default pattern style settings for that component, keeping its seed and its remembered pattern overrides and advanced settings.
+- "Reset pattern settings" restores the default pattern style settings for that component, keeping its seed and its remembered pattern overrides and advanced settings.
 - "Restore saved pattern" restores the component's pattern and its style as it was in the saved rug, including the seed, actual pattern and remembered overrides.
 - "Reset color settings" restores the default color settings for the currently selected color space, keeping the color space selection. For a component, this resets its own color style without changing whether it uses the rug color style.
 - "Restore saved color style" restores the color style as it was in the saved rug, including whether the component uses the rug color style.
-- "Reset rug construction" and "Restore saved rug construction" similarly restore the default and saved rug construction settings, respectively.
+- "Reset construction settings" and "Restore saved construction" similarly restore the default and saved rug construction settings, respectively.
 
 There is also a "Reset advanced pattern settings" action in the "Advanced pattern settings" section. This resets the channel phases to zero and the channel assignment to the default for the current pattern realization. It doesn't change the underlying mathematical mappings or the remembered advanced settings for other realizations.
 
