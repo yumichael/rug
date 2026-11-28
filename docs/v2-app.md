@@ -212,7 +212,7 @@ The generation histories and the entire workspace state are autosaved in browser
 
 ##### Workspace state export
 
-There are "Export workspace", "Import workspace", and "Import rugs" actions for saving to and loading from the user's filesystem. Possibly combine the two import actions into a common file picker and let the user choose whether to add the rugs or replace the workspace. I want this to work conveniently on both the computer and the phone.
+There are "Export workspace" and "Import…" buttons for saving to and loading from the user's filesystem. "Import…" opens a common file picker, and the user then chooses whether to replace the workspace ("Import workspace") or add the rugs to the current workspace ("Import rugs"). I want this to work conveniently on both the computer and the phone.
 
 The workspace save file will have the `.rugs` extension. Save the user-saved rug slots in order, including their saved rug and any unsaved draft changes, and remember which slot is selected. The built-in rugs are handled specially as described below. The same format can be used for a file containing just one rug or several rugs, and the import rugs action should allow the user to choose multiple files if possible. The edit history and overall UI preferences are local to the app, and the generation histories can be kept local as well.
 
