@@ -182,15 +182,15 @@ There are two types of histories.
 
 #### Generation histories
 
-One is the histories that track the previously generated patterns and rugs along with their settings at the time of generation. There are two places for these histories.
+A **generation history** tracks the previously generated patterns or rugs along with their settings at the time of generation. There are two places for these histories.
 
-##### Rug generation history
+##### New rug history
 
-"Rug generation history" brings up a view similar to the saved rugs view but it has the rugs as they were right after the "New rug" button was clicked, across any slot in the workspace. Selecting one of these past rugs will put the rug and style selections exactly as they were at that point, on top of the current rug slot. These past rugs are labelled by the count of the number of times the user has pressed "New rug", prefixed by "R", a symbol marking that it's the new rug.
+"New rug history" brings up a view similar to the saved rugs view but it has the rugs as they were right after the "New rug" button was clicked, across any slot in the workspace. Selecting one of these past rugs will put the rug and style selections exactly as they were at that point, on top of the current rug slot. These past rugs are labelled by the count of the number of times the user has pressed "New rug", prefixed by "R", a symbol marking that it's the new rug.
 
-##### Pattern generation history
+##### New pattern history
 
-"Pattern generation history" acts similarly as the rug generation history does, except it tracks the patterns actually generated for a component when either the "New rug" button or the "New pattern" button was pressed. These UI elements go under each component's customization section. Let the user choose whether to restore just the pattern (default) or also the color style as it was at the time the pattern was generated. These past patterns are labelled by a generation counter separately for each component, prefixed by an abbreviation of the component name to distinguish them from each other and the global rug generation history. Make sure the abbreviations for the various guard bands don't conflict with each other.
+"New pattern history" acts similarly to "New rug history", except it tracks the patterns actually generated for a component when either the "New rug" button or the "New pattern" button was pressed. These UI elements go under each component's customization section. Let the user choose whether to restore just the pattern (default) or also the color style as it was at the time the pattern was generated. These past patterns are labelled by a generation counter separately for each component, prefixed by an abbreviation of the component name to distinguish them from each other and the global "New rug history". Make sure the abbreviations for the various guard bands don't conflict with each other.
 
 #### Edit history
 
@@ -234,11 +234,11 @@ There is an "Export PNG" button to save the entire current rug as a PNG file, ke
 
 #### Landscape layout
 
-On a computer or a phone with enough screen space, we can keep the UI layout much the same as in the legacy app. The global rug settings and component settings can stay on the left pane. The saved rugs and edit history can go on top. The biggest change is that I want the rug generation history and new rug button to go below the rug view.
+On a computer or a phone with enough screen space, we can keep the UI layout much the same as in the legacy app. The global rug settings and component settings can stay on the left pane. The saved rugs and edit history can go on top. The biggest change is that I want "New rug history" and the "New rug" button to go below the rug view.
 
 #### Portrait layout
 
-We can convert the landscape layout to a portrait layout in the same spirit as how the legacy app does it. There are two key behaviors I want in addition. When the user scrolls down to show the rug view, as the user scrolls further down to reveal the customization settings, the rug view should shrink a little to make room, but push everything above it out of view so the rug view remains at the top. The smaller rug view should always remain at the top so that the user gets instant feedback whenever they change the settings. The second behavior I want is that the rug generation history and new rug button should always show up at the very bottom. This way the simplest ways the user can interact with the app are always kept visible: the rug view and the new rug button.
+We can convert the landscape layout to a portrait layout in the same spirit as how the legacy app does it. There are two key behaviors I want in addition. When the user scrolls down to show the rug view, as the user scrolls further down to reveal the customization settings, the rug view should shrink a little to make room, but push everything above it out of view so the rug view remains at the top. The smaller rug view should always remain at the top so that the user gets instant feedback whenever they change the settings. The second behavior I want is that "New rug history" and the "New rug" button should always show up at the very bottom. This way the simplest ways the user can interact with the app are always kept visible: the rug view and the new rug button.
 
 Choose between the two layouts based on the available width and height of the window (a landscape phone might not actually have enough height for the landscape layout). Make the pinned preview expandable/collapsible by the user, and make sure the bottom controls fit within the phone's safe area. On the computer, it would be nice to have keyboard shortcuts for "New rug", undo, redo and "Save rug".
 
